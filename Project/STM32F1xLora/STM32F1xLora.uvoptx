@@ -386,7 +386,6 @@
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
-<<<<<<< HEAD
         <Bp>
           <Number>13</Number>
           <Type>0</Type>
@@ -499,8 +498,6 @@
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
-=======
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
       </Breakpoint>
       <Tracepoint>
         <THDelay>0</THDelay>

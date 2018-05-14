@@ -13,13 +13,8 @@
 #include "stm32f10x_gpio.h"
 #include "GT32L32M0180.H"
 
-<<<<<<< HEAD
 //#define	LCD_H 240		//水平方向点数，从左到右+
 //#define LCD_V 400		//垂直方向点数，从上到下+
-=======
-#define	LCD_H 240		//水平方向点数，从左到右+
-#define LCD_V 400		//垂直方向点数，从上到下+
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 
 //****************************控制定义End**************************
@@ -49,13 +44,8 @@ typedef struct	_LCDPort
 	unsigned short 	sREST_Pin;						//GPIO_Pin_x
 	
 	//____________命令/数据：0：命令;1-数据
-<<<<<<< HEAD
 	GPIO_TypeDef* 	sDC_PORT;							//GPIOX
 	unsigned short 	sDC_Pin;							//GPIO_Pin_x
-=======
-	GPIO_TypeDef* 	sRS_PORT;							//GPIOX
-	unsigned short 	sRS_Pin;							//GPIO_Pin_x
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 	
 	//____________写信号 在WR的上升沿，使数据写入到LCD里面
 	GPIO_TypeDef* 	sWR_PORT;							//GPIOX
@@ -82,17 +72,10 @@ typedef struct	_LCDData
 	unsigned short 	HEX;						//水平终止点
 	unsigned short	VSY;						//垂直起始点
 	unsigned short 	VEY;						//垂直终止点
-<<<<<<< HEAD
 	unsigned short	HXA;						//RAM Address Set (Horizontal Address) (R200h)
 	unsigned short 	VYA;						//RAM Address Set (Vertical Address) (R201h)
 	unsigned short 	PColor;					//画笔颜色
 	unsigned short 	BColor;					//背景颜色
-=======
-	unsigned short 	PColor;					//画笔颜色
-	unsigned short 	BColor;					//背景颜色
-	
-
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 }LCDDataDef;
 typedef struct	_LCDFlag		//0为无标识
 {
@@ -100,7 +83,6 @@ typedef struct	_LCDFlag		//0为无标识
 }LCDFlagDef;
 typedef struct _DisplayDriver
 {
-<<<<<<< HEAD
 //	void ( *PortInitialize )(LCDPortDef *pInfo);			//端口初始化
 //	void ( *DataInitialize )(LCDDataDef *Data);				//数据初始化
 //	void ( *Reset )( void );
@@ -151,13 +133,6 @@ extern LCDDef *LCDSYS;
 #define LCD_TE_HIGH					(pLcdPort->sTE_PORT->BSRR 	= pLcdPort->sTE_Pin)
 #define LCD_TE_LOW					(pLcdPort->sTE_PORT->BRR 		= pLcdPort->sTE_Pin)
 #define LCD_DATABUS_PORT		(pLcdPort->sDATABUS_PORT)
-=======
-	void ( *PortInit )(LCDPortDef(*Port));
-	void ( *Init )( void* );
-	void ( *Reset )( void );
-
-	void ( *SetWindowAddress )( void );
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 #if 0
 	#define LCD_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,300)	//(R61509V_BL_PORT->BSRR = R61509V_BL_PIN)
@@ -166,54 +141,9 @@ extern LCDDef *LCDSYS;
 	#define LCD_BL_ON		(pLcdPort->sBL_PORT->BSRR = pLcdPort->sBL_Pin)
 	#define LCD_BL_OFF	(pLcdPort->sBL_PORT->BRR 	= pLcdPort->sBL_Pin)
 
-<<<<<<< HEAD
 #endif
 
 
-=======
-	void ( *DrawDot )( void );
-	void ( *DrawLine )( void *buffer, u16 *size );
-	void ( *DrawCircle )( const void *buffer, u16 size );
-	void ( *DrawRectangle )( void );
-}DisplayDriverDef;
-typedef struct	_LCD
-{
-	LCDPortDef				Port;
-	LCDDataDef				Data;
-	LCDFlagDef				Flag;
-	DisplayDriverDef	Drvf;
-}LCDDef;
-
-
-
-extern LCDPortDef *LCDPort;
-
-#define LCD_CS_HIGH					(LCDPort->sCS_PORT->BSRR		= LCDPort->sCS_Pin)
-#define LCD_CS_LOW					(LCDPort->sCS_PORT->BRR 		= LCDPort->sCS_Pin)
-#define LCD_RS_HIGH					(LCDPort->sRS_PORT->BSRR 		= LCDPort->sRS_Pin)
-#define LCD_RS_LOW					(LCDPort->sRS_PORT->BRR 		= LCDPort->sRS_Pin)
-#define LCD_WR_HIGH					(LCDPort->sWR_PORT->BSRR 		= LCDPort->sWR_Pin)
-#define LCD_WR_LOW					(LCDPort->sWR_PORT->BRR 		= LCDPort->sWR_Pin)
-#define LCD_RD_HIGH					(LCDPort->sRD_PORT->BSRR 		= LCDPort->sRD_Pin)
-#define LCD_RD_LOW					(LCDPort->sRD_PORT->BRR 		= LCDPort->sRD_Pin)
-#define LCD_RST_HIGH				(LCDPort->sREST_PORT->BSRR 	= LCDPort->sREST_Pin)
-#define LCD_RST_LOW					(LCDPort->sREST_PORT->BRR 	= LCDPort->sREST_Pin)
-#define LCD_TE_HIGH					(LCDPort->sTE_PORT->BSRR 		= LCDPort->sTE_Pin)
-#define LCD_TE_LOW					(LCDPort->sTE_PORT->BRR 		= LCDPort->sTE_Pin)
-#define LCD_DATABUS_PORT		(LCDPort->sDATABUS_PORT)
-
-#if 1
-	#define LCD_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,200)	//(LCD_BL_PORT->BSRR = LCD_BL_PIN)
-	#define LCD_BL_OFF	PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,0)		//(LCD_BL_PORT->BRR = LCD_BL_PIN)
-#else
-	#define LCD_BL_ON		(LCD_BL_PORT->BSRR = LCD_BL_PIN)
-	#define LCD_BL_OFF	(LCD_BL_PORT->BRR = LCD_BL_PIN)
-
-#endif
-
-
-
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 #define LCD_PHY_WIDTH	( (u16) 240)
 #define LCD_PHY_HEIGHT	( (u16) 400)
 #define LCD_TOTAL_PIX	96000   /*240 * 400 */
@@ -246,7 +176,6 @@ extern LCDPortDef *LCDPort;
 #define LCD565_BROWN 			0XBC40 	//棕色
 #define LCD565_BRRED 			0XFC07 	//棕红色
 #define LCD565_GRAY  			0X8430 	//灰色
-<<<<<<< HEAD
 #define LCD565_DARKBLUE  	0X01CF	//深蓝色
 #define LCD565_LIGHTBLUE 	0X7D7C	//浅蓝色  
 #define LCD565_GRAYBLUE  	0X5458 	//灰蓝色
@@ -255,14 +184,6 @@ extern LCDPortDef *LCDPort;
 #define LCD565_LGRAYBLUE 	0XA651 	//浅灰蓝色(中间层颜色)
 #define LCD565_LBBLUE    	0X2B12 	//浅棕蓝色(选择条目的反色)
 
-=======
-//GUI颜色
-
-#define DARKBLUE      	 	0X01CF	//深蓝色
-#define LIGHTBLUE      	 	0X7D7C	//浅蓝色  
-#define GRAYBLUE       	 	0X5458 //灰蓝色
-//以上三色为PANEL的颜色
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 
 
@@ -332,7 +253,6 @@ extern LCDPortDef *LCDPort;
 
 
 
-<<<<<<< HEAD
 void LCD_Initialize(LCDDef *pInfo);
 void LCD_PortInitialize(LCDPortDef *pPort);
 
@@ -361,12 +281,5 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...);		//后边的省
 
 
 void LCD_Delay(u32 xms);
-=======
-void LCD_Initialize(LCDDef *LCD);
-void LCD_DrawDot(u16 x,u16 y,u16 color);
-
-
-
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 #endif//_BSP_LCDLCD_H_2016_
 /************************************** The End Of FILE **************************************/

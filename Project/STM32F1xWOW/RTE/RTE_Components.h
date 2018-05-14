@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xWOW' 
- * Target:  'DEMO' 
+ * Target:  'STM32_LCD' 
  */
 
 #ifndef RTE_COMPONENTS_H

@@ -17,13 +17,8 @@
 
 #include "PL010V15.H"
 
-<<<<<<< HEAD
 //#include "R61509V.h"
 #include "LCD.H"
-=======
-#include "R61509V.h"
-//#include "LCD.h"
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 #include "CS5530.H"
 
 #include "GT32L32M0180.H"
@@ -74,17 +69,10 @@ SWITCHID_CONF	SWITCHID;
 u8 SwitchID=0;	//拔码开关地址
 
 
-<<<<<<< HEAD
 LCDDef	sLCD;
 
 
 //R61509VDef R61509V;
-=======
-LcdDriverDef	Display;
-
-
-R61509VDef R61509V;
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 u8	DspFlg	=	0;
 
 u16 BKlight	=	0;
@@ -143,17 +131,11 @@ void PL010V15_Configuration(void)
 //	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--运行指示灯
 	
 //	PWM_OUT(TIM2,PWM_OUTChannel4,500,200);		//PWM设定-20161127版本--背光
-<<<<<<< HEAD
 	LCD_Clean(LCD565_RED);			//清除屏幕函数--
 	LCD_Printf(100,100,32,"时钟");					//后边的省略号就是可变参数
 	LCD_Printf(100,130,32,"%02d:",hour);		//后边的省略号就是可变参数
 	LCD_Printf(148,130,32,"%02d:",min);			//后边的省略号就是可变参数
 	LCD_Printf(196,130,32,"%02d",second);		//后边的省略号就是可变参数
-=======
-	
-//	PL010V13_PrintfString(0		,0,32	,"地址：%0.2d",SwitchID);				//待发药槽位，后边的省略号就是可变参数
-//	PL010V13_PrintfString(0		,32,16	,"地址：%0.2d",SwitchID);				//待发药槽位，后边的省略号就是可变参数
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 //	R61509V_DrawCircle(200,120, 100, 1, R61509V_YELLOW );		//画一个圆形框
 	
 //	Display.Init	=	PL010V15_Configuration;
@@ -283,7 +265,6 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 *******************************************************************************/
 void LCD_Server(void)			//显示服务相关
 {
-<<<<<<< HEAD
 #if 1
 	millisecond++;
 	if(millisecond>=999)
@@ -336,40 +317,6 @@ void LCD_Server(void)			//显示服务相关
 //	LCD_DrawRectangle(10,130,60,180,LCD565_YELLOW);			//画一个矩形框
 	
 //	R61509V_ShowChar(10,120,32,5,"sdsdf");
-=======
-#if 0		//画点测试
-	u16 x=0,y=0;
-	for(y=0;y<R61509V.Data.MaxH;y++)
-	{
-		for(x=0;x<R61509V.Data.MaxV;x++)
-		{
-			R61509V_DrawDot(x,y,R61509V_YELLOW);
-//			SysTick_DeleyuS(10);				//SysTick延时nmS
-		}
-	}
-	SysTick_DeleymS(100);				//SysTick延时nmS
-	R61509V_Clean(R61509V_RED);			//清除屏幕函数--
-#endif	
-#if 0			//测试波形绘制
-	u16 x=0,y=0;
-	
-	Rand	=	rand();
-	x	=	HX;
-	y	=	R61509V_H-Rand%200;
-	R61509V_DrawDot(x,y,R61509V_YELLOW);
-//	R61509V_DrawLine(x,HY,x,y,R61509V_YELLOW);
-	HY	=	y;
-	if(HX++>=R61509V_V)
-	{
-		HX	=	0;
-		R61509V_Clean(R61509V_RED);			//清除屏幕函数--
-//		SysTick_DeleymS(500);				//SysTick延时nmS
-	}
-//	SysTick_DeleymS(100);					//SysTick延时nmS
-#endif
-#if 0		//刷屏测试
-	u32 LCDTime=500;
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 	
 	LCD_DrawCircle(50,	50, 50, 1, LCD565_YELLOW );			//画一个圆形框	
 	LCD_DrawCircle(350,	50,	50, 1, LCD565_YELLOW );			//画一个圆形框	
@@ -419,10 +366,6 @@ void LCD_Server(void)			//显示服务相关
 //		SysTick_DeleymS(LCDTime);				//SysTick延时nmS
 //		Color+=100;		
 //	}
-<<<<<<< HEAD
-=======
-	
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 	
 	
 	LCD_Clean(LCD565_WHITE);		//清除屏幕函数--
@@ -439,7 +382,6 @@ void LCD_Server(void)			//显示服务相关
 	
 	LCD_Clean(LCD565_GRED);			//清除屏幕函数--
 	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-<<<<<<< HEAD
 	
 	LCD_Clean(LCD565_GBLUE);			//清除屏幕函数--
 	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
@@ -458,28 +400,8 @@ void LCD_Server(void)			//显示服务相关
 	
 	LCD_Clean(LCD565_YELLOW);			//清除屏幕函数--
 	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-=======
-//	
-//	LCD_Clean(R61509V_GBLUE);			//清除屏幕函数--
-//	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-//	
-//	LCD_Clean(R61509V_RED);			//清除屏幕函数--
-//	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-//	
-//	LCD_Clean(R61509V_MAGENTA);			//清除屏幕函数--
-//	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-//	
-//	LCD_Clean(R61509V_GREEN);			//清除屏幕函数--
-//	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-//	
-//	LCD_Clean(R61509V_CYAN);			//清除屏幕函数--
-//	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-//	
-//	LCD_Clean(R61509V_YELLOW);			//清除屏幕函数--
-//	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 #endif
-#if 1	//画直线
+#if 0	//画直线
 	HX	=	0;HY	=	10;
 //	for(HY	=	10;HY<=10;HY++)
 //	{
@@ -498,10 +420,7 @@ void LCD_Server(void)			//显示服务相关
 //	}
 	R61509V_DrawLine(0,100,500,100,R61509V_YELLOW);
 	R61509V_DrawLine(100,0,100,230,R61509V_YELLOW);
-<<<<<<< HEAD
 	R61509V_DrawLine(350,0,350,230,R61509V_YELLOW);
-=======
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 	SysTick_DeleymS(1000);				//SysTick延时nmS
 	R61509V_Clean(R61509V_RED);			//清除屏幕函数--蓝白
 //	//清除直线
@@ -549,7 +468,6 @@ void LCD_Server(void)			//显示服务相关
 		LCD_DrawLine(HX,10,HX,230,LCD565_RED);
 		HX	+=	5;
 	}
-<<<<<<< HEAD
 	SysTick_DeleymS(1000);				//SysTick延时nmS
 	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白
 #endif
@@ -565,18 +483,6 @@ void LCD_Server(void)			//显示服务相关
 	LCD_Printf(0		,96,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
 	LCD_Printf(0		,128,32	,"测试显示……");									//待发药槽位，后边的省略号就是可变参数
 	LCD_Printf(0		,160,32	,"怲试显示……");									//待发药槽位，后边的省略号就是可变参数
-=======
-//	SysTick_DeleymS(500);				//SysTick延时nmS
-//	LCD_Clean(R61509V_RED);			//清除屏幕函数--蓝白
-#endif
-#if 0
-
-	PL010V13_PrintfString(0		,0,16	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-	PL010V13_PrintfString(0		,16,16	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-	PL010V13_PrintfString(0		,32,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-	PL010V13_PrintfString(0		,64,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-	PL010V13_PrintfString(0		,96,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 	SysTick_DeleymS(1000);				//SysTick延时nmS
 	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白	
@@ -733,15 +639,9 @@ void SwitchID_Configuration(void)
 *******************************************************************************/
 void LCD_Configuration(void)
 {
-<<<<<<< HEAD
 	LCDPortDef		*Port;	
 	
 	Port	=	&(sLCD.Port);
-=======
-	R61509VPortDef		*Port;	
-	
-	Port	=	&(R61509V.Port);
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 	Port->sCS_PORT		=	GPIOA;
 	Port->sCS_Pin			=	GPIO_Pin_12;
@@ -822,177 +722,6 @@ void RS485_Configuration(void)
 	
 	RS485_DMA_ConfigurationNR	(&RS485,115200,(u32*)RxdBuffe,Rs485Size);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
-<<<<<<< HEAD
-=======
-/*******************************************************************************
-* 函数名		:	
-* 功能描述	:	 
-* 输入		:	
-* 输出		:
-* 返回 		:
-*******************************************************************************/
-void LCD_PowerUp(void)
-{	
-	#if 0
-	PL010Delay(0xFFFF);
-	PL010V13_PrintfString(1		,0	,16	,"待发药槽位：%2d",RevBuffe[0]);				//后边的省略号就是可变参数
-	PL010V13_PrintfString(1		,0	,16	,"待发药槽位：%2d",RevBuffe[0]);				//后边的省略号就是可变参数
-	PL010Delay(0xFFFF);
-	PL010V13_PrintfString(1		,20	,16	,"待发药数量：%2d",RevBuffe[1]);				//后边的省略号就是可变参数
-	PL010Delay(0xFFFF);
-	PL010V13_PrintfString(1		,40	,16	,"已发药数量：%2d",RevBuffe[1]);				//后边的省略号就是可变参数
-	PL010Delay(0xFFFF);
-	
-//	PL010V13_PrintfString(0		,60	,16	,"总共请求数量：%4d",SumFQ);				//总共发药请求数量
-//	PL010V13_PrintfString(0		,80	,16	,"总共发药数量：%4d",SumFed);				//总共已发药数量
-	PL010V13_PrintfString(1		,100	,16	,"错误状态：");				//错误状态
-	PL010Delay(0xFFFF);
-	
-	PL010V13_PrintfString(1		,160	,16	,"提示：长按3秒读取发药头");				//错误状态
-	PL010Delay(0xFFFF);
-	
-
-	//平行线
-	R61509V_DrawLine(221,0,221,400,R61509V_WHITE);						//AB 两个坐标画一条直线
-	R61509V_DrawLine(201,0,201,400,R61509V_WHITE);						//AB 两个坐标画一条直线
-	R61509V_DrawLine(181,0,181,400,R61509V_WHITE);						//AB 两个坐标画一条直线
-	R61509V_DrawLine(161,0,161,400,R61509V_WHITE);						//AB 两个坐标画一条直线
-	//垂直线--中
-	R61509V_DrawLine(161,200,221,200,R61509V_WHITE);					//AB 两个坐标画一条直线
-	//垂直线--右
-	R61509V_DrawLine(161,250-1,221,250-1,R61509V_WHITE);			//AB 两个坐标画一条直线
-	R61509V_DrawLine(161,300-1,221,300-1,R61509V_WHITE);			//AB 两个坐标画一条直线
-	R61509V_DrawLine(161,350-1,221,350-1,R61509V_WHITE);			//AB 两个坐标画一条直线
-	R61509V_DrawLine(161,400-1,221,400-1,R61509V_WHITE);			//AB 两个坐标画一条直线
-	
-	//垂直线--左
-	R61509V_DrawLine(161,1,221,1,					R61509V_WHITE);							//AB 两个坐标画一条直线
-	R61509V_DrawLine(161,51,221,51,				R61509V_WHITE);						//AB 两个坐标画一条直线
-	R61509V_DrawLine(161,101,221,101,			R61509V_WHITE);					//AB 两个坐标画一条直线
-	R61509V_DrawLine(161,151,221,151,			R61509V_WHITE);					//AB 两个坐标画一条直线
-
-	//填充
-	R61509V_Fill(2,180,50,200-2,R61509V_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
-	R61509V_Clean(R61509V_BLUE);			//清除屏幕函数------
-	
-	
-	
-//	R61509V_DrawLine(10,200,10,280,R61509V_WHITE);						//AB 两个坐标画一条直线
-	
-	#else
-//	LCD_Clean(R61509V_WHITE);			//清除屏幕函数------
-//	PL010Delay(0x8FFFFF);
-	R61509V_Clean(R61509V_BLUE);			//清除屏幕函数------
-//	PL010Delay(0x8FFFFF);
-//	LCD_Clean(R61509V_GRAY);			//清除屏幕函数------
-	PL010Delay(0x0FFFFF);
-	R61509V_Clean(R61509V_YELLOW);			//清除屏幕函数------
-//	PL010Delay(0x8FFFFF);
-//	LCD_Clean(R61509V_WHITE);			//清除屏幕函数------
-//	PL010Delay(0x8FFFFF);
-//	LCD_Clean(R61509V_BLACK);			//清除屏幕函数------
-
-//	PL010Delay(0xFFFF);
-//	PL010V13_PrintfString(0	,0,16	,"TEST");				//错误状态
-	#endif
-//	LCD_Clean(R61509V_BLACK);			//清除屏幕函数------
-	
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-void LCD_Display(void)
-{
-//	PL010V13_PrintfString(0		,120	,16	,"显示测试！！！！！！！！！");				//错误状态
-	
-#if 0		
-	DSPTime++;
-	if(DSPTime>500)
-	{
-		DSPTime=0;
-		LCD_WXS();		//位显示
-		LCD_DDSP();		//显示总共请求数量和已发数量
-	}	
-	LCD_WS();		//位闪烁
-	
-	if(LCDTime>=1000)
-	{			
-		LCDTime=0;		
-	}	
-	
-	RxNum=RS485_ReadBufferIDLE(&RS485,(u32*)RevBuffe,(u32*)RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-	if(RxNum==4&&RevBuffe[0]==0x00&&RevBuffe[1]==0xFF)		//RS485接收到数据
-	{
-		NumFW=RevBuffe[2];
-		PL010V13_PrintfString(96		,0	,16	,"%2d",RevBuffe[2]);				//待发药槽位，后边的省略号就是可变参数
-		PL010V13_PrintfString(96		,20	,16	,"%2d",RevBuffe[3]);				//待发药数量，后边的省略号就是可变参数
-//		PL010V13_PrintfString(192		,68	,16	,"%2d",RevBuffe[1]);				//已发药数量，后边的省略号就是可变参数
-	}
-	else if(RxNum==3&&RevBuffe[0]==0x02)		//RS485接收到数据
-	{
-		SumFQ[RevBuffe[1]-1]+=RevBuffe[2];
-		NumFW=RevBuffe[1];
-		PL010V13_PrintfString(96		,0	,16	,"%2d",RevBuffe[1]);				//待发药槽位，后边的省略号就是可变参数
-		PL010V13_PrintfString(96		,20	,16	,"%2d",RevBuffe[2]);				//待发药数量，后边的省略号就是可变参数
-		PL010V13_PrintfString(96		,40	,16	,"%2d",0);									//已发药数量，后边的省略号就是可变参数
-		
-//		PL010V13_PrintfString(0		,60	,16	,"总共请求数量：%4d",SumFQ);				//总共发药请求数量
-		PL010V13_PrintfString(0		,120	,16	,"正在发药！！！！！！！！！！");				//错误状态
-	}
-	else if(RxNum==4&&RevBuffe[0]==0x82)		//RS485接收到数据
-	{
-		SumFed[RevBuffe[1]-1]+=RevBuffe[2];
-		PL010V13_PrintfString(96		,0	,16	,"%2d",RevBuffe[1]);				//待发药槽位，后边的省略号就是可变参数
-		PL010V13_PrintfString(96		,20	,16	,"%2d",0);									//待发药数量，后边的省略号就是可变参数
-		PL010V13_PrintfString(96		,40	,16	,"%2d",RevBuffe[2]);				//已发药数量，后边的省略号就是可变参数		
-		
-//		PL010V13_PrintfString(112		,80	,16	,"%4d",SumFed);					//总共已发药数量
-		
-	}
-	else if(RxNum==6&&RevBuffe[0]==0x81)	//槽位信息0x01--获取,0x81--上报
-	{
-		Onlinede=RevBuffe[4];
-	}
-	else if(RxNum==1&&RevBuffe[0]==0x01)	//槽位信息0x01--获取,0x81--上报
-	{
-		PL010V13_PrintfString(0		,120	,16		,"获取槽位信息！！！");				//错误状态
-		NumFW=0;
-		Onlinede=0;
-		memset(SumFed,0x00,8);
-		memset(SumFQ,0x00,8);
-
-		PL010V13_PrintfString(96		,0	,16	,"%2d",0);				//待发药槽位，后边的省略号就是可变参数
-		PL010V13_PrintfString(96		,20	,16	,"%2d",0);				//待发药数量，后边的省略号就是可变参数
-	}
-	
-	for(DelayTime=0;DelayTime<1000;DelayTime++)
-	{
-		
-	}
-	if(RxNum&&(RevBuffe[0]==0x82))		//错误状态显示
-	{
-		switch(RevBuffe[3])
-		{
-			case 0x00:	PL010V13_PrintfString(0		,120	,16	,"！！！！！！！！！！！！！！");				//错误状态
-				break;
-			case 0x80:	PL010V13_PrintfString(0		,120	,16	,"药品被卡住！！！！！！！！！");				//错误状态
-				break;
-			case 0x81:	PL010V13_PrintfString(0		,120	,16	,"缺药！！！！！！！！！！！！");				//错误状态
-				break;
-			case 0x82:	PL010V13_PrintfString(0		,120	,16	,"等待命令结果超时！！！！！！");				//错误状态
-				break;
-			case 0xC0:	PL010V13_PrintfString(0		,120	,16	,"单元柜控制器通信异常！！！！");				//错误状态
-				break;
-			case 0xC1:	PL010V13_PrintfString(0		,120	,16	,"发药层控制器通信异常！！！！");				//错误状态
-				break;
-		}
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 
 

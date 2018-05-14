@@ -21,7 +21,6 @@
 
 //****************************控制定义End**************************
 
-<<<<<<< HEAD
 //typedef struct
 //{
 //	u16 x;
@@ -33,19 +32,6 @@
 //	t_Point top;
 //	t_Point bottom;
 //}t_Rect;
-=======
-typedef struct
-{
-	u16 x;
-	u16 y;
-}t_Point;
-
-typedef struct
-{
-	t_Point top;
-	t_Point bottom;
-}t_Rect;
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 //typedef enum
 //{
@@ -54,7 +40,6 @@ typedef struct
 //	SCREEN_ROTATE_180D,
 //	SCREEN_ROTATE_270D,
 //}t_Sreen_Rotate;			//扫描方式
-<<<<<<< HEAD
 //typedef enum
 //{
 //	Draw_Rotate_0D 		= 0,
@@ -62,15 +47,6 @@ typedef struct
 //	Draw_Rotate_180D	=	180,
 //	Draw_Rotate_270D	=	270
 //} eRotate;
-=======
-typedef enum
-{
-	Draw_Rotate_0D 		= 0,
-	Draw_Rotate_90D		=	90,
-	Draw_Rotate_180D	=	180,
-	Draw_Rotate_270D	=	270
-} eRotate;
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 //typedef struct
 //{
@@ -92,7 +68,6 @@ typedef enum
 //		u8	Rsvd    : 3;
 //	} DrawMode;
 //}t_R61509VCfg;
-<<<<<<< HEAD
 //typedef struct
 //{
 //	u16 Width;
@@ -216,145 +191,6 @@ typedef enum
 //	#define R61509V_BL_OFF	(pLcdPort->sBL_PORT->BRR 	= pLcdPort->sBL_Pin)
 
 //#endif
-=======
-typedef struct
-{
-	u16 Width;
-	u16 Height;
-	u8  PixBits;
-	u8  *pData;
-	
-}	IMAGE_PARA;
-
-
-typedef struct	_R61509VPort
-{
-	//____________背光控制定义	//1:开背光;0:关背光
-	GPIO_TypeDef* 	sBL_PORT;			//GPIOX
-	unsigned short 	sBL_Pin;				//GPIO_Pin_x
-	
-	//____________读信号;0:读数据
-	GPIO_TypeDef* 	sRD_PORT;							//GPIOX
-	unsigned short 	sRD_Pin;							//GPIO_Pin_x
-	
-	//____________复位信号 1:运行;0:复位
-	GPIO_TypeDef* 	sREST_PORT;						//GPIOX
-	unsigned short 	sREST_Pin;						//GPIO_Pin_x
-	
-	//____________命令/数据：0：命令;1-数据
-	GPIO_TypeDef* 	sRS_PORT;							//GPIOX
-	unsigned short 	sRS_Pin;							//GPIO_Pin_x
-	
-	//____________写信号 在WR的上升沿，使数据写入到R61509V里面
-	GPIO_TypeDef* 	sWR_PORT;							//GPIOX
-	unsigned short 	sWR_Pin;							//GPIO_Pin_x
-	
-	//____________片选信号 0:片选;1:失能;
-	GPIO_TypeDef* 	sCS_PORT;							//GPIOX
-	unsigned short 	sCS_Pin;							//GPIO_Pin_x
-	
-	//____________TE
-	GPIO_TypeDef* 	sTE_PORT;							//GPIOX
-	unsigned short 	sTE_Pin;							//GPIO_Pin_x
-	
-	//____________数据接口
-	GPIO_TypeDef* 	sDATABUS_PORT;				//GPIOX
-	unsigned short 	sDATABUS_Pin;					//GPIO_Pin_x
-
-}R61509VPortDef;
-typedef struct	_R61509VData
-{
-	unsigned short	MaxH;						//水平最大点数
-	unsigned short 	MaxV;						//垂直最大点数
-	unsigned short	HSX;						//水平起始点
-	unsigned short 	HEX;						//水平终止点
-	unsigned short	VSY;						//垂直起始点
-	unsigned short 	VEY;				//垂直终止点
-	unsigned short 	PColor;			//画笔颜色
-	unsigned short 	BColor;			//背景颜色
-	eRotate	Rotate;							//扫描方式/旋转角度
-
-}R61509VDataDef;
-typedef struct	_R61509VFlag		//0为无标识
-{
-	eRotate	Rotate;						//扫描方式/旋转角度
-}R61509VFlagDef;
-//****************************控制定义End**************************
-typedef struct	_R61509V
-{
-	R61509VPortDef	Port;
-	R61509VDataDef	Data;
-	R61509VFlagDef	Flag;
-}R61509VDef;
-
-
-typedef struct _LcdDisplay
-{
-	void ( *PortInit )(void);
-	void ( *Init )( void* );
-	void ( *Reset )( void );
-	
-	
-	void ( *WriteDataStart )(void);
-	void ( *WriteDataEnd )(void);
-	void ( *WriteIndexStart )(void);
-	void ( *WriteIndexEnd )(void);
-	void ( *WriteData )(unsigned short Data);
-	
-	void ( *WriteIndex16 )(void);
-	void ( *WriteCommand )(unsigned short Index,unsigned short Command);	
-	void ( *WriteAddress )( unsigned short HSX,unsigned short HSY,unsigned short HEX,unsigned short HEY);
-	
-	void ( *PowerOn )(void);
-	void ( *PowerOff )(void);
-	void ( *DispOff )(void);
-	
-	void ( *DSPClean )(unsigned short Color);
-	void ( *DSPDrawDot )(unsigned short HSX,unsigned short HSY,unsigned short Color);
-	void ( *DSPDrawLine )( unsigned short HSX,unsigned short HSY,unsigned short HEX,unsigned short HEY,unsigned short Color);
-}LcdDisplayDef;
-
-
-extern R61509VDef *pR61509V;
-
-#define	pLcdPort	(&(pR61509V->Port))
-#define R61509V_CS_HIGH					(pLcdPort->sCS_PORT->BSRR		= pLcdPort->sCS_Pin)
-#define R61509V_CS_LOW					(pLcdPort->sCS_PORT->BRR 		= pLcdPort->sCS_Pin)
-#define R61509V_RS_HIGH					(pLcdPort->sRS_PORT->BSRR 	= pLcdPort->sRS_Pin)
-#define R61509V_RS_LOW					(pLcdPort->sRS_PORT->BRR 		= pLcdPort->sRS_Pin)
-#define R61509V_WR_HIGH					(pLcdPort->sWR_PORT->BSRR 	= pLcdPort->sWR_Pin)
-#define R61509V_WR_LOW					(pLcdPort->sWR_PORT->BRR 		= pLcdPort->sWR_Pin)
-#define R61509V_RD_HIGH					(pLcdPort->sRD_PORT->BSRR 	= pLcdPort->sRD_Pin)
-#define R61509V_RD_LOW					(pLcdPort->sRD_PORT->BRR 		= pLcdPort->sRD_Pin)
-#define R61509V_RST_HIGH				(pLcdPort->sREST_PORT->BSRR	= pLcdPort->sREST_Pin)
-#define R61509V_RST_LOW					(pLcdPort->sREST_PORT->BRR 	= pLcdPort->sREST_Pin)
-#define R61509V_TE_HIGH					(pLcdPort->sTE_PORT->BSRR 	= pLcdPort->sTE_Pin)
-#define R61509V_TE_LOW					(pLcdPort->sTE_PORT->BRR 		= pLcdPort->sTE_Pin)
-#define R61509V_DATABUS_PORT		(pLcdPort->sDATABUS_PORT)
-
-#if 1
-	#define R61509V_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,300)	//(R61509V_BL_PORT->BSRR = R61509V_BL_PIN)
-	#define R61509V_BL_OFF	PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,0)		//(R61509V_BL_PORT->BRR = R61509V_BL_PIN)
-#else
-	#define R61509V_BL_ON		(pLcdPort->sBL_PORT->BSRR = pLcdPort->sBL_Pin)
-	#define R61509V_BL_OFF	(pLcdPort->sBL_PORT->BRR 	= pLcdPort->sBL_Pin)
-
-#endif
-
-//BAC
-//#define R61509V_CS_HIGH		(R61509V_CS_PORT->BSRR = R61509V_CS_PIN)
-//#define R61509V_CS_LOW		(R61509V_CS_PORT->BRR = R61509V_CS_PIN)
-//#define R61509V_RS_HIGH		(R61509V_RS_PORT->BSRR = R61509V_RS_PIN)
-//#define R61509V_RS_LOW		(R61509V_RS_PORT->BRR = R61509V_RS_PIN)
-//#define R61509V_WR_HIGH		(R61509V_WR_PORT->BSRR = R61509V_WR_PIN)
-//#define R61509V_WR_LOW		(R61509V_WR_PORT->BRR = R61509V_WR_PIN)
-//#define R61509V_RD_HIGH		(R61509V_RD_PORT->BSRR = R61509V_RD_PIN)
-//#define R61509V_RD_LOW		(R61509V_RD_PORT->BRR = R61509V_RD_PIN)
-//#define R61509V_RST_HIGH	(R61509V_RST_PORT->BSRR = R61509V_RST_PIN)
-//#define R61509V_RST_LOW		(R61509V_RST_PORT->BRR = R61509V_RST_PIN)
-//#define R61509V_TE_HIGH	(R61509V_TE_PORT->BSRR = R61509V_TE_PIN)
-//#define R61509V_TE_LOW	(R61509V_TE_PORT->BRR = R61509V_TE_PIN)
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 //#define R61509V_61509_EN
 //#ifdef 	R61509V_61509_EN
@@ -398,37 +234,6 @@ extern R61509VDef *pR61509V;
 #define GRAYBLUE       	 	0X5458 //灰蓝色
 //以上三色为PANEL的颜色
 
-<<<<<<< HEAD
-=======
-//#define R61509V_DATA_PORT	GPIOB
-////#define R61509V_CTRL_PORT	GPIOB
-
-//#define R61509V_CS_PORT	GPIOA
-//#define R61509V_CS_PIN	GPIO_Pin_12
-
-//#define R61509V_RS_PORT	GPIOA
-//#define R61509V_RS_PIN	GPIO_Pin_8
-
-//#define R61509V_WR_PORT	GPIOA
-//#define R61509V_WR_PIN	GPIO_Pin_15
-
-//#define R61509V_RD_PORT	GPIOC
-//#define R61509V_RD_PIN	GPIO_Pin_5
-
-//#define R61509V_RST_PORT	GPIOD
-//#define R61509V_RST_PIN	GPIO_Pin_2
-
-//#define R61509V_BL_PORT	GPIOA
-//#define R61509V_BL_PIN	GPIO_Pin_3
-
-//#define R61509V_TE_PORT	GPIOC
-//#define R61509V_TE_PIN	GPIO_Pin_4
-
-
-
-
-
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 /*功能位 */
 #define R61509V_DC1_IMAGE_ENABLE_BIT	0x1000
@@ -492,7 +297,6 @@ extern R61509VDef *pR61509V;
 
 
 
-<<<<<<< HEAD
 //void R61509V_Delay(u32 xms);
 
 
@@ -510,30 +314,12 @@ void R61509V_Initialize(void);
 //u16 R61509V_ReadData( void );					//从R61509V读取数据
 //void R61509V_WriteCommand(unsigned short index,unsigned short Command);	//写完整控制命令
 
-=======
-void R61509V_Delay(u32 xms);
-
-
-void R61509V_Initialize(R61509VDef *pInfo);
-void R61509V_PinConf(R61509VDef *pInfo);
-
-void R61509V_WriteIndexStart( void );
-void R61509V_WriteIndexEnd( void );
-void R61509V_WriteDataStart( void );
-void R61509V_WriteDataEnd( void );
-void R61509V_WriteData(u16 Data);
-void R61509V_WriteIndex16(unsigned short Index);			//写16位命令索引编号
-void R61509V_WriteData16(unsigned short Data);				//写16位数据	
-u16 R61509V_ReadData( void );					//从R61509V读取数据
-void R61509V_WriteCommand(unsigned short index,unsigned short Command);	//写完整控制命令
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 void R61509V_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
 void R61509V_PowerOn(void);					//按照主控芯片R61509V的power supply on sequence 进行配置
 void R61509V_PowerOff( void );		//关闭R61509V 电源
 void R61509V_DispOff( void );			//关闭R61509V显示( 黑屏?)
 
 
-<<<<<<< HEAD
 
 //void R61509V_Clean(u16 COLOR); 		//清除屏幕函数(填充屏幕颜色)
 //void R61509V_DrawDot(u16 x,u16 y,u16 COLOR);			//画点
@@ -545,18 +331,6 @@ void R61509V_DispOff( void );			//关闭R61509V显示( 黑屏?)
 //void R61509V_ShowChar(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);						//高通字库测试程序
 //void R61509V_ShowCharT(u16 x,u16 y,u8 num,u8 mode);
 //void R61509V_ShowEn(u16 x,u16 y,u32 num);
-=======
-void R61509V_Clean(u16 COLOR); 		//清除屏幕函数(填充屏幕颜色)
-void R61509V_DrawDot(u16 x,u16 y,u16 COLOR);			//画点
-void R61509V_DrawLine(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);						//AB 两个坐标画一条直线
-void R61509V_DrawCircle(u16 x1,u16 y1, u16 R, u8 Filled, u16 color );		//画一个圆形框
-void R61509V_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);			//画一个矩形框
-
-void R61509V_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
-void R61509V_ShowChar(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);						//高通字库测试程序
-void R61509V_ShowCharT(u16 x,u16 y,u8 num,u8 mode);
-void R61509V_ShowEn(u16 x,u16 y,u32 num);
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 
 
@@ -569,11 +343,7 @@ void R61509V_ShowEn(u16 x,u16 y,u32 num);
 //void R61509V_CHINESE(unsigned char zimo[720],unsigned int backcolor);  //写入字符
 
 
-<<<<<<< HEAD
 //void R61509V_DrawDot_big(u16 x,u16 y,u16 color);	//画一个大点
-=======
-void R61509V_DrawDot_big(u16 x,u16 y,u16 color);	//画一个大点
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 
 

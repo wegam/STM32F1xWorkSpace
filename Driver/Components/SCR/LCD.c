@@ -8,7 +8,6 @@
 **************************************************************************************************/
 #include "LCD.H"
 
-<<<<<<< HEAD
 
 //#define	SSD1963_USED
 
@@ -55,78 +54,6 @@ void LCD_Initialize(LCDDef *pInfo)
 	
 	GT32L32_ConfigurationNR(&pInfo->GT32L32);				//普通SPI通讯方式配置	
 	GPIO_Configuration_OPP50	(pInfo->GT32L32.Port.sGT32L32_CS_PORT,pInfo->GT32L32.Port.sGT32L32_CS_PIN);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
-=======
-#include "STM32_GPIO.H"
-#include "STM32_PWM.H"
-#include "STM32_SYSTICK.H"
-#include "font.h"
-
-LCDDef *LCDSYS	=	0;
-/*******************************************************************************
-*函数名			:	R61509V_DrawPoint
-*功能描述		:	画点
-*输入				: 
-*返回值			:	无
-*******************************************************************************/
-void LCD_Initialize(LCDDef *LCD)
-{
-	LCDSYS	=	LCD;
-	LCD->Drvf.PortInit(&LCD->Port);
-}
-/*******************************************************************************
-*函数名			:	R61509V_DrawPoint
-*功能描述		:	画点
-*输入				: 
-*返回值			:	无
-*******************************************************************************/
-void LCDPort_Initialize(DisplayDriverDef *Driver)
-{
-    
-}
-/*******************************************************************************
-*函数名			:	R61509V_DrawPoint
-*功能描述		:	画点
-*输入				: 
-*返回值			:	无
-*******************************************************************************/
-void LCD_DrawDot(u16 x,u16 y,u16 color)
-{
-	LCDSYS->Data.HSX	=	x;
-	LCDSYS->Data.VSY	=	y;
-	
-	LCDSYS->Drvf.DrawDot();
-	
-//	R61509V_W 400
-//	R61509V_H 240
-//	u16 x1=0,y1=0;
-//	switch(Sreen_Rotate)
-//	{
-//		case SCREEN_ROTATE_0D:{}
-//			break;
-//		case SCREEN_ROTATE_90D:{x1=R61509V_H-y;y=x;x=x1;}
-//			break;
-//		case SCREEN_ROTATE_180D:{x1=R61509V_H-x;y=R61509V_W-y;x=x1;}
-//			break;
-//		case	SCREEN_ROTATE_270D:{x1=y;y=R61509V_W-x;x=x1;}
-//			break;
-//		default: break;			
-//	}
-
-//	R61509V_SetWindowAddress(x,y,x,y);	//设置光标位置 
-//	R61509V_WriteData16(color); 	//笔画颜色	    
-}
-/*******************************************************************************
-* 函数名			:	R61509V_WriteIndex16
-* 功能描述		:	写16位索引
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-void LCD_WriteIndex16(unsigned short Index)	//写16位命令索引编号
-{
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 
 }
 /*******************************************************************************
@@ -134,21 +61,7 @@ void LCD_WriteIndex16(unsigned short Index)	//写16位命令索引编号
 * 功能描述		:	函数功能说明 
 * 输入			: void
 * 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
 *******************************************************************************/
-void LCD_WriteCommand(unsigned short index,unsigned short Command)
-{
-
-}
-/*******************************************************************************
-*函数名			:	R61509V_SetWindowAddress
-*功能描述		:	设置窗口地址
-*输入				: 
-*返回值			:	无
-*******************************************************************************/
-<<<<<<< HEAD
 void LCD_PortInitialize(LCDPortDef *pPort)
 {
 	LCDPortDef		*Port;	
@@ -295,15 +208,12 @@ void LCD_WriteCommand(												//写完整控制命令
 *输入				: 
 *返回值			:	无
 *******************************************************************************/
-=======
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 void LCD_SetWindowAddress(			//设置窗口地址
 															unsigned short x1,		//水平起始点
 															unsigned short y1,		//水平终止点
 															unsigned short x2,		//垂直起始点
 															unsigned short y2			//垂直终止点
 															)
-<<<<<<< HEAD
 {	
 	unsigned short MaxH,MaxV;
 	unsigned short Model	=	0x5030;
@@ -1061,91 +971,6 @@ void LCD_Delay(u32 xms)
 	while(xms--);
 }
 
-=======
-{
-	u8 Screen_Rotate	=	90;
-	u16 Model	=	0x5030;
-	u16 x11,x12,y11,y12;
-if	(Screen_Rotate	==0)
-{
-	//	R61509V_W	400
-	//	R61509V_H 240
-	LCD_WriteCommand(LCD_R210_HSA,x1);		//Window Horizontal RAM Address Start(R210h)		//水平
-	LCD_WriteCommand(LCD_R211_HEA,x2);		//Window Horizontal RAM Address End(R211h)			//水平
-	LCD_WriteCommand(LCD_R212_VSA,y1);		//Window Vertical RAM Address Start (R212h)			//垂直
-	LCD_WriteCommand(LCD_R213_VEA,y2);		//Window Vertical RAM Address End (R213h)				//垂直
-	
-	LCD_WriteCommand(LCD_R200_HA,x1);			//RAM Address Set (Horizontal Address) (R200h)
-	LCD_WriteCommand(LCD_R201_VA,y1);			//RAM Address Set (Vertical Address) (R201h)
-
-	
-	Model	=	0x5030;
-}
-else if (Screen_Rotate	==90)
-{
-	//	R61509V_W	400
-	//	R61509V_H 240
-	x11	=	x1;
-	x12	=	x2;
-	y11=	y1;
-	y12	=	y2;
-	
-	x1	=	y1;
-	x2	=	y2;
-	y1	=	LCDSYS->Data.MaxV	-	x2	-	1;
-	y2	=	LCDSYS->Data.MaxV	-	x1	-	1;
-	
-	Model	=	0X5018;
-}
-else if (Screen_Rotate	==180)
-{
-	//	R61509V_W	400
-	//	R61509V_H 240
-	
-	x11	=	x1;
-	x12	=	x2;
-	y11=	y1;
-	y12	=	y2;
-	
-	x1	=	LCDSYS->Data.MaxH	-	x12	-	1;
-	x2	=	LCDSYS->Data.MaxH	-	x11	-	1;
-	y1	=	LCDSYS->Data.MaxV	-	y12	-	1;
-	y2	=	LCDSYS->Data.MaxV	-	y11	-	1;
-	
-	Model	=	0X5000;
-}
-else	// if (Screen_Rotate	==	270)
-{
-	//	R61509V_W	400
-	//	R61509V_H 240
-	
-	x11	=	x1;
-	x12	=	x2;
-	y11=	y1;
-	y12	=	y2;
-	
-	x1	=	LCDSYS->Data.MaxH	-	y12	-	1;
-	x2	=	LCDSYS->Data.MaxH	-	y11	-	1;
-	y1	=	x11;
-	y2	=	x12;
-	
-	Model	=	0X5028;
-}	
-
-	LCD_WriteCommand(LCD_R210_HSA,x1);		//Window Horizontal RAM Address Start(R210h)		//水平
-	LCD_WriteCommand(LCD_R211_HEA,x2);		//Window Horizontal RAM Address End(R211h)			//水平
-	LCD_WriteCommand(LCD_R212_VSA,y1);		//Window Vertical RAM Address Start (R212h)			//垂直
-	LCD_WriteCommand(LCD_R213_VEA,y2);		//Window Vertical RAM Address End (R213h)				//垂直
-	
-	LCD_WriteCommand(LCD_R200_HA,x1);			//RAM Address Set (Horizontal Address) (R200h)
-	LCD_WriteCommand(LCD_R201_VA,y1);			//RAM Address Set (Vertical Address) (R201h)
-
-	LCD_WriteCommand(LCD_R003_EM,Model);						//RAM Address Set (Vertical Address) (R201h)
-	LCD_WriteIndex16(LCD_R202_GDRW);								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
-}
-
-
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
 //#endif//LCD_61509_EN
 /************************************** The End Of FILE **************************************/
 
