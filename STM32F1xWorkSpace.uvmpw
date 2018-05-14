@@ -8,21 +8,13 @@
   <WorkspaceName>WorkSpace</WorkspaceName>
 
   <project>
-    <PathAndName>.\Project\STM32F1xWOW\STM32F1xWOW.uvprojx</PathAndName>
-  </project>
-
-  <project>
-<<<<<<< HEAD
-=======
-    <PathAndName>.\Project\STM32F1xLora\STM32F1xLora.uvprojx</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
-  </project>
-
-  <project>
->>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
     <PathAndName>.\Project\STM32F1xHC\STM32F1xHC.uvprojx</PathAndName>
     <NodeIsActive>1</NodeIsActive>
     <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
+    <PathAndName>.\Project\STM32F1xWOW\STM32F1xWOW.uvprojx</PathAndName>
   </project>
 
 </ProjectWorkspace>
