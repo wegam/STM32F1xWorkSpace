@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ProjectWorkspace xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_mpw.xsd">
+
+  <SchemaVersion>1.0</SchemaVersion>
+
+  <Header>### uVision Project, (C) Keil Software</Header>
+
+  <WorkspaceName>WorkSpace</WorkspaceName>
+
+  <project>
+    <PathAndName>.\Project\STM32F1xWOW\STM32F1xWOW.uvprojx</PathAndName>
+  </project>
+
+  <project>
+<<<<<<< HEAD
+=======
+    <PathAndName>.\Project\STM32F1xLora\STM32F1xLora.uvprojx</PathAndName>
+    <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
+>>>>>>> 24cd2ea4c8c2e2240d51603a2d65a86ccb26281c
+    <PathAndName>.\Project\STM32F1xHC\STM32F1xHC.uvprojx</PathAndName>
+    <NodeIsActive>1</NodeIsActive>
+    <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+</ProjectWorkspace>

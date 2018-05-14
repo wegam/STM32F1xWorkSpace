@@ -1,0 +1,6 @@
+-c --cpu Cortex-M3 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\Examples\DEMO\include -I..\..\Library\STM32F10x_StdPeriph_Driver\INC -I..\..\Driver\WOW\INC -I..\..\Driver\Components\INC -I..\..\Examples\HC -I.\main
+-I D:\WOW\STM32\STM32F1xWorkSpace\Project\STM32F1xHC\RTE
+-I "D:\Program Files (x86)\MDK516\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include"
+-I "D:\Program Files (x86)\MDK516\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include"
+-D__UVISION_VERSION="516" -D_RTE_ -DSTM32F10X_MD -DPL010V15
+-o .\output\obj\at24c02.o --omf_browse .\output\obj\at24c02.crf --depend .\output\obj\at24c02.d --feedback ".\OutPut\Obj\PL010V15.fed" "..\..\Driver\Components\SCR\AT24C02.C"
