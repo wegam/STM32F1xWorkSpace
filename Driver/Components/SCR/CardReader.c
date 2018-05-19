@@ -38,3 +38,6 @@ sFWS9CmdDataDef	sFWS9SetArea	=			//设置读卡区域
 void FWS9_Initialize(void)						//参数初始化
 {
 }
+
+
+

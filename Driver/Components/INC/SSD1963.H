@@ -14,7 +14,7 @@
 //#include	"stdarg.h"			//用于获取不确定个数的参数
 //#include	"stdlib.h"			//malloc动态申请内存空间
 
-//#include "LCD.H"
+#include "LCD.H"
 
 
 
@@ -23,8 +23,9 @@
 
 
  //定义LCD的尺寸	
-#define LCD_V 480
-#define LCD_H 800
+#define SSD1963_H 800
+#define SSD1963_V 480
+
 
 
 #define	Bus_16        //16位数据模式,如果使用8位模式，请注释此语句，如果使用16位模式，请打开此句,修改8位模式之前，请确认你手里的模块是否是8位总线接口
@@ -270,7 +271,7 @@ enum SSD1963REG
 
 
 
-void SSD1963_Initialize(void);
+void SSD1963_Initialize(LCDDef *pInfo);
 
 //void SSD1963_Delay(u16 xms);
 
@@ -303,30 +304,30 @@ void SSD1963_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short
 
 
 //void SSD1963_ShowString(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);		//显示字符串
-void SSD1963_ShowChar(u16 x,u16 y,u8 num,u8 mode);								//显示一个字符
+void SSD1963_ShowChar(unsigned short x,unsigned short y,unsigned char num,unsigned char mode);								//显示一个字符
 
 
 
-void SSD1963_DrawPoint(u16 x,u16 y);//画点
-void SSD1963_DrawPoint_big(u16 x,u16 y);//画一个大点
-u16  SSD1963_ReadPoint(u16 x,u16 y); //读点
-void SSD1963_DrawCircle(u16 x0,u16 y0,u8 r);
-void SSD1963_DrawLine(u16 x1, u16 y1, u16 x2, u16 y2);						//画直线
-void SSD1963_DrawRectangle(u16 x1, u16 y1, u16 x2, u16 y2);				//画矩形框	   
-void SSD1963_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);	//填充--清屏
+void SSD1963_DrawPoint(unsigned short x,unsigned short y);//画点
+void SSD1963_DrawPoint_big(unsigned short x,unsigned short y);//画一个大点
+u16  SSD1963_ReadPoint(unsigned short x,unsigned short y); //读点
+void SSD1963_DrawCircle(unsigned short x0,unsigned short y0,unsigned char r);
+void SSD1963_DrawLine(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);						//画直线
+void SSD1963_DrawRectangle(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);				//画矩形框	   
+void SSD1963_Fill(unsigned short xsta,unsigned short ysta,unsigned short xend,unsigned short yend,unsigned short color);	//填充--清屏
 //void SSD1963_ShowCharGT(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);		//高通字库测试程序-----备删除/SSD1963_ShowString
 
 
-void SSD1963_ShowNum(u16 x,u16 y,u32 num,u8 len);									//显示数字
-void SSD1963_ShowEn(u16 x,u16 y,u32 num);													//显示单字节字符
-void SSD1963_Show2Num(u16 x,u16 y,u16 num,u8 len);//显示2个数字串，包含数字
+void SSD1963_ShowNum(unsigned short x,unsigned short y,unsigned long num,unsigned char len);									//显示数字
+void SSD1963_ShowEn(unsigned short x,unsigned short y,unsigned long num);													//显示单字节字符
+void SSD1963_Show2Num(unsigned short x,unsigned short y,unsigned short num,unsigned char len);//显示2个数字串，包含数字
 
-unsigned int SSD1963_PrintfStringbac(u16 x,u16 y,const char *format,...);			//后边的省略号就是可变参数
+unsigned int SSD1963_PrintfStringbac(unsigned short x,unsigned short y,const char *format,...);			//后边的省略号就是可变参数
 
-void SSD1963_ShowStringbac(u16 x,u16 y,const u8 *p);		 //显示一个字符串,16字体
+void SSD1963_ShowStringbac(unsigned short x,unsigned short y,const unsigned char *p);		 //显示一个字符串,16字体
  
-void showhanzi(unsigned int x,unsigned int y,unsigned char index);
-void RGB888ToRGB565(unsigned char Color_R,unsigned char Color_G,unsigned char Color_B,u16 *RGB565);			//RGB888转RGB565颜色(分别取高位)
+void showhanzi(unsigned short x,unsigned short y,unsigned char index);
+void RGB888ToRGB565(unsigned char Color_R,unsigned char Color_G,unsigned char Color_B,unsigned short *RGB565);			//RGB888转RGB565颜色(分别取高位)
 
 
 void SSD1963_Configuration(void);

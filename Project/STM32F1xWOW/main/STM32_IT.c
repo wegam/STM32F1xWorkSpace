@@ -649,7 +649,7 @@ void SPI2_IRQHandler(void)
 	return;
 #endif
 	
-	SPI_Server();
+//	SPI_Server();
 }
 
 /*******************************************************************************

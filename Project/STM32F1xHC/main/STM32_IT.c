@@ -623,33 +623,33 @@ void SPI2_IRQHandler(void)
 {
 	
 	
-#ifdef USE_STM3210E_EVAL
-  static u8 channel = 0;
+//#ifdef USE_STM3210E_EVAL
+//  static u8 channel = 0;
 
-  if ((SPI_I2S_GetITStatus(SPI2, SPI_I2S_IT_TXE) == SET))
-  {
-    /* Audio codec configuration section */
-    if (GetVar_SendDummyData() == 1)
-    {
-      /* Send a dummy data just to generate the I2S clock */
-      SPI_I2S_SendData(SPI2, DUMMYDATA);
-    }
-    else if ((Out_Data_Offset < In_Data_Offset) && ((u8)(MUTE_DATA) == 0))
-    {
-      if ((channel++) & 1)
-      {
-        SPI_I2S_SendData(SPI2, (u16)Stream_Buff[Out_Data_Offset++]);
-      }
-      else
-      {
-        SPI_I2S_SendData(SPI2, (u16)Stream_Buff[Out_Data_Offset]);
-      }
-    }
-  }
-	return;
-#endif
+//  if ((SPI_I2S_GetITStatus(SPI2, SPI_I2S_IT_TXE) == SET))
+//  {
+//    /* Audio codec configuration section */
+//    if (GetVar_SendDummyData() == 1)
+//    {
+//      /* Send a dummy data just to generate the I2S clock */
+//      SPI_I2S_SendData(SPI2, DUMMYDATA);
+//    }
+//    else if ((Out_Data_Offset < In_Data_Offset) && ((u8)(MUTE_DATA) == 0))
+//    {
+//      if ((channel++) & 1)
+//      {
+//        SPI_I2S_SendData(SPI2, (u16)Stream_Buff[Out_Data_Offset++]);
+//      }
+//      else
+//      {
+//        SPI_I2S_SendData(SPI2, (u16)Stream_Buff[Out_Data_Offset]);
+//      }
+//    }
+//  }
+//	return;
+//#endif
 	
-	SPI_Server();
+//	SPI_Server();
 }
 
 /*******************************************************************************

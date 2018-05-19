@@ -9,18 +9,6 @@
 #include "LCD.H"
 
 
-//#define	SSD1963_USED
-
-#ifdef SSD1963_USED
-	#include "SSD1963.H"
-#else
-	#include "R61509V.h"
-#endif
-
-//#include "GT32L32M0180.H"
-
-
-
 #include "STM32_GPIO.H"
 #include "STM32_PWM.H"
 #include "STM32_SYSTICK.H"
@@ -30,7 +18,7 @@
 #include "stdarg.h"				//串和内存操作函数头文件
 #include "stdio.h"				//串和内存操作函数头文件
 
-LCDDef 			*LCDSYS	=	0;
+LCDDef 			*LCDSYS	=	0;	//内部驱动使用，不可删除
 /*******************************************************************************
 *函数名			:	LCD_Initialize
 *功能描述		:	LCD初始化：
@@ -39,22 +27,21 @@ LCDDef 			*LCDSYS	=	0;
 *******************************************************************************/
 void LCD_Initialize(LCDDef *pInfo)
 {
-	LCDSYS	=	pInfo;
+	LCDSYS	=	pInfo;		//指针指向
 	
-#ifdef SSD1963_USED
-	SSD1963_Initialize();
-#else
-	R61509V_Initialize();
-#endif
-	
-	
+	//检查背景色与画笔色是否相同
+	if(pInfo->Data.PColor	==	pInfo->Data.BColor)
+	{
+		pInfo->Data.PColor	=	pInfo->Data.BColor^0xFF;
+	}
+	//GPIO配置
 	LCD_PortInitialize(&pInfo->Port);			//LCD端口配置
+	//LCD初始化及上电配置
 	LCDSYS->Display.PowerOn();						//LCD上电/初始化配置
+	//以背景色清除屏幕
+	LCD_Clean(pInfo->Data.BColor);				//按背景色清除屏幕函数
 	
-	
-	GT32L32_ConfigurationNR(&pInfo->GT32L32);				//普通SPI通讯方式配置	
-	GPIO_Configuration_OPP50	(pInfo->GT32L32.Port.sGT32L32_CS_PORT,pInfo->GT32L32.Port.sGT32L32_CS_PIN);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
-
+	SPI_Initialize(&pInfo->GT32L32.SPI);				//普通SPI通讯方式配置	
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -218,67 +205,55 @@ void LCD_SetWindowAddress(			//设置窗口地址
 	unsigned short MaxH,MaxV;
 	unsigned short Model	=	0x5030;
 
-	eRotate	Rotate	=	LCDSYS->Flag.Rotate;
-
-	
+	eRotate	Rotate	=	LCDSYS->Flag.Rotate;	
 	MaxH	=	LCDSYS->Data.MaxH;
 	MaxV	=	LCDSYS->Data.MaxV;
-	
-if	(Rotate	==Draw_Rotate_0D)
-{
-	LCDSYS->Data.HSX	=	x1;
-	LCDSYS->Data.HEX	=	x2;
-	LCDSYS->Data.VSY	=	y1;
-	LCDSYS->Data.VEY	=	y2;
-	
-	LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
-	LCDSYS->Data.VYA	=	LCDSYS->Data.VSY;
-	
-	Model	=	0x5030;
-}
-else if (Rotate	==Draw_Rotate_90D)
-{
-	LCDSYS->Data.HSX	=	y1;
-	LCDSYS->Data.HEX	=	y2;	
-	LCDSYS->Data.VSY	=	MaxV	-	x2	-	1;
-	LCDSYS->Data.VEY	=	MaxV	-	x1	-	1;
-	
-	LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
-	LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;
-	Model	=	0X5018;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
-}
-else if (Rotate	==Draw_Rotate_180D)	
-{
-	LCDSYS->Data.HSX	=	MaxH	-	x2	-	1;
-	LCDSYS->Data.HEX	=	MaxH	-	x1	-	1;
-	LCDSYS->Data.VSY	=	MaxV	-	y2	-	1;
-	LCDSYS->Data.VEY	=	MaxV	-	y1	-	1;
-	
-	LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
-	LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;
-	
-	Model	=	0X5000;
-}
-else //(Rotate	==Draw_Rotate_270D)
-{
-	LCDSYS->Data.HSX	=	MaxH	-	y2	-	1;
-	LCDSYS->Data.HEX	=	MaxH	-	y1	-	1;
-	LCDSYS->Data.VSY	=	x1;
-	LCDSYS->Data.VEY	=	x2;
-	
-	LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
-	LCDSYS->Data.VYA	=	LCDSYS->Data.VSY;
 
-	Model	=	0X5028;
-}
+	switch(Rotate)
+	{
+		case 	Draw_Rotate_0D:
+					LCDSYS->Data.HSX	=	x1;
+					LCDSYS->Data.HEX	=	x2;
+					LCDSYS->Data.VSY	=	y1;
+					LCDSYS->Data.VEY	=	y2;
+					LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
+					LCDSYS->Data.VYA	=	LCDSYS->Data.VSY;
+					Model	=	0x5030;
+				break;
+		case 	Draw_Rotate_90D:
+					LCDSYS->Data.HSX	=	y1;
+					LCDSYS->Data.HEX	=	y2;	
+					LCDSYS->Data.VSY	=	MaxV	-	x2	-	1;
+					LCDSYS->Data.VEY	=	MaxV	-	x1	-	1;	
+					LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
+					LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;
+					Model	=	0X5018;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
+				break;
+		case 	Draw_Rotate_180D:
+					LCDSYS->Data.HSX	=	MaxH	-	x2	-	1;
+					LCDSYS->Data.HEX	=	MaxH	-	x1	-	1;
+					LCDSYS->Data.VSY	=	MaxV	-	y2	-	1;
+					LCDSYS->Data.VEY	=	MaxV	-	y1	-	1;	
+					LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
+					LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;	
+					Model	=	0X5000;
+				break;
+		default:
+					LCDSYS->Data.HSX	=	MaxH	-	y2	-	1;
+					LCDSYS->Data.HEX	=	MaxH	-	y1	-	1;
+					LCDSYS->Data.VSY	=	x1;
+					LCDSYS->Data.VEY	=	x2;	
+					LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
+					LCDSYS->Data.VYA	=	LCDSYS->Data.VSY;
+					Model	=	0X5028;
+				break;
+	}
 	LCD_WriteCommand(LCD_R210_HSA,LCDSYS->Data.HSX);		//Window Horizontal RAM Address Start(R210h)		//水平
 	LCD_WriteCommand(LCD_R211_HEA,LCDSYS->Data.HEX);		//Window Horizontal RAM Address End(R211h)			//水平
 	LCD_WriteCommand(LCD_R212_VSA,LCDSYS->Data.VSY);		//Window Vertical RAM Address Start (R212h)			//垂直
-	LCD_WriteCommand(LCD_R213_VEA,LCDSYS->Data.VEY);		//Window Vertical RAM Address End (R213h)				//垂直
-	
+	LCD_WriteCommand(LCD_R213_VEA,LCDSYS->Data.VEY);		//Window Vertical RAM Address End (R213h)				//垂直	
 	LCD_WriteCommand(LCD_R200_HA,LCDSYS->Data.HXA);			//RAM Address Set (Horizontal Address) (R200h)
 	LCD_WriteCommand(LCD_R201_VA,LCDSYS->Data.VYA);			//RAM Address Set (Vertical Address) (R201h)
-
 	LCD_WriteCommand(LCD_R003_EM,Model);						//RAM Address Set (Vertical Address) (R201h)
 	//R61509V_WriteIndex16(R61509V_R202_GDRW);								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
 	LCD_WriteIndexStart();		
@@ -293,8 +268,6 @@ else //(Rotate	==Draw_Rotate_270D)
 *******************************************************************************/
 void LCD_Clean(u16 Color)	//清除屏幕函数
 {
-	//	LCD_H 240		//水平方向点数，从左到右+
-	//	LCD_V 400		//垂直方向点数，从上到下+
 	unsigned short x,y;
 	unsigned short HSX,HEX,HSY,HEY,MaxH,MaxV;
 	eRotate	Rotate	=	LCDSYS->Flag.Rotate;
@@ -302,34 +275,33 @@ void LCD_Clean(u16 Color)	//清除屏幕函数
 	MaxH	=	LCDSYS->Data.MaxH;
 	MaxV	=	LCDSYS->Data.MaxV;
 	
-	if	(Rotate	==Draw_Rotate_0D)
+	switch(Rotate)
 	{
-		HSX	=	0;
-		HEX	=	MaxH-1;
-		HSY	=	0;
-		HEY	=	MaxV-1;
+		case 	Draw_Rotate_0D:
+					HSX	=	0;
+					HEX	=	MaxH-1;
+					HSY	=	0;
+					HEY	=	MaxV-1;
+			break;
+		case	Draw_Rotate_90D:
+					HSX	=	0;
+					HEX	=	MaxV-1;
+					HSY	=	0;
+					HEY	=	MaxH-1;
+			break;
+		case	Draw_Rotate_180D:
+					HSX	=	0;
+					HEX	=	MaxH-1;
+					HSY	=	0;
+					HEY	=	MaxV-1;
+			break;
+		default:
+					HSX	=	0;
+					HEX	=	MaxV-1;
+					HSY	=	0;
+					HEY	=	MaxH-1;
+			break;			
 	}
-	else if (Rotate	==Draw_Rotate_90D)
-	{
-		HSX	=	0;
-		HEX	=	MaxV-1;
-		HSY	=	0;
-		HEY	=	MaxH-1;
-	}
-	else if (Rotate	==Draw_Rotate_180D)
-	{
-		HSX	=	0;
-		HEX	=	MaxH-1;
-		HSY	=	0;
-		HEY	=	MaxV-1;
-	}
-	else //if (Rotate	==Draw_Rotate_270D)
-	{
-		HSX	=	0;
-		HEX	=	MaxV-1;
-		HSY	=	0;
-		HEY	=	MaxH-1;
-	}	
 	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);		//写入地址区域
 	LCD_WriteDataStart();									//写数据使能
 	for(x=0;x<MaxH;x++)
@@ -541,65 +513,52 @@ void LCD_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color)
 *返回值			:	无
 *******************************************************************************/
 void LCD_Fill(
-							unsigned short HSX, unsigned short HSY, 	//x1,y1:起点坐标
-							unsigned short HEX, unsigned short HEY,		//x2,y2:终点坐标
+							unsigned short x1, unsigned short y1, 	//x1,y1:起点坐标
+							unsigned short x2, unsigned short y2,		//x2,y2:终点坐标
 							u16 color
 )
 {          
 	unsigned int i;
 	unsigned int j;	
-//	u16 x1=0,y1=0,x2=0,y2=0;
-
-//	switch(Sreen_Rotate)
-//	{
-//		case 	SCREEN_ROTATE_0D:		
-//					{
-//						xend=xend-1;
-//						yend=yend-1;
-//					}
-//			break;
-//		case 	SCREEN_ROTATE_90D:	
-//					{
-//						x1=xsta;x2=xend;y1=ysta;y2=yend;	
-//						xsta=LCD_H-y2;	xend=LCD_H-y1-1;
-//						ysta=x1;	yend=x2-1;
-//					}
-//			break;
-//		case 	SCREEN_ROTATE_180D:	
-//					{
-//						x1=xsta;x2=xend;y1=ysta;y2=yend;
-//						xsta=LCD_H-x2;	xend=LCD_H-x1-1;
-//						ysta=LCD_W-y2;	yend=LCD_W-y1-1;
-//					}
-//			break;
-//		case	SCREEN_ROTATE_270D:	
-//					{
-//						x1=xsta;x2=xend;y1=ysta;y2=yend;
-//						xsta=y1;	xend=y2-1;
-//						ysta=LCD_W-x2;	yend=LCD_W-x1-1;
-//					}
-//			break;
-//		default: break;			
-//	}
+	unsigned short HSX,HEX,HSY,HEY,MaxH,MaxV;
+	eRotate	Rotate	=	LCDSYS->Flag.Rotate;
 	
-//	switch(Sreen_Rotate)
-//	{
-//		case SCREEN_ROTATE_0D:{}
-//			break;
-//		case SCREEN_ROTATE_90D:{x1=LCD_H-y;y=x;x=x1;}
-//			break;
-//		case SCREEN_ROTATE_180D:{x1=LCD_H-x;y=LCD_W-y;x=x1;}
-//			break;
-//		case	SCREEN_ROTATE_270D:{x1=y;y=LCD_W-x;x=x1;}
-//			break;
-//		default: break;			
-//	}
+	MaxH	=	LCDSYS->Data.MaxH;
+	MaxV	=	LCDSYS->Data.MaxV;
+	
+	switch(Rotate)
+	{
+		case 	Draw_Rotate_0D:
+					HSX	=	0;
+					HEX	=	MaxH-1;
+					HSY	=	0;
+					HEY	=	MaxV-1;
+			break;
+		case	Draw_Rotate_90D:
+					HSX	=	x1;
+					HEX	=	x2;
+					HSY	=	y1;
+					HEY	=	y2;
+			break;
+		case	Draw_Rotate_180D:
+					HSX	=	0;
+					HEX	=	MaxH-1;
+					HSY	=	0;
+					HEY	=	MaxV-1;
+			break;
+		default:
+					HSX	=	0;
+					HEX	=	MaxV-1;
+					HSY	=	0;
+					HEY	=	MaxH-1;
+			break;			
+	}
 
 	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);
 	LCD_WriteDataStart();
-	for(i=0;i<HEX-HSX;i++)
+	for(i=0;i<=HEX-HSX;i++)
 	{
-		for(j=0;j<HEY-HSY;j++)
+		for(j=0;j<=HEY-HSY;j++)
 		{
 			LCD_WriteData(color);
 		}

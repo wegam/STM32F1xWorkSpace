@@ -1,1024 +1,146 @@
-/******************************** User_library *********************************
-* ÎÄ¼þÃû 	: SPI_FLASH.C
-* ×÷Õß   	: wegam@sina.com
-* °æ±¾   	: V
-* ÈÕÆÚ   	: 2017/04/16
-* ËµÃ÷   	: 
+/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
+* File Name          : spi_flash.c
+* Author             : MCD Application Team
+* Version            : V2.0.1
+* Date               : 06/13/2008
+* Description        : This file provides a set of functions needed to manage the
+*                      communication between SPI peripheral and SPI M25P64 FLASH.
 ********************************************************************************
-SPI_FLASHÊ¹ÓÃ¹¦ÄÜ²âÊÔ
-1£©ÐèÒªºê¶¨Òå SPI_FLASH
-2£©Ê¹ÓÃUSB_TEST °å²âÊÔ
-3£©ÐèÒªºê¶¨ÒåSPIÒý½Å
---------------------------------FLASH²¿·ÖÊõÓï½âÎö-----------------------------
-Sector£º±ÈBLOCK¸üÐ¡µÄµ¥Î»
-Block£º	´ó²¿·ÖµÄFLASH¶¼ÒÔ64KÎªµ¥Î»¿Õ¼äERASE
-Chip£º	ÕûÆ¬FLASH
-Page£º
-Àý£º(256-byte per page)(4K-byte per sector/16page per sector)(64K-byte per block/16-sector per block)(8-block per chip)
+* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
+* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
+* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
+* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
+* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
+/* Includes ------------------------------------------------------------------*/
 #include "SPI_FLASH.H"
 
-#include "USART_ISP.H"
+//#include	"stdio.h"			//ÓÃÓÚprintf
+#include	"string.h"			//ÓÃÓÚprintf
+//#include	"stdarg.h"			//ÓÃÓÚ»ñÈ¡²»È·¶¨¸öÊýµÄ²ÎÊý
+//#include	"stdlib.h"			//malloc¶¯Ì¬ÉêÇëÄÚ´æ¿Õ¼ä
 
-//#define USB_TEST_BD				//USB_TEST°å
-#define PD011				//PD011v1.0°å
-//#define SPI_FLASH_OSTL
-//#define CMSIS_CDC_BD			//CMSIS-CDC°å
-#define USERSPI				//PD011v1.0°å
-#include "string.h"
-//#include "stdlib.h"
-//#include "stdio.h"
+/* Private typedef -----------------------------------------------------------*/
+//#define SPI_FLASH_PageSize    0x1006
 
-#include "stm32f10x_spi.h"
-#include "stm32f10x_gpio.h"
-#include "stm32f10x_rcc.h"
-#include "stm32f10x_dma.h"
+/* Private define ------------------------------------------------------------*/
+//#define WRITE      0x02  /* Write to Memory instruction */
+//#define WRSR       0x01  /* Write Status Register instruction */
+//#define WREN       0x06  /* Write enable instruction */
 
-#include "STM32_PWM.H"
-#include "STM32_SYS.H"
-#include "STM32_SPI.H"
-#include "STM32_GPIO.H"
-#include "STM32_SYSTICK.H"
-#include "STM32_USART.H"
+//#define READ       0x03  /* Read from Memory instruction */
+//#define RDSR       0x05  /* Read Status Register instruction  */
+//#define RDID       0x9F  /* Read identification */
+//#define SE         0xD8  /* Sector Erase instruction */
+//#define BE         0xC7  /* Bulk Erase instruction */
 
-#include "STM32F10x_BitBand.H"
+#define WIP_Flag   0x01  /* Write In Progress (WIP) flag */
 
-//#define 	Dummy_Byte 0xA5					//FLASH¿Õ²Ù×÷Êý
-//#define		SPI_FLASH_PageSize   		0x100		//FlashÒ³´óÐ¡
-//#define		FLASH_WriteAddress     	0x00
-//#define		FLASH_ReadAddress      	FLASH_WriteAddress
-//#define		FLASH_SectorToErase    	FLASH_WriteAddress
-//#define 	FlASH_BufferSize				512
-//#define 	USART_BufferSize				FlASH_BufferSize
+#define Dummy_Byte 0xA5
 
-
-u8 FLASH_Status1=0;
-//u32 Temp = 0;
-//SPI_FLASH_TypeDef	FLASH_Conf;
-
-//ISP_Conf_TypeDef 	ISP_Conf;
-
-//u16	FLASH_ChipEraseFlag=0;			//Æô¶¯ºó²Á³ýÒ»´ÎFLASH
-//u16	RWF=0;			//¶ÁÐ´±êÖ¾Î»
-
-//u32 FlashAddr=0;
-//u32 FlashID=0;
-//u8 FlashStatus=WEL_Flag;
-//u8 RevBuffer[FlASH_BufferSize]={0};
-////u8 SendBuffer[FlASH_BufferSize]={0x9F,0xFF,0XFF,0XFF};
-////u8 testSbuffer[FlASH_BufferSize]={0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfA};
-//u8 testRbuffer[FlASH_BufferSize]={0};
-
-//u8 *testSbuffer=FLASH_Conf.SPI_FLASH_Info.MOSI_Buffer;
-
-//u8 RxdBuffe[USART_BufferSize]={0};
-//u8 RevBuffe[USART_BufferSize]={0};
-
-//u8 TxdBuffe[USART_BufferSize]={0};
-//u8 TevBuffe[USART_BufferSize]={0};
+SPIFlashDef *FlashSYS	=	0;		//ÄÚ²¿Çý¶¯Ê¹ÓÃ£¬²»¿ÉÉ¾³ý
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+/* Private functions ---------------------------------------------------------*/
 
 /*******************************************************************************
-* º¯ÊýÃû		:	
-* ¹¦ÄÜÃèÊö	:	 
-* ÊäÈë		:	
-* Êä³ö		:
-* ·µ»Ø 		:
+* Function Name  : SPI_FLASH_Init
+* Description    : Initializes the peripherals used by the SPI FLASH driver.
+* Input          : None
+* Output         : None
+* Return         : None
 *******************************************************************************/
-//void SPI_FLASH_Configuration(void)
-//{
-//	SYS_Configuration();											//ÏµÍ³ÅäÖÃ STM32_SYS.H	
-//	GPIO_DeInitAll();													//½«ËùÓÐµÄGPIO¹Ø±Õ----V20170605
-//	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);			//PWMÉè¶¨-20161127°æ±¾
-//	
-//	USART_DMA_ConfigurationNR	(USART1,115200,(u32*)RxdBuffe,USART_BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖÐ¶Ï
-//	
-//	SPI_FLASH_Conf(&FLASH_Conf);			//SPIÉèÖÃ
-//	
-//	ISP_Conf.USARTx=USART1;
-//	
-//	FlashStatus=WEL_Flag;	
-//	SysTick_Configuration(50);							//ÏµÍ³àÖàªÊ±ÖÓÅäÖÃ72MHz,µ¥Î»ÎªuS
-//}
-
-/*******************************************************************************
-* º¯ÊýÃû		:
-* ¹¦ÄÜÃèÊö	:
-* ÊäÈë		:
-* Êä³ö		:
-* ·µ»Ø 		:
-*******************************************************************************/
-//void SPI_FLASH_Server(void)
-//{
-//	u16 RxNum=0;
-//	u32 Addr=0;
-////	SPI_FLASH_Process(&FLASH_Conf);			//FLASHÊý¾Ý´¦Àí£ºËùÓÐµÄFLASH¶ÔÍâ²Ù×÷½Ó¿Ú
-
-//	RxNum=USART_ReadBufferIDLE			(USART1,(u32*)RevBuffe,(u32*)RxdBuffe);	//´®¿Ú¿ÕÏÐÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓÐÊý¾Ý£¬½«Êý¾Ý¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊý¾Ý¸öÊý£¬È»ºóÖØÐÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
-////	Usart_ISP_CommandSend(&ISP_Conf,ISP_COMMAND_Get);	//´®¿Ú±à³Ì·¢ËÍÃüÁî³ÌÐò
-//	if(RxNum&&(FlashAddr<128*4*1024))
-//	{		
-////		SPI_FLASH_BufferWrite(&FLASH_Conf,	RevBuffe, 		FlashAddr, RxNum);	//FLASHÐ´»º³åÊý¾Ý
-////		SPI_FLASH_BufferRead(&FLASH_Conf,		testSbuffer,  FlashAddr, RxNum);
-//		FlashAddr+=RxNum;
-//	}
-////	itoa(1234567890,TxdBuffe,10);//ËÑË÷10´ú±íÊ®½øÖÆ
-////	SPI_FLASH_Process(&FLASH_Conf);			//FLASHÊý¾Ý´¦Àí£ºËùÓÐµÄFLASH¶ÔÍâ²Ù×÷½Ó¿Ú
-//	if(Temp!=0)
-//	{
-//		Temp=0;
-
-//	}
-//	else
-//	{
-//		Temp=1;
-
-//	}
-//	
-//	if(FLASH_ChipEraseFlag<=3000)
-//	{
-//		FLASH_ChipEraseFlag++;
-//		if(FLASH_ChipEraseFlag==3000)
-//		{
-////			memset(testSbuffer,0xFF, FlASH_BufferSize);
-////			SPI_FLASH_BufferWrite(&FLASH_Conf,	testSbuffer, 		0x00, FlASH_BufferSize);	//FLASHÐ´»º³åÊý¾Ý
-//			
-////			FLASH_Conf.SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qCERASE;		//ÇëÇóÕûÆ¬²Á³ý
-////			SPI_FLASH_ChipErase(&FLASH_Conf);																	//FLASHÕûÆ¬²Á³ý
-//			
-////			FLASH_Conf.SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qSERASE;		//ÇëÇóÕûÆ¬²Á³ý
-////			FLASH_Conf.SPI_FLASH_Info.SPI_FLASH_SectorAdrr=0;
-//			
-////			FLASH_Conf.SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qBERASE;		//ÇëÇóÕûÆ¬²Á³ý
-////			FLASH_Conf.SPI_FLASH_Info.SPI_FLASH_BlockAdrr=0;
-////			FLASH_Conf.SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qREAD;
-////			FLASH_Conf.SPI_FLASH_Info.SPI_FLASH_LenghToRead=FlASH_BufferSize;
-
-////			SPI_FLASH_ChipErase(&FLASH_Conf);												//FLASHÕûÆ¬²Á³ý
-//			
-////			for(Addr=0;Addr<128*4*1024;)	//524288			//523776
-////			{
-////				SPI_FLASH_BufferRead(&FLASH_Conf,testRbuffer, Addr, FlASH_BufferSize);
-////				Addr+=FlASH_BufferSize;
-////			}
-//			
-////			for(Addr=0;Addr<128*4*1024;)	//524288			//523776
-////			{
-////				SPI_FLASH_BufferWrite(&FLASH_Conf,testSbuffer, Addr, FlASH_BufferSize);
-////				Addr+=FlASH_BufferSize;
-////			}
-//			
-//		
-////		SPI_FLASH_BulkErase(&FLASH_Conf);										//FLASHÕûÆ¬²Á³ý
-////		SPI_FLASH_ChipErase(&FLASH_Conf);										//FLASHÕûÆ¬²Á³ý
-////		SPI_FLASH_SectorErase(&FLASH_Conf,FLASH_ReadAddress);	//FlashÉÈÇø²Á³ý
-//			
-////			SPI_FLASH_BufferWrite(&FLASH_Conf,testSbuffer, FLASH_WriteAddress, FlASH_BufferSize);	//FLASHÐ´»º³åÊý¾Ý
-////			SPI_FLASH_BufferRead(&FLASH_Conf,testSbuffer, FLASH_WriteAddress, FlASH_BufferSize);
-//		}
-//	}
-//	RWF++;
-//	if(RWF==2000)
-//	{
-////		Usart_ISP_CommandSend(&ISP_Conf,ISP_COMMAND_Get);	//´®¿Ú±à³Ì·¢ËÍÃüÁî³ÌÐò
-//		Usart_ISP_CommandSend(&ISP_Conf,ISP_COMMAND_Go);	//´®¿Ú±à³Ì·¢ËÍÃüÁî³ÌÐò
-////		FLASH_Conf.SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qREAD;
-////		FLASH_Conf.SPI_FLASH_Info.SPI_FLASH_LenghToRead=FlASH_BufferSize;
-////		SPI_FLASH_SectorErase(&FLASH_Conf,FLASH_SectorToErase);			//²Á³ýÉÈÇø
-////		SPI_FLASH_BulkErase(&FLASH_Conf);										//FLASH¿é²Á³ý
-////		SPI_FLASH_ChipErase(&FLASH_Conf);										//FLASHÕûÆ¬²Á³ý
-
-////		SPI_FLASH_BufferWrite(&FLASH_Conf,testSbuffer, FLASH_WriteAddress, FlASH_BufferSize);	//FLASHÐ´»º³åÊý¾Ý
-//		
-//		
-//	}
-//	else if(RWF==3000)
-//	{
-//		RWF=0; 
-////		SPI_FLASH_BufferRead(&FLASH_Conf,testRbuffer, FLASH_ReadAddress, FlASH_BufferSize);
-//		
-////		for(Addr=0;Addr<128*4*1024;)
-////		{
-////			SPI_FLASH_BufferRead(&FLASH_Conf,testRbuffer, Addr, FlASH_BufferSize);
-////			Addr+=512;
-////		}
-
-//		
-//	}
-//}
-/*******************************************************************************
-*º¯ÊýÃû			:	function
-*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎÞ
-*******************************************************************************/
-void SPI_FLASH_Conf(SPI_FLASH_TypeDef *SPI_Conf)
+void SPI_FLASH_Initialize(SPIFlashDef *Flash)
 {
-//	#define USB_TEST_BD				//USB_TEST°å
-//	#define CMSIS_CDC_BD			//CMSIS-CDC°å
-//	GPIO_InitTypeDef GPIO_InitStructure;
-	
-	#ifdef	USB_TEST_BD
-	SPI_Conf->SPIx=SPI2;
-	SPI_Conf->SPI_CS_PORT=GPIOC;
-	SPI_Conf->SPI_CS_PIN=GPIO_Pin_8;	
-	SPI_Conf->SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_256;
-	
-	#endif
-	
-	#ifdef	PD011
-	SPI_Conf->SPIx=SPI1;
-	SPI_Conf->SPI_CS_PORT=GPIOA;
-	SPI_Conf->SPI_CS_PIN=GPIO_Pin_4;	
-	SPI_Conf->SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_256;
-	
-	#endif
-	
-	#ifdef	CMSIS_CDC_BD
-	
-	SPI_Conf->SPIx=SPI1;
-	SPI_Conf->SPI_CS_PORT=GPIOA;
-	SPI_Conf->SPI_CS_PIN=GPIO_Pin_4;	
-	SPI_Conf->SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_256;
-	
-	#endif
-	
-	#ifdef	USERSPI	
-	
-		#ifdef	USB_TEST_BD
-		
-		SPI_Conf->SPI_CS_PORT=GPIOC;
-		SPI_Conf->SPI_CS_PIN=GPIO_Pin_8;	
-		
-		SPI_Conf->SPI_CLK_PORT=GPIOB;
-		SPI_Conf->SPI_CLK_PIN=GPIO_Pin_13;
-		
-		SPI_Conf->SPI_MOSI_PORT=GPIOB;
-		SPI_Conf->SPI_MOSI_PIN=GPIO_Pin_15;
-		
-		SPI_Conf->SPI_MISO_PORT=GPIOB;
-		SPI_Conf->SPI_MISO_PIN=GPIO_Pin_14;
-
-		
-		#endif
-		
-		#ifdef	PD011
-		SPI_Conf->SPI_CS_PORT=GPIOA;
-		SPI_Conf->SPI_CS_PIN=GPIO_Pin_4;
-
-		SPI_Conf->SPI_CLK_PORT=GPIOA;
-		SPI_Conf->SPI_CLK_PIN=GPIO_Pin_5;
-		
-		SPI_Conf->SPI_MOSI_PORT=GPIOA;
-		SPI_Conf->SPI_MOSI_PIN=GPIO_Pin_7;
-		
-		SPI_Conf->SPI_MISO_PORT=GPIOA;
-		SPI_Conf->SPI_MISO_PIN=GPIO_Pin_6;
-
-		
-		#endif
-		
-		#ifdef	CMSIS_CDC_BD
-
-		SPI_Conf->SPI_CS_PORT=GPIOA;
-		SPI_Conf->SPI_CS_PIN=GPIO_Pin_4;
-
-		SPI_Conf->SPI_CLK_PORT=GPIOA;
-		SPI_Conf->SPI_CLK_PIN=GPIO_Pin_5;
-		
-		SPI_Conf->SPI_MOSI_PORT=GPIOA;
-		SPI_Conf->SPI_MOSI_PIN=GPIO_Pin_7;
-		
-		SPI_Conf->SPI_MISO_PORT=GPIOA;
-		SPI_Conf->SPI_MISO_PIN=GPIO_Pin_6;
-
-		
-		#endif
-	GPIO_Configuration_OPP50(SPI_Conf->SPI_CS_PORT,SPI_Conf->SPI_CS_PIN);			SPI_Conf->SPI_CS_PORT->BSRR 		= SPI_Conf->SPI_CS_PIN;							//GPIO_SetBits(SPI_Conf->SPI_CS_PORT,SPI_Conf->SPI_CS_PIN);
-	GPIO_Configuration_OPP50(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);		SPI_Conf->SPI_CLK_PORT->BSRR 		= SPI_Conf->SPI_CLK_PIN;						//GPIO_SetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-	GPIO_Configuration_OPP50(SPI_Conf->SPI_MOSI_PORT,SPI_Conf->SPI_MOSI_PIN);	SPI_Conf->SPI_MOSI_PORT->BSRR 	= SPI_Conf->SPI_MOSI_PIN;						//GPIO_SetBits(SPI_Conf->SPI_MOSI_PORT,SPI_Conf->SPI_MOSI_PIN);
-	GPIO_Configuration_IPU(SPI_Conf->SPI_MISO_PORT,SPI_Conf->SPI_MISO_PIN);
-	
-//	SPI_Conf->SPI_CS_PORT->BSRR 	= SPI_Conf->SPI_CS_PIN;
-//	SPI_Conf->SPI_CLK_PORT->BRR 	= SPI_Conf->SPI_CLK_PIN;
-//	SPI_Conf->SPI_CLK_PORT->BSRR 	= SPI_Conf->SPI_CLK_PIN;
-	
-//	GPIO_SetBits(SPI_Conf->SPI_CS_PORT,SPI_Conf->SPI_CS_PIN);
-//	GPIO_SetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-//	GPIO_SetBits(SPI_Conf->SPI_MOSI_PORT,SPI_Conf->SPI_MOSI_PIN);
-	
-	
-//	GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-//	GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-//	GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-//	
-//	GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CLK_PIN;
-//	GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-//	GPIO_Init(SPI_Conf->SPI_CLK_PORT, &GPIO_InitStructure);
-//	
-//	GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_MOSI_PIN;
-//	GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-//	GPIO_Init(SPI_Conf->SPI_MOSI_PORT, &GPIO_InitStructure);
-//	
-//	GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_MISO_PIN;
-//	GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_IPU;
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-//	GPIO_Init(SPI_Conf->SPI_MISO_PORT, &GPIO_InitStructure);
-	
-	
-	
-	#else
-	SPI_FLASH_ConfigurationNR(SPI_Conf);				//ÆÕÍ¨SPI½Ó¿ÚÅäÖÃ
-	#endif
-//	SPI_FLASH_ConfigurationDMA(SPI_Conf);			//SPI_FLASH_DMA·½Ê½ÅäÖÃ
-	SPI_FLASH_GetInfo(SPI_Conf);								//»ñÈ¡FLASHÐÅÏ¢---¸ù¾ÝIDÈ·¶¨FLASHÐÍºÅ£¬ÅäÖÃÒ³´óÐ¡£¬ÉÈÇø´óÐ¡£¬¿é´óÐ¡²ÎÊý
-	
-	SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;			//³õÊ¼×´Ì¬Îª¿ÕÏÐ×´Ì¬
-	SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;						//³õÊ¼²½ÖèÎª¿ÕÏÐ²½Öè
-	SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;		//³õÊ¼´ýÐ´ÈëÊý¾ÝÎª0
-	SPI_Conf->SPI_FLASH_Info.SPI_FLASH_LenghToWrite=0;						//³õÊ¼´ýÐ´ÈëÊý¾ÝÎª0
-	
-	SPI_Conf->SPI_FLASH_Info.SPI_FLASH_OffsetAdrr=256;	
-	
-}
-/*******************************************************************************
-*º¯ÊýÃû			:	function
-*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎÞ
-*******************************************************************************/
-void SPI_FLASH_ConfigurationNR(SPI_FLASH_TypeDef *SPI_Conf)
-{
-		//1)**********¶¨ÒåÏà¹Ø½á¹¹Ìå
-	SPI_InitTypeDef  SPI_InitStructure;
-	GPIO_InitTypeDef GPIO_InitStructure;
-
-	//2)**********Ïà¹ØGPIOÅäÖÃ
-	if(SPI_Conf->SPIx==SPI1)
-	{
-		//PA4-NSS;PA5-SCK;PA6-MISO;PA7-MOSI;
-		//2.1)**********´ò¿ªSPIÊ±ÖÓ	
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1 ,ENABLE);			//¿ªÆôSPIÊ±ÖÓ	
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOA, ENABLE);	
-		
-		if((SPI_Conf->SPI_CS_PORT==GPIOA)&&(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))			//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-		{
-//			SPI_SSOutputCmd(Pinfo->sSPIx, ENABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-			SPI_Conf->SPI_Flash_NSS_CsFlg=1;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬SPI1_CsFlg=1£¬·ñÔòSPI1_CsFlg=0£»
-			GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(GPIOA, &GPIO_InitStructure);
-			
-//			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-//			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-//			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-//			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-		}
-		else
-		{
-//			SPI_SSOutputCmd(Pinfo->sSPIx, DISABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-			SPI_Conf->SPI_Flash_NSS_CsFlg=0;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬SPI1_CsFlg=1£¬·ñÔòSPI1_CsFlg=0£»
-			//¿ªCS-GPIOÊ±ÖÓ
-			if(SPI_Conf->SPI_CS_PORT==GPIOA)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_13)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO, ENABLE);
-					//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);			//¹Ø±ÕSW¹¦ÄÜ
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);		//¹Ø±ÕJTAG,SW¹¦ÄÜ¿ªÆô
-				}
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOB)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_3)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_AFIO, ENABLE);
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);				//¹Ø±ÕJTAG
-				}
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOC)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC |RCC_APB2Periph_AFIO, ENABLE);
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOD)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOE)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOF)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOG)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
-			}
-			//SCK,MISO,MOSIÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(GPIOA, &GPIO_InitStructure);
-			//CSÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-		}
-	}
-	else if(SPI_Conf->SPIx==SPI2)
-	{
-		//PB12-NSS;PB13-SCK;PB14-MISO;PB15-MOSI;
-		//2.2)**********´ò¿ªSPIÊ±ÖÓ
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2 ,ENABLE);				//¿ªÆôSPIÊ±ÖÓ			
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOB, ENABLE);
-		
-		if((SPI_Conf->SPI_CS_PORT==GPIOB)&&(SPI_Conf->SPI_CS_PIN==GPIO_Pin_12))			//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-		{
-			SPI_Conf->SPI_Flash_NSS_CsFlg=1;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI2£¨º¬CS½Å£©£¬SPI2_CsFlg=1£¬·ñÔòSPI2_CsFlg=0£»
-			SPI_SSOutputCmd(SPI_Conf->SPIx, ENABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-			GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  //¸´ÓÃÍÆÍìÊä³ö
-			GPIO_Init(GPIOB, &GPIO_InitStructure);	
-		}
-		else
-		{
-			
-//			SPI_SSOutputCmd(Pinfo->sSPIx, DISABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-			SPI_Conf->SPI_Flash_NSS_CsFlg=0;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI2£¨º¬CS½Å£©£¬SPI2_CsFlg=1£¬·ñÔòSPI2_CsFlg=0£»
-			//¿ªCS-GPIOÊ±ÖÓ
-			if(SPI_Conf->SPI_CS_PORT==GPIOA)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_13)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO, ENABLE);
-					//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);			//¹Ø±ÕSW¹¦ÄÜ
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);		//¹Ø±ÕJTAG,SW¹¦ÄÜ¿ªÆô
-				}
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOB)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_3)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_AFIO, ENABLE);
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);				//¹Ø±ÕJTAG
-				}
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOC)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC |RCC_APB2Periph_AFIO, ENABLE);
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOD)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOE)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOF)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOG)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
-			}
-			//SCK,MISO,MOSIÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(GPIOB, &GPIO_InitStructure);
-			//CSÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-		}
-	}
-	else if(SPI_Conf->SPIx==SPI3)
-	{
-		//PA15-NSS;PB3-SCK;PB4-MISO;PB5-MOSI;
-		//2.2)**********´ò¿ªSPIÊ±ÖÓ
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3 ,ENABLE);			
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOB, ENABLE);
-		
-		if((SPI_Conf->SPI_CS_PORT==GPIOA)&&(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))			//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-		{
-			SPI_Conf->SPI_Flash_NSS_CsFlg=1;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI3£¨º¬CS½Å£©£¬SPI3_CsFlg=1£¬·ñÔòSPI3_CsFlg=0£»
-			
-			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;  		//¸´ÓÃÍÆÍìÊä³ö
-			GPIO_Init(GPIOB, &GPIO_InitStructure);
-			
-			//2.2)**********SPI_NSSÅäÖÃ		
-			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_15;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;  		//¸´ÓÃÍÆÍìÊä³ö
-			GPIO_Init(GPIOA, &GPIO_InitStructure);
-		}
-		else																										//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-		{
-			SPI_Conf->SPI_Flash_NSS_CsFlg=0;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI3£¨º¬CS½Å£©£¬UseSPI3_flg=1£¬·ñÔòUseSPI3_flg=0£»
-			//¿ªCS-GPIOÊ±ÖÓ
-			if(SPI_Conf->SPI_CS_PORT==GPIOA)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_13)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO, ENABLE);
-					//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);			//¹Ø±ÕSW¹¦ÄÜ
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);		//¹Ø±ÕJTAG,SW¹¦ÄÜ¿ªÆô
-				}
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOB)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_3)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_AFIO, ENABLE);
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);				//¹Ø±ÕJTAG
-				}
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOC)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC |RCC_APB2Periph_AFIO, ENABLE);
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOD)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOE)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOF)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOG)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
-			}
-			//SCK,MISO,MOSIÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(GPIOB, &GPIO_InitStructure);
-			//CSÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-		}			
-	}
-	//3)**********SPIÅäÖÃÑ¡Ïî
-	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;				//ÉèÖÃ·½Ïò				£¨2ÏßÈ«Ë«¹¤¡¢2ÏßÖ»½ÓÊÕ¡¢Ò»Ïß·¢ËÍ¡¢Ò»Ïß½ÓÊÕ£©
-	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;															//Ä£Ê½         	£¨´Ó»òÖ÷Éè±¸£©
-	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;													//¿í¶È         	£¨8»ò16Î»£©
-	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;																//Ê±ÖÓ¼«ÐÔ     	£¨µÍ»ò¸ß£©
-	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;															//Ê±ÖÓÏàÎ»     	£¨µÚÒ»¸ö»òµÚ¶þ¸öÌø±äÑØ£©
-	if(SPI_Conf->SPI_Flash_NSS_CsFlg==1)																			//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬UseSPI1_flg=1£¬·ñÔòUseSPI1_flg=0£»
-	{
-		SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;																//Æ¬Ñ¡·½Ê½     	£¨Ó²¼þ»òÈí¼þ·½Ê½£©
-	}
-	else
-	{
-		SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;															//Æ¬Ñ¡·½Ê½     	£¨Ó²¼þ»òÈí¼þ·½Ê½£©
-	}	
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_Conf->SPI_BaudRatePrescaler_x;				//²¨ÌØÂÊÔ¤·ÖÆµ 	£¨´Ó2---256·ÖÆµ£©
-	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;												//×îÏÈ·¢ËÍµÄÎ» 	£¨×îµÍÎ»£¬»¹ÊÇ×î¸ßÎ»ÔÚÏÈ£©
-	SPI_InitStructure.SPI_CRCPolynomial = 7;																	//ÉèÖÃcrc¶àÏîÊ½	£¨Êý×Ö£©Èç7
-	SPI_Init(SPI_Conf->SPIx,&SPI_InitStructure);
-
-	SPI_FLASH_DISALBE(SPI_Conf);				//¹Ø±ÕSPI½Ó¿Ú£¬Ê¹ÓÃÊ±ÔÙ´ò¿ª
-	
-	//3)**********Ê¹ÄÜSPIx_NESSÎªÖ÷Êä³öÄ£Ê½
-	if((SPI_Conf->SPIx->CR1&0X0200)!=SPI_NSS_Soft)						//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-	{
-		SPI_SSOutputCmd(SPI_Conf->SPIx, ENABLE);								//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-//		SPI_SSOutputCmd(SPI_Conf->SPIx, DISABLE);								//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-	}
-	else
-	{
-		SPI_SSOutputCmd(SPI_Conf->SPIx, DISABLE);								//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-	}
-	
+	SPIDef	*SPIx	=	0;
+  SPIx	=	&Flash->SPI;
+	FlashSYS	=	Flash;
+	SPI_Initialize(SPIx);		//SPI½Ó¿ÚÅäÖÃ
 }
 
 /*******************************************************************************
-*º¯ÊýÃû		:	SPI_DMA_Configuration
-*¹¦ÄÜÃèÊö	:	º¯Êý¹¦ÄÜËµÃ÷
-*ÊäÈë			: 
-*Êä³ö			:	ÎÞ
-*·µ»ØÖµ		:	ÎÞ
-*Àý³Ì			:
+* Function Name  : SPI_FLASH_SectorErase
+* Description    : Erases the specified FLASH sector.ÉÈÇø²Á³ý
+* Input          : SectorAddr: address of the sector to erase.
+* Output         : None
+* Return         : None
 *******************************************************************************/
-void SPI_FLASH_ConfigurationDMA(SPI_FLASH_TypeDef *SPI_Conf)		//SPI_FLASH_DMA·½Ê½ÅäÖÃ
+void SPI_FLASH_SectorErase(u32 SectorAddr)
 {
-/**-----------------------------------------------------------------------------------------------------
-	********SPI_DMAµÄÍ¨ÐÅ¹ý³Ì********
-	¡ñ ÉèÖÃÍâÉèµØÖ·
-	¡ñ ÉèÖÃ´æ´¢Æ÷µØÖ·
-	¡ñ ÉèÖÃ´«ÊäÊý¾ÝÁ¿
-	¡ñ ÉèÖÃÍ¨µÀµÄÅäÖÃÐÅÏ¢
-	¡ñ Ê¹ÄÜDMAÍ¨µÀ£¬Æô¶¯´«Êä
-	
-	¡ñ ·¢ËÍÊ±£¬ÔÚÃ¿´ÎTXE±»ÉèÖÃÎª¡¯1¡¯Ê±·¢³öDMAÇëÇó£¬DMA¿ØÖÆÆ÷ÔòÐ´Êý¾ÝÖÁSPI_DR¼Ä´æÆ÷£¬TXE±êÖ¾Òò´Ë¶ø±»Çå³ý¡£
-	¡ñ ½ÓÊÕÊ±£¬ÔÚÃ¿´ÎRXNE±»ÉèÖÃÎª¡¯1¡¯Ê±·¢³öDMAÇëÇó£¬DMA¿ØÖÆÆ÷Ôò´ÓSPI_DR¼Ä´æÆ÷¶Á³öÊý¾Ý£¬RXNE±êÖ¾Òò´Ë¶ø±»Çå³ý¡£
------------------------------------------------------------------------------------------------------**/
-	//1)**********¶¨ÒåÏà¹Ø½á¹¹Ìå
-	SPI_InitTypeDef  SPI_InitStructure;
-	GPIO_InitTypeDef GPIO_InitStructure;
-	DMA_InitTypeDef	DMA_Initstructure;
-	DMA_Channel_TypeDef* DMAx_Channeltx=0;				//DMA·¢ËÍÍ¨µÀÇëÇóÐÅºÅ---µ±DMA´®¿Ú·¢ËÍÊý¾ÝÍê³ÉÊ±£¬»á·¢ÆðDMAÖÐ¶Ï
-	DMA_Channel_TypeDef* DMAx_Channelrx=0;				//DMA½ÓÊÕÍ¨µÀÇëÇóÐÅºÅ---DMA´®¿Ú½ÓÊÕÓÉ´®¿Ú·¢ÆðÖÐ¶Ï£¬Òò´Ë´Ë´¦½ÓÊÕÍ¨µÀÖÐ¶Ï²»Ê¹ÓÃ
-	u8 Conf_Flag=0;																//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî
-	
-	//2)**********»ù±¾SPIÅäÖÃ
-//	SPI_FLASH_ConfigurationNR(SPI_Conf);					//ÆÕÍ¨SPI½Ó¿ÚÅäÖÃ--Î´¿ªÖÐ¶ÏºÍDMA
+  /* Send write enable instruction */
+  SPI_FLASH_WriteEnable();
 
-	//2)**********Ïà¹ØGPIOÅäÖÃ
-	if(SPI_Conf->SPIx==SPI1)
-	{
-		//PA4-NSS;PA5-SCK;PA6-MISO;PA7-MOSI;
-		//2.1)**********´ò¿ªSPIÊ±ÖÓ	
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1 ,ENABLE);			//¿ªÆôSPIÊ±ÖÓ	
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOA, ENABLE);	
-		
-		if((SPI_Conf->SPI_CS_PORT==GPIOA)&&(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))			//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-		{
-//			SPI_SSOutputCmd(Pinfo->sSPIx, ENABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-			SPI_Conf->SPI_Flash_NSS_CsFlg=1;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬SPI1_CsFlg=1£¬·ñÔòSPI1_CsFlg=0£»
-			GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(GPIOA, &GPIO_InitStructure);
-			
-//			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-//			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-//			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-//			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-		}
-		else
-		{
-//			SPI_SSOutputCmd(Pinfo->sSPIx, DISABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-			SPI_Conf->SPI_Flash_NSS_CsFlg=0;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬SPI1_CsFlg=1£¬·ñÔòSPI1_CsFlg=0£»
-			//¿ªCS-GPIOÊ±ÖÓ
-			if(SPI_Conf->SPI_CS_PORT==GPIOA)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_13)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO, ENABLE);
-					//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);			//¹Ø±ÕSW¹¦ÄÜ
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);		//¹Ø±ÕJTAG,SW¹¦ÄÜ¿ªÆô
-				}
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOB)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_3)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_AFIO, ENABLE);
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);				//¹Ø±ÕJTAG
-				}
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOC)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC |RCC_APB2Periph_AFIO, ENABLE);
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOD)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOE)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOF)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOG)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
-			}
-			//SCK,MISO,MOSIÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(GPIOA, &GPIO_InitStructure);
-			//CSÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-		}
-	}
-	else if(SPI_Conf->SPIx==SPI2)
-	{
-		//PB12-NSS;PB13-SCK;PB14-MISO;PB15-MOSI;
-		//2.2)**********´ò¿ªSPIÊ±ÖÓ
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2 ,ENABLE);				//¿ªÆôSPIÊ±ÖÓ			
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOB, ENABLE);
-		
-		if((SPI_Conf->SPI_CS_PORT==GPIOB)&&(SPI_Conf->SPI_CS_PIN==GPIO_Pin_12))			//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-		{
-			SPI_Conf->SPI_Flash_NSS_CsFlg=1;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI2£¨º¬CS½Å£©£¬SPI2_CsFlg=1£¬·ñÔòSPI2_CsFlg=0£»
-			SPI_SSOutputCmd(SPI_Conf->SPIx, ENABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-			GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  //¸´ÓÃÍÆÍìÊä³ö
-			GPIO_Init(GPIOB, &GPIO_InitStructure);	
-		}
-		else
-		{
-			
-//			SPI_SSOutputCmd(Pinfo->sSPIx, DISABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-			SPI_Conf->SPI_Flash_NSS_CsFlg=0;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI2£¨º¬CS½Å£©£¬SPI2_CsFlg=1£¬·ñÔòSPI2_CsFlg=0£»
-			//¿ªCS-GPIOÊ±ÖÓ
-			if(SPI_Conf->SPI_CS_PORT==GPIOA)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_13)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO, ENABLE);
-					//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);			//¹Ø±ÕSW¹¦ÄÜ
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);		//¹Ø±ÕJTAG,SW¹¦ÄÜ¿ªÆô
-				}
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOB)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_3)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_AFIO, ENABLE);
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);				//¹Ø±ÕJTAG
-				}
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOC)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC |RCC_APB2Periph_AFIO, ENABLE);
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOD)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOE)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOF)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOG)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
-			}
-			//SCK,MISO,MOSIÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(GPIOB, &GPIO_InitStructure);
-			//CSÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-		}
-	}
-	else if(SPI_Conf->SPIx==SPI3)
-	{
-		//PA15-NSS;PB3-SCK;PB4-MISO;PB5-MOSI;
-		//2.2)**********´ò¿ªSPIÊ±ÖÓ
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3 ,ENABLE);			
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOB, ENABLE);
-		
-		if((SPI_Conf->SPI_CS_PORT==GPIOA)&&(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))			//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-		{
-			SPI_Conf->SPI_Flash_NSS_CsFlg=1;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI3£¨º¬CS½Å£©£¬SPI3_CsFlg=1£¬·ñÔòSPI3_CsFlg=0£»
-			
-			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;  		//¸´ÓÃÍÆÍìÊä³ö
-			GPIO_Init(GPIOB, &GPIO_InitStructure);
-			
-			//2.2)**********SPI_NSSÅäÖÃ		
-			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_15;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;  		//¸´ÓÃÍÆÍìÊä³ö
-			GPIO_Init(GPIOA, &GPIO_InitStructure);
-		}
-		else																										//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-		{
-			SPI_Conf->SPI_Flash_NSS_CsFlg=0;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI3£¨º¬CS½Å£©£¬UseSPI3_flg=1£¬·ñÔòUseSPI3_flg=0£»
-			//¿ªCS-GPIOÊ±ÖÓ
-			if(SPI_Conf->SPI_CS_PORT==GPIOA)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_13)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO, ENABLE);
-					//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);			//¹Ø±ÕSW¹¦ÄÜ
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);		//¹Ø±ÕJTAG,SW¹¦ÄÜ¿ªÆô
-				}
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOB)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_3)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))
-				{
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_AFIO, ENABLE);
-					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);				//¹Ø±ÕJTAG
-				}
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOC)
-			{
-				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC |RCC_APB2Periph_AFIO, ENABLE);
-				else
-					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOD)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOE)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOF)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
-			}
-			else if(SPI_Conf->SPI_CS_PORT==GPIOG)
-			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
-			}
-			//SCK,MISO,MOSIÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(GPIOB, &GPIO_InitStructure);
-			//CSÅäÖÃ
-			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-		}			
-	}
-	//3)**********SPIÅäÖÃÑ¡Ïî
-	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;				//ÉèÖÃ·½Ïò				£¨2ÏßÈ«Ë«¹¤¡¢2ÏßÖ»½ÓÊÕ¡¢Ò»Ïß·¢ËÍ¡¢Ò»Ïß½ÓÊÕ£©
-	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;															//Ä£Ê½         	£¨´Ó»òÖ÷Éè±¸£©
-	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;													//¿í¶È         	£¨8»ò16Î»£©
-	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;																//Ê±ÖÓ¼«ÐÔ     	£¨µÍ»ò¸ß£©
-	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;															//Ê±ÖÓÏàÎ»     	£¨µÚÒ»¸ö»òµÚ¶þ¸öÌø±äÑØ£©
-	if(SPI_Conf->SPI_Flash_NSS_CsFlg==1)																			//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬UseSPI1_flg=1£¬·ñÔòUseSPI1_flg=0£»
-	{
-		SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;																//Æ¬Ñ¡·½Ê½     	£¨Ó²¼þ»òÈí¼þ·½Ê½£©
-	}
-	else
-	{
-		SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;															//Æ¬Ñ¡·½Ê½     	£¨Ó²¼þ»òÈí¼þ·½Ê½£©
-	}	
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_Conf->SPI_BaudRatePrescaler_x;				//²¨ÌØÂÊÔ¤·ÖÆµ 	£¨´Ó2---256·ÖÆµ£©
-	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;												//×îÏÈ·¢ËÍµÄÎ» 	£¨×îµÍÎ»£¬»¹ÊÇ×î¸ßÎ»ÔÚÏÈ£©
-	SPI_InitStructure.SPI_CRCPolynomial = 7;																	//ÉèÖÃcrc¶àÏîÊ½	£¨Êý×Ö£©Èç7
-	SPI_Init(SPI_Conf->SPIx,&SPI_InitStructure);
+  /* Sector Erase */
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+  /* Send Sector Erase instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.SE);
+  /* Send SectorAddr high nibble address byte */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,(SectorAddr & 0xFF0000) >> 16);
+  /* Send SectorAddr medium nibble address byte */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,(SectorAddr & 0xFF00) >> 8);
+  /* Send SectorAddr low nibble address byte */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,SectorAddr & 0xFF);
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
 
-	SPI_FLASH_DISALBE(SPI_Conf);				//¹Ø±ÕSPI½Ó¿Ú£¬Ê¹ÓÃÊ±ÔÙ´ò¿ª
-	
-	//3)**********Ê¹ÄÜSPIx_NESSÎªÖ÷Êä³öÄ£Ê½
-	if((SPI_Conf->SPIx->CR1&0X0200)!=SPI_NSS_Soft)						//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-	{
-		SPI_SSOutputCmd(SPI_Conf->SPIx, ENABLE);								//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-//		SPI_SSOutputCmd(SPI_Conf->SPIx, DISABLE);								//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-	}
-	else
-	{
-		SPI_SSOutputCmd(SPI_Conf->SPIx, DISABLE);								//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-	}
-	
-	//3)**********SPIÍ¨µÀÑ¡Ôñ
-	if(SPI_Conf->SPIx==SPI1)
-	{
-		DMAx_Channeltx=DMA1_Channel3;
-		DMAx_Channelrx=DMA1_Channel2;
-//		DMAx_Channelx_IRQChannel=DMA1_Channel3_IRQChannel;
-		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);
-		Conf_Flag=1;																			//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî
-	}
-	else if(SPI_Conf->SPIx==SPI2)
-	{
-		DMAx_Channeltx=DMA1_Channel5;
-		DMAx_Channelrx=DMA1_Channel4;
-//		DMAx_Channelx_IRQChannel=DMA1_Channel5_IRQChannel;
-		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);
-		Conf_Flag=1;																			//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî		
-	}
-	else if(SPI_Conf->SPIx==SPI3)
-	{
-		DMAx_Channeltx=DMA2_Channel2;
-		DMAx_Channelrx=DMA2_Channel1;
-//		DMAx_Channelx_IRQChannel=DMA2_Channel2_IRQChannel;
-		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA2,ENABLE);
-		Conf_Flag=1;																			//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî
-	}
-	else
-	{
-		Conf_Flag=0;																			//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî
-	}	
-	//4)**********SPI_DMAÅäÖÃ
-	if(Conf_Flag==1)																		//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî
-	{
-		//5)**********DMA·¢ËÍ³õÊ¼»¯£¬ÍâÉè×÷ÎªDMAµÄÄ¿µÄ¶Ë
-		DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(&(SPI_Conf->SPIx)->DR);	//DMAÍâÉèÔ´µØÖ·
-		DMA_Initstructure.DMA_MemoryBaseAddr     = (u32)SPI_Conf->SPI_FLASH_Info.MOSI_Buffer;						//DMAÊý¾ÝÄÚ´æµØÖ·
-		DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralDST;												//DMA_DIR_PeripheralDST£¨ÍâÉè×÷ÎªDMAµÄÄ¿µÄ¶Ë£©£¬DMA_DIR_PeripheralSRC£¨ÍâÉè×÷ÎªÊý¾Ý´«ÊäµÄÀ´Ô´£©
-		DMA_Initstructure.DMA_BufferSize = 0; 																		//Ö¸¶¨DMAÍ¨µÀµÄDMA»º´æµÄ´óÐ¡
-		DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;					//DMA_PeripheralInc_Enable£¨ÍâÉèµØÖ·¼Ä´æÆ÷µÝÔö£©£¬DMA_PeripheralInc_Disable£¨ÍâÉèµØÖ·¼Ä´æÆ÷²»±ä£©£¬
-		DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;										//DMA_MemoryInc_Enable£¨ÄÚ´æµØÖ·¼Ä´æÆ÷µÝÔö£©£¬DMA_MemoryInc_Disable£¨ÄÚ´æµØÖ·¼Ä´æÆ÷²»±ä£©
-		DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;		//ÍâÉèÊý¾Ý¿í¶È--DMA_PeripheralDataSize_Byte£¨Êý¾Ý¿í¶ÈÎª8Î»£©£¬DMA_PeripheralDataSize_HalfWord£¨Êý¾Ý¿í¶ÈÎª16Î»£©£¬DMA_PeripheralDataSize_Word£¨Êý¾Ý¿í¶ÈÎª32Î»£©
-		DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;						//ÄÚ´æÊý¾Ý¿í¶È--DMA_MemoryDataSize_Byte£¨Êý¾Ý¿í¶ÈÎª8Î»£©£¬DMA_MemoryDataSize_HalfWord£¨Êý¾Ý¿í¶ÈÎª16Î»£©£¬DMA_MemoryDataSize_Word£¨Êý¾Ý¿í¶ÈÎª32Î»£©
-		DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;															//DMA¹¤×÷Ä£Ê½--DMA_Mode_Normal£¨Ö»´«ËÍÒ»´Î£©, DMA_Mode_Circular£¨²»Í£µØ´«ËÍ£©
-		DMA_Initstructure.DMA_Priority = DMA_Priority_High; 											//DMAÍ¨µÀµÄ×ªÊäÓÅÏÈ¼¶--DMA_Priority_VeryHigh£¨·Ç³£¸ß£©DMA_Priority_High£¨¸ß)£¬DMA_Priority_Medium£¨ÖÐ£©£¬DMA_Priority_Low£¨µÍ£©
-		DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;															//DMAÍ¨µÀµÄÄÚ´æµ½ÄÚ´æ´«Êä--DMA_M2M_Enable(ÉèÖÃÎªÄÚ´æµ½ÄÚ´æ´«Êä)£¬DMA_M2M_Disable£¨·ÇÄÚ´æµ½ÄÚ´æ´«Êä£©
-		DMA_Init(DMAx_Channeltx,&DMA_Initstructure);															//³õÊ¼»¯DMA
+  /* Wait the end of Flash writing */
+  SPI_FLASH_WaitForWriteEnd();
+}
+/*******************************************************************************
+* Function Name  : SPI_FLASH_BulkErase
+* Description    : Erases the entire FLASH.¿é²Á³ý
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void SPI_FLASH_BulkErase(u32 BulkAddr)
+{
+  /* Send write enable instruction */
+  SPI_FLASH_WriteEnable();
 
-		//6)**********DMA½ÓÊÕ³õÊ¼»¯£¬ÍâÉè×÷ÎªDMAµÄÔ´¶Ë
-		DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(&(SPI_Conf->SPIx)->DR);	//DMAÍâÉèÔ´µØÖ·
-		DMA_Initstructure.DMA_MemoryBaseAddr     = 	(u32)SPI_Conf->SPI_FLASH_Info.MISO_Buffer;						//DMAÊý¾ÝÄÚ´æµØÖ·
-		DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralSRC;												//DMA_DIR_PeripheralDST£¨ÍâÉè×÷ÎªDMAµÄÄ¿µÄ¶Ë£©£¬DMA_DIR_PeripheralSRC£¨ÍâÉè×÷ÎªÊý¾Ý´«ÊäµÄÀ´Ô´£©
-		DMA_Initstructure.DMA_BufferSize = 0; 																		//Ö¸¶¨DMAÍ¨µÀµÄDMA»º´æµÄ´óÐ¡
-		DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;					//DMA_PeripheralInc_Enable£¨ÍâÉèµØÖ·¼Ä´æÆ÷µÝÔö£©£¬DMA_PeripheralInc_Disable£¨ÍâÉèµØÖ·¼Ä´æÆ÷²»±ä£©£¬
-		DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;										//DMA_MemoryInc_Enable£¨ÄÚ´æµØÖ·¼Ä´æÆ÷µÝÔö£©£¬DMA_MemoryInc_Disable£¨ÄÚ´æµØÖ·¼Ä´æÆ÷²»±ä£©
-		DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;		//ÍâÉèÊý¾Ý¿í¶È--DMA_PeripheralDataSize_Byte£¨Êý¾Ý¿í¶ÈÎª8Î»£©£¬DMA_PeripheralDataSize_HalfWord£¨Êý¾Ý¿í¶ÈÎª16Î»£©£¬DMA_PeripheralDataSize_Word£¨Êý¾Ý¿í¶ÈÎª32Î»£©
-		DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;						//ÄÚ´æÊý¾Ý¿í¶È--DMA_MemoryDataSize_Byte£¨Êý¾Ý¿í¶ÈÎª8Î»£©£¬DMA_MemoryDataSize_HalfWord£¨Êý¾Ý¿í¶ÈÎª16Î»£©£¬DMA_MemoryDataSize_Word£¨Êý¾Ý¿í¶ÈÎª32Î»£©
-		DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;															//DMA¹¤×÷Ä£Ê½--DMA_Mode_Normal£¨Ö»´«ËÍÒ»´Î£©, DMA_Mode_Circular£¨²»Í£µØ´«ËÍ£©
-		DMA_Initstructure.DMA_Priority = DMA_Priority_High; 											//DMAÍ¨µÀµÄ×ªÊäÓÅÏÈ¼¶--DMA_Priority_VeryHigh£¨·Ç³£¸ß£©DMA_Priority_High£¨¸ß)£¬DMA_Priority_Medium£¨ÖÐ£©£¬DMA_Priority_Low£¨µÍ£©
-		DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;															//DMAÍ¨µÀµÄÄÚ´æµ½ÄÚ´æ´«Êä--DMA_M2M_Enable(ÉèÖÃÎªÄÚ´æµ½ÄÚ´æ´«Êä)£¬DMA_M2M_Disable£¨·ÇÄÚ´æµ½ÄÚ´æ´«Êä£©
-		DMA_Init(DMAx_Channelrx,&DMA_Initstructure);															//³õÊ¼»¯DMA
-		
-		//7)**********DMAÍ¨µÀÖÐ¶Ï³õÊ¼»¯---´ËÎªDMA·¢ËÍÖÐ¶Ï----DMA·¢ËÍÍê³ÉÖÐ¶Ï
-			
-		SPI_I2S_DMACmd(SPI_Conf->SPIx, SPI_I2S_DMAReq_Tx, ENABLE);								//¿ªÆôDMA·¢ËÍ
-		SPI_I2S_DMACmd(SPI_Conf->SPIx, SPI_I2S_DMAReq_Rx, ENABLE);								//¿ªÆôDMA½ÓÊÕ
-		//Ê¹ÄÜSPIx
-		SPI_Cmd(SPI_Conf->SPIx, ENABLE);
-		
-		//9.2)**********Ê¹ÄÜÏà¹ØDMAÍ¨µÀ´«ÊäÍê³ÉÖÐ¶Ï
-		DMA_Cmd(DMAx_Channelrx,DISABLE);	
-		DMA_Cmd(DMAx_Channeltx,DISABLE);
-	}
-	SPI_Conf->SPI_Flash_USER_DMAFlg=1;	//Èç¹ûÊ¹ÓÃDMA£¬	SPI_Flash_USER_DMAFlg=1£¬	·ñÔòSPI_Flash_USER_DMAFlg=0£»´ËÓÉSPI_FLASH_ConfigurationDMA¸ù¾ÝSPIÅäÖÃÅÐ¶ÏÉèÖÃ´ËÖµ
-	//Ê¹ÄÜSPIx
-	SPI_Cmd(SPI_Conf->SPIx, DISABLE);
-		//3)**********Ê¹ÄÜSPIx_NESSÎªÖ÷Êä³öÄ£Ê½
-	if((SPI_Conf->SPIx->CR1&0X0200)!=SPI_NSS_Soft)						//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-	{
-		SPI_SSOutputCmd(SPI_Conf->SPIx, ENABLE);								//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-	}
-	else
-	{
-		SPI_SSOutputCmd(SPI_Conf->SPIx, DISABLE);								//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-	}
+  /* Bulk Erase */
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+  /* Send Bulk Erase instruction  */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.BE);
+	/* Send SectorAddr high nibble address byte */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,(BulkAddr & 0xFF0000) >> 16);
+  /* Send SectorAddr medium nibble address byte */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,(BulkAddr & 0xFF00) >> 8);
+  /* Send SectorAddr low nibble address byte */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,BulkAddr & 0xFF);
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
+
+  /* Wait the end of Flash writing */
+  SPI_FLASH_WaitForWriteEnd();
+}
+/*******************************************************************************
+* Function Name  : SPI_FLASH_SectorErase
+* Description    : Erases the specified FLASH sector.ÉÈÇø²Á³ý
+* Input          : SectorAddr: address of the sector to erase.
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void SPI_FLASH_ChipErase(void)
+{
+  /* Send write enable instruction */
+  SPI_FLASH_WriteEnable();
+
+  /* Sector Erase */
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+  /* Send Sector Erase instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.CE);
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
+
+  /* Wait the end of Flash writing */
+  SPI_FLASH_WaitForWriteEnd();
 }
 
 
@@ -1035,185 +157,126 @@ void SPI_FLASH_ConfigurationDMA(SPI_FLASH_TypeDef *SPI_Conf)		//SPI_FLASH_DMA·½Ê
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void SPI_FLASH_PageWrite(SPI_FLASH_TypeDef *SPI_Conf,u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)	//FLASHÐ´Ò»Ò³Êý¾Ý
+void SPI_FLASH_PageWrite(u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)
 {
-	if(SPI_Conf->SPI_Flash_USER_DMAFlg==1)			//Ê¹ÓÃDMA
+	if(NumByteToWrite>FlashSYS->Memory.PageSize)		//Ð´ÈëÊý¾Ý´óÓÚÒ»Ò³
 	{
-		if(NumByteToWrite)
-		{
-			SPI_FLASH_WriteEnable(SPI_Conf);											//0x06Ð´Ê¹ÄÜ
-			
-			SPI_FLASH_ENALBE(SPI_Conf);														//SPI_FLASH_Ê¹ÄÜ
-			
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WPAGE);										//0x02Ò³Ð´ÃüÁî
-			SPI_FLASH_WriteReadByte(SPI_Conf,(WriteAddr & 0xFF0000) >> 16);		//Ð´Èë¸ß8Î»µØÖ·
-			SPI_FLASH_WriteReadByte(SPI_Conf,(WriteAddr & 0xFF00) >> 8);			//Ð´ÈëÖÐ¼ä8Î»µØÖ·
-			SPI_FLASH_WriteReadByte(SPI_Conf,WriteAddr & 0xFF);								//Ð´ÈëµÍ8Î»µØÖ·
-			
-			if(SPI_Conf->SPIx==SPI1)
-			{
-				//DMA½ÓÊÕÉèÖÃ						
-				DMA1_Channel2->CMAR =(u32)SPI_Conf->SPI_FLASH_Info.MISO_Buffer;			//½ÓÊÕ»º³åÇø
-				DMA1_Channel2->CNDTR =NumByteToWrite;																//Éè¶¨½ÓÊÕËÍ»º³åÇø´óÐ¡
-				DMA_Cmd(DMA1_Channel2,ENABLE);																			//DMA·¢ËÍ¿ªÆô3
-				//DMA·¢ËÍÉèÖÃ
-				DMA1_Channel3->CMAR=(u32)pBuffer;			//·¢ËÍ»º³åÇø
-				DMA1_Channel3->CNDTR=NumByteToWrite;																//Éè¶¨´ý·¢ËÍ»º³åÇø´óÐ¡		
-				DMA_Cmd(DMA1_Channel3,ENABLE);  																		//¿ªÆô½ÓÊÕDMA
-				while (DMA_GetCurrDataCounter(DMA1_Channel2)!=0);										//¿ªÊ¼Ð´ÈëÊý¾Ý£¬Ö±µ½Ð´Íê(½ÓÊÕ»º³åÇøÂú£©
-				DMA_Cmd(DMA1_Channel2,DISABLE);																	//DMA½ÓÊÕ¹Ø±Õ
-				DMA_Cmd(DMA1_Channel3,DISABLE);  																//DMA·¢ËÍ¹Ø±Õ
-				DMA_ClearFlag(DMA1_FLAG_GL2);			//Çå³ýDMA±êÖ¾
-				DMA_ClearFlag(DMA1_FLAG_GL3);			//Çå³ýDMA±êÖ¾
-			}
-			else if(SPI_Conf->SPIx==SPI2)
-			{
-				//DMA½ÓÊÕÉèÖÃ						
-				DMA1_Channel4->CMAR =(u32)SPI_Conf->SPI_FLASH_Info.MISO_Buffer;			//½ÓÊÕ»º³åÇø	
-				DMA1_Channel4->CNDTR =NumByteToWrite;																//Éè¶¨½ÓÊÕËÍ»º³åÇø´óÐ¡
-				DMA_Cmd(DMA1_Channel4,ENABLE);																			//DMA½ÓÊÕ¿ªÆô3
-				//DMA·¢ËÍÉèÖÃ
-				DMA1_Channel5->CMAR=(u32)pBuffer;			//·¢ËÍ»º³åÇø
-				DMA1_Channel5->CNDTR=NumByteToWrite;																//Éè¶¨´ý·¢ËÍ»º³åÇø´óÐ¡
-				DMA_Cmd(DMA1_Channel5,ENABLE);  																		//DMA·¢ËÍ¿ªÆô
-				while (DMA_GetCurrDataCounter(DMA1_Channel4)!=0);										//¿ªÊ¼Ð´ÈëÊý¾Ý£¬Ö±µ½Ð´Íê(½ÓÊÕ»º³åÇøÂú£©
-				DMA_Cmd(DMA1_Channel4,DISABLE);																	//DMA½ÓÊÕ¹Ø±Õ
-				DMA_Cmd(DMA1_Channel5,DISABLE);  																//DMA·¢ËÍ¹Ø±Õ
-				DMA_ClearFlag(DMA1_FLAG_GL4);			//Çå³ýDMA±êÖ¾
-				DMA_ClearFlag(DMA1_FLAG_GL5);			//Çå³ýDMA±êÖ¾
-			}
-			else if(SPI_Conf->SPIx==SPI3)
-			{
-				//DMA½ÓÊÕÉèÖÃ						
-				DMA2_Channel1->CMAR =(u32)SPI_Conf->SPI_FLASH_Info.MISO_Buffer;			//½ÓÊÕ»º³åÇø
-				DMA2_Channel1->CNDTR =NumByteToWrite;																//Éè¶¨½ÓÊÕËÍ»º³åÇø´óÐ¡
-				DMA_Cmd(DMA2_Channel1,ENABLE);																			//DMA·¢ËÍ¿ªÆô3
-				//DMA·¢ËÍÉèÖÃ
-				DMA2_Channel2->CMAR=(u32)pBuffer;																		//·¢ËÍ»º³åÇø
-				DMA2_Channel2->CNDTR=NumByteToWrite;																//Éè¶¨´ý·¢ËÍ»º³åÇø´óÐ¡		
-				DMA_Cmd(DMA2_Channel2,ENABLE);  																		//¿ªÆô½ÓÊÕDMA
-				while (DMA_GetCurrDataCounter(DMA2_Channel1)!=0);											//¿ªÊ¼Ð´ÈëÊý¾Ý£¬Ö±µ½Ð´Íê(½ÓÊÕ»º³åÇøÂú£©
-				DMA_Cmd(DMA2_Channel1,DISABLE);																	//DMA½ÓÊÕ¹Ø±Õ
-				DMA_Cmd(DMA2_Channel2,DISABLE);  																//DMA·¢ËÍ¹Ø±Õ
-				DMA_ClearFlag(DMA2_FLAG_GL1);			//Çå³ýDMA±êÖ¾
-				DMA_ClearFlag(DMA2_FLAG_GL2);			//Çå³ýDMA±êÖ¾
-			}
+		NumByteToWrite	=	FlashSYS->Memory.PageSize;
+	}
+  /* Enable the write access to the FLASH */
+  SPI_FLASH_WriteEnable();
 
-			SPI_FLASH_DISALBE(SPI_Conf);											//SPI_FLASH_¹Ø±Õ			
-			SPI_FLASH_WaitForWriteEnd(SPI_Conf);						//µÈ´ýÐ´ÈëÍê³É
-		}
-	}
-	else
-	{
-		if(NumByteToWrite)
-		{
-			SPI_FLASH_WriteEnable(SPI_Conf);											//0x06Ð´Ê¹ÄÜ
-			
-			SPI_FLASH_ENALBE(SPI_Conf);														//SPI_FLASH_Ê¹ÄÜ
-			
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WPAGE);											//Ò³Ð´ÃüÁî
-			SPI_FLASH_WriteReadByte(SPI_Conf,(WriteAddr & 0xFF0000) >> 16);		//Ð´Èë¸ß8Î»µØÖ·
-			SPI_FLASH_WriteReadByte(SPI_Conf,(WriteAddr & 0xFF00) >> 8);				//Ð´ÈëÖÐ¼ä8Î»µØÖ·
-			SPI_FLASH_WriteReadByte(SPI_Conf,WriteAddr & 0xFF);								//Ð´ÈëµÍ8Î»µØÖ·
-			
-			while (NumByteToWrite--)		//¿ªÊ¼Ð´ÈëÊý¾Ý£¬Ö±µ½Ð´Íê
-			{
-				SPI_FLASH_WriteReadByte(SPI_Conf,*pBuffer);				//Ð´ÈëÊý¾Ý
-				pBuffer++;
-			}
-			SPI_FLASH_DISALBE(SPI_Conf);											//SPI_FLASH_¹Ø±Õ
-			
-			SPI_FLASH_WaitForWriteEnd(SPI_Conf);						//µÈ´ýÐ´ÈëÍê³É
-		}
-	}
-		
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+  /* Send "Write to Memory " instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.PP);
+  /* Send WriteAddr high nibble address byte to write to */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,(WriteAddr & 0xFF0000) >> 16);
+  /* Send WriteAddr medium nibble address byte to write to */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,(WriteAddr & 0xFF00) >> 8);
+  /* Send WriteAddr low nibble address byte to write to */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,WriteAddr & 0xFF);
+
+  /* while there is data to be written on the FLASH */
+  while (NumByteToWrite--)
+  {
+    /* Send the current byte */
+    SPI_ReadWriteByteSPI(&FlashSYS->SPI,*pBuffer);
+    /* Point on the next byte to be written */
+    pBuffer++;
+  }
+
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
+
+  /* Wait the end of Flash writing */
+  SPI_FLASH_WaitForWriteEnd();
 }
+
 /*******************************************************************************
 * Function Name  : SPI_FLASH_BufferWrite
 * Description    : Writes block of data to the FLASH. In this function, the
 *                  number of WRITE cycles are reduced, using Page WRITE sequence.
 * Input          : - pBuffer : pointer to the buffer  containing the data to be
 *                    written to the FLASH.
-*                  - WriteAddr : FLASH's internal address to write to.
+*                  - StartAddr : FLASH's internal address to write to.´ýÐ´ÈëµÄÊý¾ÝÔÚFalshÄÚ²¿µÄÆðÊ¼µØÖ·
 *                  - NumByteToWrite : number of bytes to write to the FLASH.
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void SPI_FLASH_BufferWrite(SPI_FLASH_TypeDef *SPI_Conf,u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)
+void SPI_FLASH_BufferWrite(u8* pBuffer, u32 StartAddr, u16 NumByteToWrite)
 {
-  u16 NumOfPage = 0, NumOfSingle = 0, Addr = 0, count = 0, temp = 0;
-	u32	SPI_FLASH_PageSize=SPI_Conf->SPI_FLASH_Info.SPI_FLASH_PageSize;		//»ñÈ¡´ËÐ¾Æ¬µÄÒ³´óÐ¡
+  u8 NumOfPage = 0, NumOfSingle = 0, Addr = 0, count = 0, temp = 0;
+	unsigned long	SPI_FLASH_PageSize	=	0;	//Ò³´óÐ¡byteµ¥Î»
+	unsigned long	WriteAddr	=	StartAddr;		//Ò³´óÐ¡byteµ¥Î»
 	
-	SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;		//Ð´×´Ì¬
-  Addr = WriteAddr % SPI_FLASH_PageSize;								//¼ÆËãÒ³µØÖ·ÊÇ·ñ¶ÔÆë£¬¿ÉÒÔÕû³ýÔò¶ÔÆë
-  count = SPI_FLASH_PageSize - Addr;										//¼ÆËãÒ³ÄÚÊ£Óà¿Õ¼ä´óÐ¡£¨Àý£ºÒ³´óÐ¡256£¬µØÖ·256£¬ÔòWriteAddr % SPI_FLASH_PageSize==1£»ÔÚÒ³ÄÚÊ£Óà255¸ö´æ´¢¿Õ¼ä£©
-  NumOfPage =  NumByteToWrite / SPI_FLASH_PageSize;			//¼ÆËãÐèÒªÓÃµ½µÄÒ³ÊýÁ¿
-  NumOfSingle = NumByteToWrite % SPI_FLASH_PageSize;		//¼ÆËãÊ£Óà²»ÍêÕûÒ³ÐèÒªÐ´ÈëµÄÊýÁ¿
+	SPI_FLASH_PageSize	=	FlashSYS->Memory.PageSize;
+	
+  Addr 				= WriteAddr % SPI_FLASH_PageSize;					//ÅÐ¶ÏÊý¾ÝÆðÊ¼µØÖ·ÊÇ·ñÓëÒ³ÆðÊ¼µØÖ·¶ÔÆë£¬Èç¹ûÓëÒ³ÆðÊ¼µØÖ·¶ÔÆë£¬¿ÉÒÔÕûÒ³Ð´
+  count 			= SPI_FLASH_PageSize - Addr;							//¼ÆÊýÐ´ÈëµØÖ·ÓëÒ³µØÖ·µÄÆ«ÒÆ£¬Èç¹ûÆðÊ¼µØÖ·ÓëÒ³¶ÔÆë£¬´ËÊ±Îª0,·ñÔòÎªÆ«ÒÆÖµ
+  NumOfPage 	=	NumByteToWrite / SPI_FLASH_PageSize;		//¼ÆÊýÒ³Êý---ÐèÒªÊ¹ÓÃ¶àÉÙÒ³¿Õ¼ä
+  NumOfSingle = NumByteToWrite % SPI_FLASH_PageSize;		//Ê£ÓàÊýÁ¿--²»µ½ÕûÒ³²¿·ÖÊý¾Ý´óÐ¡
 
-  if (Addr == 0) 					/* WriteAddr is SPI_FLASH_PageSize aligned  */	//Ò³µØÖ·¶ÔÆë
+  if (Addr == 0) 				/* StartAddr is SPI_FLASH_PageSize aligned  */	//Ð´ÈëµÄÊý¾ÝÆðÊ¼µØÖ·ÓëÒ³µØÖ·¶ÔÆë
   {
-    if (NumOfPage == 0) 	/* NumByteToWrite < SPI_FLASH_PageSize */				//Êý¾Ý²»µ½Ò»Ò³
+    if (NumOfPage == 0) /* NumByteToWrite < SPI_FLASH_PageSize */				//×ÜÊý¾ÝÁ¿²»³¬¹ýÒ»Ò³
     {
-      SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, NumByteToWrite);
+      SPI_FLASH_PageWrite(pBuffer, WriteAddr, NumByteToWrite);
     }
-    else /* NumByteToWrite > SPI_FLASH_PageSize */												//Ð´ÈëµÄÊý¾Ý´óÓÚÒ»Ò³
+    else /* NumByteToWrite > SPI_FLASH_PageSize */
     {
-      while (NumOfPage--)
+      while (NumOfPage--)		//ÕûÒ³Ð´Èë
       {
-        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, SPI_FLASH_PageSize);
-        WriteAddr +=  SPI_FLASH_PageSize;		//µØÖ·¼ÓÒ»Ò³
-        pBuffer += SPI_FLASH_PageSize;			//»º³åÇøÊý¾ÝµØÖ·Æ«ÒÆÒ»Ò³
-      }
-      SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, NumOfSingle);		//Ð´ÈëÊ£Óà·ÇÕûÒ³±¶Êý¾Ý
-    }
-  }
-  else 				/* WriteAddr is not SPI_FLASH_PageSize aligned  */				//Ò³µØÖ·Î´¶ÔÆë
-  {
-    if (NumOfPage == 0) /* NumByteToWrite < SPI_FLASH_PageSize */				//Êý¾Ý²»µ½Ò»Ò³´óÐ¡
-    {
-      if (NumOfSingle > count) /* (NumByteToWrite + WriteAddr) > SPI_FLASH_PageSize */			//ÐèÒª¿çÒ³£¨ÐèÒªÐ´ÈëµÄÊý¾Ý´óÓÚÒ³ÄÚÊ£Óà¿Õ¼ä£©
-      {
-        temp = NumOfSingle - count;		//¼ÆËãÏÂÒ»Ò³´ýÐ´ÈëµÄÊý¾Ý¸öÊý£¨×ÜÊý-µ±Ç°Ò³¿Õ¼ä==ÏÂÒ»Ò³´ýÐ´ÈëµÄÊý¾Ý¸öÊý£©
-
-        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, count);	//½«µ±Ç°Ò³¿Õ¼äÐ´Âú
-        WriteAddr +=  count;					//µØÖ·+
-        pBuffer += count;
-
-        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, temp);		//½«Ê£ÓàµÄÊý¾ÝÐ´ÈëÏÂÒ»Ò³
-      }
-      else		//²»ÐèÒª¿çÒ³
-      {
-        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, NumByteToWrite);		//²»ÐèÒª¿çÒ³£¨Ê£ÓàµÄ¿Õ¼ä×ã¹»´æ´¢µ±Ç°Êý¾Ý£©ÔòÖ±½ÓÐ´Èë
-      }
-    }
-    else /* NumByteToWrite > SPI_FLASH_PageSize */											//Ð´ÈëµÄÊý¾Ý´óÓÚÒ»Ò³²¢ÇÒµØÖ·²»¶ÔÆë
-    {
-      NumByteToWrite -= count;														//¼ÆËã½«Êý¾ÝÐ´ÈëµØÖ·²»¶ÔÆëÒ³ºóÊ£ÓàÊý¾Ý¸öÊý
-      NumOfPage =  NumByteToWrite / SPI_FLASH_PageSize;		//¼ÆËãÊ£ÓàÊý¾ÝÐèÒªÕ¼ÓÃµÄÍêÕûÒ³¸öÊý
-      NumOfSingle = NumByteToWrite % SPI_FLASH_PageSize;	//¼ÆËãÊ£ÓàÊý¾ÝÖÐ²»ÍêÕûÒ³µÄÊý¾Ý¸öÊý
-			
-			//------ÏÈ½«Ç°ÃæÒ»²¿·ÖÊý¾Ý½«ÆðÊ¼µØÖ·²»¶ÔÆëÊý¾ÝÐ´Âú
-      SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, count);
-      WriteAddr +=  count;
-      pBuffer += count;
-
-      while (NumOfPage--)			//½«Ê£ÓàµÄÕûÒ³Êý¾ÝÐ´ÈëFLASH
-      {
-        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, SPI_FLASH_PageSize);
+        SPI_FLASH_PageWrite(pBuffer, WriteAddr, SPI_FLASH_PageSize);
         WriteAddr +=  SPI_FLASH_PageSize;
         pBuffer += SPI_FLASH_PageSize;
       }
 
-      if (NumOfSingle != 0)		//ÅÐ¶ÏÊÇ·ñ»¹ÓÐÊ£Óà£¨²»¹»Ò»Ò³£©´ýÐ´Èë
+      SPI_FLASH_PageWrite(pBuffer, WriteAddr, NumOfSingle);	//Ð´ÈëÊ£Óà·ÇÕûÒ³Êý¾Ý
+    }
+  }
+  else /* StartAddr is not SPI_FLASH_PageSize aligned  */		//ÆðÊ¼µØÖ·Î´¶ÔÆë
+  {
+    if (NumOfPage == 0) /* NumByteToWrite < SPI_FLASH_PageSize */
+    {
+      if (NumOfSingle > count) /* (NumByteToWrite + WriteAddr) > SPI_FLASH_PageSize */
       {
-        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, NumOfSingle);
+        temp = NumOfSingle - count;
+
+        SPI_FLASH_PageWrite(pBuffer, WriteAddr, count);
+        WriteAddr +=  count;
+        pBuffer += count;
+
+        SPI_FLASH_PageWrite(pBuffer, WriteAddr, temp);
+      }
+      else
+      {
+        SPI_FLASH_PageWrite(pBuffer, WriteAddr, NumByteToWrite);
+      }
+    }
+    else /* NumByteToWrite > SPI_FLASH_PageSize */
+    {
+      NumByteToWrite -= count;
+      NumOfPage =  NumByteToWrite / SPI_FLASH_PageSize;
+      NumOfSingle = NumByteToWrite % SPI_FLASH_PageSize;
+
+      SPI_FLASH_PageWrite(pBuffer, WriteAddr, count);
+      WriteAddr +=  count;
+      pBuffer += count;
+
+      while (NumOfPage--)
+      {
+        SPI_FLASH_PageWrite(pBuffer, WriteAddr, SPI_FLASH_PageSize);
+        WriteAddr +=  SPI_FLASH_PageSize;
+        pBuffer += SPI_FLASH_PageSize;
+      }
+
+      if (NumOfSingle != 0)
+      {
+        SPI_FLASH_PageWrite(pBuffer, WriteAddr, NumOfSingle);
       }
     }
   }
-	SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_WRITE;		//Ð´×´Ì¬
-//	SPI_Conf->SPI_FLASH_Info.SPI_FLASH_LenghToWrite=0;
-//	SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;					//Ð´×´Ì¬
-//	SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;		//¿ÕÏÐ×´Ì¬
 }
 
 /*******************************************************************************
@@ -1226,188 +289,32 @@ void SPI_FLASH_BufferWrite(SPI_FLASH_TypeDef *SPI_Conf,u8* pBuffer, u32 WriteAdd
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void SPI_FLASH_BufferRead(
-													SPI_FLASH_TypeDef *SPI_Conf,
-													u8* pBuffer, 					//Êý¾ÝµÄÊý¾Ý´æ´¢»º³åÇø
-													u32 ReadAddr, 				//¶ÁÈ¡µÄÆðÊ¼µØÖ·
-													u16 NumByteToRead			//´ý¶ÁÈ¡×Ö½ÚÊý
-)
+void SPI_FLASH_BufferRead(u8* pBuffer, u32 ReadAddr, u16 NumByteToRead)
 {
-	#ifdef SPI_FLASH_OSTL
-		if(NumByteToRead)
-		{
-			if(SPI_Conf->SPI_Flash_USER_DMAFlg==1)			//Ê¹ÓÃDMA
-			{				
-//				DMA_GetCurrDataCounter(DMA_Channel_TypeDef* DMAy_Channelx);																//·µ»Øµ±Ç°DMAÍ¨µÀxÊ£ÓàµÄ´ý´«ÊäÊý¾ÝÊýÄ¿
-				if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_IDLE)			//µÚÒ»½×¶Î
-				{
-					memset(SPI_Conf->SPI_FLASH_Info.MOSI_Buffer,Dummy_Byte, NumByteToRead);
-					SPI_FLASH_WaitForWriteEnd(SPI_Conf);			//µÈ´ýFLASHÐ´Íê³É			
-					SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
-					SPI_FLASH_WriteReadByte(SPI_Conf,Flash_READ);										//0x03	¶ÁÊý¾Ý
-					SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr & 0xFF0000) >> 16);	//Ð´ÈëµØÖ·¸ß8Î»
-					SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr& 0xFF00) >> 8);			//Ð´ÈëµØÖ·ÖÐ¼ä8Î»
-					SPI_FLASH_WriteReadByte(SPI_Conf,ReadAddr & 0xFF);							//Ð´ÈëµØÖ·µÍ8Î»
-					
-					if(SPI_Conf->SPIx==SPI1)
-					{
-//						DMA_Cmd(DMA1_Channel2,DISABLE);																	//DMA½ÓÊÕ¹Ø±Õ
-//						DMA_Cmd(DMA1_Channel3,DISABLE);  																//DMA·¢ËÍ¹Ø±Õ
-//						DMA_ClearFlag(DMA1_FLAG_GL2);																		//Çå³ýDMA±êÖ¾
-//						DMA_ClearFlag(DMA1_FLAG_GL3);																		//Çå³ýDMA±êÖ¾
-						//ÉèÖÃ¿ÕÏÐ²Ù×÷·û
-						
-						//DMA½ÓÊÕÉèÖÃ						
-						DMA1_Channel2->CMAR =(u32)pBuffer;																	//½ÓÊÕ»º³åÇø	
-						DMA1_Channel2->CNDTR =NumByteToRead;																//Éè¶¨½ÓÊÕËÍ»º³åÇø´óÐ¡
-						DMA_Cmd(DMA1_Channel2,ENABLE);																			//DMA·¢ËÍ¿ªÆô3
-						//DMA·¢ËÍÉèÖÃ
-						DMA1_Channel3->CMAR=(u32)SPI_Conf->SPI_FLASH_Info.MOSI_Buffer;			//·¢ËÍ»º³åÇø
-						DMA1_Channel3->CNDTR=NumByteToRead;																	//Éè¶¨´ý·¢ËÍ»º³åÇø´óÐ¡		
-						DMA_Cmd(DMA1_Channel3,ENABLE);  																		//¿ªÆô½ÓÊÕDMA
-						SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_READ;
-					}
-					else if(SPI_Conf->SPIx==SPI2)
-					{
-//						DMA_Cmd(DMA1_Channel4,DISABLE);																	//DMA½ÓÊÕ¹Ø±Õ
-//						DMA_Cmd(DMA1_Channel5,DISABLE);  																//DMA·¢ËÍ¹Ø±Õ
-//						DMA_ClearFlag(DMA1_FLAG_GL4);			//Çå³ýDMA±êÖ¾
-//						DMA_ClearFlag(DMA1_FLAG_GL5);			//Çå³ýDMA±êÖ¾
-						//ÉèÖÃ¿ÕÏÐ²Ù×÷·û
-						//DMA½ÓÊÕÉèÖÃ						
-						DMA1_Channel4->CMAR =(u32)pBuffer;																	//½ÓÊÕ»º³åÇø	
-						DMA1_Channel4->CNDTR =NumByteToRead;																//Éè¶¨½ÓÊÕËÍ»º³åÇø´óÐ¡
-						DMA_Cmd(DMA1_Channel4,ENABLE);																			//DMA½ÓÊÕ¿ªÆô3
-						//DMA·¢ËÍÉèÖÃ
-						DMA1_Channel5->CMAR=(u32)SPI_Conf->SPI_FLASH_Info.MOSI_Buffer;			//·¢ËÍ»º³åÇø
-						DMA1_Channel5->CNDTR=NumByteToRead;																	//Éè¶¨´ý·¢ËÍ»º³åÇø´óÐ¡
-						DMA_Cmd(DMA1_Channel5,ENABLE);  																		//DMA·¢ËÍ¿ªÆô
-//						SPI_Cmd(SPI_Conf->SPIx, ENABLE);
-						SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_READ;
-					}
-					else if(SPI_Conf->SPIx==SPI3)
-					{
-//						DMA_Cmd(DMA2_Channel1,DISABLE);																	//DMA½ÓÊÕ¹Ø±Õ
-//						DMA_Cmd(DMA2_Channel2,DISABLE);  																//DMA·¢ËÍ¹Ø±Õ
-//						DMA_ClearFlag(DMA2_FLAG_GL1);			//Çå³ýDMA±êÖ¾
-//						DMA_ClearFlag(DMA2_FLAG_GL2);			//Çå³ýDMA±êÖ¾
-						//ÉèÖÃ¿ÕÏÐ²Ù×÷·û
-						//DMA½ÓÊÕÉèÖÃ						
-						DMA2_Channel1->CMAR =(u32)pBuffer;																	//½ÓÊÕ»º³åÇø
-						DMA2_Channel1->CNDTR =NumByteToRead;																//Éè¶¨½ÓÊÕËÍ»º³åÇø´óÐ¡
-						DMA_Cmd(DMA2_Channel1,ENABLE);																			//DMA·¢ËÍ¿ªÆô3
-						//DMA·¢ËÍÉèÖÃ
-						DMA2_Channel2->CMAR=(u32)SPI_Conf->SPI_FLASH_Info.MOSI_Buffer;			//·¢ËÍ»º³åÇø
-						DMA2_Channel2->CNDTR=NumByteToRead;																	//Éè¶¨´ý·¢ËÍ»º³åÇø´óÐ¡		
-						DMA_Cmd(DMA2_Channel2,ENABLE);  																		//¿ªÆô½ÓÊÕDMA
-						SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_READ;
-					}
-				}
-				else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_READ)	//µÚ¶þ½×¶Î
-				{
-					if(SPI_Conf->SPIx==SPI1)
-					{
-						if(DMA_GetCurrDataCounter(DMA1_Channel2)==0)	//DMA_GetCurrDataCounter(DMA_Channel_TypeDef* DMAy_Channelx);																//·µ»Øµ±Ç°DMAÍ¨µÀxÊ£ÓàµÄ´ý´«ÊäÊý¾ÝÊýÄ¿
-						{
-							SPI_FLASH_DISALBE(SPI_Conf);																		//SPI_FLASH_¹Ø±Õ
-							DMA_Cmd(DMA1_Channel2,DISABLE);																	//DMA½ÓÊÕ¹Ø±Õ
-							DMA_Cmd(DMA1_Channel3,DISABLE);  																//DMA·¢ËÍ¹Ø±Õ
-							DMA_ClearFlag(DMA1_FLAG_GL2);			//Çå³ýDMA±êÖ¾
-							DMA_ClearFlag(DMA1_FLAG_GL3);			//Çå³ýDMA±êÖ¾
-							
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_ReadFlg=1;										//SPI_FLASH¶ÁÊý±êÖ¾£¬Èç¹ûSPI_FLASH_ReadFlg==1£º¶Áµ½Êý¾Ý£¬SPI_FLASH_ReadFlg==0£¬Î´¶Áµ½Êý¾Ý
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;			//Çå³ýFLASH²Á³ýÇëÇó	
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;				//FLASH»Øµ½¿ÕÏÐ×´Ì¬
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;							//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-						}
-					}
-					else if(SPI_Conf->SPIx==SPI2)
-					{
-						if(DMA_GetCurrDataCounter(DMA1_Channel4)==0)	//DMA_GetCurrDataCounter(DMA_Channel_TypeDef* DMAy_Channelx);																//·µ»Øµ±Ç°DMAÍ¨µÀxÊ£ÓàµÄ´ý´«ÊäÊý¾ÝÊýÄ¿
-						{
-							SPI_FLASH_DISALBE(SPI_Conf);																		//SPI_FLASH_¹Ø±Õ
-							DMA_Cmd(DMA1_Channel4,DISABLE);																	//DMA½ÓÊÕ¹Ø±Õ
-							DMA_Cmd(DMA1_Channel5,DISABLE);  																//DMA·¢ËÍ¹Ø±Õ
-							DMA_ClearFlag(DMA1_FLAG_GL4);			//Çå³ýDMA±êÖ¾
-							DMA_ClearFlag(DMA1_FLAG_GL5);			//Çå³ýDMA±êÖ¾
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_ReadFlg=1;										//SPI_FLASH¶ÁÊý±êÖ¾£¬Èç¹ûSPI_FLASH_ReadFlg==1£º¶Áµ½Êý¾Ý£¬SPI_FLASH_ReadFlg==0£¬Î´¶Áµ½Êý¾Ý
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;			//Çå³ýFLASH²Á³ýÇëÇó	
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;				//FLASH»Øµ½¿ÕÏÐ×´Ì¬
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;							//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-						}
-					}
-					else if(SPI_Conf->SPIx==SPI3)
-					{
-						if(DMA_GetCurrDataCounter(DMA2_Channel1)==0)	//DMA_GetCurrDataCounter(DMA_Channel_TypeDef* DMAy_Channelx);																//·µ»Øµ±Ç°DMAÍ¨µÀxÊ£ÓàµÄ´ý´«ÊäÊý¾ÝÊýÄ¿
-						{
-							SPI_FLASH_DISALBE(SPI_Conf);																		//SPI_FLASH_¹Ø±Õ
-							DMA_Cmd(DMA2_Channel1,DISABLE);																	//DMA½ÓÊÕ¹Ø±Õ
-							DMA_Cmd(DMA2_Channel2,DISABLE);  																//DMA·¢ËÍ¹Ø±Õ
-							DMA_ClearFlag(DMA2_FLAG_GL1);			//Çå³ýDMA±êÖ¾
-							DMA_ClearFlag(DMA2_FLAG_GL2);			//Çå³ýDMA±êÖ¾
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_ReadFlg=1;										//SPI_FLASH¶ÁÊý±êÖ¾£¬Èç¹ûSPI_FLASH_ReadFlg==1£º¶Áµ½Êý¾Ý£¬SPI_FLASH_ReadFlg==0£¬Î´¶Áµ½Êý¾Ý
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;			//Çå³ýFLASH²Á³ýÇëÇó	
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;				//FLASH»Øµ½¿ÕÏÐ×´Ì¬
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;							//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-						}
-					}
-//					SPI_Conf->SPI_FLASH_Info.SPI_FLASH_ReadFlg=1;										//SPI_FLASH¶ÁÊý±êÖ¾£¬Èç¹ûSPI_FLASH_ReadFlg==1£º¶Áµ½Êý¾Ý£¬SPI_FLASH_ReadFlg==0£¬Î´¶Áµ½Êý¾Ý
-//					SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;			//Çå³ýFLASH²Á³ýÇëÇó	
-//					SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;				//FLASH»Øµ½¿ÕÏÐ×´Ì¬
-//					SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;							//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-				}
-				
-			}
-			else
-			{
-				SPI_FLASH_WaitForWriteEnd(SPI_Conf);			//µÈ´ýFLASHÐ´Íê³É			
-				SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
-				SPI_FLASH_WriteReadByte(SPI_Conf,Flash_READ);										//0x03	¶ÁÊý¾Ý
-				SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr & 0xFF0000) >> 16);	//Ð´ÈëµØÖ·¸ß8Î»
-				SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr& 0xFF00) >> 8);			//Ð´ÈëµØÖ·ÖÐ¼ä8Î»
-				SPI_FLASH_WriteReadByte(SPI_Conf,ReadAddr & 0xFF);							//Ð´ÈëµØÖ·µÍ8Î»
-				
-				while (NumByteToRead--) 	//Ñ­»·¶ÁÊý¾Ý
-				{
-					*pBuffer = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);			//¶ÁÊý¾Ý
-					pBuffer++;																										//µØÖ·++
-				}
-				SPI_FLASH_DISALBE(SPI_Conf);																		//SPI_FLASH_¹Ø±Õ
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_ReadFlg=1;										//SPI_FLASH¶ÁÊý±êÖ¾£¬Èç¹ûSPI_FLASH_ReadFlg==1£º¶Áµ½Êý¾Ý£¬SPI_FLASH_ReadFlg==0£¬Î´¶Áµ½Êý¾Ý
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;			//Çå³ýFLASH²Á³ýÇëÇó	
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;				//FLASH»Øµ½¿ÕÏÐ×´Ì¬
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;							//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-			}			
-		}		
-	#else
-		if(NumByteToRead)
-		{
-			SPI_FLASH_WaitForWriteEnd(SPI_Conf);			//µÈ´ýFLASHÐ´Íê³É			
-			SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
 
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_READ);										//0x03	¶ÁÊý¾Ý
-			SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr & 0xFF0000) >> 16);	//Ð´ÈëµØÖ·¸ß8Î»
-			SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr& 0xFF00) >> 8);			//Ð´ÈëµØÖ·ÖÐ¼ä8Î»
-			SPI_FLASH_WriteReadByte(SPI_Conf,ReadAddr & 0xFF);							//Ð´ÈëµØÖ·µÍ8Î»
+  /* Send "Read from Memory " instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.READ);
 
-			if(SPI_Conf->SPI_Flash_USER_DMAFlg==1)			//Ê¹ÓÃDMA
-			{
-				
-			}
-			else
-			{
-				while (NumByteToRead--) 	//Ñ­»·¶ÁÊý¾Ý
-				{
-					*pBuffer = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);			//¶ÁÊý¾Ý
-					pBuffer++;																										//µØÖ·++
-				}
-				SPI_FLASH_DISALBE(SPI_Conf);																		//SPI_FLASH_¹Ø±Õ
-			}
-		}		
-	#endif	
+  /* Send ReadAddr high nibble address byte to read from */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,(ReadAddr & 0xFF0000) >> 16);
+  /* Send ReadAddr medium nibble address byte to read from */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,(ReadAddr& 0xFF00) >> 8);
+  /* Send ReadAddr low nibble address byte to read from */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,ReadAddr & 0xFF);
+
+  while (NumByteToRead--) /* while there is data to be read */
+  {
+    /* Read a byte from the FLASH */
+    *pBuffer = SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+    /* Point to the next location where the byte read will be saved */
+    pBuffer++;
+  }
+
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
 }
-
-
 /*******************************************************************************
 * Function Name  : SPI_FLASH_StartReadSequence
 * Description    : Initiates a read data byte (READ) sequence from the Flash.
@@ -1420,277 +327,230 @@ void SPI_FLASH_BufferRead(
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void SPI_FLASH_StartReadSequence(SPI_FLASH_TypeDef *SPI_Conf,u32 ReadAddr)
+void SPI_FLASH_StartReadSequence(u32 ReadAddr)
 {
-//  /* Select the FLASH: Chip Select low */
-//  SPI_FLASH_CS_LOW(SPI_Conf);
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
 
   /* Send "Read from Memory " instruction */
-  SPI_FLASH_WriteReadByte(SPI_Conf,Flash_READ);
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.READ);
 
   /* Send the 24-bit address of the address to read from -----------------------*/
   /* Send ReadAddr high nibble address byte */
-  SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr & 0xFF0000) >> 16);
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,(ReadAddr & 0xFF0000) >> 16);
   /* Send ReadAddr medium nibble address byte */
-  SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr& 0xFF00) >> 8);
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,(ReadAddr& 0xFF00) >> 8);
   /* Send ReadAddr low nibble address byte */
-  SPI_FLASH_WriteReadByte(SPI_Conf,ReadAddr & 0xFF);
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,ReadAddr & 0xFF);
 }
 /*******************************************************************************
-* Function Name  : SPI_FLASH_SendHalfWord
-* Description    : Sends a Half Word through the SPI interface and return the
-*                  Half Word received from the SPI bus.
-* Input          : Half Word : Half Word to send.
+* Function Name  : SPI_FLASH_SetDeepPowerdown
+* Description    : Deep Power-down.Ð¾Æ¬½øÈëÉî¶ÈÊ¡µçÄ£Ê½ºó½ûÖ¹¶ÁÐ´ºÍ²Á³ý²Ù×÷
+* Input          : None
 * Output         : None
-* Return         : The value of the received Half Word.
+* Return         : FLASH identification
 *******************************************************************************/
-u16 SPI_FLASH_SendHalfWord(SPI_FLASH_TypeDef *SPI_Conf,u16 HalfWord)
+void SPI_FLASH_SetDeepPowerdown(void)
 {
-  /* Loop while DR register in not emplty */
-  while (SPI_I2S_GetFlagStatus(SPI_Conf->SPIx, SPI_I2S_FLAG_TXE) == RESET);
 
-  /* Send Half Word through the SPI1 peripheral */
-  SPI_I2S_SendData(SPI_Conf->SPIx, HalfWord);
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
 
-  /* Wait to receive a Half Word */
-  while (SPI_I2S_GetFlagStatus(SPI_Conf->SPIx, SPI_I2S_FLAG_RXNE) == RESET);
+  /* Send "DP " instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.DP);
 
-  /* Return the Half Word read from the SPI bus */
-  return SPI_I2S_ReceiveData(SPI_Conf->SPIx);
-}
-/*******************************************************************************
-*º¯ÊýÃû			:	function
-*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎÞ
-*******************************************************************************/
-void SPI_FLASH_GetInfo(SPI_FLASH_TypeDef *SPI_Conf)		//»ñÈ¡FLASHÐÅÏ¢---¸ù¾ÝIDÈ·¶¨FLASHÐÍºÅ£¬ÅäÖÃÒ³´óÐ¡£¬ÉÈÇø´óÐ¡£¬¿é´óÐ¡²ÎÊý
-{
-	u32 SPI_Flash_ID=0;
-	SPI_Flash_ID=SPI_FLASH_ReadID(SPI_Conf);	//»ñÈ¡¶ÁFlashID
-	//¸ù¾ÝIDÐÅÏ¢ÅäÖÃÏàµ±²ÎÊý
-	switch((u8)(SPI_Flash_ID>>16))		//³§ÉÌ±àºÅ
-	{
-		case 0xC2:	//MXIC Manufacturer ID
-		{
-			switch((u8)(SPI_Flash_ID>>8))	//memory type ID
-			{
-				case	0x20:			//SPI_FLASH
-				{
-					switch((u8)SPI_Flash_ID)	//Ð¾Æ¬ÐÍºÅ
-					{
-						case	0x13:	//MX25L4006E
-						{
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_PageSize			=	256;			//Ò³´óÐ¡
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_SectorSize		=	4096;			//ÉÈÇø´óÐ¡
-							SPI_Conf->SPI_FLASH_Info.SPI_FLASH_BlockSize		=	65536;		//¿é´óÐ¡
-						}
-						break;						
-						default	:break;
-					}
-				}
-				break;
-				default :break;
-			}
-		}
-		break;
-		default:		//Ä¬ÈÏÅäÖÃ
-		{
-//			SPI_Conf->SPI_FLASH_PageSize=256;			//Ò³´óÐ¡
-//			SPI_Conf->SPI_FLASH_SectorSize=4096;	//ÉÈÇø´óÐ¡
-//			SPI_Conf->SPI_FLASH_BlockSize=65536;	//¿é´óÐ¡
-		}
-		break;
-	}
-}
-/*******************************************************************************
-* º¯ÊýÃû			:	SPI_FLASH_Process
-* ¹¦ÄÜÃèÊö		:	FLASHÊý¾Ý´¦Àí£ºËùÓÐµÄFLASH¶ÔÍâ²Ù×÷½Ó¿Ú 
-* ÊäÈë			: void
-* ·µ»ØÖµ			: void
-*******************************************************************************/
-void SPI_FLASH_Process(SPI_FLASH_TypeDef *SPI_Conf)			//FLASHÊý¾Ý´¦Àí£ºËùÓÐµÄFLASH¶ÔÍâ²Ù×÷½Ó¿Ú
-{
-	//1)FLASH×´Ì¬´¦Àí
-	if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus==SPI_FLASH_IDLE)	//FLASHÎª¿ÕÏÐ×´Ì¬
-	{
-		SPI_FLASH_ReadRequest(SPI_Conf);														//»ñÈ¡FLASH²Ù×÷ÇëÇó
-	}
-	else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus==SPI_FLASH_READ)			//¶Á×´Ì¬
-	{
-		SPI_FLASH_BufferRead(SPI_Conf,SPI_Conf->SPI_FLASH_Info.MISO_Buffer, SPI_Conf->SPI_FLASH_Info.SPI_FLASH_ReadAdrr, SPI_Conf->SPI_FLASH_Info.SPI_FLASH_LenghToRead);
-	}
-	else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus==SPI_FLASH_ERASE)		//²Á³ý
-	{
-		if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request==SPI_FLASH_qCERASE)										//ÕûÆ¬²Á³ýÇëÇó
-			SPI_FLASH_ChipErase		(SPI_Conf);																									//FLASHÕûÆ¬²Á³ý
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request==SPI_FLASH_qBERASE)							//¿é²Á³ýÇëÇó
-			SPI_FLASH_BulkErase		(SPI_Conf,SPI_Conf->SPI_FLASH_Info.SPI_FLASH_BlockAdrr);		//Flash¿é²Á³ýFast erase time: 60ms(typ.)/sector (4K-byte per sector) ; 0.7s(typ.)/block (64K-byte per block)
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request==SPI_FLASH_qSERASE)							//ÉÈÇø²Á³ýÇëÇó
-			SPI_FLASH_SectorErase	(SPI_Conf,SPI_Conf->SPI_FLASH_Info.SPI_FLASH_SectorAdrr);		//FlashÉÈÇø²Á³ýFast erase time: 60ms(typ.)/sector (4K-byte per sector) ; 0.7s(typ.)/block (64K-byte per block)
-		else
-		{
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;		//Çå³ýFLASH²Á³ýÇëÇó	
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;			//FLASH»Øµ½¿ÕÏÐ×´Ì¬
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;						//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-		}
-			
-	}
-	else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus==SPI_FLASH_WRITE)		//Ð´
-	{
-		if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_LenghToWrite==0)
-		{
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;
-		}
-		else
-		{
-			SPI_FLASH_BufferWrite(SPI_Conf,SPI_Conf->SPI_FLASH_Info.MOSI_Buffer, SPI_Conf->SPI_FLASH_Info.SPI_FLASH_WriteAdrr, SPI_Conf->SPI_FLASH_Info.SPI_FLASH_LenghToWrite);	//FLASHÐ´»º³åÊý¾Ý
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_WriteAdrr=0;
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_LenghToWrite=0;
-//			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;//FLASH¿ÕÏÐ×´Ì¬£¬¿ÉÒÔ¶ÁÐ´
-//			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;//ÆðÊ¼²½Öè£¬µ±Ç°Îª¿ÕÏÐ
-//			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;//FLASH¿ÕÏÐ
-		}
-	}	
-}
-/*******************************************************************************
-*º¯ÊýÃû			:	function
-*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎÞ
-*******************************************************************************/
-void SPI_FLASH_ENALBE(SPI_FLASH_TypeDef *SPI_Conf)				//SPI_FLASH_Ê¹ÄÜ
-{
-//	if(SPI_Conf->SPI_Flash_NSS_CsFlg==1)														//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬UseSPI1_flg=1£¬·ñÔòUseSPI1_flg=0£»
-//	{
-//		SPI_Cmd(SPI_Conf->SPIx, ENABLE);															//Ê¹ÄÜSPI--CS×Ô¶¯À­µÍ
-//	}
-//	else
-//	{
-//		u8 num=10;
-//		SPI_Cmd(SPI_Conf->SPIx, ENABLE);	//Ê¹ÄÜSPI
-//		while(num--);
-//		GPIO_ResetBits(SPI_Conf->SPI_CS_PORT, SPI_Conf->SPI_CS_PIN);	//CS_LOWÆ¬Ñ¡Ê¹ÄÜ
-//	
-//		GPIO_ResetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-//		GPIO_ResetBits(SPI_Conf->SPI_MOSI_PORT,SPI_Conf->SPI_MOSI_PIN);
-	
-//	GPIO_ResetBits(SPI_Conf->SPI_MOSI_PORT,SPI_Conf->SPI_MOSI_PIN);
-//	GPIO_ResetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-//	GPIO_ResetBits(SPI_Conf->SPI_CS_PORT, SPI_Conf->SPI_CS_PIN);	//CS_LOWÆ¬Ñ¡Ê¹ÄÜ
-	
-	SPI_Conf->SPI_MOSI_PORT->BRR 	= SPI_Conf->SPI_MOSI_PIN;
-	SPI_Conf->SPI_CLK_PORT->BRR 	= SPI_Conf->SPI_CLK_PIN;
-	SPI_Conf->SPI_CS_PORT->BRR 		= SPI_Conf->SPI_CS_PIN;
-	
-		
-	
-		
-//	}
-	
-}
-/*******************************************************************************
-*º¯ÊýÃû			:	function
-*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎÞ
-*******************************************************************************/
-void SPI_FLASH_DISALBE(SPI_FLASH_TypeDef *SPI_Conf)				//SPI_FLASH_¹Ø±Õ
-{	
-//	if(SPI_Conf->SPI_Flash_NSS_CsFlg==1)														//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬UseSPI1_flg=1£¬·ñÔòUseSPI1_flg=0£»
-//	{
-//		SPI_Cmd(SPI_Conf->SPIx, DISABLE);															//¹Ø±ÕSPI--CS×Ô¶¯À­¸ß
-//	}
-//	else
-//	{
-//		SPI_Cmd(SPI_Conf->SPIx, DISABLE);															//¹Ø±ÕSPI				
-//		GPIO_SetBits(SPI_Conf->SPI_CS_PORT, SPI_Conf->SPI_CS_PIN);		//CS_HIGH½ûÖ¹Æ¬Ñ¡
-	
-//		GPIO_SetBits(SPI_Conf->SPI_MOSI_PORT,SPI_Conf->SPI_MOSI_PIN);
-//		GPIO_SetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-//	GPIO_SetBits(SPI_Conf->SPI_MOSI_PORT,SPI_Conf->SPI_MOSI_PIN);
-//	GPIO_SetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-//	GPIO_SetBits(SPI_Conf->SPI_CS_PORT, SPI_Conf->SPI_CS_PIN);		//CS_HIGH½ûÖ¹Æ¬Ñ¡
-//	GPIO_ResetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-//	GPIO_SetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-	
-	SPI_Conf->SPI_CS_PORT->BSRR 	= SPI_Conf->SPI_CS_PIN;
-	SPI_Conf->SPI_CLK_PORT->BRR 	= SPI_Conf->SPI_CLK_PIN;
-	SPI_Conf->SPI_CLK_PORT->BSRR 	= SPI_Conf->SPI_CLK_PIN;
-		
-		
-//	}	
-}
-/*******************************************************************************
-*º¯ÊýÃû			:	function
-*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎÞ
-*******************************************************************************/
-u8 SPI_USER_SendData(SPI_FLASH_TypeDef *SPI_Conf,u8 byte)			//×Ô¶¨ÒåÐ´µ¥×Ö½ÚÊý¾Ý
-{
-//	void GPIO_SetBits(GPIO_TypeDef* GPIOx, u16 GPIO_Pin);
-//	void GPIO_ResetBits(GPIO_TypeDef* GPIOx, u16 GPIO_Pin);
-//	u8 GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, u16 GPIO_Pin);
-	
-//	u8 timedl=0;
-	u8 i=0;
-	u8 Redata=0;
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
 
-//	GPIO_ResetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-	for(i=0;i<8;i++)
-	{
-		Redata<<=1;	
-		SPI_Conf->SPI_CLK_PORT->BRR = SPI_Conf->SPI_CLK_PIN;
-//		GPIO_ResetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-//		while(timedl++<0x02);timedl=0;
-		if(byte&0x80)
-			SPI_Conf->SPI_MOSI_PORT->BSRR = SPI_Conf->SPI_MOSI_PIN;
-//			GPIO_SetBits(SPI_Conf->SPI_MOSI_PORT,SPI_Conf->SPI_MOSI_PIN);
-		else
-			SPI_Conf->SPI_MOSI_PORT->BRR = SPI_Conf->SPI_MOSI_PIN;
-//			GPIO_ResetBits(SPI_Conf->SPI_MOSI_PORT,SPI_Conf->SPI_MOSI_PIN);
-//		while(timedl++<0x01);		timedl=0;
-//		
-		SPI_Conf->SPI_CLK_PORT->BSRR = SPI_Conf->SPI_CLK_PIN;
-//		GPIO_SetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-//		while(timedl++<0x01);timedl=0;
-		
-//		if(GPIO_ReadInputDataBit(SPI_Conf->SPI_MISO_PORT,SPI_Conf->SPI_MISO_PIN))
-		if(SPI_Conf->SPI_MISO_PORT->IDR & SPI_Conf->SPI_MISO_PIN)			
-			Redata+=0x01;
-		
-		byte<<=1;			
-	}
-//	GPIO_ResetBits(SPI_Conf->SPI_CLK_PORT,SPI_Conf->SPI_CLK_PIN);
-//	GPIO_ResetBits(SPI_Conf->SPI_MOSI_PORT,SPI_Conf->SPI_MOSI_PIN);
-	return Redata;
 }
-
 /*******************************************************************************
-* Function Name  : SPI_FLASH_SendByte
-* Description    : Sends a byte through the SPI interface and return the byte
-*                  received from the SPI bus.
-* Input          : byte : byte to send.
+* Function Name  : SPI_FLASH_ResDeepPowerdown
+* Description    : Release from Deep Power-down.ÍË³öÉî¶ÈÊ¡µçÄ£Ê½
+* Input          : None
 * Output         : None
-* Return         : The value of the received byte.
+* Return         : FLASH identification
 *******************************************************************************/
-u8 SPI_FLASH_WriteReadByte(SPI_FLASH_TypeDef *SPI_Conf,u8 byte)
+void SPI_FLASH_ResDeepPowerdown(void)
 {
-  
-	#ifdef	USERSPI
-	return SPI_USER_SendData(SPI_Conf,byte);
-	#else
-	/* Loop while DR register in not emplty */
-  while (SPI_I2S_GetFlagStatus(SPI_Conf->SPIx, SPI_I2S_FLAG_TXE) == RESET);
-  /* Send byte through the SPI1 peripheral */
-  SPI_I2S_SendData(SPI_Conf->SPIx, byte);
-  /* Wait to receive a byte */
-  while (SPI_I2S_GetFlagStatus(SPI_Conf->SPIx, SPI_I2S_FLAG_RXNE) == RESET);
-  /* Return the byte read from the SPI bus */
-  return SPI_I2S_ReceiveData(SPI_Conf->SPIx);
-	#endif
+
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+
+  /* Send "RDP " instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.RDP);
+
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
+
 }
+/*******************************************************************************
+* Function Name  : SPI_FLASH_ReadSFDP
+* Description    : Reads The Serial Flash Discoverable Parameter (SFDP).Serial FlashÐ¾Æ¬¹æ·¶
+* Input          : None
+* Output         : None
+* Return         : FLASH identification
+*******************************************************************************/
+u32 SPI_FLASH_ReadRDSFDP(void)
+{
+  u32 Temp = 0, Temp0 = 0, Temp1 = 0;
+
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+
+  /* Send "RDSFDP " instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.RDSFDP);
+
+	/* Send "ADD1 "  */
+	SPI_ReadWriteByteSPI(&FlashSYS->SPI,0x00);
+	
+	/* Send "ADD2 "  */
+	SPI_ReadWriteByteSPI(&FlashSYS->SPI,0x00);
+	
+	/* Send "ADD3 "  */
+	SPI_ReadWriteByteSPI(&FlashSYS->SPI,0x00);
+	
+	/* Send one dummy bytes---Byte1 */
+	SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+	
+  /* Read Data1 from the FLASH */
+  Temp0 = SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+
+  /* Read Data2 from the FLASH */
+  Temp1 = SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
+
+  Temp = (Temp0 << 8) | Temp1;
+
+  return Temp;
+}
+/*******************************************************************************
+* Function Name  : SPI_FLASH_ReadID
+* Description    : Reads FLASH identification.
+* Input          : None
+* Output         : None
+* Return         : FLASH identification
+*******************************************************************************/
+u32 SPI_FLASH_ReadID(void)
+{
+  u32 Temp = 0, Temp0 = 0, Temp1 = 0, Temp2 = 0;
+
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+
+  /* Send "RDID " instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.RDID);
+
+  /* Read a byte from the FLASH */
+  Temp0 = SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+
+  /* Read a byte from the FLASH */
+  Temp1 = SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+
+  /* Read a byte from the FLASH */
+  Temp2 = SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
+
+  Temp = (Temp0 << 16) | (Temp1 << 8) | Temp2;
+
+  return Temp;
+}
+/*******************************************************************************
+* Function Name  : SPI_FLASH_ReadREMS ¶ÁÊéÖÆÔìÉÌÐÅÏ¢ºÍID
+* Description    : Read Electronic Manufacturer ID & Device ID (REMS).
+* Input          : None
+* Output         : None
+* Return         : FLASH identification
+*******************************************************************************/
+u32 SPI_FLASH_ReadREMS(void)
+{
+  u16 Temp = 0, Temp0 = 0, Temp1 = 0;
+
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+
+  /* Send "REMS " instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.REMS);
+
+  /* Send two dummy bytes---Byte1 */
+	SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+
+  /* Send two dummy bytes---Byte2 */
+	SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+
+	/* Send one bytes address (A7~A0). ·¢ËÍ0x00,manufacturer IDÏÈ³ö;·¢ËÍ0x01£¬device IDÏÈ³ö*/
+	SPI_ReadWriteByteSPI(&FlashSYS->SPI,0X00);
+	
+	/* Read a byte from the FLASH */
+  Temp0 = SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+
+  /* Read a byte from the FLASH */
+  Temp1 = SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
+
+  Temp = (Temp0 << 8) | Temp1;
+
+  return Temp;
+}
+/*******************************************************************************
+* Function Name  : SPI_FLASH_ReadStatusRegister 
+* Description    : Read Status Register (RDSR).¶Á×´Ì¬¼Ä´æÆ÷
+* Input          : None
+* Output         : None
+* Return         : FLASH identification
+*******************************************************************************/
+u32 SPI_FLASH_ReadStatusRegister(void)
+{
+  u8 Temp = 0;
+
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+
+  /* Send "REMS " instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.RDSR);
+
+	/* Read a byte from the FLASH */
+  Temp = SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
+
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
+
+	memcpy((unsigned char*)&FlashSYS->Flag,&Temp,1);
+	
+  return Temp;
+}
+/*******************************************************************************
+* Function Name  : SPI_FLASH_ReadStatusRegister 
+* Description    : Read Status Register (RDSR).¶Á×´Ì¬¼Ä´æÆ÷
+* Input          : None
+* Output         : None
+* Return         : FLASH identification
+*******************************************************************************/
+void SPI_FLASH_WriteStatusRegister(SPIFlashStatusDef Flag)
+{
+	u8 Status	=	0;
+	
+  FlashSYS->Flag 	=	Flag;
+	memcpy((unsigned char*)&Status,(unsigned char*)&Flag,1);
+	
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+
+  /* Send "WRSR " instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.WRSR);
+
+	/* Send "Status " to the FLASH */
+	SPI_ReadWriteByteSPI(&FlashSYS->SPI,Status);
+
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
+}
+
 /*******************************************************************************
 * Function Name  : SPI_FLASH_WriteEnable
 * Description    : Enables the write access to the FLASH.
@@ -1698,141 +558,24 @@ u8 SPI_FLASH_WriteReadByte(SPI_FLASH_TypeDef *SPI_Conf,u8 byte)
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void SPI_FLASH_WriteEnable(SPI_FLASH_TypeDef *SPI_Conf)		//0x06
+void SPI_FLASH_WriteEnable(void)
 {
-	u8 Status=0;
-	SPI_FLASH_WaitForWriteEnd(SPI_Conf);			//µÈ´ýFLASHÐ´Íê³É	
-	
-	SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
-	SPI_Cmd(SPI_Conf->SPIx, ENABLE);					//Ê¹ÄÜSPI
-	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);	//0x06Ê¹ÄÜÐ´ÃüÁî
-	SPI_FLASH_DISALBE(SPI_Conf);							//SPI_FLASH_¹Ø±Õ
-	
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	
-	SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WRSR);	//0x01Ð´×´Ì¬¼Ä´æÆ÷ÃüÁî
-	SPI_FLASH_WriteReadByte(SPI_Conf,0x00);				//Ê¹ÄÜÐ´×´Ì¬¼Ä´æÆ÷²ÎÊý--Çå³ýÐ´±£»¤
-	SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-	
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	
-//	SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-//	SPI_Cmd(SPI_Conf->SPIx, ENABLE);							//Ê¹ÄÜSPI
-//	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);	//0x06Ê¹ÄÜÐ´ÃüÁî
-//	SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-	
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	
-	do																				//µÈ´ýÐ´ÔÊÐí
-	{
-		SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-		SPI_Cmd(SPI_Conf->SPIx, ENABLE);							//Ê¹ÄÜSPI
-		SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);	//0x06Ê¹ÄÜÐ´ÃüÁî
-		SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-		
-		SPI_FLASH_ENALBE(SPI_Conf);													//SPI_FLASH_Ê¹ÄÜ		
-		SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);						//Ð´Èë¶Á×´Ì¬ÃüÁî */		
-		Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);	//¶Á×´Ì¬ */			
-		SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-		__nop();
-		__nop();
-		__nop();
-		__nop();
-		__nop();
-		__nop();
-		__nop();
-		__nop();
-	}while((Status&WEL_Flag)!=WEL_Flag);
-	
-//	SPI_FLASH_DISALBE(SPI_Conf);										//SPI_FLASH_¹Ø±Õ
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
+	SPI_CS_LOW(&FlashSYS->SPI);
+	SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.WREN);
+	SPI_CS_HIGH(&FlashSYS->SPI);
 }
 /*******************************************************************************
-* Function Name  : SPI_FLASH_WriteDisable
-* Description    : Enables the write access to the FLASH.
+* Function Name  : SPI_FLASH_WriteDisble
+* Description    : Disables the write access to the FLASH.
 * Input          : None
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void SPI_FLASH_WriteDisable(SPI_FLASH_TypeDef *SPI_Conf)			//0xÐ´±£»¤--Ð´½ûÖ¹
+void SPI_FLASH_WriteDisble(void)
 {
-	u32 Status=0x00;
-
-	SPI_FLASH_ENALBE(SPI_Conf);															//SPI_FLASH_Ê¹ÄÜ	
-	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);						//0x05Ð´Èë¶Á×´Ì¬ÃüÁî
-	Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);	//¶ÁÈ¡×´Ì¬Öµ	
-	SPI_FLASH_DISALBE(SPI_Conf);														//SPI_FLASH_¹Ø±Õ
-	
-	Status=Status|0x1C;														//ËùÓÐµÄ±£»¤
-	
-  SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-	
-	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WRDI);	//·¢ËÍÐ´±£»¤ÃüÁî
-	SPI_FLASH_WriteStatus(SPI_Conf,Status);				//Ð´Flash×´Ì¬¼Ä´æÆ÷
-	
-	SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	
+	SPI_CS_LOW(&FlashSYS->SPI);
+	SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.WRDI);
+	SPI_CS_HIGH(&FlashSYS->SPI);
 }
 /*******************************************************************************
 * Function Name  : SPI_FLASH_WaitForWriteEnd
@@ -1843,1928 +586,27 @@ void SPI_FLASH_WriteDisable(SPI_FLASH_TypeDef *SPI_Conf)			//0xÐ´±£»¤--Ð´½ûÖ¹
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void SPI_FLASH_WaitForWriteEnd(SPI_FLASH_TypeDef *SPI_Conf)	//µÈ´ýFLASHÐ´Íê³É
+void SPI_FLASH_WaitForWriteEnd(void)
 {
   u8 FLASH_Status = 0;
+	unsigned long Time	=	720000;
 
-  SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-	
-  SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);						//·¢ËÍ¶Á×´Ì¬¼Ä´æÆ÷ÃüÁî
-  do			//Ñ­»·¶ÁÈ¡×´Ì¬Öµ£¬Ö±µ½Ð¾Æ¬ÍË³öÃ¦×´Ì¬
+  /* Select the FLASH: Chip Select low */
+  SPI_CS_LOW(&FlashSYS->SPI);
+
+  /* Send "Read Status Register" instruction */
+  SPI_ReadWriteByteSPI(&FlashSYS->SPI,FlashSYS->Cmd.RDSR);
+
+  /* Loop as long as the memory is busy with a write cycle */
+  do
   {
-    FLASH_Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);		//Ñ­»·¶ÁÈ¡×´Ì¬Öµ£¬
-		__nop();
-		__nop();
-		__nop();
-		__nop();
-		__nop();
-		__nop();
-		__nop();
+    /* Send a dummy byte to generate the clock needed by the FLASH
+    and put the value of the status register in FLASH_Status variable */
+    FLASH_Status = SPI_ReadWriteByteSPI(&FlashSYS->SPI,Dummy_Byte);
   }
-  while ((FLASH_Status & WIP_Flag) == WIP_Flag); 			
-
-	SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-}
-/*******************************************************************************
-*º¯ÊýÃû			:	function
-*¹¦ÄÜÃèÊö		:	»ñÈ¡FLASH²Ù×÷ÇëÇó
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎÞ
-*******************************************************************************/
-void SPI_FLASH_ReadRequest(SPI_FLASH_TypeDef *SPI_Conf)
-{
-		//¶ÁÇëÇó
-		if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request==SPI_FLASH_qREAD)			//¶ÁÇëÇó
-		{
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_READ;					//×´Ì¬Öµ£º¶Á
-		}
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request==SPI_FLASH_qCERASE)		//²Á³ýÇëÇó
-		{
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_ERASE;					//×´Ì¬Öµ£º²Á³ý
-		}
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request==SPI_FLASH_qBERASE)		//²Á³ýÇëÇó
-		{
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_ERASE;					//×´Ì¬Öµ£º²Á³ý
-		}
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request==SPI_FLASH_qSERASE)		//²Á³ýÇëÇó
-		{
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_ERASE;					//×´Ì¬Öµ£º²Á³ý
-		}
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_LenghToWrite!=0)					//Ð´ÇëÇó
-		{
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_WRITE;					//×´Ì¬Öµ£ºÐ´
-		}
-		SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;		//Ö´ÐÐ×´Ì¬Îª³õÊ¼×´Ì¬
-}
-/*******************************************************************************
-*º¯ÊýÃû			:	function
-*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎÞ
-*******************************************************************************/
-u8 SPI_FLASH_ReadStatus(SPI_FLASH_TypeDef *SPI_Conf)
-{
-	u8 FLASH_Status=0x00;	
-	//--------------¶ÁFLASH×´Ì¬
-	SPI_FLASH_ENALBE(SPI_Conf);																		//SPI_FLASH_Ê¹ÄÜ		
-	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);									//0x05Ð´Èë¶Á×´Ì¬ÃüÁî
-	FLASH_Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);	//¶ÁÈ¡×´Ì¬Öµ		
-	SPI_FLASH_DISALBE(SPI_Conf);																	//SPI_FLASH_¹Ø±Õ
-	
-	return FLASH_Status;
-}
-/*******************************************************************************
-*º¯ÊýÃû			:	function
-*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎÞ
-*******************************************************************************/
-void SPI_FLASH_WriteStatus(SPI_FLASH_TypeDef *SPI_Conf,u8 Status)		//Ð´Flash×´Ì¬¼Ä´æÆ÷
-{
-	SPI_FLASH_WriteEnable(SPI_Conf);					//0x06Ð´Ê¹ÄÜ
-	
-	SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
-	
-	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WRSR);	//0x01Ð´×´Ì¬¼Ä´æÆ÷ÃüÁî
-	SPI_FLASH_WriteReadByte(SPI_Conf,Status);			//Ð´×´Ì¬¼Ä´æÆ÷²ÎÊý
-	
-	SPI_FLASH_DISALBE(SPI_Conf);							//SPI_FLASH_¹Ø±Õ	
+  while (((FLASH_Status & WIP_Flag) == SET)&&(Time--)); /* Write in progress */
+  /* Deselect the FLASH: Chip Select high */
+  SPI_CS_HIGH(&FlashSYS->SPI);
 }
 
-/*******************************************************************************
-* Function Name  : SPI_FLASH_ReadID
-* Description    : Reads FLASH identification.
-* Input          : None
-* Output         : None
-* Return         : FLASH identification
-*******************************************************************************/
-u32 SPI_FLASH_ReadID(SPI_FLASH_TypeDef *SPI_Conf)
-{
-  u32 Temp = 0, Temp0 = 0, Temp1 = 0, Temp2 = 0;
-	
-  SPI_FLASH_ENALBE(SPI_Conf);												//SPI_FLASH_Ê¹ÄÜ
-	
-  SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDID);			//0x9F,¶ÁÉè±¸ÐÅÏ¢ÃüÁî
-
-  Temp0 = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);
-  Temp1 = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);
-  Temp2 = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);
-
-
-	SPI_FLASH_DISALBE(SPI_Conf);											//SPI_FLASH_¹Ø±Õ	  
-
-  Temp = (Temp0 << 16) | (Temp1 << 8) | Temp2;	
-
-  return Temp;
-}
-
-
-/*******************************************************************************
-* Function Name  : SPI_FLASH_SectorErase
-* Description    : Erases the specified FLASH sector.
-* Input          : SectorAddr: address of the sector to erase.
-* Output         : None
-* Return         : None
-*******************************************************************************/
-void SPI_FLASH_SectorErase(SPI_FLASH_TypeDef *SPI_Conf,u32 SectorAddr)
-{	
-	#ifdef SPI_FLASH_OSTL
-	if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus==SPI_FLASH_ERASE)
-	{
-		if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_IDLE)
-		{
-			SPI_FLASH_ENALBE(SPI_Conf);													//SPI_FLASH_Ê¹ÄÜ
-			SPI_Cmd(SPI_Conf->SPIx, ENABLE);										//Ê¹ÄÜSPI
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);				//0x06Ê¹ÄÜÐ´ÃüÁî
-			SPI_FLASH_DISALBE(SPI_Conf);												//SPI_FLASH_¹Ø±Õ
-			
-			SPI_FLASH_ENALBE(SPI_Conf);													//SPI_FLASH_Ê¹ÄÜ		
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);				//0x05Ð´Èë¶Á×´Ì¬ÃüÁî */		
-			SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);				//¶Á×´Ì¬ */			
-			SPI_FLASH_DISALBE(SPI_Conf);												//SPI_FLASH_¹Ø±Õ
-			
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_WIP0;			//½øÈë²Á³ý²½Öè	
-
-		}
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_WIP0)
-		{
-			u8 FLASH_Status=0;
-			
-			SPI_FLASH_ENALBE(SPI_Conf);																		//SPI_FLASH_Ê¹ÄÜ
-			SPI_Cmd(SPI_Conf->SPIx, ENABLE);															//Ê¹ÄÜSPI
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);									//0x06Ê¹ÄÜÐ´ÃüÁî
-			SPI_FLASH_DISALBE(SPI_Conf);																	//SPI_FLASH_¹Ø±Õ
-			
-			SPI_FLASH_ENALBE(SPI_Conf);																		//SPI_FLASH_Ê¹ÄÜ		
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);									//0x05Ð´Èë¶Á×´Ì¬ÃüÁî */		
-			FLASH_Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);	//¶Á×´Ì¬ */			
-			SPI_FLASH_DISALBE(SPI_Conf);																	//SPI_FLASH_¹Ø±Õ
-			
-			if((FLASH_Status&WEL_Flag)==WEL_Flag)		//Ð´ÔÊÐí±êÖ¾
-			{
-				//Ð´Èë×´Ì¬¼Ä´æÆ÷Öµ---È¥³ýÐ´±£»¤
-				SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-				SPI_FLASH_WriteReadByte(SPI_Conf,Flash_SE);		//0x20	//Ð¾Æ¬²Á³ý; ÉÈÇø²Á³ý
-				SPI_FLASH_WriteReadByte(SPI_Conf,(SectorAddr & 0xFF0000) >> 16);		//ÉÈÇøµØÖ·¸ß8Î»	
-				SPI_FLASH_WriteReadByte(SPI_Conf,(SectorAddr & 0xFF00) >> 8);				//ÉÈÇøµØÖ·ÖÐ¼ä8Î»
-				SPI_FLASH_WriteReadByte(SPI_Conf,SectorAddr & 0xFF);								//ÉÈÇøµØÖ·µÍ8Î»
-				SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-				
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_ERASE;			//½øÈë²Á³ý²½Öè				
-			}
-			else		//Ð´Î´ÔÊÐí
-			{
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_WIP0;				//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-			}
-		}
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_ERASE)	//¼ì²é²Á³ýÍê³É
-		{
-			u8 FLASH_Status = 0;
-
-			SPI_FLASH_ENALBE(SPI_Conf);																			//SPI_FLASH_Ê¹ÄÜ			
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);										//0x05·¢ËÍ¶Á×´Ì¬¼Ä´æÆ÷ÃüÁî
-			FLASH_Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);		//¶Á×´Ì¬Öµ£¬
-			SPI_FLASH_DISALBE(SPI_Conf);																		//SPI_FLASH_¹Ø±Õ
-			
-			if((FLASH_Status&WIP_Flag)!=WIP_Flag)						//²»ÔÚÐ´×´Ì¬£¬±íÃ÷²Á³ýÍê³É£¬ÍË³ö²Á³ý×´Ì¬
-			{	
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;		//Çå³ýFLASH²Á³ýÇëÇó	
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;			//FLASH»Øµ½¿ÕÏÐ×´Ì¬
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;						//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾				
-			}
-			else		//Ð´Î´ÔÊÐí
-			{
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_ERASE;				//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-			}
-		}
-	}
-	#else
-		/* Send write enable instruction */
-		SPI_FLASH_WaitForWriteEnd(SPI_Conf);			//µÈ´ýFLASHÐ´Íê³É
-		SPI_FLASH_WriteEnable(SPI_Conf);					//Ð´Ê¹ÄÜ
-		
-		SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
-		/* Send Sector Erase instruction */
-		SPI_FLASH_WriteReadByte(SPI_Conf,Flash_SE);
-		/* Send SectorAddr high nibble address byte */
-		SPI_FLASH_WriteReadByte(SPI_Conf,(SectorAddr & 0xFF0000) >> 16);
-		/* Send SectorAddr medium nibble address byte */
-		SPI_FLASH_WriteReadByte(SPI_Conf,(SectorAddr & 0xFF00) >> 8);
-		/* Send SectorAddr low nibble address byte */
-		SPI_FLASH_WriteReadByte(SPI_Conf,SectorAddr & 0xFF);
-		
-		SPI_FLASH_DISALBE(SPI_Conf);							//SPI_FLASH_¹Ø±Õ;
-		
-		/* Wait the end of Flash writing */
-		SPI_FLASH_WaitForWriteEnd(SPI_Conf);
-	#endif
-}
-
-/*******************************************************************************
-* Function Name  : SPI_FLASH_BulkErase
-* Description    : Erases the entire FLASH.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
-void SPI_FLASH_BulkErase(SPI_FLASH_TypeDef *SPI_Conf,u32 BulkAddr)
-{
-	#ifdef SPI_FLASH_OSTL
-	if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus==SPI_FLASH_ERASE)
-	{
-		if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_IDLE)
-		{
-			SPI_FLASH_ENALBE(SPI_Conf);													//SPI_FLASH_Ê¹ÄÜ
-			SPI_Cmd(SPI_Conf->SPIx, ENABLE);										//Ê¹ÄÜSPI
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);				//0x06Ê¹ÄÜÐ´ÃüÁî
-			SPI_FLASH_DISALBE(SPI_Conf);												//SPI_FLASH_¹Ø±Õ
-			
-			SPI_FLASH_ENALBE(SPI_Conf);													//SPI_FLASH_Ê¹ÄÜ		
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);				//0x05Ð´Èë¶Á×´Ì¬ÃüÁî */		
-			SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);				//¶Á×´Ì¬ */			
-			SPI_FLASH_DISALBE(SPI_Conf);												//SPI_FLASH_¹Ø±Õ
-			
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_WIP0;			//½øÈë²Á³ý²½Öè	
-
-		}
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_WIP0)
-		{
-			u8 FLASH_Status=0;
-			
-			SPI_FLASH_ENALBE(SPI_Conf);																		//SPI_FLASH_Ê¹ÄÜ
-			SPI_Cmd(SPI_Conf->SPIx, ENABLE);															//Ê¹ÄÜSPI
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);									//0x06Ê¹ÄÜÐ´ÃüÁî
-			SPI_FLASH_DISALBE(SPI_Conf);																	//SPI_FLASH_¹Ø±Õ
-			
-			SPI_FLASH_ENALBE(SPI_Conf);																		//SPI_FLASH_Ê¹ÄÜ		
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);									//0x05Ð´Èë¶Á×´Ì¬ÃüÁî */		
-			FLASH_Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);	//¶Á×´Ì¬ */			
-			SPI_FLASH_DISALBE(SPI_Conf);																	//SPI_FLASH_¹Ø±Õ
-			
-			if((FLASH_Status&WEL_Flag)==WEL_Flag)		//Ð´ÔÊÐí±êÖ¾
-			{
-				//Ð´Èë×´Ì¬¼Ä´æÆ÷Öµ---È¥³ýÐ´±£»¤
-				SPI_FLASH_ENALBE(SPI_Conf);																				//SPI_FLASH_Ê¹ÄÜ
-				SPI_FLASH_WriteReadByte(SPI_Conf,Flash_BE);												//0x52	//¿é²Á³ý		Ò²¿ÉÒÔÓÃ0XD8
-				SPI_FLASH_WriteReadByte(SPI_Conf,(BulkAddr & 0xFF0000) >> 16);		//¿éµØÖ·¸ß8Î»	
-				SPI_FLASH_WriteReadByte(SPI_Conf,(BulkAddr & 0xFF00) >> 8);				//¿éµØÖ·ÖÐ¼ä8Î»
-				SPI_FLASH_WriteReadByte(SPI_Conf,BulkAddr & 0xFF);								//¿éµØÖ·µÍ8Î»
-				SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-				
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_ERASE;			//½øÈë²Á³ý²½Öè				
-			}
-			else		//Ð´Î´ÔÊÐí
-			{
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_WIP0;				//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-			}
-		}
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_ERASE)	//¼ì²é²Á³ýÍê³É
-		{
-			u8 FLASH_Status = 0;
-
-			SPI_FLASH_ENALBE(SPI_Conf);																			//SPI_FLASH_Ê¹ÄÜ			
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);										//0x05·¢ËÍ¶Á×´Ì¬¼Ä´æÆ÷ÃüÁî
-			FLASH_Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);		//¶Á×´Ì¬Öµ£¬
-			SPI_FLASH_DISALBE(SPI_Conf);																		//SPI_FLASH_¹Ø±Õ
-			
-			if((FLASH_Status&WIP_Flag)!=WIP_Flag)						//²»ÔÚÐ´×´Ì¬£¬±íÃ÷²Á³ýÍê³É£¬ÍË³ö²Á³ý×´Ì¬
-			{	
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;		//Çå³ýFLASH²Á³ýÇëÇó	
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;			//FLASH»Øµ½¿ÕÏÐ×´Ì¬
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;						//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾				
-			}
-			else		//Ð´Î´ÔÊÐí
-			{
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_ERASE;				//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-			}
-		}
-	}
-	#else
-		SPI_FLASH_WriteEnable(SPI_Conf);							//FLASHÐ´Ê¹ÄÜ--µÈ´ý¿ÕÏÐ
-		SPI_FLASH_WaitForWriteEnd(SPI_Conf);					//µÈ´ýFLASHÐ´Íê³É--µÈ´ý¿ÕÏÐ
-		
-		SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-		SPI_FLASH_WriteReadByte(SPI_Conf,Flash_BE);		//Ð´Èë¿é²Á³ýÃüÁî
-		SPI_FLASH_WriteReadByte(SPI_Conf,(BulkAddr & 0xFF0000) >> 16);		//ÉÈÇøµØÖ·¸ß8Î»	
-		SPI_FLASH_WriteReadByte(SPI_Conf,(BulkAddr & 0xFF00) >> 8);				//ÉÈÇøµØÖ·ÖÐ¼ä8Î»
-		SPI_FLASH_WriteReadByte(SPI_Conf,BulkAddr & 0xFF);								//ÉÈÇøµØÖ·µÍ8Î»
-		SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ	
-
-		SPI_FLASH_WaitForWriteEnd(SPI_Conf);					//µÈ´ýFLASHÐ´Íê³É--µÈ´ý¿ÕÏÐ	
-	#endif
-}
-/*******************************************************************************
-* Function Name  : SPI_FLASH_BulkErase
-* Description    : Erases the entire FLASH.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
-void SPI_FLASH_ChipErase(SPI_FLASH_TypeDef *SPI_Conf)
-{
-#ifndef SPI_FLASH_OSTL
-	if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus==SPI_FLASH_ERASE)
-	{
-		u32 timee=0;
-		if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_IDLE)
-		{			
-			SPI_FLASH_ENALBE(SPI_Conf);													//SPI_FLASH_Ê¹ÄÜ		
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);				//0x05Ð´Èë¶Á×´Ì¬ÃüÁî */		
-			SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);				//¶Á×´Ì¬ */			
-			SPI_FLASH_DISALBE(SPI_Conf);												//SPI_FLASH_¹Ø±Õ
-			
-			while(timee++<0x2F);
-			timee=0;
-			
-			SPI_FLASH_ENALBE(SPI_Conf);													//SPI_FLASH_Ê¹ÄÜ
-			SPI_Cmd(SPI_Conf->SPIx, ENABLE);										//Ê¹ÄÜSPI
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);				//0x06Ê¹ÄÜÐ´ÃüÁî
-			SPI_FLASH_DISALBE(SPI_Conf);												//SPI_FLASH_¹Ø±Õ
-			
-			while(timee++<0x2F);
-			timee=0;
-			
-			SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WRSR);	//0x01Ð´×´Ì¬¼Ä´æÆ÷ÃüÁî
-			SPI_FLASH_WriteReadByte(SPI_Conf,0x00);				//Ê¹ÄÜÐ´×´Ì¬¼Ä´æÆ÷²ÎÊý--Çå³ýÐ´±£»¤
-			SPI_FLASH_DISALBE(SPI_Conf);
-			
-			while(timee++<0x2F);
-			timee=0;
-
-			SPI_FLASH_ENALBE(SPI_Conf);													//SPI_FLASH_Ê¹ÄÜ
-			SPI_Cmd(SPI_Conf->SPIx, ENABLE);										//Ê¹ÄÜSPI
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);				//0x06Ê¹ÄÜÐ´ÃüÁî
-			SPI_FLASH_DISALBE(SPI_Conf);												//SPI_FLASH_¹Ø±Õ			
-			
-			while(timee++<0x2F);
-			timee=0;
-			
-//			SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-//			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_CE);		//(unsigned char)0x60				//Ð¾Æ¬²Á³ý; ÕûÆ¬²Á³ý; Ò²¿ÉÒÔÓÃ0XC7	
-//			SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-			
-			SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_WIP0;			//½øÈë²Á³ý²½Öè	
-
-		}
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_WIP0)
-		{
-			u8 FLASH_Status=0;
-			
-			SPI_FLASH_ENALBE(SPI_Conf);																		//SPI_FLASH_Ê¹ÄÜ
-			SPI_Cmd(SPI_Conf->SPIx, ENABLE);															//Ê¹ÄÜSPI
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);									//0x06Ê¹ÄÜÐ´ÃüÁî
-			SPI_FLASH_DISALBE(SPI_Conf);																	//SPI_FLASH_¹Ø±Õ
-			
-			while(timee++<0x2F);
-			timee=0;
-			
-			SPI_FLASH_ENALBE(SPI_Conf);																		//SPI_FLASH_Ê¹ÄÜ		
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);									//0x05Ð´Èë¶Á×´Ì¬ÃüÁî */		
-			FLASH_Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);	//¶Á×´Ì¬ */			
-			SPI_FLASH_DISALBE(SPI_Conf);																	//SPI_FLASH_¹Ø±Õ
-			
-			while(timee++<0x2F);
-			timee=0;
-			
-			if((FLASH_Status&WEL_Flag)==WEL_Flag)		//Ð´ÔÊÐí±êÖ¾
-			{
-				//Ð´Èë×´Ì¬¼Ä´æÆ÷Öµ---È¥³ýÐ´±£»¤
-				SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-				SPI_FLASH_WriteReadByte(SPI_Conf,Flash_CE);		//0x60	//Ð¾Æ¬²Á³ý; ÕûÆ¬²Á³ý; Ò²¿ÉÒÔÓÃ0XC7
-				SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-				SPI_FLASH_ENALBE(SPI_Conf);																			//SPI_FLASH_Ê¹ÄÜ
-				
-				while(timee++<0x2F);
-				timee=0;
-				
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_ERASE;			//½øÈë²Á³ý²½Öè				
-			}
-			else		//Ð´Î´ÔÊÐí
-			{
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_WIP0;				//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-			}
-		}
-		else if(SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps==Step_ERASE)	//¼ì²é²Á³ýÍê³É
-		{
-//			u8 FLASH_Status = 0;
-
-//			SPI_FLASH_ENALBE(SPI_Conf);																			//SPI_FLASH_Ê¹ÄÜ			
-			SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);										//0x05·¢ËÍ¶Á×´Ì¬¼Ä´æÆ÷ÃüÁî
-			FLASH_Status1 = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);		//¶Á×´Ì¬Öµ£¬
-//			SPI_FLASH_DISALBE(SPI_Conf);																		//SPI_FLASH_¹Ø±Õ
-			
-			if((FLASH_Status1&WIP_Flag)!=WIP_Flag)						//²»ÔÚÐ´×´Ì¬£¬±íÃ÷²Á³ýÍê³É£¬ÍË³ö²Á³ý×´Ì¬
-			{	
-				SPI_FLASH_DISALBE(SPI_Conf);																		//SPI_FLASH_¹Ø±Õ
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Request=SPI_FLASH_qIDLE;		//Çå³ýFLASH²Á³ýÇëÇó	
-//				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Staus=SPI_FLASH_IDLE;			//FLASH»Øµ½¿ÕÏÐ×´Ì¬
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_IDLE;						//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾				
-			}
-			else		//Ð´Î´ÔÊÐí
-			{
-				SPI_Conf->SPI_FLASH_Info.SPI_FLASH_Steps=Step_ERASE;				//¼ÌÐø¼ì²éÐ´ÔÊÐí±êÖ¾
-			}
-		}
-	}
-	#else
-		/* Send write enable instruction */
-		SPI_FLASH_WriteEnable(SPI_Conf);							//Ð´ÔÊÐí
-	//	SPI_FLASH_WaitForWriteEnd(SPI_Conf);					//µÈ´ýFLASHÐ´Íê³É--Ð´ÔÊÐí
-		SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-		SPI_FLASH_WriteReadByte(SPI_Conf,Flash_CE);		//(unsigned char)0x60				//Ð¾Æ¬²Á³ý; ÕûÆ¬²Á³ý; Ò²¿ÉÒÔÓÃ0XC7	
-		SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-		SPI_FLASH_WaitForWriteEnd(SPI_Conf);					//µÈ´ý²Á³ýÍê³É
-	#endif
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////#ifdef SPI_FLASH							//Èç¹û¶¨ÒåÁËSPI_FLASH ´Ë¹¦ÄÜÉúÐ§
-////#include "SPI_FLASH.H"
-
-////#define USB_TEST_BD				//USB_TEST°å
-//////#define CMSIS_CDC_BD			//CMSIS-CDC°å
-//////#include "stdlib.h"
-//////#include "stdio.h"
-
-
-////#include "stm32f10x_spi.h"
-////#include "stm32f10x_gpio.h"
-////#include "stm32f10x_rcc.h"
-////#include "stm32f10x_dma.h"
-//////#include "stm32f10x_nvic.h"
-
-//////#include "STM32_WOW.H"
-////#include "STM32_PWM.H"
-////#include "STM32_SYS.H"
-////#include "STM32_SPI.H"
-////#include "STM32_GPIO.H"
-////#include "STM32_SYSTICK.H"
-////#include "STM32_USART.H"
-
-////#define 	Dummy_Byte 0xA5					//FLASH¿Õ²Ù×÷Êý
-//////#define		SPI_FLASH_PageSize   		0x100		//FlashÒ³´óÐ¡
-////#define		FLASH_WriteAddress     	0x00
-////#define		FLASH_ReadAddress      	FLASH_WriteAddress
-////#define		FLASH_SectorToErase    	FLASH_WriteAddress
-////#define 	FlASH_BufferSize				512
-////#define 	USART_BufferSize				FlASH_BufferSize
-
-////u32 Temp = 0;
-////SPI_FLASH_TypeDef	FLASH_Conf;
-
-////u16	FLASH_ChipEraseFlag=0;			//Æô¶¯ºó²Á³ýÒ»´ÎFLASH
-////u16	RWF=0;			//¶ÁÐ´±êÖ¾Î»
-
-////u32 FlashAddr=0;
-////u32 FlashID=0;
-////u8 FlashStatus=WEL_Flag;
-////u8 RevBuffer[FlASH_BufferSize]={0};
-////u8 SendBuffer[FlASH_BufferSize]={0x9F,0xFF,0XFF,0XFF};
-////u8 testSbuffer[FlASH_BufferSize]={0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfA};
-////u8 testRbuffer[FlASH_BufferSize]={0};
-
-////u8 RxdBuffe[USART_BufferSize]={0};
-////u8 RevBuffe[USART_BufferSize]={0};
-
-////u8 TxdBuffe[USART_BufferSize]={0};
-////u8 TevBuffe[USART_BufferSize]={0};
-
-/////*******************************************************************************
-////* º¯ÊýÃû		:	
-////* ¹¦ÄÜÃèÊö	:	 
-////* ÊäÈë		:	
-////* Êä³ö		:
-////* ·µ»Ø 		:
-////*******************************************************************************/
-////void SPI_FLASH_Configuration(void)
-////{
-////	SYS_Configuration();											//ÏµÍ³ÅäÖÃ STM32_SYS.H	
-////	GPIO_DeInitAll();																							//½«ËùÓÐµÄGPIO¹Ø±Õ----V20170605
-////	PWM_OUT(TIM2,PWM_OUTChannel1,1,500);			//PWMÉè¶¨-20161127°æ±¾
-////	
-////	USART_DMA_ConfigurationNR	(USART1,115200,(u32*)RxdBuffe,USART_BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖÐ¶Ï
-////	
-////	SPI_FLASH_Conf(&FLASH_Conf);			//SPIÉèÖÃ
-
-////	FlashStatus=WEL_Flag;	
-////	SysTick_Configuration(100);							//ÏµÍ³àÖàªÊ±ÖÓÅäÖÃ72MHz,µ¥Î»ÎªuS
-////}
-
-/////*******************************************************************************
-////* º¯ÊýÃû		:
-////* ¹¦ÄÜÃèÊö	:
-////* ÊäÈë		:
-////* Êä³ö		:
-////* ·µ»Ø 		:
-////*******************************************************************************/
-////void SPI_FLASH_Server(void)
-////{
-////	u16 RxNum=0;
-////	u32 Addr=0;
-////	
-////	RxNum=USART_ReadBufferIDLE			(USART1,(u32*)RevBuffe,(u32*)RxdBuffe);	//´®¿Ú¿ÕÏÐÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓÐÊý¾Ý£¬½«Êý¾Ý¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊý¾Ý¸öÊý£¬È»ºóÖØÐÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
-////	
-////	if(RxNum&&(FlashAddr<128*4*1024))
-////	{		
-////		SPI_FLASH_BufferWrite(&FLASH_Conf,	RevBuffe, 		FlashAddr, RxNum);	//FLASHÐ´»º³åÊý¾Ý
-////		SPI_FLASH_BufferRead(&FLASH_Conf,		testSbuffer,  FlashAddr, RxNum);
-////		FlashAddr+=RxNum;
-////	}
-//////	itoa(1234567890,TxdBuffe,10);//ËÑË÷10´ú±íÊ®½øÖÆ
-////	
-////	if(Temp!=0)
-////	{
-////		Temp=0;
-
-////	}
-////	else
-////	{
-////		Temp=1;
-
-////	}
-////	
-////	if(FLASH_ChipEraseFlag<=3000)
-////	{
-////		FLASH_ChipEraseFlag++;
-////		if(FLASH_ChipEraseFlag==3000)
-////		{
-//////			for(Addr=0;Addr<128*4*1024;)	//524288			//523776
-//////			{
-//////				SPI_FLASH_BufferRead(&FLASH_Conf,testRbuffer, Addr, FlASH_BufferSize);
-//////				Addr+=FlASH_BufferSize;
-//////			}
-////			
-//////			for(Addr=0;Addr<128*4*1024;)	//524288			//523776
-//////			{
-//////				SPI_FLASH_BufferWrite(&FLASH_Conf,testSbuffer, Addr, FlASH_BufferSize);
-//////				Addr+=FlASH_BufferSize;
-//////			}
-////			
-////		
-//////		SPI_FLASH_BulkErase(&FLASH_Conf);										//FLASHÕûÆ¬²Á³ý
-//////		SPI_FLASH_ChipErase(&FLASH_Conf);										//FLASHÕûÆ¬²Á³ý
-//////		SPI_FLASH_SectorErase(&FLASH_Conf,FLASH_ReadAddress);	//FlashÉÈÇø²Á³ý
-////			
-//////			SPI_FLASH_BufferWrite(&FLASH_Conf,testSbuffer, FLASH_WriteAddress, FlASH_BufferSize);	//FLASHÐ´»º³åÊý¾Ý
-//////			SPI_FLASH_BufferRead(&FLASH_Conf,testSbuffer, FLASH_WriteAddress, FlASH_BufferSize);
-////		}
-////	}
-////	RWF++;
-////	if(RWF==2000)
-////	{
-
-//////		SPI_FLASH_SectorErase(&FLASH_Conf,FLASH_SectorToErase);			//²Á³ýÉÈÇø
-//////		SPI_FLASH_BulkErase(&FLASH_Conf);										//FLASH¿é²Á³ý
-//////		SPI_FLASH_ChipErase(&FLASH_Conf);										//FLASHÕûÆ¬²Á³ý
-
-//////		SPI_FLASH_BufferWrite(&FLASH_Conf,testSbuffer, FLASH_WriteAddress, FlASH_BufferSize);	//FLASHÐ´»º³åÊý¾Ý
-////		
-////		
-////	}
-////	else if(RWF==3000)
-////	{
-////		RWF=0; 
-//////		SPI_FLASH_BufferRead(&FLASH_Conf,testRbuffer, FLASH_ReadAddress, FlASH_BufferSize);
-////		
-//////		for(Addr=0;Addr<128*4*1024;)
-//////		{
-//////			SPI_FLASH_BufferRead(&FLASH_Conf,testRbuffer, Addr, FlASH_BufferSize);
-//////			Addr+=512;
-//////		}
-
-////		
-////	}
-//////	Temp=0;
-//////	Temp=SPI_FLASH_ReadID();
-////	
-//////	SPI_FLASH_CS_ENABLE;
-//////	SPI_FLASH_SendByte(0x9F);
-//////	SPI_FLASH_CS_DISABLE;
-//////	u16 num=0xFFFE;
-//////	SPI_Cmd(SPI1, ENABLE);
-////	/*
-////	//1£©********SPI·¢ËÍ
-////	if(SPI1_NSS==SPI_NSS_Hard)		//1£©**********NSSÆ¬Ñ¡·½Ê½ÎªÓ²¼þ·½Ê½£¨SPI_NSS_Hard£©Ê±·¢ËÍÊý¾Ý
-////	{
-////		SPI_Cmd(SPI1, ENABLE);
-////		while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
-////		SPI_I2S_SendData(SPI1,0X55);
-////		while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
-////		SPI_Cmd(SPI1, DISABLE);
-////	}
-////	else				//2£©**********NSSÆ¬Ñ¡·½Ê½ÎªÈí¼þ¼þ·½Ê½£¨SPI_NSS_Soft£©Ê±·¢ËÍÊý¾Ý
-////	{
-////		GPIO_ResetBits(GPIOA,GPIO_Pin_4);
-////		while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
-////		SPI_I2S_SendData(SPI1,0X55);
-////		while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
-////		GPIO_SetBits(GPIOA,GPIO_Pin_4);
-////	}
-////	//1.2£©********SPI2·¢ËÍ
-////	if(SPI2_NSS==SPI_NSS_Hard)		//1£©**********NSSÆ¬Ñ¡·½Ê½ÎªÓ²¼þ·½Ê½£¨SPI_NSS_Hard£©Ê±·¢ËÍÊý¾Ý
-////	{	
-////		SPI_Cmd(SPI2, ENABLE);
-////		while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-////		SPI_I2S_SendData(SPI2,0XAA);
-////		while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_BSY) == SET);
-////		SPI_Cmd(SPI2, DISABLE);
-////	}
-////	else													//2£©**********NSSÆ¬Ñ¡·½Ê½ÎªÈí¼þ¼þ·½Ê½£¨SPI_NSS_Soft£©Ê±·¢ËÍÊý¾Ý
-////	{
-////		GPIO_ResetBits(GPIOB,GPIO_Pin_12);
-////		while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-////		SPI_I2S_SendData(SPI2,0XAA);
-////		while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_BSY) == SET);
-////		GPIO_SetBits(GPIOB,GPIO_Pin_12);
-////	}
-////	*/
-
-
-//////		GPIO_ResetBits(GPIOA,GPIO_Pin_4);
-//////		while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
-//////		SPI_I2S_SendData(SPI1,0X55);
-//////		while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_BSY) == SET);
-//////		GPIO_SetBits(GPIOA,GPIO_Pin_4);
-////		
-////		
-//////	SPI_TX_DMAFlagClear(SPI1);
-////	//2£©********SPI_DMA·¢ËÍ
-
-//////		SPI_Buffer
-//////		GPIO_ResetBits(GPIOA,GPIO_Pin_4);
-//////		SPI_Cmd(SPI1, ENABLE);
-////////		SPI_DMAPrintf(SPI1,"%d",num);		//SPI_DMA·¢ËÍº¯Êý----ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊý
-//////		//SPI_DMAPrintf(SPI1,"%s",SPI_Buffer);		//SPI_DMA·¢ËÍº¯Êý----ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊý
-//////		SPI_DMA_BufferWrite(SPI1,(u32*)SPI_Buffer,10);		//SPI_DMA·¢ËÍº¯Êý----ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊý
-//////		while(SPI_TX_DMAFlagClear(SPI1)==ERROR);
-//////		while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
-//////		SPI_Cmd(SPI1, DISABLE);
-//////		free(SPI_BUFFER);						//ÊÍ·Å¶¯Ì¬¿Õ¼ä
-//////		GPIO_SetBits(GPIOA,GPIO_Pin_4);
-//////		
-////////		GPIO_ResetBits(GPIOB,GPIO_Pin_12);
-//////		SPI_Cmd(SPI2, ENABLE);
-////////		SPI_DMAPrintf(SPI1,"%d",num);		//SPI_DMA·¢ËÍº¯Êý----ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊý
-//////		//SPI_DMAPrintf(SPI1,"%s",SPI_Buffer);		//SPI_DMA·¢ËÍº¯Êý----ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊý
-//////		SPI_DMA_BufferWrite(SPI2,(u32*)SPI_Buffer,10);		//SPI_DMA·¢ËÍº¯Êý----ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊý
-//////		while(SPI_TX_DMAFlagClear(SPI2)==ERROR);
-//////		while(SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-//////		SPI_Cmd(SPI2, DISABLE);
-//////		free(SPI_BUFFER);						//ÊÍ·Å¶¯Ì¬¿Õ¼ä
-//////		GPIO_SetBits(GPIOB,GPIO_Pin_12);
-
-
-//////	free(SPI_BUFFER);						//ÊÍ·Å¶¯Ì¬¿Õ¼ä
-////}
-/////*******************************************************************************
-////*º¯ÊýÃû			:	function
-////*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-////*ÊäÈë				: 
-////*·µ»ØÖµ			:	ÎÞ
-////*******************************************************************************/
-////void SPI_FLASH_Conf(SPI_FLASH_TypeDef *SPI_Conf)
-////{
-//////	#define USB_TEST_BD				//USB_TEST°å
-//////	#define CMSIS_CDC_BD			//CMSIS-CDC°å
-////	#ifdef	USB_TEST_BD
-////	SPI_Conf->SPIx=SPI2;
-////	SPI_Conf->SPI_CS_PORT=GPIOC;
-////	SPI_Conf->SPI_CS_PIN=GPIO_Pin_8;	
-////	SPI_Conf->SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
-////	
-////	#else
-////	
-////	SPI_Conf->SPIx=SPI1;
-////	SPI_Conf->SPI_CS_PORT=GPIOA;
-////	SPI_Conf->SPI_CS_PIN=GPIO_Pin_4;	
-////	SPI_Conf->SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
-////	
-////	#endif
-////	
-////	SPI_FLASH_ConfigurationNR(SPI_Conf);				//ÆÕÍ¨SPI½Ó¿ÚÅäÖÃ
-////	SPI_FLASH_GetInfo(SPI_Conf);		//»ñÈ¡FLASHÐÅÏ¢---¸ù¾ÝIDÈ·¶¨FLASHÐÍºÅ£¬ÅäÖÃÒ³´óÐ¡£¬ÉÈÇø´óÐ¡£¬¿é´óÐ¡²ÎÊý
-
-////}
-/////*******************************************************************************
-////*º¯ÊýÃû			:	function
-////*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-////*ÊäÈë				: 
-////*·µ»ØÖµ			:	ÎÞ
-////*******************************************************************************/
-////void SPI_FLASH_ConfigurationNR(SPI_FLASH_TypeDef *SPI_Conf)
-////{
-////		//1)**********¶¨ÒåÏà¹Ø½á¹¹Ìå
-////	SPI_InitTypeDef  SPI_InitStructure;
-////	GPIO_InitTypeDef GPIO_InitStructure;
-
-////	//2)**********Ïà¹ØGPIOÅäÖÃ
-////	if(SPI_Conf->SPIx==SPI1)
-////	{
-////		//PA4-NSS;PA5-SCK;PA6-MISO;PA7-MOSI;
-////		//2.1)**********´ò¿ªSPIÊ±ÖÓ	
-////		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1 ,ENABLE);			//¿ªÆôSPIÊ±ÖÓ	
-////		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOA, ENABLE);	
-////		
-////		if((SPI_Conf->SPI_CS_PORT==GPIOA)&&(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))			//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-////		{
-//////			SPI_SSOutputCmd(Pinfo->sSPIx, ENABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-////			SPI_Conf->SPI_Flash_NSS_CsFlg=1;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬SPI1_CsFlg=1£¬·ñÔòSPI1_CsFlg=0£»
-////			GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-////			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-////			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-////			GPIO_Init(GPIOA, &GPIO_InitStructure);
-////		}
-////		else
-////		{
-//////			SPI_SSOutputCmd(Pinfo->sSPIx, DISABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-////			SPI_Conf->SPI_Flash_NSS_CsFlg=0;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬SPI1_CsFlg=1£¬·ñÔòSPI1_CsFlg=0£»
-////			//¿ªCS-GPIOÊ±ÖÓ
-////			if(SPI_Conf->SPI_CS_PORT==GPIOA)
-////			{
-////				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_13)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-////				{
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO, ENABLE);
-////					//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);			//¹Ø±ÕSW¹¦ÄÜ
-////					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);		//¹Ø±ÕJTAG,SW¹¦ÄÜ¿ªÆô
-////				}
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOB)
-////			{
-////				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_3)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))
-////				{
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_AFIO, ENABLE);
-////					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);				//¹Ø±ÕJTAG
-////				}
-////				else
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOC)
-////			{
-////				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC |RCC_APB2Periph_AFIO, ENABLE);
-////				else
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOD)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOE)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOF)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOG)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
-////			}
-////			//SCK,MISO,MOSIÅäÖÃ
-////			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-////			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;
-////			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-////			GPIO_Init(GPIOA, &GPIO_InitStructure);
-////			//CSÅäÖÃ
-////			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-////			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-////			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-////			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-////		}
-////	}
-////	else if(SPI_Conf->SPIx==SPI2)
-////	{
-////		//PB12-NSS;PB13-SCK;PB14-MISO;PB15-MOSI;
-////		//2.2)**********´ò¿ªSPIÊ±ÖÓ
-////		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2 ,ENABLE);				//¿ªÆôSPIÊ±ÖÓ			
-////		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOB, ENABLE);
-////		
-////		if((SPI_Conf->SPI_CS_PORT==GPIOB)&&(SPI_Conf->SPI_CS_PIN==GPIO_Pin_12))			//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-////		{
-////			SPI_Conf->SPI_Flash_NSS_CsFlg=1;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI2£¨º¬CS½Å£©£¬SPI2_CsFlg=1£¬·ñÔòSPI2_CsFlg=0£»
-////			SPI_SSOutputCmd(SPI_Conf->SPIx, ENABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-////			GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-////			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-////			GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  //¸´ÓÃÍÆÍìÊä³ö
-////			GPIO_Init(GPIOB, &GPIO_InitStructure);	
-////		}
-////		else
-////		{
-////			
-//////			SPI_SSOutputCmd(Pinfo->sSPIx, DISABLE);			//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-////			SPI_Conf->SPI_Flash_NSS_CsFlg=0;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI2£¨º¬CS½Å£©£¬SPI2_CsFlg=1£¬·ñÔòSPI2_CsFlg=0£»
-////			//¿ªCS-GPIOÊ±ÖÓ
-////			if(SPI_Conf->SPI_CS_PORT==GPIOA)
-////			{
-////				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_13)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-////				{
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO, ENABLE);
-////					//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);			//¹Ø±ÕSW¹¦ÄÜ
-////					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);		//¹Ø±ÕJTAG,SW¹¦ÄÜ¿ªÆô
-////				}
-////				else
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOB)
-////			{
-////				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_3)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))
-////				{
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_AFIO, ENABLE);
-////					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);				//¹Ø±ÕJTAG
-////				}
-////				else
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOC)
-////			{
-////				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC |RCC_APB2Periph_AFIO, ENABLE);
-////				else
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOD)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOE)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOF)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOG)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
-////			}
-////			//SCK,MISO,MOSIÅäÖÃ
-////			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-////			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;
-////			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-////			GPIO_Init(GPIOB, &GPIO_InitStructure);
-////			//CSÅäÖÃ
-////			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-////			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-////			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-////			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-////		}
-////	}
-////	else if(SPI_Conf->SPIx==SPI3)
-////	{
-////		//PA15-NSS;PB3-SCK;PB4-MISO;PB5-MOSI;
-////		//2.2)**********´ò¿ªSPIÊ±ÖÓ
-////		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3 ,ENABLE);			
-////		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOB, ENABLE);
-////		
-////		if((SPI_Conf->SPI_CS_PORT==GPIOA)&&(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))			//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-////		{
-////			SPI_Conf->SPI_Flash_NSS_CsFlg=1;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI3£¨º¬CS½Å£©£¬SPI3_CsFlg=1£¬·ñÔòSPI3_CsFlg=0£»
-////			
-////			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
-////			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-////			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;  		//¸´ÓÃÍÆÍìÊä³ö
-////			GPIO_Init(GPIOB, &GPIO_InitStructure);
-////			
-////			//2.2)**********SPI_NSSÅäÖÃ		
-////			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_15;
-////			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-////			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;  		//¸´ÓÃÍÆÍìÊä³ö
-////			GPIO_Init(GPIOA, &GPIO_InitStructure);
-////		}
-////		else																										//Èç¹ûSPI_NSSÎªSPI_NSS_Soft£¨Èí¼þ¿ØÖÆ·½Ê½£©
-////		{
-////			SPI_Conf->SPI_Flash_NSS_CsFlg=0;		//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI3£¨º¬CS½Å£©£¬UseSPI3_flg=1£¬·ñÔòUseSPI3_flg=0£»
-////			//¿ªCS-GPIOÊ±ÖÓ
-////			if(SPI_Conf->SPI_CS_PORT==GPIOA)
-////			{
-////				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_13)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-////				{
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO, ENABLE);
-////					//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);			//¹Ø±ÕSW¹¦ÄÜ
-////					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);		//¹Ø±ÕJTAG,SW¹¦ÄÜ¿ªÆô
-////				}
-////				else
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOB)
-////			{
-////				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_3)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_4))
-////				{
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_AFIO, ENABLE);
-////					GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);				//¹Ø±ÕJTAG
-////				}
-////				else
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOC)
-////			{
-////				if((SPI_Conf->SPI_CS_PIN==GPIO_Pin_14)||(SPI_Conf->SPI_CS_PIN==GPIO_Pin_15))
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC |RCC_APB2Periph_AFIO, ENABLE);
-////				else
-////					RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOD)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOE)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOF)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
-////			}
-////			else if(SPI_Conf->SPI_CS_PORT==GPIOG)
-////			{
-////				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
-////			}
-////			//SCK,MISO,MOSIÅäÖÃ
-////			GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
-////			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;
-////			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-////			GPIO_Init(GPIOB, &GPIO_InitStructure);
-////			//CSÅäÖÃ
-////			GPIO_InitStructure.GPIO_Pin 	= SPI_Conf->SPI_CS_PIN;
-////			GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;
-////			GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-////			GPIO_Init(SPI_Conf->SPI_CS_PORT, &GPIO_InitStructure);
-////		}			
-////	}
-////	//3)**********SPIÅäÖÃÑ¡Ïî
-////	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;				//ÉèÖÃ·½Ïò				£¨2ÏßÈ«Ë«¹¤¡¢2ÏßÖ»½ÓÊÕ¡¢Ò»Ïß·¢ËÍ¡¢Ò»Ïß½ÓÊÕ£©
-////	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;															//Ä£Ê½         	£¨´Ó»òÖ÷Éè±¸£©
-////	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;													//¿í¶È         	£¨8»ò16Î»£©
-////	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;																//Ê±ÖÓ¼«ÐÔ     	£¨µÍ»ò¸ß£©
-////	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;															//Ê±ÖÓÏàÎ»     	£¨µÚÒ»¸ö»òµÚ¶þ¸öÌø±äÑØ£©
-////	if(SPI_Conf->SPI_Flash_NSS_CsFlg==1)																			//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬UseSPI1_flg=1£¬·ñÔòUseSPI1_flg=0£»
-////	{
-////		SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;																//Æ¬Ñ¡·½Ê½     	£¨Ó²¼þ»òÈí¼þ·½Ê½£©
-////	}
-////	else
-////	{
-////		SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;															//Æ¬Ñ¡·½Ê½     	£¨Ó²¼þ»òÈí¼þ·½Ê½£©
-////	}	
-////	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_Conf->SPI_BaudRatePrescaler_x;				//²¨ÌØÂÊÔ¤·ÖÆµ 	£¨´Ó2---256·ÖÆµ£©
-////	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;												//×îÏÈ·¢ËÍµÄÎ» 	£¨×îµÍÎ»£¬»¹ÊÇ×î¸ßÎ»ÔÚÏÈ£©
-////	SPI_InitStructure.SPI_CRCPolynomial = 7;																	//ÉèÖÃcrc¶àÏîÊ½	£¨Êý×Ö£©Èç7
-////	SPI_Init(SPI_Conf->SPIx,&SPI_InitStructure);
-
-////	SPI_FLASH_DISALBE(SPI_Conf);				//¹Ø±ÕSPI½Ó¿Ú£¬Ê¹ÓÃÊ±ÔÙ´ò¿ª
-////	
-////	//3)**********Ê¹ÄÜSPIx_NESSÎªÖ÷Êä³öÄ£Ê½
-////	if((SPI_Conf->SPIx->CR1&0X0200)!=SPI_NSS_Soft)						//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-////	{
-////		SPI_SSOutputCmd(SPI_Conf->SPIx, ENABLE);								//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-////	}
-////	else
-////	{
-////		SPI_SSOutputCmd(SPI_Conf->SPIx, DISABLE);								//Èç¹ûÔÚÖ÷»úÄ£Ê½ÏÂµÄÆ¬Ñ¡·½Ê½ÎªÓ²¼þ£¨SPI_NSS_Hard£©·½Ê½£¬´Ë´¦±ØÐë´ò¿ª£¬·ñÔòNSSÎÞÐÅºÅ
-////	}
-////}
-
-/////*******************************************************************************
-////*º¯ÊýÃû		:	SPI_DMA_Configuration
-////*¹¦ÄÜÃèÊö	:	º¯Êý¹¦ÄÜËµÃ÷
-////*ÊäÈë			: 
-////*Êä³ö			:	ÎÞ
-////*·µ»ØÖµ		:	ÎÞ
-////*Àý³Ì			:
-////*******************************************************************************/
-////void SPI_FLASH_ConfigurationDMA(
-////																SPI_FLASH_TypeDef *SPI_Conf,		//SPI½á¹¹Ìå
-////																u32* SPI_RX_Buffer,							//½ÓÊÕ»º³åÇøµØÖ·::·¢ËÍ»º³åÇøµØÖ·ÔÚ·¢ËÍÊý¾ÝÊ±Éè¶¨£¬ÅäÖÃÊ±½èÓÃ½ÓÊÕ»º³åÇøµØÖ·Íê³ÉÅäÖÃ
-////																u32 SPI_BUFFERSIZE							//»º³åÇø´óÐ¡
-////)		//SPI_FLASH_DMA·½Ê½ÅäÖÃ
-////{
-/////**-----------------------------------------------------------------------------------------------------
-////	********SPI_DMAµÄÍ¨ÐÅ¹ý³Ì********
-////	¡ñ ÉèÖÃÍâÉèµØÖ·
-////	¡ñ ÉèÖÃ´æ´¢Æ÷µØÖ·
-////	¡ñ ÉèÖÃ´«ÊäÊý¾ÝÁ¿
-////	¡ñ ÉèÖÃÍ¨µÀµÄÅäÖÃÐÅÏ¢
-////	¡ñ Ê¹ÄÜDMAÍ¨µÀ£¬Æô¶¯´«Êä
-////	
-////	¡ñ ·¢ËÍÊ±£¬ÔÚÃ¿´ÎTXE±»ÉèÖÃÎª¡¯1¡¯Ê±·¢³öDMAÇëÇó£¬DMA¿ØÖÆÆ÷ÔòÐ´Êý¾ÝÖÁSPI_DR¼Ä´æÆ÷£¬TXE±êÖ¾Òò´Ë¶ø±»Çå³ý¡£
-////	¡ñ ½ÓÊÕÊ±£¬ÔÚÃ¿´ÎRXNE±»ÉèÖÃÎª¡¯1¡¯Ê±·¢³öDMAÇëÇó£¬DMA¿ØÖÆÆ÷Ôò´ÓSPI_DR¼Ä´æÆ÷¶Á³öÊý¾Ý£¬RXNE±êÖ¾Òò´Ë¶ø±»Çå³ý¡£
-////-----------------------------------------------------------------------------------------------------**/
-////	//1)**********¶¨ÒåÏà¹Ø½á¹¹Ìå
-////	DMA_InitTypeDef	DMA_Initstructure;
-
-////	DMA_Channel_TypeDef* DMAx_Channeltx=0;				//DMA·¢ËÍÍ¨µÀÇëÇóÐÅºÅ---µ±DMA´®¿Ú·¢ËÍÊý¾ÝÍê³ÉÊ±£¬»á·¢ÆðDMAÖÐ¶Ï
-////	DMA_Channel_TypeDef* DMAx_Channelrx=0;				//DMA½ÓÊÕÍ¨µÀÇëÇóÐÅºÅ---DMA´®¿Ú½ÓÊÕÓÉ´®¿Ú·¢ÆðÖÐ¶Ï£¬Òò´Ë´Ë´¦½ÓÊÕÍ¨µÀÖÐ¶Ï²»Ê¹ÓÃ
-
-////	u8 Conf_Flag=0;																//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî
-////	
-////	//2)**********»ù±¾SPIÅäÖÃ
-////	SPI_FLASH_ConfigurationNR(SPI_Conf);					//ÆÕÍ¨SPI½Ó¿ÚÅäÖÃ--Î´¿ªÖÐ¶ÏºÍDMA
-////	
-////	//3)**********SPIÍ¨µÀÑ¡Ôñ
-////	if(SPI_Conf->SPIx==SPI1)
-////	{
-////		DMAx_Channeltx=DMA1_Channel3;
-////		DMAx_Channelrx=DMA1_Channel2;
-//////		DMAx_Channelx_IRQChannel=DMA1_Channel3_IRQChannel;
-////		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);
-////		Conf_Flag=1;																			//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî
-////	}
-////	else if(SPI_Conf->SPIx==SPI2)
-////	{
-////		DMAx_Channeltx=DMA1_Channel5;
-////		DMAx_Channelrx=DMA1_Channel4;
-//////		DMAx_Channelx_IRQChannel=DMA1_Channel5_IRQChannel;
-////		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);
-////		Conf_Flag=1;																			//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî		
-////	}
-////	else if(SPI_Conf->SPIx==SPI3)
-////	{
-////		DMAx_Channeltx=DMA2_Channel2;
-////		DMAx_Channelrx=DMA2_Channel1;
-//////		DMAx_Channelx_IRQChannel=DMA2_Channel2_IRQChannel;
-////		RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA2,ENABLE);
-////		Conf_Flag=1;																			//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî
-////	}
-////	else
-////	{
-////		Conf_Flag=0;																			//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî
-////	}	
-////	//4)**********SPI_DMAÅäÖÃ
-////	if(Conf_Flag==1)																		//ÐèÒªÅäÖÃ±êÖ¾£¬Èç¹ûSPIxºÏ·¨£¬ÔòConf_Flag==1£¬È»ºó½øÐÐÏÂÒ»²½DMAÅäÖÃÏî
-////	{
-////		//5)**********DMA·¢ËÍ³õÊ¼»¯£¬ÍâÉè×÷ÎªDMAµÄÄ¿µÄ¶Ë
-////		DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(&(SPI_Conf->SPIx)->DR);	//DMAÍâÉèÔ´µØÖ·
-////		DMA_Initstructure.DMA_MemoryBaseAddr     = (u32)SPI_RX_Buffer;						//DMAÊý¾ÝÄÚ´æµØÖ·
-////		DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralDST;												//DMA_DIR_PeripheralDST£¨ÍâÉè×÷ÎªDMAµÄÄ¿µÄ¶Ë£©£¬DMA_DIR_PeripheralSRC£¨ÍâÉè×÷ÎªÊý¾Ý´«ÊäµÄÀ´Ô´£©
-////		DMA_Initstructure.DMA_BufferSize = SPI_BUFFERSIZE; 												//Ö¸¶¨DMAÍ¨µÀµÄDMA»º´æµÄ´óÐ¡
-////		DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;					//DMA_PeripheralInc_Enable£¨ÍâÉèµØÖ·¼Ä´æÆ÷µÝÔö£©£¬DMA_PeripheralInc_Disable£¨ÍâÉèµØÖ·¼Ä´æÆ÷²»±ä£©£¬
-////		DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;										//DMA_MemoryInc_Enable£¨ÄÚ´æµØÖ·¼Ä´æÆ÷µÝÔö£©£¬DMA_MemoryInc_Disable£¨ÄÚ´æµØÖ·¼Ä´æÆ÷²»±ä£©
-////		DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;		//ÍâÉèÊý¾Ý¿í¶È--DMA_PeripheralDataSize_Byte£¨Êý¾Ý¿í¶ÈÎª8Î»£©£¬DMA_PeripheralDataSize_HalfWord£¨Êý¾Ý¿í¶ÈÎª16Î»£©£¬DMA_PeripheralDataSize_Word£¨Êý¾Ý¿í¶ÈÎª32Î»£©
-////		DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;						//ÄÚ´æÊý¾Ý¿í¶È--DMA_MemoryDataSize_Byte£¨Êý¾Ý¿í¶ÈÎª8Î»£©£¬DMA_MemoryDataSize_HalfWord£¨Êý¾Ý¿í¶ÈÎª16Î»£©£¬DMA_MemoryDataSize_Word£¨Êý¾Ý¿í¶ÈÎª32Î»£©
-////		DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;															//DMA¹¤×÷Ä£Ê½--DMA_Mode_Normal£¨Ö»´«ËÍÒ»´Î£©, DMA_Mode_Circular£¨²»Í£µØ´«ËÍ£©
-////		DMA_Initstructure.DMA_Priority = DMA_Priority_High; 											//DMAÍ¨µÀµÄ×ªÊäÓÅÏÈ¼¶--DMA_Priority_VeryHigh£¨·Ç³£¸ß£©DMA_Priority_High£¨¸ß)£¬DMA_Priority_Medium£¨ÖÐ£©£¬DMA_Priority_Low£¨µÍ£©
-////		DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;															//DMAÍ¨µÀµÄÄÚ´æµ½ÄÚ´æ´«Êä--DMA_M2M_Enable(ÉèÖÃÎªÄÚ´æµ½ÄÚ´æ´«Êä)£¬DMA_M2M_Disable£¨·ÇÄÚ´æµ½ÄÚ´æ´«Êä£©
-////		DMA_Init(DMAx_Channeltx,&DMA_Initstructure);															//³õÊ¼»¯DMA
-
-////		//6)**********DMA½ÓÊÕ³õÊ¼»¯£¬ÍâÉè×÷ÎªDMAµÄÔ´¶Ë
-////		DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(&(SPI_Conf->SPIx)->DR);	//DMAÍâÉèÔ´µØÖ·
-////		DMA_Initstructure.DMA_MemoryBaseAddr     = 	(u32)SPI_RX_Buffer;						//DMAÊý¾ÝÄÚ´æµØÖ·
-////		DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralSRC;												//DMA_DIR_PeripheralDST£¨ÍâÉè×÷ÎªDMAµÄÄ¿µÄ¶Ë£©£¬DMA_DIR_PeripheralSRC£¨ÍâÉè×÷ÎªÊý¾Ý´«ÊäµÄÀ´Ô´£©
-////		DMA_Initstructure.DMA_BufferSize = SPI_BUFFERSIZE; 												//Ö¸¶¨DMAÍ¨µÀµÄDMA»º´æµÄ´óÐ¡
-////		DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;					//DMA_PeripheralInc_Enable£¨ÍâÉèµØÖ·¼Ä´æÆ÷µÝÔö£©£¬DMA_PeripheralInc_Disable£¨ÍâÉèµØÖ·¼Ä´æÆ÷²»±ä£©£¬
-////		DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;										//DMA_MemoryInc_Enable£¨ÄÚ´æµØÖ·¼Ä´æÆ÷µÝÔö£©£¬DMA_MemoryInc_Disable£¨ÄÚ´æµØÖ·¼Ä´æÆ÷²»±ä£©
-////		DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;		//ÍâÉèÊý¾Ý¿í¶È--DMA_PeripheralDataSize_Byte£¨Êý¾Ý¿í¶ÈÎª8Î»£©£¬DMA_PeripheralDataSize_HalfWord£¨Êý¾Ý¿í¶ÈÎª16Î»£©£¬DMA_PeripheralDataSize_Word£¨Êý¾Ý¿í¶ÈÎª32Î»£©
-////		DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;						//ÄÚ´æÊý¾Ý¿í¶È--DMA_MemoryDataSize_Byte£¨Êý¾Ý¿í¶ÈÎª8Î»£©£¬DMA_MemoryDataSize_HalfWord£¨Êý¾Ý¿í¶ÈÎª16Î»£©£¬DMA_MemoryDataSize_Word£¨Êý¾Ý¿í¶ÈÎª32Î»£©
-////		DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;															//DMA¹¤×÷Ä£Ê½--DMA_Mode_Normal£¨Ö»´«ËÍÒ»´Î£©, DMA_Mode_Circular£¨²»Í£µØ´«ËÍ£©
-////		DMA_Initstructure.DMA_Priority = DMA_Priority_High; 											//DMAÍ¨µÀµÄ×ªÊäÓÅÏÈ¼¶--DMA_Priority_VeryHigh£¨·Ç³£¸ß£©DMA_Priority_High£¨¸ß)£¬DMA_Priority_Medium£¨ÖÐ£©£¬DMA_Priority_Low£¨µÍ£©
-////		DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;															//DMAÍ¨µÀµÄÄÚ´æµ½ÄÚ´æ´«Êä--DMA_M2M_Enable(ÉèÖÃÎªÄÚ´æµ½ÄÚ´æ´«Êä)£¬DMA_M2M_Disable£¨·ÇÄÚ´æµ½ÄÚ´æ´«Êä£©
-////		DMA_Init(DMAx_Channelrx,&DMA_Initstructure);															//³õÊ¼»¯DMA
-////		
-////		//7)**********DMAÍ¨µÀÖÐ¶Ï³õÊ¼»¯---´ËÎªDMA·¢ËÍÖÐ¶Ï----DMA·¢ËÍÍê³ÉÖÐ¶Ï
-////			
-////		SPI_I2S_DMACmd(SPI_Conf->SPIx, SPI_I2S_DMAReq_Tx, ENABLE);								//¿ªÆôDMA·¢ËÍ
-////		SPI_I2S_DMACmd(SPI_Conf->SPIx, SPI_I2S_DMAReq_Rx, ENABLE);								//¿ªÆôDMA½ÓÊÕ
-////		//Ê¹ÄÜSPIx
-////		SPI_Cmd(SPI_Conf->SPIx, ENABLE);
-////		
-////		//9.2)**********Ê¹ÄÜÏà¹ØDMAÍ¨µÀ´«ÊäÍê³ÉÖÐ¶Ï
-////		DMA_Cmd(DMAx_Channelrx,DISABLE);	
-////		DMA_Cmd(DMAx_Channeltx,DISABLE);
-////	}
-////	//Ê¹ÄÜSPIx
-////	SPI_Cmd(SPI_Conf->SPIx, DISABLE);
-////}
-
-
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_PageWrite
-////* Description    : Writes more than one byte to the FLASH with a single WRITE
-////*                  cycle(Page WRITE sequence). The number of byte can't exceed
-////*                  the FLASH page size.
-////* Input          : - pBuffer : pointer to the buffer  containing the data to be
-////*                    written to the FLASH.
-////*                  - WriteAddr : FLASH's internal address to write to.
-////*                  - NumByteToWrite : number of bytes to write to the FLASH,
-////*                    must be equal or less than "SPI_FLASH_PageSize" value.
-////* Output         : None
-////* Return         : None
-////*******************************************************************************/
-////void SPI_FLASH_PageWrite(SPI_FLASH_TypeDef *SPI_Conf,u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)	//FLASHÐ´Ò»Ò³Êý¾Ý
-////{
-////	if(NumByteToWrite)
-////	{
-////		SPI_FLASH_WriteEnable(SPI_Conf);											//0x06Ð´Ê¹ÄÜ
-////		
-////		SPI_FLASH_ENALBE(SPI_Conf);														//SPI_FLASH_Ê¹ÄÜ
-////		
-////		SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WPAGE);											//Ò³Ð´ÃüÁî
-////		SPI_FLASH_WriteReadByte(SPI_Conf,(WriteAddr & 0xFF0000) >> 16);		//Ð´Èë¸ß8Î»µØÖ·
-////		SPI_FLASH_WriteReadByte(SPI_Conf,(WriteAddr & 0xFF00) >> 8);				//Ð´ÈëÖÐ¼ä8Î»µØÖ·
-////		SPI_FLASH_WriteReadByte(SPI_Conf,WriteAddr & 0xFF);								//Ð´ÈëµÍ8Î»µØÖ·
-////		
-////		while (NumByteToWrite--)		//¿ªÊ¼Ð´ÈëÊý¾Ý£¬Ö±µ½Ð´Íê
-////		{
-////			SPI_FLASH_WriteReadByte(SPI_Conf,*pBuffer);				//Ð´ÈëÊý¾Ý
-////			pBuffer++;
-////		}
-////		SPI_FLASH_DISALBE(SPI_Conf);											//SPI_FLASH_¹Ø±Õ
-////		
-////		SPI_FLASH_WaitForWriteEnd(SPI_Conf);						//µÈ´ýÐ´ÈëÍê³É
-////	}	
-////}
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_BufferWrite
-////* Description    : Writes block of data to the FLASH. In this function, the
-////*                  number of WRITE cycles are reduced, using Page WRITE sequence.
-////* Input          : - pBuffer : pointer to the buffer  containing the data to be
-////*                    written to the FLASH.
-////*                  - WriteAddr : FLASH's internal address to write to.
-////*                  - NumByteToWrite : number of bytes to write to the FLASH.
-////* Output         : None
-////* Return         : None
-////*******************************************************************************/
-////void SPI_FLASH_BufferWrite(SPI_FLASH_TypeDef *SPI_Conf,u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)
-////{
-////  u8 NumOfPage = 0, NumOfSingle = 0, Addr = 0, count = 0, temp = 0;
-////	u32	SPI_FLASH_PageSize=SPI_Conf->SPI_FLASH_PageSize;		//»ñÈ¡´ËÐ¾Æ¬µÄÒ³´óÐ¡
-////	
-////  Addr = WriteAddr % SPI_FLASH_PageSize;							//¼ÆËãÒ³µØÖ·ÊÇ·ñ¶ÔÆë£¬¿ÉÒÔÕû³ýÔò¶ÔÆë
-////  count = SPI_FLASH_PageSize - Addr;									//¼ÆËãÒ³ÄÚÊ£Óà¿Õ¼ä´óÐ¡£¨Àý£ºÒ³´óÐ¡256£¬µØÖ·256£¬ÔòWriteAddr % SPI_FLASH_PageSize==1£»ÔÚÒ³ÄÚÊ£Óà255¸ö´æ´¢¿Õ¼ä£©
-////  NumOfPage =  NumByteToWrite / SPI_FLASH_PageSize;		//¼ÆËãÐèÒªÓÃµ½µÄÒ³ÊýÁ¿
-////  NumOfSingle = NumByteToWrite % SPI_FLASH_PageSize;	//¼ÆËãÊ£Óà²»ÍêÕûÒ³ÐèÒªÐ´ÈëµÄÊýÁ¿
-
-////  if (Addr == 0) 					/* WriteAddr is SPI_FLASH_PageSize aligned  */	//Ò³µØÖ·¶ÔÆë
-////  {
-////    if (NumOfPage == 0) 	/* NumByteToWrite < SPI_FLASH_PageSize */				//Êý¾Ý²»µ½Ò»Ò³
-////    {
-////      SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, NumByteToWrite);
-////    }
-////    else /* NumByteToWrite > SPI_FLASH_PageSize */												//Ð´ÈëµÄÊý¾Ý´óÓÚÒ»Ò³
-////    {
-////      while (NumOfPage--)
-////      {
-////        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, SPI_FLASH_PageSize);
-////        WriteAddr +=  SPI_FLASH_PageSize;		//µØÖ·¼ÓÒ»Ò³
-////        pBuffer += SPI_FLASH_PageSize;			//»º³åÇøÊý¾ÝµØÖ·Æ«ÒÆÒ»Ò³
-////      }
-////      SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, NumOfSingle);		//Ð´ÈëÊ£Óà·ÇÕûÒ³±¶Êý¾Ý
-////    }
-////  }
-////  else 				/* WriteAddr is not SPI_FLASH_PageSize aligned  */				//Ò³µØÖ·Î´¶ÔÆë
-////  {
-////    if (NumOfPage == 0) /* NumByteToWrite < SPI_FLASH_PageSize */				//Êý¾Ý²»µ½Ò»Ò³´óÐ¡
-////    {
-////      if (NumOfSingle > count) /* (NumByteToWrite + WriteAddr) > SPI_FLASH_PageSize */			//ÐèÒª¿çÒ³£¨ÐèÒªÐ´ÈëµÄÊý¾Ý´óÓÚÒ³ÄÚÊ£Óà¿Õ¼ä£©
-////      {
-////        temp = NumOfSingle - count;		//¼ÆËãÏÂÒ»Ò³´ýÐ´ÈëµÄÊý¾Ý¸öÊý£¨×ÜÊý-µ±Ç°Ò³¿Õ¼ä==ÏÂÒ»Ò³´ýÐ´ÈëµÄÊý¾Ý¸öÊý£©
-
-////        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, count);	//½«µ±Ç°Ò³¿Õ¼äÐ´Âú
-////        WriteAddr +=  count;					//µØÖ·+
-////        pBuffer += count;
-
-////        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, temp);		//½«Ê£ÓàµÄÊý¾ÝÐ´ÈëÏÂÒ»Ò³
-////      }
-////      else		//²»ÐèÒª¿çÒ³
-////      {
-////        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, NumByteToWrite);		//²»ÐèÒª¿çÒ³£¨Ê£ÓàµÄ¿Õ¼ä×ã¹»´æ´¢µ±Ç°Êý¾Ý£©ÔòÖ±½ÓÐ´Èë
-////      }
-////    }
-////    else /* NumByteToWrite > SPI_FLASH_PageSize */											//Ð´ÈëµÄÊý¾Ý´óÓÚÒ»Ò³²¢ÇÒµØÖ·²»¶ÔÆë
-////    {
-////      NumByteToWrite -= count;														//¼ÆËã½«Êý¾ÝÐ´ÈëµØÖ·²»¶ÔÆëÒ³ºóÊ£ÓàÊý¾Ý¸öÊý
-////      NumOfPage =  NumByteToWrite / SPI_FLASH_PageSize;		//¼ÆËãÊ£ÓàÊý¾ÝÐèÒªÕ¼ÓÃµÄÍêÕûÒ³¸öÊý
-////      NumOfSingle = NumByteToWrite % SPI_FLASH_PageSize;	//¼ÆËãÊ£ÓàÊý¾ÝÖÐ²»ÍêÕûÒ³µÄÊý¾Ý¸öÊý
-////			
-////			//------ÏÈ½«Ç°ÃæÒ»²¿·ÖÊý¾Ý½«ÆðÊ¼µØÖ·²»¶ÔÆëÊý¾ÝÐ´Âú
-////      SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, count);
-////      WriteAddr +=  count;
-////      pBuffer += count;
-
-////      while (NumOfPage--)			//½«Ê£ÓàµÄÕûÒ³Êý¾ÝÐ´ÈëFLASH
-////      {
-////        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, SPI_FLASH_PageSize);
-////        WriteAddr +=  SPI_FLASH_PageSize;
-////        pBuffer += SPI_FLASH_PageSize;
-////      }
-
-////      if (NumOfSingle != 0)		//ÅÐ¶ÏÊÇ·ñ»¹ÓÐÊ£Óà£¨²»¹»Ò»Ò³£©´ýÐ´Èë
-////      {
-////        SPI_FLASH_PageWrite(SPI_Conf,pBuffer, WriteAddr, NumOfSingle);
-////      }
-////    }
-////  }
-////}
-
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_BufferRead
-////* Description    : Reads a block of data from the FLASH.
-////* Input          : - pBuffer : pointer to the buffer that receives the data read
-////*                    from the FLASH.
-////*                  - ReadAddr : FLASH's internal address to read from.
-////*                  - NumByteToRead : number of bytes to read from the FLASH.
-////* Output         : None
-////* Return         : None
-////*******************************************************************************/
-////void SPI_FLASH_BufferRead(
-////													SPI_FLASH_TypeDef *SPI_Conf,
-////													u8* pBuffer, 					//Êý¾ÝµÄÊý¾Ý´æ´¢»º³åÇø
-////													u32 ReadAddr, 				//¶ÁÈ¡µÄÆðÊ¼µØÖ·
-////													u16 NumByteToRead			//´ý¶ÁÈ¡×Ö½ÚÊý
-////)
-////{
-////	if(NumByteToRead)
-////	{
-////		SPI_FLASH_WaitForWriteEnd(SPI_Conf);	//µÈ´ýFLASHÐ´Íê³É
-////		
-////		SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
-////		
-////		/* Send "Read from Memory " instruction */
-////		SPI_FLASH_WriteReadByte(SPI_Conf,Flash_READ);
-
-////		/* Send ReadAddr high nibble address byte to read from */
-////		SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr & 0xFF0000) >> 16);
-////		/* Send ReadAddr medium nibble address byte to read from */
-////		SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr& 0xFF00) >> 8);
-////		/* Send ReadAddr low nibble address byte to read from */
-////		SPI_FLASH_WriteReadByte(SPI_Conf,ReadAddr & 0xFF);
-
-////		while (NumByteToRead--) /* while there is data to be read */
-////		{
-////			/* Read a byte from the FLASH */
-////			*pBuffer = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);
-////			/* Point to the next location where the byte read will be saved */
-////			pBuffer++;
-////		}
-////		SPI_FLASH_DISALBE(SPI_Conf);											//SPI_FLASH_¹Ø±Õ
-////	}
-////}
-
-
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_StartReadSequence
-////* Description    : Initiates a read data byte (READ) sequence from the Flash.
-////*                  This is done by driving the /CS line low to select the device,
-////*                  then the READ instruction is transmitted followed by 3 bytes
-////*                  address. This function exit and keep the /CS line low, so the
-////*                  Flash still being selected. With this technique the whole
-////*                  content of the Flash is read with a single READ instruction.
-////* Input          : - ReadAddr : FLASH's internal address to read from.
-////* Output         : None
-////* Return         : None
-////*******************************************************************************/
-////void SPI_FLASH_StartReadSequence(SPI_FLASH_TypeDef *SPI_Conf,u32 ReadAddr)
-////{
-//////  /* Select the FLASH: Chip Select low */
-//////  SPI_FLASH_CS_LOW(SPI_Conf);
-
-////  /* Send "Read from Memory " instruction */
-////  SPI_FLASH_WriteReadByte(SPI_Conf,Flash_READ);
-
-////  /* Send the 24-bit address of the address to read from -----------------------*/
-////  /* Send ReadAddr high nibble address byte */
-////  SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr & 0xFF0000) >> 16);
-////  /* Send ReadAddr medium nibble address byte */
-////  SPI_FLASH_WriteReadByte(SPI_Conf,(ReadAddr& 0xFF00) >> 8);
-////  /* Send ReadAddr low nibble address byte */
-////  SPI_FLASH_WriteReadByte(SPI_Conf,ReadAddr & 0xFF);
-////}
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_SendHalfWord
-////* Description    : Sends a Half Word through the SPI interface and return the
-////*                  Half Word received from the SPI bus.
-////* Input          : Half Word : Half Word to send.
-////* Output         : None
-////* Return         : The value of the received Half Word.
-////*******************************************************************************/
-////u16 SPI_FLASH_SendHalfWord(SPI_FLASH_TypeDef *SPI_Conf,u16 HalfWord)
-////{
-////  /* Loop while DR register in not emplty */
-////  while (SPI_I2S_GetFlagStatus(SPI_Conf->SPIx, SPI_I2S_FLAG_TXE) == RESET);
-
-////  /* Send Half Word through the SPI1 peripheral */
-////  SPI_I2S_SendData(SPI_Conf->SPIx, HalfWord);
-
-////  /* Wait to receive a Half Word */
-////  while (SPI_I2S_GetFlagStatus(SPI_Conf->SPIx, SPI_I2S_FLAG_RXNE) == RESET);
-
-////  /* Return the Half Word read from the SPI bus */
-////  return SPI_I2S_ReceiveData(SPI_Conf->SPIx);
-////}
-/////*******************************************************************************
-////*º¯ÊýÃû			:	function
-////*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-////*ÊäÈë				: 
-////*·µ»ØÖµ			:	ÎÞ
-////*******************************************************************************/
-////void SPI_FLASH_GetInfo(SPI_FLASH_TypeDef *SPI_Conf)		//»ñÈ¡FLASHÐÅÏ¢---¸ù¾ÝIDÈ·¶¨FLASHÐÍºÅ£¬ÅäÖÃÒ³´óÐ¡£¬ÉÈÇø´óÐ¡£¬¿é´óÐ¡²ÎÊý
-////{
-////	u32 SPI_Flash_ID=0;
-////	SPI_Flash_ID=SPI_FLASH_ReadID(SPI_Conf);	//»ñÈ¡¶ÁFlashID
-////	//¸ù¾ÝIDÐÅÏ¢ÅäÖÃÏàµ±²ÎÊý
-////	switch((u8)(SPI_Flash_ID>>16))		//³§ÉÌ±àºÅ
-////	{
-////		case 0xC2:	//MXIC Manufacturer ID
-////		{
-////			switch((u8)(SPI_Flash_ID>>8))	//memory type ID
-////			{
-////				case	0x20:			//SPI_FLASH
-////				{
-////					switch((u8)SPI_Flash_ID)	//Ð¾Æ¬ÐÍºÅ
-////					{
-////						case	0x13:	//MX25L4006E
-////						{
-////							SPI_Conf->SPI_FLASH_PageSize		=	256;			//Ò³´óÐ¡
-////							SPI_Conf->SPI_FLASH_SectorSize	=	4096;			//ÉÈÇø´óÐ¡
-////							SPI_Conf->SPI_FLASH_BlockSize		=	65536;		//¿é´óÐ¡
-////						}
-////						break;						
-////						default	:break;
-////					}
-////				}
-////				break;
-////				default :break;
-////			}
-////		}
-////		break;
-////		default:		//Ä¬ÈÏÅäÖÃ
-////		{
-//////			SPI_Conf->SPI_FLASH_PageSize=256;			//Ò³´óÐ¡
-//////			SPI_Conf->SPI_FLASH_SectorSize=4096;	//ÉÈÇø´óÐ¡
-//////			SPI_Conf->SPI_FLASH_BlockSize=65536;	//¿é´óÐ¡
-////		}
-////		break;
-////	}
-////}
-/////*******************************************************************************
-////*º¯ÊýÃû			:	function
-////*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-////*ÊäÈë				: 
-////*·µ»ØÖµ			:	ÎÞ
-////*******************************************************************************/
-////void SPI_FLASH_ENALBE(SPI_FLASH_TypeDef *SPI_Conf)				//SPI_FLASH_Ê¹ÄÜ
-////{
-////	if(SPI_Conf->SPI_Flash_NSS_CsFlg==1)														//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬UseSPI1_flg=1£¬·ñÔòUseSPI1_flg=0£»
-////	{
-////		SPI_Cmd(SPI_Conf->SPIx, ENABLE);															//Ê¹ÄÜSPI--CS×Ô¶¯À­µÍ
-////	}
-////	else
-////	{
-////		
-////		SPI_Cmd(SPI_Conf->SPIx, ENABLE);	//Ê¹ÄÜSPI
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		GPIO_ResetBits(SPI_Conf->SPI_CS_PORT, SPI_Conf->SPI_CS_PIN);	//CS_LOWÆ¬Ñ¡Ê¹ÄÜ
-////																	
-////	}
-////	
-////}
-/////*******************************************************************************
-////*º¯ÊýÃû			:	function
-////*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-////*ÊäÈë				: 
-////*·µ»ØÖµ			:	ÎÞ
-////*******************************************************************************/
-////void SPI_FLASH_DISALBE(SPI_FLASH_TypeDef *SPI_Conf)				//SPI_FLASH_¹Ø±Õ
-////{	
-////	if(SPI_Conf->SPI_Flash_NSS_CsFlg==1)														//Èç¹ûÊ¹ÓÃ´¿Ó²¼þSPI1£¨º¬CS½Å£©£¬UseSPI1_flg=1£¬·ñÔòUseSPI1_flg=0£»
-////	{
-////		SPI_Cmd(SPI_Conf->SPIx, DISABLE);															//¹Ø±ÕSPI--CS×Ô¶¯À­¸ß
-////	}
-////	else
-////	{
-////		SPI_Cmd(SPI_Conf->SPIx, DISABLE);															//¹Ø±ÕSPI
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		GPIO_SetBits(SPI_Conf->SPI_CS_PORT, SPI_Conf->SPI_CS_PIN);		//CS_HIGH½ûÖ¹Æ¬Ñ¡
-////	}	
-////}
-
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_SendByte
-////* Description    : Sends a byte through the SPI interface and return the byte
-////*                  received from the SPI bus.
-////* Input          : byte : byte to send.
-////* Output         : None
-////* Return         : The value of the received byte.
-////*******************************************************************************/
-////u8 SPI_FLASH_WriteReadByte(SPI_FLASH_TypeDef *SPI_Conf,u8 byte)
-////{
-////  /* Loop while DR register in not emplty */
-////  while (SPI_I2S_GetFlagStatus(SPI_Conf->SPIx, SPI_I2S_FLAG_TXE) == RESET);
-////  /* Send byte through the SPI1 peripheral */
-////  SPI_I2S_SendData(SPI_Conf->SPIx, byte);
-////  /* Wait to receive a byte */
-////  while (SPI_I2S_GetFlagStatus(SPI_Conf->SPIx, SPI_I2S_FLAG_RXNE) == RESET);
-////  /* Return the byte read from the SPI bus */
-////  return SPI_I2S_ReceiveData(SPI_Conf->SPIx);
-////}
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_WriteEnable
-////* Description    : Enables the write access to the FLASH.
-////* Input          : None
-////* Output         : None
-////* Return         : None
-////*******************************************************************************/
-////void SPI_FLASH_WriteEnable(SPI_FLASH_TypeDef *SPI_Conf)		//0x06
-////{
-////	u8 Status=0;
-////	SPI_FLASH_WaitForWriteEnd(SPI_Conf);			//µÈ´ýFLASHÐ´Íê³É	
-////	
-////	SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
-////	SPI_Cmd(SPI_Conf->SPIx, ENABLE);					//Ê¹ÄÜSPI
-////	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);	//0x06Ê¹ÄÜÐ´ÃüÁî
-////	SPI_FLASH_DISALBE(SPI_Conf);							//SPI_FLASH_¹Ø±Õ
-////	
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	
-////	SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-////	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WRSR);	//0x01Ð´×´Ì¬¼Ä´æÆ÷ÃüÁî
-////	SPI_FLASH_WriteReadByte(SPI_Conf,0x00);				//Ê¹ÄÜÐ´×´Ì¬¼Ä´æÆ÷²ÎÊý--Çå³ýÐ´±£»¤
-////	SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-////	
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	
-//////	SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-//////	SPI_Cmd(SPI_Conf->SPIx, ENABLE);							//Ê¹ÄÜSPI
-//////	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);	//0x06Ê¹ÄÜÐ´ÃüÁî
-//////	SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-////	
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	
-////	do																				//µÈ´ýÐ´ÔÊÐí
-////	{
-////		SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-////		SPI_Cmd(SPI_Conf->SPIx, ENABLE);							//Ê¹ÄÜSPI
-////		SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WREN);	//0x06Ê¹ÄÜÐ´ÃüÁî
-////		SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-////		
-////		SPI_FLASH_ENALBE(SPI_Conf);													//SPI_FLASH_Ê¹ÄÜ		
-////		SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);						//Ð´Èë¶Á×´Ì¬ÃüÁî */		
-////		Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);	//¶Á×´Ì¬ */			
-////		SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////	}while((Status&WEL_Flag)!=WEL_Flag);
-////	
-//////	SPI_FLASH_DISALBE(SPI_Conf);										//SPI_FLASH_¹Ø±Õ
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////}
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_WriteDisable
-////* Description    : Enables the write access to the FLASH.
-////* Input          : None
-////* Output         : None
-////* Return         : None
-////*******************************************************************************/
-////void SPI_FLASH_WriteDisable(SPI_FLASH_TypeDef *SPI_Conf)			//0xÐ´±£»¤--Ð´½ûÖ¹
-////{
-////	u32 Status=0x00;
-
-////	SPI_FLASH_ENALBE(SPI_Conf);															//SPI_FLASH_Ê¹ÄÜ	
-////	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);						//0x05Ð´Èë¶Á×´Ì¬ÃüÁî
-////	Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);	//¶ÁÈ¡×´Ì¬Öµ	
-////	SPI_FLASH_DISALBE(SPI_Conf);														//SPI_FLASH_¹Ø±Õ
-////	
-////	Status=Status|0x1C;														//ËùÓÐµÄ±£»¤
-////	
-////  SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-////	
-////	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WRDI);	//·¢ËÍÐ´±£»¤ÃüÁî
-////	SPI_FLASH_WriteStatus(SPI_Conf,Status);				//Ð´Flash×´Ì¬¼Ä´æÆ÷
-////	
-////	SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	
-////}
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_WaitForWriteEnd
-////* Description    : Polls the status of the Write In Progress (WIP) flag in the
-////*                  FLASH's status  register  and  loop  until write  opertaion
-////*                  has completed.
-////* Input          : None
-////* Output         : None
-////* Return         : None
-////*******************************************************************************/
-////void SPI_FLASH_WaitForWriteEnd(SPI_FLASH_TypeDef *SPI_Conf)	//µÈ´ýFLASHÐ´Íê³É
-////{
-////  u8 FLASH_Status = 0;
-
-////  SPI_FLASH_ENALBE(SPI_Conf);										//SPI_FLASH_Ê¹ÄÜ
-////	
-////  SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);						//·¢ËÍ¶Á×´Ì¬¼Ä´æÆ÷ÃüÁî
-////  do			//Ñ­»·¶ÁÈ¡×´Ì¬Öµ£¬Ö±µ½Ð¾Æ¬ÍË³öÃ¦×´Ì¬
-////  {
-////    FLASH_Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);		//Ñ­»·¶ÁÈ¡×´Ì¬Öµ£¬
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////		__nop();
-////  }
-////  while ((FLASH_Status & WIP_Flag) == WIP_Flag); 			
-
-////	SPI_FLASH_DISALBE(SPI_Conf);									//SPI_FLASH_¹Ø±Õ
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////	__nop();
-////}
-/////*******************************************************************************
-////*º¯ÊýÃû			:	function
-////*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-////*ÊäÈë				: 
-////*·µ»ØÖµ			:	ÎÞ
-////*******************************************************************************/
-////u8 SPI_FLASH_ReadStatus(SPI_FLASH_TypeDef *SPI_Conf)
-////{
-////	u32 FLASH_Status=0x00;	
-////	if((SPI_Conf->SPI_FLASH_Status)==SPI_FLASH_IDLE)						//ÔÚFLASH·ÇÃ¦×´Ì¬Ê±¶Á×´Ì¬
-////	{
-////		//--------------¶ÁFLASH×´Ì¬
-////		SPI_FLASH_ENALBE(SPI_Conf);																//SPI_FLASH_Ê¹ÄÜ		
-////		SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDSR);							//0x05Ð´Èë¶Á×´Ì¬ÃüÁî
-////		FLASH_Status = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);	//¶ÁÈ¡×´Ì¬Öµ		
-////		SPI_FLASH_DISALBE(SPI_Conf);															//SPI_FLASH_¹Ø±Õ
-////		
-////		//--------------¸ù¾ÝFLASHÖ®Ç°µÄ¹¤×÷×´Ì¬¸´Î»Ïà¹Ø±êÖ¾
-////		//1£©-----------Ð´×´Ì¬ºó£¬¼ì²âÊÇ·ñ¶¨Íê³É
-////		switch(SPI_Conf->SPI_FLASH_Request)		//¸ù¾ÝÇëÇó¼ì²é×´Ì¬ºóÉèÖÃ±êÖ¾Î»
-////		{
-////			case	SPI_FLASH_qWRITED	:			//µÈ´ýÐ´Íê³É
-////			{
-////				if((FLASH_Status & WIP_Flag) != WIP_Flag)							//¸´Î»Ð´ÈëÍê³É±êÖ¾£¬¹¤×÷×´Ì¬ÎªÐ´ÈëÊ±£¬¼ì²éÊÇ·ñÐ´ÈëÍê³É£¬Èç¹ûÍê³É£¬×´Ì¬½øÈë¿ÕÏÐ×´Ì¬
-////				{
-////					SPI_Conf->SPI_FLASH_Status=SPI_FLASH_WIP;						//Ð´ÈëÍê³É£¬½øÈë¿ÕÏÐ×´Ì¬
-////					return FLASH_Status;																//·µ»Ø×´Ì¬Öµ
-////				}
-////			}	break;
-////			case	SPI_FLASH_qWRITEN	:			//Ð´ÇëÇó
-////			{
-////				if((FLASH_Status & WIP_Flag) != WIP_Flag)							//¸´Î»Ð´ÈëÍê³É±êÖ¾£¬¹¤×÷×´Ì¬ÎªÐ´ÈëÊ±£¬¼ì²éÊÇ·ñÐ´ÈëÍê³É£¬Èç¹ûÍê³É£¬×´Ì¬½øÈë¿ÕÏÐ×´Ì¬
-////				{
-////					SPI_Conf->SPI_FLASH_Status=SPI_FLASH_WIP;						//Ð´ÈëÍê³É£¬½øÈë¿ÕÏÐ×´Ì¬
-////					return FLASH_Status;																//·µ»Ø×´Ì¬Öµ
-////				}
-////			}	break;
-////		}
-////		
-////		
-////	}
-////	else
-////	{
-////		return 0;																					//·µ»Ø×´Ì¬Öµ
-////	}
-////	return 0;
-////}
-/////*******************************************************************************
-////*º¯ÊýÃû			:	function
-////*¹¦ÄÜÃèÊö		:	º¯Êý¹¦ÄÜËµÃ÷
-////*ÊäÈë				: 
-////*·µ»ØÖµ			:	ÎÞ
-////*******************************************************************************/
-////void SPI_FLASH_WriteStatus(SPI_FLASH_TypeDef *SPI_Conf,u8 Status)		//Ð´Flash×´Ì¬¼Ä´æÆ÷
-////{
-////	SPI_FLASH_WriteEnable(SPI_Conf);					//0x06Ð´Ê¹ÄÜ
-////	
-////	SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
-////	
-////	SPI_FLASH_WriteReadByte(SPI_Conf,Flash_WRSR);	//0x01Ð´×´Ì¬¼Ä´æÆ÷ÃüÁî
-////	SPI_FLASH_WriteReadByte(SPI_Conf,Status);			//Ð´×´Ì¬¼Ä´æÆ÷²ÎÊý
-////	
-////	SPI_FLASH_DISALBE(SPI_Conf);							//SPI_FLASH_¹Ø±Õ	
-////}
-
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_ReadID
-////* Description    : Reads FLASH identification.
-////* Input          : None
-////* Output         : None
-////* Return         : FLASH identification
-////*******************************************************************************/
-////u32 SPI_FLASH_ReadID(SPI_FLASH_TypeDef *SPI_Conf)
-////{
-////  u32 Temp = 0, Temp0 = 0, Temp1 = 0, Temp2 = 0;
-////	
-////  SPI_FLASH_ENALBE(SPI_Conf);												//SPI_FLASH_Ê¹ÄÜ
-////	
-////  SPI_FLASH_WriteReadByte(SPI_Conf,Flash_RDID);			//0x9F,¶ÁÉè±¸ÐÅÏ¢ÃüÁî
-
-////  Temp0 = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);
-////  Temp1 = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);
-////  Temp2 = SPI_FLASH_WriteReadByte(SPI_Conf,Dummy_Byte);
-
-
-////	SPI_FLASH_DISALBE(SPI_Conf);											//SPI_FLASH_¹Ø±Õ	  
-
-////  Temp = (Temp0 << 16) | (Temp1 << 8) | Temp2;	
-
-////  return Temp;
-////}
-
-
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_SectorErase
-////* Description    : Erases the specified FLASH sector.
-////* Input          : SectorAddr: address of the sector to erase.
-////* Output         : None
-////* Return         : None
-////*******************************************************************************/
-////void SPI_FLASH_SectorErase(SPI_FLASH_TypeDef *SPI_Conf,u32 SectorAddr)
-////{	
-////  /* Send write enable instruction */
-////	SPI_FLASH_WaitForWriteEnd(SPI_Conf);			//µÈ´ýFLASHÐ´Íê³É
-////  SPI_FLASH_WriteEnable(SPI_Conf);					//Ð´Ê¹ÄÜ
-////	
-////  SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
-////  /* Send Sector Erase instruction */
-////  SPI_FLASH_WriteReadByte(SPI_Conf,Flash_SE);
-////  /* Send SectorAddr high nibble address byte */
-////  SPI_FLASH_WriteReadByte(SPI_Conf,(SectorAddr & 0xFF0000) >> 16);
-////  /* Send SectorAddr medium nibble address byte */
-////  SPI_FLASH_WriteReadByte(SPI_Conf,(SectorAddr & 0xFF00) >> 8);
-////  /* Send SectorAddr low nibble address byte */
-////  SPI_FLASH_WriteReadByte(SPI_Conf,SectorAddr & 0xFF);
-////	
-////	SPI_FLASH_DISALBE(SPI_Conf);							//SPI_FLASH_¹Ø±Õ;
-////	
-////  /* Wait the end of Flash writing */
-////  SPI_FLASH_WaitForWriteEnd(SPI_Conf);	
-////}
-
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_BulkErase
-////* Description    : Erases the entire FLASH.
-////* Input          : None
-////* Output         : None
-////* Return         : None
-////*******************************************************************************/
-////void SPI_FLASH_BulkErase(SPI_FLASH_TypeDef *SPI_Conf)
-////{
-////  SPI_FLASH_WriteEnable(SPI_Conf);					//FLASHÐ´Ê¹ÄÜ--µÈ´ý¿ÕÏÐ
-////	SPI_FLASH_WaitForWriteEnd(SPI_Conf);			//µÈ´ýFLASHÐ´Íê³É--µÈ´ý¿ÕÏÐ
-////	
-////	SPI_FLASH_ENALBE(SPI_Conf);								//SPI_FLASH_Ê¹ÄÜ
-////  SPI_FLASH_WriteReadByte(SPI_Conf,Flash_BE);		//Ð´Èë¿é²Á³ýÃüÁî
-////	SPI_FLASH_DISALBE(SPI_Conf);							//SPI_FLASH_¹Ø±Õ	
-
-////  SPI_FLASH_WaitForWriteEnd(SPI_Conf);//µÈ´ýFLASHÐ´Íê³É--µÈ´ý¿ÕÏÐ	
-////}
-/////*******************************************************************************
-////* Function Name  : SPI_FLASH_BulkErase
-////* Description    : Erases the entire FLASH.
-////* Input          : None
-////* Output         : None
-////* Return         : None
-////*******************************************************************************/
-////void SPI_FLASH_ChipErase(SPI_FLASH_TypeDef *SPI_Conf)
-////{
-////  /* Send write enable instruction */
-////  SPI_FLASH_WriteEnable(SPI_Conf);
-////	/* µÈ´ýFLASHÐ´Íê³É*/
-////	SPI_FLASH_WaitForWriteEnd(SPI_Conf);		//µÈ´ýFLASHÐ´Íê³É
-////	/* Chip Erase */
-////	/* Select the FLASH: Chip Select low */
-////  SPI_FLASH_ENALBE(SPI_Conf);												//SPI_FLASH_Ê¹ÄÜ
-////	
-////  /* Send Bulk Erase instruction  */
-////  SPI_FLASH_WriteReadByte(SPI_Conf,Flash_CE);	//(unsigned char)0x60				//Ð¾Æ¬²Á³ý; ÕûÆ¬²Á³ý; Ò²¿ÉÒÔÓÃ0XC7	
-////	
-////	SPI_FLASH_DISALBE(SPI_Conf);											//SPI_FLASH_¹Ø±Õ
-////	
-////  /* Wait the end of Flash writing */
-////  SPI_FLASH_WaitForWriteEnd(SPI_Conf);	
-////}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/

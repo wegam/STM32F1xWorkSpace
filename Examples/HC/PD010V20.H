@@ -24,6 +24,9 @@
 #include "SWITCHID.H"		//°ÎÂë¿ª¹Ø
 
 
+#include "STM32_SPI.H"
+#include "MX25L4006E.H"
+
 
 
 
@@ -151,6 +154,7 @@ typedef	struct _PD010
 	RS232Def			RS232A;
 	RS232Def			RS232B;
 	CANBUSDef			CANBUS;
+	MX25L4006EDef	MX25Lx;
 	BoardDef			Board;
 }PD010Def;
 
@@ -166,7 +170,7 @@ void Motor_Configuration(void);
 void RS485_Configuration(void);
 void RS232_Configuration(void);
 void CAN_Configuration(void);
-
+void FLASH_Configuration(void);
 
 void Sensor_Server(void);
 void Switch_Server(void);
@@ -175,5 +179,6 @@ void Motor_Server(void);
 void RS485_Server(void);
 void RS232_Server(void);
 void CAN_Server(void);
+void FLASH_Server(void);
 #endif
 

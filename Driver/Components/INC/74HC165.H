@@ -6,8 +6,6 @@
 
 //HC165_CONF	HC165x_TEST;			//定义结构体变量
 
-
-
 typedef struct _HC165_DATA
 {
 	u8	NumOfHC165;		//串接的74HC165芯片个数,一个8位----此处设定最多4个,就是32位

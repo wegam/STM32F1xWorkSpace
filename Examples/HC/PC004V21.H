@@ -9,7 +9,8 @@ void PC004V21_PinSet(void);
 
 
 void PC004V21_KEYData(void);		//按键发药处理函数
-	
+
+void PD002V30_USART_Cofiguration(void);
 
 
 u8 PC004V10_485_TR(void);				//485收发

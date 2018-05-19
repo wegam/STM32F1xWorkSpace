@@ -1,4 +1,4 @@
-#ifdef MX25L4006E
+//#ifdef MX25L4006E
 
 #include "MX25L4006E.H"
 
@@ -245,6 +245,6 @@ u32 MX25L4006E_ReadID(void)
   return Temp;	
 }
 
-#endif
+//#endif
 
 

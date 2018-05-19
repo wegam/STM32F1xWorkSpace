@@ -13,6 +13,8 @@
 #include "stm32f10x_gpio.h"
 #include "GT32L32M0180.H"
 
+#include "STM32_PWM.H"
+
 //#define	LCD_H 240		//水平方向点数，从左到右+
 //#define LCD_V 400		//垂直方向点数，从上到下+
 
@@ -66,8 +68,8 @@ typedef struct	_LCDPort
 }LCDPortDef;
 typedef struct	_LCDData
 {
-	unsigned short	MaxH;						//水平最大点数
-	unsigned short 	MaxV;						//垂直最大点数
+	unsigned short	MaxH;						//水平最大点数----初始化需要配置参数
+	unsigned short 	MaxV;						//垂直最大点数----初始化需要配置参数
 	unsigned short	HSX;						//水平起始点
 	unsigned short 	HEX;						//水平终止点
 	unsigned short	VSY;						//垂直起始点
@@ -83,28 +85,12 @@ typedef struct	_LCDFlag		//0为无标识
 }LCDFlagDef;
 typedef struct _DisplayDriver
 {
-//	void ( *PortInitialize )(LCDPortDef *pInfo);			//端口初始化
-//	void ( *DataInitialize )(LCDDataDef *Data);				//数据初始化
-//	void ( *Reset )( void );
-	
-//	void ( *WriteIndexStart )(void);									//写索引--开始/使能
-//	void ( *WriteIndexEnd )(void);										//写索引--结束/关闭
-//	
-//	void ( *WriteDataStart )(void);										//写数据--开始/使能
-//	void ( *WriteDataEnd )(void);											//写数据--结束/关闭
-//	void ( *WriteData )(unsigned short Data);					//写数据
-//	
-//	void ( *WriteIndex16 )(void);
-//	void ( *WriteCommand )(unsigned short Index,unsigned short Command);	
 	void ( *WriteAddress )( unsigned short HSX,unsigned short HSY,unsigned short HEX,unsigned short HEY);
 	
 	void ( *PowerOn )(void);
 	void ( *PowerOff )(void);
 	void ( *DispOff )(void);
-	
-//	void ( *DSPClean )(unsigned short Color);
-//	void ( *DSPDrawDot )(unsigned short HSX,unsigned short HSY,unsigned short Color);
-//	void ( *DSPDrawLine )( unsigned short HSX,unsigned short HSY,unsigned short HEX,unsigned short HEY,unsigned short Color);
+
 }DisplayDriverDef;
 typedef struct	_LCD
 {
@@ -116,7 +102,7 @@ typedef struct	_LCD
 }LCDDef;
 
 
-extern LCDDef *LCDSYS;
+extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 
 #define	pLcdPort	(&(LCDSYS->Port))
 
@@ -134,8 +120,8 @@ extern LCDDef *LCDSYS;
 #define LCD_TE_LOW					(pLcdPort->sTE_PORT->BRR 		= pLcdPort->sTE_Pin)
 #define LCD_DATABUS_PORT		(pLcdPort->sDATABUS_PORT)
 
-#if 0
-	#define LCD_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,300)	//(R61509V_BL_PORT->BSRR = R61509V_BL_PIN)
+#if 1
+	#define LCD_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,100)	//(R61509V_BL_PORT->BSRR = R61509V_BL_PIN)
 	#define LCD_BL_OFF	PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,0)		//(R61509V_BL_PORT->BRR = R61509V_BL_PIN)
 #else
 	#define LCD_BL_ON		(pLcdPort->sBL_PORT->BSRR = pLcdPort->sBL_Pin)

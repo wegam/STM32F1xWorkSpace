@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xST' 
- * Target:  'USART_Interrupt' 
+ * Target:  'SPI_M25P64_FLASH' 
  */
 
 #ifndef RTE_COMPONENTS_H

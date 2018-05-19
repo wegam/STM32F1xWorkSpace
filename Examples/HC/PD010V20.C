@@ -36,16 +36,16 @@ void PD010V20_Configuration(void)
 
 	GPIO_DeInitAll();									//将所有的GPIO关闭----V20170605
 	
-	Sensor_Configuration();	
-	Switch_Configuration();	
-	Pmos_Configuration();	
-	Motor_Configuration();	
-	RS485_Configuration();	
-	RS232_Configuration();	
-	CAN_Configuration();
-	
+//	Sensor_Configuration();	
+//	Switch_Configuration();	
+//	Pmos_Configuration();	
+//	Motor_Configuration();	
+//	RS485_Configuration();	
+//	RS232_Configuration();	
+//	CAN_Configuration();
+	FLASH_Configuration();
 	SysTick_Configuration(1000);			//系统嘀嗒时钟配置72MHz,单位为uS----软件运行以定时扫描模式,定时时间为SysTickTime	
-	IWDG_Configuration(1000);					//独立看门狗配置	Tout-超时复位时间，单位ms	
+//	IWDG_Configuration(1000);					//独立看门狗配置	Tout-超时复位时间，单位ms	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);			//系统运行LED灯 频率1HZ,占空比500/1000
 }
 
@@ -58,17 +58,88 @@ void PD010V20_Server(void)
 {
 	IWDG_Feed();						//独立看门狗喂狗
 
-	if(RunTime++>8000)
+	if(RunTime++>2000)
 	{
 		RunTime=0;
+		FLASH_Server();
 	}
-	Sensor_Server();
-	Switch_Server();
-	Pmos_Server();
-	Motor_Server();
-	RS485_Server();
-	RS232_Server();
-	CAN_Server();
+//	Sensor_Server();
+//	Switch_Server();
+//	Pmos_Server();
+//	Motor_Server();
+//	RS485_Server();
+//	RS232_Server();
+//	CAN_Server();
+//	SPI_Server();
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void FLASH_Configuration(void)
+{
+	unsigned char temp	=	0x03;
+	SPIDef		*SPIx	=	&(PD010V20S.MX25Lx.SPIFlash.SPI);
+
+	SPIx->Port.SPIx=SPI1;
+	SPIx->Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_64;
+
+	SPIx->Port.CS_PORT	=	GPIOA;
+	SPIx->Port.CS_Pin		=	GPIO_Pin_4;
+	
+	SPIx->Port.CLK_PORT	=	GPIOA;
+	SPIx->Port.CLK_Pin	=	GPIO_Pin_5;
+	
+	SPIx->Port.MISO_PORT	=	GPIOA;
+	SPIx->Port.MISO_Pin		=	GPIO_Pin_6;
+	
+	SPIx->Port.MOSI_PORT	=	GPIOA;
+	SPIx->Port.MOSI_Pin		=	GPIO_Pin_7;
+	
+	memcpy((unsigned char*)&PD010V20S.MX25Lx.SPIFlash.Flag,&temp,1);
+	MX25L4006E_Initialize(&PD010V20S.MX25Lx);
+//	SPI_InitializeNR(&PD010V20S.SPI);
+//	SPI_Initialize(SPIx);
+//	GPIO_Configuration_OPP50	(Port->CS_PORT,				Port->CS_PIN);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void FLASH_Server(void)
+{
+	u8 Buffer[256]	=	{0};
+//	GPIO_ResetBits(GPIOA,GPIO_Pin_4);
+//	SPI_ReadWriteByteNR(SPI1,0XAA);
+//	SPI_ReadWriteByteNR(SPI1,0X55);
+//	GPIO_SetBits(GPIOA,GPIO_Pin_4);
+//	SPI_CS_LOW();
+//	SPI_Cmd(SPI1, ENABLE);
+//	SPI_ReadWriteByteSPI(SPI1,0XAA);
+//	SPI_ReadWriteByteSPI(SPI1,0X55);
+//	SPI_Cmd(SPI1, DISABLE);
+//	SPI_CS_HIGH;
+//	SPI_FLASH_WriteEnable();
+//	SPI_FLASH_WaitForWriteEnd();
+//	SPI_FLASH_ReadID();
+//	SPI_FLASH_ReadREMS();
+	SPI_FLASH_SetDeepPowerdown();		//进入深度省电模式
+	SPI_FLASH_ResDeepPowerdown();		//退出深度省电模式
+	SPI_FLASH_ReadREMS();						//读制造商信息和ID
+	SPI_FLASH_ReadRDSFDP();					//读(SFDP)Serial Flash芯片规范
+	SPI_FLASH_ReadStatusRegister();	//读状态寄存器
+//	SPI_FLASH_ChipErase();					//整片擦除
+	SPI_FLASH_BufferRead(Buffer, 0x00, 256);
 }
 /*******************************************************************************
 * 函数名			:	function

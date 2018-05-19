@@ -13,8 +13,4 @@
     <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
-  <project>
-    <PathAndName>.\Project\STM32F1xWOW\STM32F1xWOW.uvprojx</PathAndName>
-  </project>
-
 </ProjectWorkspace>

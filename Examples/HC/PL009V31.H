@@ -1,16 +1,21 @@
-#ifndef __PL010V15_H
-#define __PL010V15_H
+#ifndef __PL009V31_H
+#define __PL009V31_H
 
 
 
-//typedef struct _PL010V15
-//{
+typedef struct _LcdDriver
+{
+    void ( *Init )( void );
+    void ( *Reset )( void );
+    void ( *StartRx )( void );
+    void ( *GetRxPacket )( void *buffer, char *size );
+    void ( *SetTxPacket )( const void *buffer, char size );
+    unsigned long ( *Process )( void );
+}LcdDriverDef;
 
-//}PL010V15Def;
 
-
-void PL010V15_Configuration(void);
-void PL010V15_Server(void);
+void PL009V31_Configuration(void);
+void PL009V31_Server(void);
 
 
 void CS5530_Server(void);		//称重服务，AD值处理，获取稳定值
@@ -23,7 +28,7 @@ void GT32L32_Configuration(void);
 void LCD_Configuration(void);
 void CS5530_Configuration(void);
 void RS485_Configuration(void);
-void USART_Configuration(void);
+
 
 void LCD_PowerUp(void);
 void LCD_Display(void);

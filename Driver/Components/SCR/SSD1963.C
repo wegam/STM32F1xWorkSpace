@@ -17,7 +17,7 @@
 #include	"string.h"			//用于printf
 #include	"stdarg.h"			//用于获取不确定个数的参数
 #include	"stdlib.h"			//malloc动态申请内存空间
-#include "LCD.H"
+//#include "LCD.H"
 //#include <reg51.h>
 //#include "intrins.h"
 //#include "font\font.h"
@@ -26,32 +26,29 @@
 
 unsigned char hanzidata;
 
-
+LCDDef	*pSSD1963	=	0;		//内部驱动使用，不可删除
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	函数功能说明
 *输入				: 
 *返回值			:	无
 *******************************************************************************/
-void SSD1963_Initialize(void)
+void SSD1963_Initialize(LCDDef *pInfo)
 {
-	LCDSYS=LCDSYS;
-//	pInfo->Display.WriteAddress			=	R61509V_SetWindowAddress;
-	LCDSYS->Display.PowerOn					=	SSD1963_PowerOn;
-	LCDSYS->Display.DispOff					=	SSD1963_PowerOn;
 	
-	LCDSYS->Data.MaxH	=	LCD_H;								//最大水平宽度
-	LCDSYS->Data.MaxV	=	LCD_V;								//最大垂直高度
-//	pInfo->Flag.Rotate	=	Draw_Rotate_90D;	//使用旋转角度
-	LCDSYS->Data.BColor	=	LCD565_CYAN;				//背景色
-	LCDSYS->Data.PColor	=	LCD565_BLACK;		//画笔色
+	pSSD1963		=	pInfo;		//指针指向	
+	
+	pSSD1963->Data.MaxH	=	SSD1963_H;					//最大水平宽度
+	pSSD1963->Data.MaxV	=	SSD1963_V;					//最大垂直高度	
+	pSSD1963->Data.BColor	=	LCD565_RED;				//背景色
+	pSSD1963->Data.PColor	=	LCD565_YELLOW;		//画笔色
 	
 	
-	LCDSYS->Display.WriteAddress		=	SSD1963_SetWindowAddress;
-//	LCDSYS->Display.WriteAddress		=	LCD_SetWindowAddress;
+	pSSD1963->Display.WriteAddress		=	SSD1963_SetWindowAddress;
+	pSSD1963->Display.PowerOn					=	SSD1963_PowerOn;
+	pSSD1963->Display.DispOff					=	SSD1963_PowerOn;		//临时引用函数地址
 	
-	LCDSYS->Display.PowerOn					=	SSD1963_PowerOn;
-	LCDSYS->Display.DispOff					=	SSD1963_PowerOn;
+	LCD_Initialize(pSSD1963);
 }
 
 /*******************************************************************************
@@ -170,7 +167,7 @@ else //(Rotate	==Draw_Rotate_270D)
 void SSD1963_PowerOn(void)
 {
 
-	u16 time=50000;
+	u16 time=2000;
 	u16	temp=time;
 //调用一次这些函数，免得编译的时候提示警告
 	//1）——————————复位
@@ -255,7 +252,9 @@ void SSD1963_PowerOn(void)
 	//15）——————————设置垂直期
 	LCD_WriteIndex(0x00d0); 
 	LCD_WriteData(0x000D);
-
+	
+	temp=time;
+	while(temp--);			//等待晶振启动
 	LCD_Clean(LCDSYS->Data.BColor);	//以背景色清屏
 	
 	LCD_BL_ON;		//开背光
@@ -270,7 +269,7 @@ void SSD1963_PowerOn(void)
 *返回值		:	无
 *例程			:
 *******************************************************************************/
-void showhanzi(unsigned int x,unsigned int y,unsigned char index)	
+void showhanzi(unsigned short x,unsigned short y,unsigned char index)	
 {  
 	unsigned char i,j;
 	unsigned char *temp=&hanzidata;    
@@ -483,7 +482,7 @@ void SSD1963_ShowChar(u16 x,u16 y,u8 num,u8 mode)
 	u8 pos,t;
 	u16 x0=x;
 	u16 colortemp=LCDSYS->Data.PColor;      
-	if(x>LCD_H-16||y>LCD_V-16)return;	    
+	if(x>SSD1963_H-16||y>SSD1963_V-16)return;	    
 	//设置窗口		   
 	num=num-' ';//得到偏移后的值
 //	num=41;//得到偏移后的值

@@ -5,7 +5,7 @@
 //#include "string.h"				//串和内存操作函数头文件
 //#include "stm32f10x_dma.h"
 
-#include "LCD.H"
+#include "SSD1963.H"
 
 
 #include "STM32F10x_BitBand.H"
@@ -142,8 +142,6 @@ void STM32_LCD_Server(void)
 	}
 //	LCD_Printf(500,230,32,"%04d",millisecond);		//后边的省略号就是可变参数
 //	TM1618_DIS();
-
-////	LCD_PrintfString(600,230,32,"%03d",millisecond);		//后边的省略号就是可变参数
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -230,7 +228,6 @@ void LCD_Server(void)			//显示服务相关
 //	unsigned short y	=	0;
 //	for(Color	=	0;Color<=0xFFFF;)
 //	{
-//		
 //		LCD_DrawLine(y,0,y,480,Color);						//AB 两个坐标画一条直线
 //		SysTick_DeleymS(LCDTime);				//SysTick延时nmS
 //		Color+=100;	
@@ -238,7 +235,6 @@ void LCD_Server(void)			//显示服务相关
 //		if(y>=800)
 //			y=0;
 //	}
-	
 	
 	LCD_Clean(LCD565_WHITE);		//清除屏幕函数--
 	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
@@ -379,6 +375,7 @@ void LCD_Server(void)			//显示服务相关
 *******************************************************************************/
 void LCD_Configuration(void)
 {
+	SPIDef	*SPI	=	&sLCD.GT32L32.SPI;
 	sLCD.Port.sBL_PORT				=	GPIOC;
 	sLCD.Port.sBL_Pin					=	GPIO_Pin_0;
 	
@@ -401,19 +398,16 @@ void LCD_Configuration(void)
 	sLCD.Port.sCS_Pin					=	GPIO_Pin_5;
 	
 	sLCD.Port.sDATABUS_PORT		=	GPIOE;
-	sLCD.Port.sDATABUS_Pin		=	GPIO_Pin_All;
+	sLCD.Port.sDATABUS_Pin		=	GPIO_Pin_All;	
 	
+	sLCD.Flag.Rotate	=	Draw_Rotate_0D;		//使用旋转角度
 	
-	sLCD.Flag.Rotate	=	Draw_Rotate_0D;	//使用旋转角度
+	SPI->Port.SPIx		=	SPI1;
+	SPI->Port.CS_PORT	=	GPIOB;
+	SPI->Port.CS_Pin	=	GPIO_Pin_14;
+	SPI->Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
 	
-	
-	sLCD.GT32L32.Port.sSPIx=SPI1;
-	sLCD.GT32L32.Port.sGT32L32_CS_PORT=GPIOB;
-	sLCD.GT32L32.Port.sGT32L32_CS_PIN=GPIO_Pin_14;
-	sLCD.GT32L32.Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_32;
-	
-
-	LCD_Initialize(&sLCD);
+	SSD1963_Initialize(&sLCD);
 }
 
 /*******************************************************************************

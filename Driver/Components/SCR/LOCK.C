@@ -45,8 +45,8 @@ void LockServer(sLockSeDef *LockSe)
 	if(LockSe->LockTimeCountdown	> 0)		//时间大于0，锁驱动
 	{
 		LockSe->LockTimeCountdown--;				//倒计数
-		GPIO_SetBits((LockSe->DrGPIOx),(LockSe->DrGPIO_Pin_n));		//锁驱动打开--S8050
-//		GPIO_ResetBits(LockSe->DrGPIOx,LockSe->DrGPIO_Pin_n);			//锁驱动打开--S8550
+//		GPIO_SetBits((LockSe->DrGPIOx),(LockSe->DrGPIO_Pin_n));		//锁驱动打开--S8050
+		GPIO_ResetBits(LockSe->DrGPIOx,LockSe->DrGPIO_Pin_n);			//锁驱动打开--S8550
 		
 		if(GPIO_ReadInputDataBit(LockSe->SeGPIOx,LockSe->SeGPIO_Pin_n))		//检测锁反馈状态---低电平表示未打开
 		{
@@ -60,8 +60,8 @@ void LockServer(sLockSeDef *LockSe)
 				
 				LockSe->LockTimeCountdown	=	0;			//清除倒计数
 				
-				GPIO_ResetBits(LockSe->DrGPIOx,LockSe->DrGPIO_Pin_n);			//锁驱动关闭--S8050
-//				GPIO_SetBits((LockSe->DrGPIOx),(LockSe->DrGPIO_Pin_n));		//锁驱动关闭--S8550
+//				GPIO_ResetBits(LockSe->DrGPIOx,LockSe->DrGPIO_Pin_n);			//锁驱动关闭--S8050
+				GPIO_SetBits((LockSe->DrGPIOx),(LockSe->DrGPIO_Pin_n));		//锁驱动关闭--S8550
 			}
 			LockSe->SeTimeCountUp			=	0;
 		}
@@ -79,15 +79,15 @@ void LockServer(sLockSeDef *LockSe)
 				
 				LockSe->LockTimeCountdown	=	0;			//清除倒计数
 				
-				GPIO_ResetBits(LockSe->DrGPIOx,LockSe->DrGPIO_Pin_n);			//锁驱动关闭--S8050
-//				GPIO_SetBits((LockSe->DrGPIOx),(LockSe->DrGPIO_Pin_n));		//锁驱动关闭--S8550
+//				GPIO_ResetBits(LockSe->DrGPIOx,LockSe->DrGPIO_Pin_n);			//锁驱动关闭--S8050
+				GPIO_SetBits((LockSe->DrGPIOx),(LockSe->DrGPIO_Pin_n));		//锁驱动关闭--S8550
 			}
 		}		
 	}
 	else
 	{
-		GPIO_ResetBits(LockSe->DrGPIOx,LockSe->DrGPIO_Pin_n);			//锁驱动关闭--S8050
-//		GPIO_SetBits((LockSe->DrGPIOx),(LockSe->DrGPIO_Pin_n));		//锁驱动关闭--S8550
+//		GPIO_ResetBits(LockSe->DrGPIOx,LockSe->DrGPIO_Pin_n);			//锁驱动关闭--S8050
+		GPIO_SetBits((LockSe->DrGPIOx),(LockSe->DrGPIO_Pin_n));		//锁驱动关闭--S8550
 		if(LockSe->sLockFlg.LockFlg	==	1)			//有待处理事件未处理完
 		{
 			return;

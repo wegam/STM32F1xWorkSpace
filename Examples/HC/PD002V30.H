@@ -2,30 +2,64 @@
 #define __PD002V30_H
 
 
+typedef	enum _PD002V30Cmd
+{
+	APP_CMD_Null						=	0x00,	/*无命令*/
+	APP_CMD_CTFAYAO					=	0x21,	/*称重抽屉发药*/
+	APP_CMD_CTPANDIAN				=	0x22,	/*称重抽屉盘点*/
+	APP_CMD_CTJIAYAO				=	0x23,	/*称重抽屉加药*/
+	APP_CMD_CTCLEAR					=	0x25,	/*称重抽屉清零*/
+	APP_CMD_CTBIAODINGS1		=	0x26,	/*称重抽屉标定步骤1:放入一定数量的药品*/
+	APP_CMD_CTBIAODINGS2		=	0x27,	/*称重抽屉标定步骤2:输入数量*/
+	APP_CMD_CTHUISHOUFLICK	=	0x2A,	/*弹开回收抽屉*/
+	APP_CMD_CTFORCEPOPUP		=	0x2B,	/*称重抽屉强制弹出*/
+	APP_CMD_CTHUISHOUCOUNT	=	0x2C,	/*回收空药瓶计数*/
+	APP_CMD_CTHUISHOUCLEAR	=	0x2D	/*回收空药瓶清空*/
+}PD002V30CmdDef;
 
-
-
-
-typedef	struct _PD002V30
+typedef	struct
+{
+	unsigned short RunningTime;		//计时器
+	unsigned char	 StartAddr;			//数据存储起始地址
+	unsigned long	 PieceWeight;		//单重
+	struct
+	{
+		unsigned long	 PieceWeightCh1;		//单重
+		unsigned long	 PieceWeightCh2;		//单重
+	}Weight;
+}AT24C02Def;
+typedef	struct	_PD002V30RS485Pro
 {
 	struct
 	{
-		unsigned short RunningTime;		//计时器
-		unsigned char	 StartAddr;			//数据存储起始地址
-		unsigned long	 PieceWeight;		//单重
-		struct
-		{
-			unsigned long	 PieceWeightCh1;		//单重
-			unsigned long	 PieceWeightCh2;		//单重
-		}Weight;
-	}AT24C02;
+		unsigned char head1;
+		unsigned char head2;
+	}Head;
+	unsigned char		SerialNumber;	//流水号
+	unsigned char		Receipt;			//回执位
+	unsigned char		Number;				//编号
+	unsigned char		Address;			//位置	//取低4位
+	PD002V30CmdDef	Cmd;					//命令
+	unsigned char		Data;					//数据
+	unsigned char		Reserve;			//保留位
+	unsigned char		State;				//运行状态位
+	unsigned char		ErrFlag;			//错误码
+	unsigned char		Bcc8;					//异或校验(流水号到错误码）
+}PD002V30RS485ProCCDef;
+typedef	struct _PD002V30
+{
+	PD002V30RS485ProCCDef	RS485Data;
 }PD002V30Def;
 
 void PD002V30_Configuration(void);
 
 void PD002V30_Server(void);
+
 void PD002V30_USART_Cofiguration(void);
 void PD002V30_USART_Server(void);
+void PD002V30_RS485_Server(void);
+void PD002V30_RS485_Ack(PD002V30RS485ProCCDef *RS485Data);
+void PD002V30_CMD_Server(void);
 
 void AT24C02_Configuration(void);
 void SwitchID_Configuration(void);

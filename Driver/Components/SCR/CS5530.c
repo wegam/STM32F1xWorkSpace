@@ -1,6 +1,7 @@
 #include "CS5530.H"
 
 #include "STM32_GPIO.H"
+#include "STM32_SYSTICK.H"
 
 #include 	"TOOL.H"
 
@@ -132,33 +133,22 @@ void CS5530_Initialize(CS5530Def *pInfo)
 * 输入			: void
 * 返回值			: void
 *******************************************************************************/
-void CS5530_WriteOneByte(CS5530Def *pInfo, uint8_t dat)
+void CS5530_WriteOneByte(CS5530Def *pInfo, u8 dat)
 {
-	uint8_t i;
-
+	u8 i;
+	u16 delayTime	=	1;
 	for(i=0; i<8; i++)
 	{
 		if((dat&0x80) != 0)
 			CS5530_SDI_HIGH(pInfo);
 		else
 			CS5530_SDI_LOW(pInfo);
-		__nop();
-		__nop();
-		__nop();
-		__nop();
-//		CS5530_Delay(1);
+		
+		SysTick_DeleyuS(delayTime);				//SysTick延时nmS
 		CS5530_SCLK_HIGH(pInfo);
-		__nop();
-		__nop();
-		__nop();
-		__nop();
-//		CS5530_Delay(1);
+		SysTick_DeleyuS(delayTime);				//SysTick延时nmS
 		CS5530_SCLK_LOW(pInfo);
-		__nop();
-		__nop();
-//		__nop();
-//		__nop();
-//		CS5530_Delay(1);
+		SysTick_DeleyuS(delayTime);				//SysTick延时nmS
 		dat <<= 1;
 	}
 }
@@ -232,7 +222,7 @@ u32 CS5530_GetADData(CS5530Def *pInfo)
 {
 	u32 reValue=0;
 	
-	CS5530_CS_LOW(pInfo);
+//	CS5530_CS_LOW(pInfo);
 	__nop();
 	__nop();
 	__nop();
@@ -242,11 +232,13 @@ u32 CS5530_GetADData(CS5530Def *pInfo)
 	//Delay_us(100);
 	if(CS5530_SDO_STATE(pInfo) == 0)
 	{
-		CS5530_WriteOneByte(pInfo, CS5530_CONTINUOUS_ON);		///*继续连续转换模式*/
+//		CS5530_WriteOneByte(pInfo, CS5530_CONTINUOUS_ON);		///*继续连续转换模式*/
+		CS5530_SDI_LOW(pInfo);
+		CS5530_ReadOneByte(pInfo);
 		reValue = ((u32)CS5530_ReadOneByte(pInfo)<<24)
-				+((uint32_t)CS5530_ReadOneByte(pInfo)<<16)
-				+((uint32_t)CS5530_ReadOneByte(pInfo)<<8)
-				+(uint32_t)CS5530_ReadOneByte(pInfo);
+						+((uint32_t)CS5530_ReadOneByte(pInfo)<<16)
+						+((uint32_t)CS5530_ReadOneByte(pInfo)<<8)
+						+(uint32_t)CS5530_ReadOneByte(pInfo);
 	}
 	else
 		reValue = 0xFFFFFFFF;
@@ -255,7 +247,7 @@ u32 CS5530_GetADData(CS5530Def *pInfo)
 	__nop();
 	__nop();
 	//Delay_us(100);
-	CS5530_CS_HIGH(pInfo);
+//	CS5530_CS_HIGH(pInfo);
 
 	return reValue;
 }
@@ -271,9 +263,9 @@ u32 CS5530_ReadRegister(CS5530Def *pInfo, u8 command)
 	
 	CS5530_WriteOneByte(pInfo, command);
 	temp = (CS5530_ReadOneByte(pInfo)<<24)
-			+(CS5530_ReadOneByte(pInfo)<<16)
-			+(CS5530_ReadOneByte(pInfo)<<8)
-			+CS5530_ReadOneByte(pInfo);
+				+(CS5530_ReadOneByte(pInfo)<<16)
+				+(CS5530_ReadOneByte(pInfo)<<8)
+				+CS5530_ReadOneByte(pInfo);
 	
 	return temp;
 }
@@ -294,6 +286,7 @@ void CS5530_ClearBuf(CS5530Def *pInfo)
 //	pInfo->dataPtr = 0;
 //	__enable_irq();
 }
+
 /*******************************************************************************
 * 函数名			:	CS5530_PowerUp
 * 功能描述		:	CS5530上电及初始化
@@ -305,32 +298,149 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 	u8 num=0;
 	u16 retry	=	0;	//重试
 	CS5530_CS_LOW(pInfo);
-	CS5530_Delay(50000);CS5530_Delay(50000);CS5530_Delay(50000);CS5530_Delay(50000);CS5530_Delay(50000);CS5530_Delay(50000);
+	SysTick_DeleymS(200);				//SysTick延时nmS
 	//1)向系统所有ADC发送复位序列
-	//1.1、************写入SYNC1
+	//1.1、************写入15个SYNC1命令(0XFF)
 	for(num=0;num<15;num++)
-	CS5530_WriteOneByte(pInfo, CS5530_SYNC1);
-	CS5530_Delay(50);
-	//1.2、************写入SYNC0
+	{
+		CS5530_WriteOneByte(pInfo, CS5530_SYNC1);
+		SysTick_DeleymS(5);				//SysTick延时nmS
+	}
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	//1.2、************写入1个SYNC0命令（0XFE）
 	CS5530_WriteOneByte(pInfo, CS5530_SYNC0);
-	CS5530_Delay(50);
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	
 	//2)写配置寄存器 写入CS5530复位命令 RS为1
 	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_CONF_SYSTEM_RESET);
-	CS5530_Delay(500);
+	SysTick_DeleymS(50);				//SysTick延时nmS
 	CS5530_WriteOneByte(pInfo, CS5530_NULL_BYTE);
-	CS5530_Delay(50);
+	SysTick_DeleymS(50);				//SysTick延时nmS
 	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_CONF_NORMAL_MODE);
-	CS5530_Delay(50);
+	SysTick_DeleymS(50);				//SysTick延时nmS
 	
 	//检测RV是否为1(复位成 功后为1),如果不为1再继续读取配置寄存器		
-		CS5530_Delay(10);
+	do
+	{ 
+		CS5530_Status = CS5530_ReadRegister(pInfo, CS5530_READ_CONFIG);
+		SysTick_DeleymS(50);				//SysTick延时nmS
+	}
+	while(((CS5530_Status & CS5530_CONF_RESET_STATUS) != 0)&&(retry++<=100));
+	
+	if(retry>=100)
+	{
+		return;
+	}
+	
+//	CS5530_Status=0x1FFFFFF;
+	
+	CS5530_Status=0x1000000;
+	
+//	CS5530_Status=0x3F000000;
+//	
+//	CS5530_Status=0x0FFFFFF;
+//	
+//	CS5530_Status=0x7FFFFFF;
+//	
+//	CS5530_Status=0x1FFFFFF;
+	
+//	CS5530_Status=0x1000000;		//1200
+	
+	CS5530_Status=0x0800000;		//600
+	
+	CS5530_Status=0x0400000;		//300
+	
+	CS5530_Status=0x0200000;		//150
+	
+	CS5530_Status=0x01100000;		//1200
+	
+	CS5530_WriteRegister(pInfo,CS5530_WRITE_GAIN,CS5530_Status);			//增益寄存器	
+		
+//	CS5530_Status=0xFFFFFFFF;
+	CS5530_Status=CS5530_ReadRegister(pInfo,CS5530_READ_CONFIG);			//配置寄存器
+//	CS5530_Status=0xFFFFFFFF;
+	CS5530_Status=CS5530_ReadRegister(pInfo,CS5530_READ_OFFSET);			//偏移寄存器
+//	CS5530_Status=0xFFFFFFFF;
+	CS5530_Status=CS5530_ReadRegister(pInfo,CS5530_READ_GAIN);				//增益寄存器
+	
+	CS5530_Status=0x00;
+	
+//	CS5530_Status=CS5530_Status|0x82000;																	//6.25sps
+	
+	CS5530_Status=CS5530_Status|0x2000;																	//7.5sps
+	
+//	CS5530_Status=CS5530_Status|0x1800;																	//15sps
+	
+//	CS5530_Status=CS5530_Status|0x0800;																	//60sps
+	
+//	CS5530_Status=CS5530_Status|0x4000;																	//3840sps
+	
+//	CS5530_Status=CS5530_Status|0x6000;																	//240sps
+
+//	CS5530_Status=CS5530_Status&(~CS5530_CONF_SHORT_INPUTS);						//正常输入,通道输入不短接
+	
+//	CS5530_Status=CS5530_Status|CS5530_CONF_SHORT_INPUTS;								//设置为输入短路
+
+	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_Status);		//配置寄存器
+	
+	CS5530_WriteCommand(pInfo,CS5530_SYSTEM_OFFSET_CAL);							//执行偏移校准
+	
+	CS5530_WriteCommand(pInfo,CS5530_SYSTEM_GAIN_CAL);								//执行系统增益校准
+
+	CS5530_Status=CS5530_ReadRegister(pInfo,CS5530_READ_GAIN);				//增益寄存器
+	
+//	CS5530_WriteRegister(pInfo,CS5530_WRITE_GAIN,0x00FFFFFF);						//写增益寄存器
+	
+//	CS5530_WriteRegister(Pinfo,CS5530_WRITE_GAIN,0x00100000);					//写增益寄存器
+	
+	CS5530_WriteCommand(pInfo,CS5530_START_CONTINUOUS);									//执行连续转换
+	
+//	CS5530_WriteCommand(pInfo,CS5530_START_SINGLE);									//执行单次转换
+	
+	CS5530_Delay(500);
+	CS5530_CS_HIGH(pInfo);
+}
+/*******************************************************************************
+* 函数名			:	CS5530_PowerUp
+* 功能描述		:	CS5530上电及初始化
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void CS5530_PowerUpBac(CS5530Def *pInfo)
+{
+	u8 num=0;
+	u16 retry	=	0;	//重试
+	CS5530_CS_LOW(pInfo);
+	SysTick_DeleymS(200);				//SysTick延时nmS
+	//1)向系统所有ADC发送复位序列
+	//1.1、************写入15个SYNC1命令(0XFF)
+	for(num=0;num<15;num++)
+	{
+		CS5530_WriteOneByte(pInfo, CS5530_SYNC1);
+		SysTick_DeleymS(5);				//SysTick延时nmS
+	}
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	//1.2、************写入1个SYNC0命令（0XFE）
+	CS5530_WriteOneByte(pInfo, CS5530_SYNC0);
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	
+	//2)写配置寄存器 写入CS5530复位命令 RS为1
+	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_CONF_SYSTEM_RESET);
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	CS5530_WriteOneByte(pInfo, CS5530_NULL_BYTE);
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_CONF_NORMAL_MODE);
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	
+	//检测RV是否为1(复位成 功后为1),如果不为1再继续读取配置寄存器		
 		do
 		{ 
 			CS5530_Status = CS5530_ReadRegister(pInfo, CS5530_READ_CONFIG);
+			SysTick_DeleymS(50);				//SysTick延时nmS
 		}
-		while(((CS5530_Status & CS5530_CONF_RESET_STATUS) != 0)&&(retry++<1000));
+		while(((CS5530_Status & CS5530_CONF_RESET_STATUS) != 0)&&(retry++<=100));
 		
-		if(retry>=1000)
+		if(retry>=100)
 		{
 			return;
 		}
@@ -357,6 +467,8 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 
 	CS5530_Status=CS5530_ReadRegister(pInfo,CS5530_READ_CONFIG);				//增益寄存器
 
+//	CS5530_Status=CS5530_Status|0x82000;																	//6.25sps
+	
 	CS5530_Status=CS5530_Status|0x2000;																	//7.5sps
 	
 //	CS5530_Status=CS5530_Status|0x1800;																	//15sps
@@ -379,9 +491,9 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 	
 	CS5530_Status=CS5530_ReadRegister(pInfo,CS5530_READ_CONFIG);				//配置寄存器
 	
-	CS5530_Status=CS5530_Status&(~CS5530_CONF_SHORT_INPUTS);						//正常输入,通道输入不短接
+//	CS5530_Status=CS5530_Status&(~CS5530_CONF_SHORT_INPUTS);						//正常输入,通道输入不短接
 
-//	CS5530_Status=CS5530_Status|CS5530_CONF_SHORT_INPUTS;								//设置为输入短路
+	CS5530_Status=CS5530_Status|CS5530_CONF_SHORT_INPUTS;								//设置为输入短路
 	
 	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_Status);			//写配置寄存器
 	
@@ -409,15 +521,11 @@ u32	CS5530_ReadData(CS5530Def *pInfo)
 	if(CS5530_SDO_STATE(pInfo) == 0)
 	{			
 		ADC_Value=CS5530_GetADData(pInfo)>>8;		//获取24位原码值---读出4个字节，低8位为空值
+		SysTick_DeleymS(100);				//SysTick延时nmS
 	}
+	CS5530_CS_HIGH(pInfo);
 	return ADC_Value;
-
 }
-
-
-
-
-
 /**********************************************************
 函数名:中值滤波输出
 描述:提取n次采集的数据,去掉高m个,去掉低m个,然后留下中间的(n-2*m)个数据,
@@ -473,7 +581,7 @@ unsigned long CS5530_GetWeightUseMedinaFilter(CS5530Def *pInfo)
 *******************************************************************************/
 unsigned long CS5530_GetWeigh(CS5530Def *pInfo)
 {
-	if(pInfo->Data.Time++>=50)	//5Hz 0.2S
+	if(pInfo->Data.Time++>=5)	//5Hz 0.2S
 	{
 		unsigned long		ADC	=	0;
 		unsigned short	Num			=	0;			//计数器		
@@ -549,9 +657,9 @@ unsigned long CS5530_GetCalib(CS5530Def *pInfo)
 			unsigned short	Quq;
 			unsigned long AD1,AD2;
 			
-			Quq	=	pInfo->Data.Quantity;
-			AD1	=	pInfo->Data.Origin;
-			AD2	=	pInfo->Data.WeighFilt;
+			Quq	=	pInfo->Data.Quantity;		//数量
+			AD1	=	pInfo->Data.Origin;			//原点值
+			AD2	=	pInfo->Data.WeighFilt;	//滤波后AD值	
 			if((Quq>0)&&(AD2>AD1))
 			{
 				pInfo->Flag.GetCali		=	0;
@@ -575,6 +683,10 @@ unsigned long CS5530_GetOrigin(CS5530Def *pInfo)
 {
 	if(pInfo->Flag.GetOri)	//获取原点标记
 	{
+		if(pInfo->Data.Origin	!=0)
+		{
+			pInfo->Data.Origin	=	0;
+		}
 		if((pInfo->Data.WeighFilt!= 0xFFFFFFFF)&&(pInfo->Data.WeighFilt!= 0))
 		{
 			pInfo->Flag.GetOri	=	0;
@@ -648,7 +760,7 @@ void CS5530_Process(CS5530Def *pInfo)
 	CS5530_GetOrigin(pInfo);
 	CS5530_GetCalib(pInfo);
 	CS5530_GetQuant(pInfo);
-	pInfo->Flag.GetQua		=	1;
+//	pInfo->Flag.GetQua		=	1;
 }
 
 

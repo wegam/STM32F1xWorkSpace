@@ -25,56 +25,98 @@
 //#include "STM32_WOW.H"
 
 //#include	"stdio.h"			//用于printf
-//#include	"string.h"			//用于printf
-//#include	"stdarg.h"			//用于获取不确定个数的参数
-//#include	"stdlib.h"			//malloc动态申请内存空间
+//#include	"string.h"		//用于printf
+//#include	"stdarg.h"		//用于获取不确定个数的参数
+//#include	"stdlib.h"		//malloc动态申请内存空间
 //	
 //#include	"stddef.h"
 //#include	"stdint.h"
 
 //----SPI管脚配置--------------------------------------------------------------
-typedef struct	_SPI_Pin
+typedef struct	_SPIPort
 {
 	//____________端口定义
 	SPI_TypeDef *			SPIx;				//SPI接口配置 x=0、1、2、3、
 
 	//____________SPI_CS定义
-	GPIO_TypeDef* 	SPI_CS_PORT;		//GPIOX
-	unsigned short 	SPI_CS_PIN;			//GPIO_Pin_x
+	GPIO_TypeDef* 	CS_PORT;		//GPIOX
+	unsigned short 	CS_Pin;			//GPIO_Pin_x
 
 	//____________SPI_CLK定义
-	GPIO_TypeDef* 	SPI_CLK_PORT;		//GPIOX
-	unsigned short 	SPI_CLK_PIN;		//GPIO_Pin_x
+	GPIO_TypeDef* 	CLK_PORT;		//GPIOX
+	unsigned short 	CLK_Pin;		//GPIO_Pin_x
 
 	//____________SPI_MISO定义
-	GPIO_TypeDef* 	SPI_MISO_PORT;	//GPIOX
-	unsigned short 	SPI_MISO_PIN;		//GPIO_Pin_x
+	GPIO_TypeDef* 	MISO_PORT;	//GPIOX
+	unsigned short 	MISO_Pin;		//GPIO_Pin_x
 
 	//____________SPI_MOSI定义
-	GPIO_TypeDef* 	SPI_MOSI_PORT;	//GPIOX
-	unsigned short 	SPI_MOSI_PIN;		//GPIO_Pin_x
+	GPIO_TypeDef* 	MOSI_PORT;	//GPIOX
+	unsigned short 	MOSI_Pin;		//GPIO_Pin_x
 	
 	//____________SPI_波特率
 	unsigned short 	SPI_BaudRatePrescaler_x;		//x=2/4/8/16/32/64/128/256
 	
-}SPI_Conf_TypeDef;
+}SPIPortDef;
+typedef struct _SPIDriver
+{
+	void ( *SPIWriteByte )( unsigned char Byte);
+	void ( *SPIReadByte )( unsigned short HSX,unsigned short HSY,unsigned short HEX,unsigned short HEY);
+	
+	void ( *PowerOn )(void);
+	void ( *PowerOff )(void);
+	void ( *DispOff )(void);
+
+}SPIDriverDef;
+typedef struct	_SPI
+{
+	SPIPortDef		Port;
+	SPIDriverDef	SPIDr;	
+}SPIDef;
 
 
-void SPI_Server(void);
+//extern SPIDef	*SPISYS;			//内部驱动使用，不可删除	
 
-void STM32_SPI_ConfigurationNR(SPI_TypeDef* SPIx);					//普通SPI接口配置
-//void STM32_SPI_DMAConfigurationNR(SPI_Conf_TypeDef *SPI_Conf);			//SPI-DMA通讯方式配置---20170722未完成
+//#define	pSPIPort	(&(SPISYS->Port))
+
+//#define SPI_CS_HIGH				(pSPIPort->CS_PORT->BSRR		= pSPIPort->CS_Pin)
+//#define SPI_CS_LOW				(pSPIPort->CS_PORT->BRR 		= pSPIPort->CS_Pin)
+//#define SPI_CLK_HIGH			(pSPIPort->CLK_PORT->BSRR 	= pSPIPort->CLK_Pin)
+//#define SPI_CLK_LOW				(pSPIPort->CLK_PORT->BRR 		= pSPIPort->CLK_Pin)
+//#define SPI_MOSI_HIGH			(pSPIPort->MOSI_PORT->BSRR 	= pSPIPort->MOSI_Pin)
+//#define SPI_MOSI_LOW			(pSPIPort->MOSI_PORT->BRR 	= pSPIPort->MOSI_Pin)
+//#define SPI_MISO					(pSPIPort->MISO_PORT->IDR 	&	pSPIPort->MISO_Pin)
 
 
+//void SPI_Server(void);
+
+void SPI_Initialize(SPIDef* pInfo);		//SPI接口配置
+	
+void SPI_InitializeNR(SPIDef* pInfo);							//普通SPI接口配置
+
+void SPI_InitializeSPI(SPIDef *pInfo);		//普通SPI接口配置
+void SPI_InitializeDMA(SPIDef *pInfo);			//SPI-DMA通讯方式配置---20170722未完成
+
+void SPI_CS_LOW(SPIDef *pInfo);
+void SPI_CS_HIGH(SPIDef *pInfo);
+void SPI_CLK_LOW(SPIDef *pInfo);
+void SPI_CLK_HIGH(SPIDef *pInfo);
+void SPI_MOSI_LOW(SPIDef *pInfo);
+void SPI_MOSI_HIGH(SPIDef *pInfo);
+unsigned char SPI_MISO_In(SPIDef *pInfo);
+
+unsigned char	SPI_ReadWriteByteNR(SPIDef *pInfo,unsigned char Byte);
+unsigned char	SPI_ReadWriteByteSPI(SPIDef *pInfo,unsigned char Byte);
 
 
-u8	STM32_SPI_ReadWriteByte(SPI_TypeDef* SPIx,unsigned char byte);
+//unsigned char	SPI_ReadWriteOneByteNR(SPIDef *pInfo,unsigned char Byte);
+//unsigned char	SPI_ReadWriteOneByteSPI(SPIDef *pInfo,unsigned char Byte);
 
-u8	STM32_SPI_ReadWriteData(SPI_TypeDef* SPIx,unsigned char data);
 
-void STM32_SPI_SendBuffer(SPI_TypeDef* SPIx,u32 BufferSize,u8 *SendBuffer);
-void STM32_SPI_ReceiveBuffer(SPI_TypeDef* SPIx,u32 BufferSize,u8 *RevBuffer);
-u8	STM32_SPI_ReadWriteBuffer(SPI_TypeDef* SPIx,u32 BufferSize,u8 *SendBuffer,u8 *RevBuffer);		//连接读数据
+void SPI_WriteBufferSPI(SPIDef *pInfo,u8 *Buffer,u16 BufferSize);
+void SPI_ReadBufferSPI(SPIDef *pInfo,u8 *Buffer,u16 BufferSize);
+
+
 
 
 

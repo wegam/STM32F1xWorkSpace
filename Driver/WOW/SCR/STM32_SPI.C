@@ -18,11 +18,16 @@ SPI需要配置基本内容：
 
 *******************************************************************************/
 #include "STM32_SPI.H"
+
+#include "STM32_GPIO.H"
+
 //#include "stm32f10x_dma.h"
 //#include "stm32f10x_exti.h"
 //#include "STM32_EXTI.H"
 
-#include "STM32_WOW.H"
+//#include "STM32_WOW.H"
+
+
 
 #include "stm32f10x_spi.h"
 #include "stm32f10x_gpio.h"
@@ -30,21 +35,56 @@ SPI需要配置基本内容：
 #include "stm32f10x_dma.h"
 #include "stm32f10x_nvic.h"
 
-
-u8 SPI1_CsFlg=0;		//如果使用纯硬件SPI1（含CS脚），SPI1_CsFlg=1，否则SPI1_CsFlg=0；
-u8 SPI2_CsFlg=0;		//如果使用纯硬件SPI2（含CS脚），SPI2_CsFlg=1，否则SPI2_CsFlg=0；
-u8 SPI3_CsFlg=0;		//如果使用纯硬件SPI3（含CS脚），SPI3_CsFlg=1，否则SPI3_CsFlg=0；
-
+//SPIDef	*SPISYS	=	0;	//内部驱动使用，不可删除
 
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
-*输入				: 
-*返回值			:	无
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
 *******************************************************************************/
-void SPI_Server(void)
+void SPI_Delay(unsigned long Time)
 {
-	WOW_Server(); 
+	while(Time--);
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void SPI_Initialize(SPIDef* pInfo)
+{
+//	SPISYS	=	pInfo;						//指针指向
+	SPI_InitializeSPI(pInfo);	//普通SPI接口配置
+//	SPI_InitializeNR(pInfo);
+	GPIO_Configuration_OPP50	(pInfo->Port.CS_PORT,pInfo->Port.CS_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void SPI_InitializeNR(SPIDef* pInfo)					//普通SPI接口配置
+{
+	SPIPortDef		*Port;	
+//	SPISYS		=	pInfo;
+	Port			=	&(pInfo->Port);
+	
+	GPIO_Configuration_OPP50	(Port->CS_PORT,				Port->CS_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	GPIO_Configuration_OPP50	(Port->CLK_PORT,			Port->CLK_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	GPIO_Configuration_OPP50	(Port->MOSI_PORT,			Port->MOSI_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	GPIO_Configuration_IPU		(Port->MISO_PORT,			Port->MISO_Pin);				//将GPIO相应管脚配置为上拉输入模式----V20170605
 }
 /*******************************************************************************
 *函数名			:	function
@@ -52,140 +92,248 @@ void SPI_Server(void)
 *输入				: 
 *返回值			:	无
 *******************************************************************************/
-void STM32_SPI_ConfigurationNR(SPI_TypeDef* SPIx)
+void SPI_InitializeSPI(SPIDef *pInfo)
 {
-		//1)**********定义相关结构体
+	//1)**********定义相关结构体
 	SPI_InitTypeDef  SPI_InitStructure;
 	GPIO_InitTypeDef GPIO_InitStructure;
+	SPI_TypeDef *SPIx	=	pInfo->Port.SPIx;
+//	unsigned char SPIx_CsFlg=0;		//如果使用纯硬件SPIx（含CS脚），SPIx_CsFlg=1，否则SPIx_CsFlg=0；
 
 	//2)**********相关GPIO配置
-	if(SPIx==SPI1)
+	switch(*(u32*)&SPIx)
 	{
-		//PA4-NSS;PA5-SCK;PA6-MISO;PA7-MOSI;
-		//2.1)**********打开SPI时钟	
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1 ,ENABLE);			//开启SPI时钟	
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOA, ENABLE);			
-
-		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-		GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-		GPIO_Init(GPIOA, &GPIO_InitStructure);		
-	}
-	else if(SPIx==SPI2)
-	{
-		//PB12-NSS;PB13-SCK;PB14-MISO;PB15-MOSI;
-		//2.2)**********打开SPI时钟
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2 ,ENABLE);				//开启SPI时钟			
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOB, ENABLE);
-			
-		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  //复用推挽输出
-		GPIO_Init(GPIOB, &GPIO_InitStructure);
-		
-		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  //复用推挽输出
-		GPIO_Init(GPIOB, &GPIO_InitStructure);
-	}
-	else if(SPIx==SPI3)
-	{
-		//PA15-NSS;PB3-SCK;PB4-MISO;PB5-MOSI;
-		//2.2)**********打开SPI时钟
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3 ,ENABLE);			
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOB, ENABLE);
-		
-		GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
-		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-		GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;  		//复用推挽输出
-		GPIO_Init(GPIOB, &GPIO_InitStructure);
-		
-		//2.2)**********SPI_NSS配置		
-		GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_15;
-		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-		GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_Out_PP;  		//复用推挽输出
-		GPIO_Init(GPIOA, &GPIO_InitStructure);
+		case	SPI1_BASE://PA4-NSS;PA5-SCK;PA6-MISO;PA7-MOSI;
+										RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1 ,ENABLE);			//开启SPI时钟
+										RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOA, ENABLE);
+										GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
+										GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+										GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+										GPIO_Init(GPIOA, &GPIO_InitStructure);
+					break;
+		case	SPI2_BASE://PB12-NSS;PB13-SCK;PB14-MISO;PB15-MOSI;
+										RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2 ,ENABLE);				//开启SPI时钟	
+										RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOB, ENABLE);
+										GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+										GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+										GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  //复用推挽输出
+										GPIO_Init(GPIOB, &GPIO_InitStructure);
+					break;
+		case	SPI3_BASE://PA15-NSS;PB3-SCK;PB4-MISO;PB5-MOSI;
+										RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3 ,ENABLE);
+										RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO|RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOB, ENABLE);
+										GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
+										GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+										GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;  		//复用推挽输出
+										GPIO_Init(GPIOB, &GPIO_InitStructure);
+										//2.2)**********SPI_NSS配置		
+										GPIO_InitStructure.GPIO_Pin 	= GPIO_Pin_15;
+										GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+										GPIO_InitStructure.GPIO_Mode 	= GPIO_Mode_AF_PP;  		//复用推挽输出
+										GPIO_Init(GPIOA, &GPIO_InitStructure);
+					break;
+		default		: break;
 	}
 	//3)**********SPI配置选项
-//	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;				//设置方向				（2线全双工、2线只接收、一线发送、一线接收）
-//	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;															//模式         	（从或主设备）
-//	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;													//宽度         	（8或16位）
-//	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;																//时钟极性     	（低或高）
-//	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;															//时钟相位     	（第一个或第二个跳变沿）
-//	SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;																	//片选方式     	（硬件或软件方式）--硬件：自动控制NSS脚
-//	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;			//波特率预分频 	（从2---256分频）
-//	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;												//最先发送的位 	（最低位，还是最高位在先）
-//	SPI_InitStructure.SPI_CRCPolynomial = 7;																	//设置crc多项式	（数字）如7
-//	SPI_Init(SPIx,&SPI_InitStructure);
-	
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;				//设置方向				（2线全双工、2线只接收、一线发送、一线接收）
 	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;															//模式         	（从或主设备）
 	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;													//宽度         	（8或16位）
-	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;																//时钟极性     	（低或高）
-	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;															//时钟相位     	（第一个或第二个跳变沿）
-	SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;																	//片选方式     	（硬件或软件方式）--硬件：自动控制NSS脚
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;			//波特率预分频 	（从2---256分频）
-	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_LSB;												//最先发送的位 	（最低位，还是最高位在先）
+	SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;																//时钟极性     	（低或高）
+	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;															//时钟相位     	（第一个或第二个跳变沿）	
+	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;												//最先发送的位 	（最低位，还是最高位在先）
 	SPI_InitStructure.SPI_CRCPolynomial = 7;																	//设置crc多项式	（数字）如7
-	SPI_Init(SPIx,&SPI_InitStructure);
-
-	//3)**********使能SPIx_NESS为主输出模式	//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
-	SPI_SSOutputCmd(SPIx, ENABLE);								//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
-	//4)**********使能SPI
-	SPI_Cmd(SPIx, ENABLE);				//使能SPI
+	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;																	//片选方式     	（硬件或软件方式）
+	SPI_InitStructure.SPI_BaudRatePrescaler = pInfo->Port.SPI_BaudRatePrescaler_x;				//波特率预分频 	（从2---256分频）
+	SPI_Init(pInfo->Port.SPIx,&SPI_InitStructure);
+	SPI_Cmd(pInfo->Port.SPIx, ENABLE);				//使能SPI
+	
+//	SPIx_CsFlg	=	1;
+//	if(SPIx_CsFlg==1)																			//如果使用纯硬件SPI1（含CS脚），UseSPI1_flg=1，否则UseSPI1_flg=0；
+//	{
+//		SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;																//片选方式     	（硬件或软件方式）
+//	}
+//	else
+//	{
+//		SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;															//片选方式     	（硬件或软件方式）
+//	}
+//	SPI_Init(pInfo->Port.SPIx,&SPI_InitStructure);
+//	
+////	SPI_Cmd(pInfo->Port.SPIx, ENABLE);				//使能SPI	
+//	
+//	//3)**********使能SPIx_NESS为主输出模式
+//	if((pInfo->Port.SPIx->CR1&0X0200)!=SPI_NSS_Soft)						//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
+//	{
+//		SPI_SSOutputCmd(pInfo->Port.SPIx, ENABLE);			//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
+//	}
 }
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
-*输入				: 
-*返回值			:	无
+*函数名		:	SPI_DMA_Configuration
+*功能描述	:	函数功能说明
+*输入			: 
+*输出			:	无
+*返回值		:	无
+*例程			:
 *******************************************************************************/
-u8	STM32_SPI_ReadWriteByte(SPI_TypeDef* SPIx,unsigned char byte)
+void SPI_InitializeDMA(SPIDef *pInfo)		//SPI_FLASH_DMA方式配置
 {
-	  /* 等待DR寄存器空 */
-  while (SPI_I2S_GetFlagStatus(SPIx, SPI_I2S_FLAG_TXE) == RESET);
-	 
-  /* Send byte through the SPI1 peripheral */
-  SPI_I2S_SendData(SPIx, byte);
+/**-----------------------------------------------------------------------------------------------------
+	********SPI_DMA的通信过程********
+	● 设置外设地址
+	● 设置存储器地址
+	● 设置传输数据量
+	● 设置通道的配置信息
+	● 使能DMA通道，启动传输
+	
+	● 发送时，在每次TXE被设置为’1’时发出DMA请求，DMA控制器则写数据至SPI_DR寄存器，TXE标志因此而被清除。
+	● 接收时，在每次RXNE被设置为’1’时发出DMA请求，DMA控制器则从SPI_DR寄存器读出数据，RXNE标志因此而被清除。
+-----------------------------------------------------------------------------------------------------**/
+	//1)**********定义相关结构体
+	SPI_InitTypeDef  SPI_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
+	DMA_InitTypeDef	DMA_Initstructure;
+	DMA_Channel_TypeDef* DMAx_Channeltx=0;				//DMA发送通道请求信号---当DMA串口发送数据完成时，会发起DMA中断
+	DMA_Channel_TypeDef* DMAx_Channelrx=0;				//DMA接收通道请求信号---DMA串口接收由串口发起中断，因此此处接收通道中断不使用
+	SPI_TypeDef *	SPIx	=	pInfo->Port.SPIx;
+	//2)**********基本SPI配置
+	SPI_InitializeSPI(pInfo);					//普通SPI接口配置--未开中断和DMA
 
-  /* Wait to receive a byte */
-  while (SPI_I2S_GetFlagStatus(SPIx, SPI_I2S_FLAG_RXNE) == RESET);
-
-  /* Return the byte read from the SPI bus */
-  return SPI_I2S_ReceiveData(SPIx);
-}
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
-*输入				: 
-*返回值			:	无
-*******************************************************************************/
-u8	STM32_SPI_ReadWriteData(SPI_TypeDef* SPIx,unsigned char data)
-{
-	unsigned char ReadData	=	0;
+	//3)**********SPI通道选择
 	switch(*(u32*)&SPIx)
 	{
-		case	SPI1_BASE:GPIO_ResetBits(GPIOA,GPIO_Pin_4);break;
-		case	SPI2_BASE:GPIO_ResetBits(GPIOB,GPIO_Pin_12);break;
-		case	SPI3_BASE:GPIO_ResetBits(GPIOA,GPIO_Pin_15);break;
+		case	SPI1_BASE:
+										DMAx_Channeltx=DMA1_Channel3;
+										DMAx_Channelrx=DMA1_Channel2;
+										RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);
+					break;
+		case	SPI2_BASE:
+										DMAx_Channeltx=DMA1_Channel5;
+										DMAx_Channelrx=DMA1_Channel4;
+										RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);
+					break;
+		case	SPI3_BASE:
+										DMAx_Channeltx=DMA2_Channel1;
+										DMAx_Channelrx=DMA2_Channel2;
+										RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA2,ENABLE);
+					break;
+		default	:	break;
 	}
-	SPI_Cmd(SPIx, ENABLE);
-	
-	ReadData	=	STM32_SPI_ReadWriteByte(SPIx,data);
-	
+	//4)**********SPI_DMA配置
+//	if(Conf_Flag==1)																		//需要配置标志，如果SPIx合法，则Conf_Flag==1，然后进行下一步DMA配置项
+//	{
+//		//5)**********DMA发送初始化，外设作为DMA的目的端
+//		DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(SPIx->DR);	//DMA外设源地址
+//		DMA_Initstructure.DMA_MemoryBaseAddr     = (u32)SPI_Conf->SPI_FLASH_Info.MOSI_Buffer;						//DMA数据内存地址
+//		DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralDST;												//DMA_DIR_PeripheralDST（外设作为DMA的目的端），DMA_DIR_PeripheralSRC（外设作为数据传输的来源）
+//		DMA_Initstructure.DMA_BufferSize = 0; 																		//指定DMA通道的DMA缓存的大小
+//		DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;					//DMA_PeripheralInc_Enable（外设地址寄存器递增），DMA_PeripheralInc_Disable（外设地址寄存器不变），
+//		DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;										//DMA_MemoryInc_Enable（内存地址寄存器递增），DMA_MemoryInc_Disable（内存地址寄存器不变）
+//		DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;		//外设数据宽度--DMA_PeripheralDataSize_Byte（数据宽度为8位），DMA_PeripheralDataSize_HalfWord（数据宽度为16位），DMA_PeripheralDataSize_Word（数据宽度为32位）
+//		DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;						//内存数据宽度--DMA_MemoryDataSize_Byte（数据宽度为8位），DMA_MemoryDataSize_HalfWord（数据宽度为16位），DMA_MemoryDataSize_Word（数据宽度为32位）
+//		DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;															//DMA工作模式--DMA_Mode_Normal（只传送一次）, DMA_Mode_Circular（不停地传送）
+//		DMA_Initstructure.DMA_Priority = DMA_Priority_High; 											//DMA通道的转输优先级--DMA_Priority_VeryHigh（非常高）DMA_Priority_High（高)，DMA_Priority_Medium（中），DMA_Priority_Low（低）
+//		DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;															//DMA通道的内存到内存传输--DMA_M2M_Enable(设置为内存到内存传输)，DMA_M2M_Disable（非内存到内存传输）
+//		DMA_Init(DMAx_Channeltx,&DMA_Initstructure);															//初始化DMA
+
+//		//6)**********DMA接收初始化，外设作为DMA的源端
+//		DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(SPIx->DR);	//DMA外设源地址
+//		DMA_Initstructure.DMA_MemoryBaseAddr     = 	(u32)SPI_Conf->SPI_FLASH_Info.MISO_Buffer;						//DMA数据内存地址
+//		DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralSRC;												//DMA_DIR_PeripheralDST（外设作为DMA的目的端），DMA_DIR_PeripheralSRC（外设作为数据传输的来源）
+//		DMA_Initstructure.DMA_BufferSize = 0; 																		//指定DMA通道的DMA缓存的大小
+//		DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;					//DMA_PeripheralInc_Enable（外设地址寄存器递增），DMA_PeripheralInc_Disable（外设地址寄存器不变），
+//		DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;										//DMA_MemoryInc_Enable（内存地址寄存器递增），DMA_MemoryInc_Disable（内存地址寄存器不变）
+//		DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;		//外设数据宽度--DMA_PeripheralDataSize_Byte（数据宽度为8位），DMA_PeripheralDataSize_HalfWord（数据宽度为16位），DMA_PeripheralDataSize_Word（数据宽度为32位）
+//		DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;						//内存数据宽度--DMA_MemoryDataSize_Byte（数据宽度为8位），DMA_MemoryDataSize_HalfWord（数据宽度为16位），DMA_MemoryDataSize_Word（数据宽度为32位）
+//		DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;															//DMA工作模式--DMA_Mode_Normal（只传送一次）, DMA_Mode_Circular（不停地传送）
+//		DMA_Initstructure.DMA_Priority = DMA_Priority_High; 											//DMA通道的转输优先级--DMA_Priority_VeryHigh（非常高）DMA_Priority_High（高)，DMA_Priority_Medium（中），DMA_Priority_Low（低）
+//		DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;															//DMA通道的内存到内存传输--DMA_M2M_Enable(设置为内存到内存传输)，DMA_M2M_Disable（非内存到内存传输）
+//		DMA_Init(DMAx_Channelrx,&DMA_Initstructure);															//初始化DMA
+//		
+//		//7)**********DMA通道中断初始化---此为DMA发送中断----DMA发送完成中断
+//			
+//		SPI_I2S_DMACmd(SPI_Conf->SPIx, SPI_I2S_DMAReq_Tx, ENABLE);								//开启DMA发送
+//		SPI_I2S_DMACmd(SPI_Conf->SPIx, SPI_I2S_DMAReq_Rx, ENABLE);								//开启DMA接收
+//		//使能SPIx
+//		SPI_Cmd(SPI_Conf->SPIx, ENABLE);
+//		
+//		//9.2)**********使能相关DMA通道传输完成中断
+//		DMA_Cmd(DMAx_Channelrx,DISABLE);	
+//		DMA_Cmd(DMAx_Channeltx,DISABLE);
+//	}
+//	SPI_Conf->SPI_Flash_USER_DMAFlg=1;	//如果使用DMA，	SPI_Flash_USER_DMAFlg=1，	否则SPI_Flash_USER_DMAFlg=0；此由SPI_FLASH_ConfigurationDMA根据SPI配置判断设置此值
+	//使能SPIx
 	SPI_Cmd(SPIx, DISABLE);
-	switch(*(u32*)&SPIx)
+		//3)**********使能SPIx_NESS为主输出模式
+	if((SPIx->CR1&0X0200)!=SPI_NSS_Soft)						//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
 	{
-		case	SPI1_BASE:GPIO_SetBits(GPIOA,GPIO_Pin_4);break;
-		case	SPI2_BASE:GPIO_SetBits(GPIOB,GPIO_Pin_12);break;
-		case	SPI3_BASE:GPIO_SetBits(GPIOA,GPIO_Pin_15);break;
+		SPI_SSOutputCmd(SPIx, ENABLE);								//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
 	}
-	return	ReadData;
+	else
+	{
+		SPI_SSOutputCmd(SPIx, DISABLE);								//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
+	}
+}
+void SPI_CS_LOW(SPIDef *pInfo)
+{
+	pInfo->Port.CS_PORT->BRR		= pInfo->Port.CS_Pin;
+}
+void SPI_CS_HIGH(SPIDef *pInfo)
+{
+	pInfo->Port.CS_PORT->BSRR		= pInfo->Port.CS_Pin;
+}
+void SPI_CLK_LOW(SPIDef *pInfo)
+{
+	pInfo->Port.CLK_PORT->BRR 	= pInfo->Port.CLK_Pin;
+}
+void SPI_CLK_HIGH(SPIDef *pInfo)
+{
+	pInfo->Port.CLK_PORT->BSRR 	= pInfo->Port.CLK_Pin;
+}
+void SPI_MOSI_LOW(SPIDef *pInfo)
+{
+	pInfo->Port.CLK_PORT->BRR 	= pInfo->Port.CLK_Pin;
+}
+void SPI_MOSI_HIGH(SPIDef *pInfo)
+{
+	pInfo->Port.CLK_PORT->BSRR 	= pInfo->Port.CLK_Pin;
+}
+unsigned char SPI_MISO_In(SPIDef *pInfo)
+{
+	return(pInfo->Port.MISO_PORT->IDR 	&	pInfo->Port.MISO_Pin);
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	先传高位
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned char	SPI_ReadWriteByteNR(SPIDef *pInfo,unsigned char Byte)
+{
+	unsigned char i	=	0;	
+	unsigned char Recv	=	0;	
+
+	for(i=0;i<8;i++)
+	{
+		Recv<<=1;
+		SPI_CLK_LOW(pInfo);
+		if((Byte&0x80)	==	0x80)
+		{
+			SPI_MOSI_HIGH(pInfo);
+		}
+		else
+		{
+			SPI_MOSI_LOW(pInfo);
+		}
+		if(SPI_MISO_In(pInfo))
+		{
+			Recv	|=	0x01;
+		}		
+		SPI_CLK_HIGH(pInfo);
+		Byte<<=1;		
+	}
+	return Recv;
 }
 /*******************************************************************************
 *函数名			:	function
@@ -193,95 +341,82 @@ u8	STM32_SPI_ReadWriteData(SPI_TypeDef* SPIx,unsigned char data)
 *输入				: 
 *返回值			:	无
 *******************************************************************************/
-void STM32_SPI_SendBuffer(
-													SPI_TypeDef* SPIx,
-													u32 BufferSize,
-													u8 *SendBuffer
-)					//发送数据
+u8	SPI_ReadWriteByteSPI(SPIDef *pInfo,unsigned char Data)
 {
-	u32 bufferNum=0;
-	switch(*(u32*)&SPIx)
+//____________定义变量
+	u16 retry=0;													//用来进行超时计数
+	//____________等待发送缓冲区为空
+	while(SPI_I2S_GetFlagStatus(pInfo->Port.SPIx, SPI_I2S_FLAG_TXE) == RESET) 		//检查指令SPI发送标志是否为空
 	{
-		case	SPI1_BASE:GPIO_ResetBits(GPIOA,GPIO_Pin_4);break;
-		case	SPI2_BASE:GPIO_ResetBits(GPIOB,GPIO_Pin_12);break;
-		case	SPI3_BASE:GPIO_ResetBits(GPIOA,GPIO_Pin_15);break;
+		retry++;
+		if(retry>5000)
+			return 0;
+	}	
+	//____________发送数据
+	SPI_I2S_SendData(pInfo->Port.SPIx, Data);				//发送数据
+	//____________等待接收数据
+	retry=0;	
+	while(SPI_I2S_GetFlagStatus(pInfo->Port.SPIx, SPI_I2S_FLAG_RXNE) == RESET)		//检查指令SPI接收完成标志设置与否
+	{
+		retry++;
+		if(retry>5000)
+			return 0;
 	}
-	SPI_Cmd(SPIx, ENABLE);
+	while (SPI_I2S_GetFlagStatus(pInfo->Port.SPIx, SPI_I2S_FLAG_BSY) == SET);
+	//____________返回接收到的数据
+	return SPI_I2S_ReceiveData(pInfo->Port.SPIx); 			//返回接收到的数据	
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void SPI_WriteBufferSPI(
+										SPIDef *pInfo,
+										u8 *Buffer,
+										u16 BufferSize										
+										)
+{
+	unsigned short bufferNum=0;
+//	SPI_Cmd(SPIx, ENABLE);
+//	SPI_CS_LOW;
 	for(bufferNum=0;bufferNum<BufferSize;bufferNum++)
 	{
-		STM32_SPI_ReadWriteByte(SPIx,SendBuffer[bufferNum]);
+		SPI_ReadWriteByteSPI(pInfo,Buffer[bufferNum]);
 	}
-	SPI_Cmd(SPIx, DISABLE);
-	switch(*(u32*)&SPIx)
-	{
-		case	SPI1_BASE:GPIO_SetBits(GPIOA,GPIO_Pin_4);break;
-		case	SPI2_BASE:GPIO_SetBits(GPIOB,GPIO_Pin_12);break;
-		case	SPI3_BASE:GPIO_SetBits(GPIOA,GPIO_Pin_15);break;
-	}
-	
+//	SPI_Cmd(SPIx, DISABLE);
+//	SPI_CS_HIGH;
 }
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
-*输入				: 
-*返回值			:	无
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
 *******************************************************************************/
-void STM32_SPI_ReceiveBuffer(
-													SPI_TypeDef* SPIx,
-													u32 BufferSize,
-													u8 *RevBuffer
-)					//发送数据
+void SPI_ReadBufferSPI(
+										SPIDef *pInfo,
+										u8 *Buffer,
+										u16 BufferSize										
+										)
 {
-	u32 bufferNum=0;
-	switch(*(u32*)&SPIx)
-	{
-		case	SPI1_BASE:GPIO_ResetBits(GPIOA,GPIO_Pin_4);break;
-		case	SPI2_BASE:GPIO_ResetBits(GPIOB,GPIO_Pin_12);break;
-		case	SPI3_BASE:GPIO_ResetBits(GPIOA,GPIO_Pin_15);break;
-	}
-	SPI_Cmd(SPIx, ENABLE);
+	unsigned short bufferNum=0;
+//	SPI_Cmd(SPIx, ENABLE);
+//	SPI_CS_LOW;
 	for(bufferNum=0;bufferNum<BufferSize;bufferNum++)
 	{
-		RevBuffer[bufferNum]=STM32_SPI_ReadWriteByte(SPIx,0xFF);
+		Buffer[bufferNum]	=	SPI_ReadWriteByteSPI(pInfo,0xFF);
 	}
-	SPI_Cmd(SPIx, DISABLE);	
-	switch(*(u32*)&SPIx)
-	{
-		case	SPI1_BASE:GPIO_SetBits(GPIOA,GPIO_Pin_4);break;
-		case	SPI2_BASE:GPIO_SetBits(GPIOB,GPIO_Pin_12);break;
-		case	SPI3_BASE:GPIO_SetBits(GPIOA,GPIO_Pin_15);break;
-	}
+//	SPI_Cmd(SPIx, DISABLE);
+//	SPI_CS_HIGH;
 }
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
-*输入				: 
-*返回值			:	无
-*******************************************************************************/
-u8	STM32_SPI_ReadWriteBuffer(SPI_TypeDef* SPIx,u32 BufferSize,u8 *SendBuffer,u8 *RevBuffer)		//连接读数据
-{
-	u32 bufferNum=0;
-	switch(*(u32*)&SPIx)
-	{
-		case	SPI1_BASE:GPIO_ResetBits(GPIOA,GPIO_Pin_4);break;
-		case	SPI2_BASE:GPIO_ResetBits(GPIOB,GPIO_Pin_12);break;
-		case	SPI3_BASE:GPIO_ResetBits(GPIOA,GPIO_Pin_15);break;
-	}
-	SPI_Cmd(SPIx, ENABLE);
-	for(bufferNum=0;bufferNum<BufferSize;bufferNum++)
-	{
-		RevBuffer[bufferNum]=STM32_SPI_ReadWriteByte(SPIx,RevBuffer[bufferNum]);
-	}
-	SPI_Cmd(SPIx, DISABLE);
-	switch(*(u32*)&SPIx)
-	{
-		case	SPI1_BASE:GPIO_SetBits(GPIOA,GPIO_Pin_4);break;
-		case	SPI2_BASE:GPIO_SetBits(GPIOB,GPIO_Pin_12);break;
-		case	SPI3_BASE:GPIO_SetBits(GPIOA,GPIO_Pin_15);break;
-	}
-	
-	return 0;
-}
+
 
 
 
