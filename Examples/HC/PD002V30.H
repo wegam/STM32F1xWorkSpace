@@ -2,6 +2,13 @@
 #define __PD002V30_H
 
 
+#include "STM32_USART.H"
+#include "AT24C02.H"
+#include "PD002V30.H"
+#include "CS5530.H"
+#include "74HC595.H"
+
+
 typedef	enum _PD002V30Cmd
 {
 	APP_CMD_Null						=	0x00,	/*无命令*/
@@ -21,12 +28,18 @@ typedef	struct
 {
 	unsigned short RunningTime;		//计时器
 	unsigned char	 StartAddr;			//数据存储起始地址
-	unsigned long	 PieceWeight;		//单重
 	struct
 	{
-		unsigned long	 PieceWeightCh1;		//单重
-		unsigned long	 PieceWeightCh2;		//单重
-	}Weight;
+		unsigned short	Quantity;			//数量
+		unsigned short	PieceWeight;		//单重
+	}CH1;	//通道1
+	struct
+	{
+		unsigned short	Quantity;			//数量
+		unsigned short	PieceWeight;		//单重
+	}CH2;	//通道2
+	
+	sI2CDef 			Port;
 }AT24C02Def;
 typedef	struct	_PD002V30RS485Pro
 {
@@ -48,8 +61,16 @@ typedef	struct	_PD002V30RS485Pro
 }PD002V30RS485ProCCDef;
 typedef	struct _PD002V30
 {
+	CS5530Def 	ADCSS3CH1;		//SS3接口，外面
+	CS5530Def 	ADCSS4CH2;		//SS4接口，里面
+	AT24C02Def	I2C;
 	PD002V30RS485ProCCDef	RS485Data;
 }PD002V30Def;
+
+
+
+
+
 
 void PD002V30_Configuration(void);
 
@@ -62,6 +83,9 @@ void PD002V30_RS485_Ack(PD002V30RS485ProCCDef *RS485Data);
 void PD002V30_CMD_Server(void);
 
 void AT24C02_Configuration(void);
+void AT24C02_SaveData(void);		//保存数据,一页一通道，前4字节存数量，后4字节存单重
+void AT24C02_ReadData(void);		//读数据,一页一通道，前4字节存数量，后4字节存单重
+	
 void SwitchID_Configuration(void);
 
 unsigned char PD002V30_GetSwitchID(void);				//获取拔码开关地址

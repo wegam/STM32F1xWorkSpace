@@ -57,7 +57,7 @@ void I2C_Server(sI2CDef *sI2C)
 *******************************************************************************/
 void I2C_Delay(void)
 {
-	unsigned short Time	=	50;
+	unsigned short Time	=	1;
 	while(Time--);
 }
 /*******************************************************************************
@@ -149,8 +149,8 @@ void I2C_SDASetIn(sI2CDef *sI2C)
 *******************************************************************************/
 unsigned char I2C_WaitAck(sI2CDef *sI2C)
 {
-	unsigned char ack;
-	unsigned char i	=	0;
+	I2CACKDef ack;
+	unsigned short i	=	0;
 	
 	I2C_SDAHigh(sI2C);
 	I2C_SDASetIn(sI2C);	//设置为上拉输入模式
@@ -158,21 +158,20 @@ unsigned char I2C_WaitAck(sI2CDef *sI2C)
 
 	I2C_SCLHigh(sI2C);
 	I2C_Delay();
-	while((GPIO_ReadInputDataBit(sI2C->SDA_Port,sI2C->SDA_Pin))&&i++<=250)
-	if(i>=250)		//应答超时
+	while((GPIO_ReadInputDataBit(sI2C->SDA_Port,sI2C->SDA_Pin))&&i++<=20020)
+	if(i>=20000)		//应答超时
 	{
-		ack	=	1;
+		I2C_Stop(sI2C);
+		ack	= I2C_NACK;
 	}
 	else
 	{
-		ack	=	0;
+		ack	= I2C_ACK;
 	}
 	I2C_SCLLow(sI2C);
 	
 	I2C_SDASetOut(sI2C);
-//	I2C_SDALow(sI2C);
 	
-	I2C_Delay();
 	return ack;
 }
 /*******************************************************************************
@@ -295,6 +294,7 @@ void I2C_SendByte(sI2CDef *sI2C,unsigned char ucByte)
 	unsigned char i	=	0;
 	for(i=0;i<8;i++)
 	{
+//		I2C_SCLLow(sI2C);
 		if(ucByte & 0x80)
 		{
 			I2C_SDAHigh(sI2C);

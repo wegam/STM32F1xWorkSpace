@@ -15,16 +15,16 @@
 
 #ifdef PD002V30				//称重托盘控制器
 
+
 #include "PD002V30.H"
-#include "CS5530.H"
-#include "74HC595.H"
+
 
 #include "STM32F10x_BitBand.H"
 #include "STM32_GPIO.H"
 #include "STM32_SYS.H"
 #include "STM32_SYSTICK.H"
 #include "STM32_WDG.H"
-#include "STM32_USART.H"
+
 #include "STM32_PWM.H"
 
 #include 	"TOOL.H"
@@ -34,10 +34,15 @@
 
 
 #include "SWITCHID.H"
-#include "AT24C02.H"
+
 
 
 PD002V30Def sPD002V30;
+
+#define	I2CDataAddr		0		//I2C保存数量起始地址
+//#define	I2CPageSize		8		//页大小，一页一通道，前4字节存数量，后4字节存单重
+
+
 #define BufferSize	12
 #define Bus485Size	64
 #define Command_ReadData	(unsigned char)0x05
@@ -81,8 +86,7 @@ u8 DebugRe[32]={0};
 u8 DebugTx[32]={0};
 
 
-CS5530Def CS5530_1;		//SS3接口，外面
-CS5530Def CS5530_2;		//SS4接口，里面
+
 u32 Value_AD1=0;
 u32 Value_AD2=0;
 
@@ -97,7 +101,7 @@ u8 dnum1=1;
 u8 dnum2=2;
 
 
-sI2CDef sI2C;
+//sI2CDef sI2C;
 unsigned char Tedata	=	0;
 unsigned char Wedata	=	0;
 unsigned char Buffer[16]={0};
@@ -152,23 +156,32 @@ void PD002V30_Server(void)
 	
 	IWDG_Feed();								//独立看门狗喂狗
 	CS5530_Server();			//读取AD值
-	
+//	return;
 	RunTime++;
-	if(RunTime	==	100)
-	{
-//		AT24C02_Write(&sI2C,0x00,Wedata);	
-//		Tedata	=	AT24C02_Read(&sI2C,0x00);
-		Buffer[0]	=	0x01;
-		Buffer[1]	=	0x02;
-		Buffer[2]	=	0x03;
-		Buffer[3]	=	0x04;
-		Buffer[4]	=	0x05;
-		Buffer[5]	=	0x06;
-		Buffer[6]	=	0x07;
-		Buffer[7]	=	0x08;
-		Buffer[8]	=	0x09;
-//			AT24C02_WritePage(&sI2C,0x03,Buffer);
-	}
+//	if(RunTime	==	10)
+//	{
+////		Buffer[0]	=	0x01;
+////		Buffer[1]	=	0x02;
+////		Buffer[2]	=	0x03;
+////		Buffer[3]	=	0x04;
+////		Buffer[4]	=	0x05;
+////		Buffer[5]	=	0x06;
+////		Buffer[6]	=	0xAB;
+////		Buffer[7]	=	0x08;
+////		Buffer[8]	=	0x09;
+//		memset(DebugRx,0xFF,8);
+////		AT24C02_WritePage(&sPD002V30.I2C,I2CPieAddr,Buffer);
+//	}
+//	else if(RunTime	==	200)
+//	{
+//		memset(Buffer,0xFF,9);
+//		AT24C02_ReadBuffer(&sPD002V30.I2C.Port,I2CDataAddr,DebugRx,16);
+//	}
+//	else if(RunTime>=500)
+//	{
+//		RunTime	=	0;
+//	}
+//	return;
 	if(RunTime	==	200)
 	{
 		Tedata	=	0;
@@ -192,8 +205,7 @@ void PD002V30_Server(void)
 
 		Wedata++;
 		if(Wedata>=0xFF)
-			Wedata	=	0;
-		
+			Wedata	=	0;		
 	}
 	
 	SwitchID	=	SWITCHID_Read(&SWITCHID);		//
@@ -211,13 +223,58 @@ void PD002V30_Server(void)
 *******************************************************************************/
 void AT24C02_Configuration(void)
 {
-	sI2C.SDA_Port	=	GPIOB;
-	sI2C.SDA_Pin	=	GPIO_Pin_7;
+	sPD002V30.I2C.Port.SDA_Port	=	GPIOB;
+	sPD002V30.I2C.Port.SDA_Pin	=	GPIO_Pin_7;
 	
-	sI2C.SCL_Port	=	GPIOB;
-	sI2C.SCL_Pin	=	GPIO_Pin_6;
+	sPD002V30.I2C.Port.SCL_Port	=	GPIOB;
+	sPD002V30.I2C.Port.SCL_Pin	=	GPIO_Pin_6;
 	
-	I2C_Configuration(&sI2C);		//启用锁--配置
+	I2C_Configuration(&sPD002V30.I2C.Port);		//启用锁--配置
+}
+
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void AT24C02_SaveData(void)		//保存数据,一页一通道，前4字节存数量，后4字节存单重
+{
+	unsigned char Buffer[16]	=	{0};
+	unsigned long	QuantityBac		=	0;		//数量值
+	unsigned long	WeighPieBac		=	0;		//单重
+	unsigned long	QuantityNew		=	0;		//数量值
+	unsigned long	WeighPieNew		=	0;		//单重
+	
+	AT24C02_ReadBuffer(&sPD002V30.I2C.Port,I2CDataAddr,Buffer,16);		//获取备份数据
+	//通道1
+	QuantityNew	=	sPD002V30.ADCSS3CH1.Data.Quantity;		//新数量值
+	WeighPieNew	=	sPD002V30.ADCSS3CH1.Data.WeighPie;		//新单重值
+	memcpy((u8*)&QuantityBac,Buffer,4);			//数量值
+	memcpy((u8*)&WeighPieBac,&Buffer[4],4);	//单重值
+	
+	if(((QuantityBac!=QuantityNew)||(WeighPieBac!=WeighPieNew))&&(WeighPieNew!=0))	//数量和单重都有变化
+	{
+		memcpy(Buffer,(u8*)&QuantityBac,4);			//数量值
+		memcpy(&Buffer[4],(u8*)&WeighPieBac,4);	//单重值
+		AT24C02_WritePage(&sPD002V30.I2C.Port,I2CDataAddr,Buffer);						//一页一通道，前4字节存数量，后4字节存单重	
+	}
+	
+	//通道2
+	QuantityNew	=	sPD002V30.ADCSS4CH2.Data.Quantity;		//新数量值
+	WeighPieNew	=	sPD002V30.ADCSS4CH2.Data.WeighPie;		//新单重值
+	memcpy((u8*)&QuantityBac,&Buffer[8],4);			//数量值
+	memcpy((u8*)&WeighPieBac,&Buffer[12],4);		//单重值
+	
+	if(((QuantityBac!=QuantityNew)||(WeighPieBac!=WeighPieNew))&&(WeighPieNew!=0))	//数量和单重都有变化
+	{
+		memcpy(&Buffer[8],(u8*)&QuantityBac,4);			//数量值
+		memcpy(&Buffer[12],(u8*)&WeighPieBac,4);	//单重值
+		AT24C02_WritePage(&sPD002V30.I2C.Port,I2CDataAddr+8,&Buffer[8]);						//一页一通道，前4字节存数量，后4字节存单重	
+	}
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -228,9 +285,47 @@ void AT24C02_Configuration(void)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-void AT24C02_Server(void)
+void AT24C02_ReadData(void)		//读数据,一页一通道，前4字节存数量，后4字节存单重
 {
-
+	unsigned char Buffer[8]	=	{0};
+	unsigned long	QuantityBac		=	0;		//数量值
+	unsigned long	WeighPieBac		=	0;		//单重
+	unsigned long	QuantityNew		=	0;		//数量值
+	unsigned long	WeighPieNew		=	0;		//单重
+	
+//	AT24C02_ReadBuffer(&sPD002V30.I2C.Port,I2CDataAddr,Buffer,16);		//获取备份数据
+	//通道1
+	QuantityNew	=	sPD002V30.ADCSS3CH1.Data.Quantity;		//新数量值
+	WeighPieNew	=	sPD002V30.ADCSS3CH1.Data.WeighPie;		//新单重值
+	
+	if(QuantityNew==0||WeighPieNew==0)
+	{
+		AT24C02_ReadBuffer(&sPD002V30.I2C.Port,I2CDataAddr,Buffer,8);		//获取备份数据
+		memcpy((u8*)&QuantityBac,Buffer,4);			//数量值
+		memcpy((u8*)&WeighPieBac,&Buffer[4],4);	//单重值
+		if(	((QuantityBac!=0)&&(WeighPieBac!=0))
+			&&((QuantityBac!=0xFFFFFFFF)&&(WeighPieBac!=0xFFFFFFFF)))
+		{
+			sPD002V30.ADCSS3CH1.Data.Quantity	=	QuantityBac;		//新数量值
+			sPD002V30.ADCSS3CH1.Data.WeighPie	=	WeighPieBac;		//新单重值
+		}
+	}
+	//通道2
+	QuantityNew	=	sPD002V30.ADCSS4CH2.Data.Quantity;		//新数量值
+	WeighPieNew	=	sPD002V30.ADCSS4CH2.Data.WeighPie;		//新单重值
+	
+	if(QuantityNew==0||WeighPieNew==0)
+	{
+		AT24C02_ReadBuffer(&sPD002V30.I2C.Port,I2CDataAddr+8,Buffer,8);		//获取备份数据
+		memcpy((u8*)&QuantityBac,Buffer,4);			//数量值
+		memcpy((u8*)&WeighPieBac,&Buffer[4],4);	//单重值
+		if(	((QuantityBac!=0)&&(WeighPieBac!=0))
+			&&((QuantityBac!=0xFFFFFFFF)&&(WeighPieBac!=0xFFFFFFFF)))
+		{
+			sPD002V30.ADCSS4CH2.Data.Quantity	=	QuantityBac;		//新数量值
+			sPD002V30.ADCSS4CH2.Data.WeighPie	=	WeighPieBac;		//新单重值
+		}
+	}
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -324,7 +419,7 @@ void PD002V30_RS485_Server(void)
 			{
 				if(RS485Rx.Receipt!=0x0B)
 				{
-					memcpy((u8*)&sPD002V30.RS485Data,Bus485Re,Num);
+					memcpy((u8*)&sPD002V30.RS485Data,Bus485Re,Num);	//保存数据
 					PD002V30_RS485_Ack(&RS485Rx);
 				}
 				else
@@ -336,8 +431,8 @@ void PD002V30_RS485_Server(void)
 			
 		}
 	}
-	PD002V30_CMD_Server();
-	RS485_ReadBufferIDLE(&BUS485,(u32*)Bus485Re,(u32*)Bus485Rx);	
+	PD002V30_CMD_Server();		//命令处理
+//	RS485_ReadBufferIDLE(&BUS485,(u32*)Bus485Re,(u32*)Bus485Rx);	
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -373,23 +468,21 @@ void PD002V30_CMD_Server(void)
 	//命令判断:根据命令操作
 	switch(Cmd)
 	{
-		case APP_CMD_CTCLEAR:							//清零
-					if(State	==	0x01)			//清零第一步，清空
+		case APP_CMD_CTCLEAR:					//清零
+					if(State	==	0x01)			//清零第一步，响应层控板，打开抽屉
 					{
 						break;
 					}
-					else if(State	==	0x02)	//清零第二步，记录初始AD
+					else if(State	==	0x02)	//清零第二步，清空药品，关闭抽屉，记录原点AD
 					{
-						if(CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)		//获取原点值
-						{
-							CS5530_1.Data.Origin	=	CS5530_1.Data.WeighFilt;
-							sPD002V30.RS485Data.State	=	0;
-							CS5530_1.Data.WeighFilt	=0xFFFFFFFF;
-						}
-						else
-						{
-							return;
-						}
+						sPD002V30.RS485Data.State	=	0;
+						sPD002V30.ADCSS3CH1.Flag.GetOri	=	1;		//获取原点标志
+						sPD002V30.ADCSS3CH1.Data.WeighFilt	=0xFFFFFFFF;
+						return;
+					}
+					else if(State	==0	&&	sPD002V30.ADCSS3CH1.Data.WeighFilt	!= 0xFFFFFFFF)
+					{
+						sPD002V30.ADCSS3CH1.Data.Origin	=	sPD002V30.ADCSS3CH1.Data.WeighFilt;
 					}
 					else
 					{
@@ -397,35 +490,29 @@ void PD002V30_CMD_Server(void)
 					}
 			break;
 		case APP_CMD_CTBIAODINGS1:		/*称重抽屉标定步骤1:放入一定数量的药品*/
-					if(State	==	0x01)			//清零第一步，清空
+					if(State	==	0x01)			//设定第一步，响应层控板，打开抽屉
 					{
 						break;
 					}
-					else if(State	==	0x02)	//清零第二步，记录初始AD
+					else if(State	==	0x02)	//设定第二步，放入药品，关闭抽屉，响应层控板
 					{
-						if(CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
-						{
-							sPD002V30.RS485Data.State	=	0;
-							CS5530_1.Data.WeighFilt	=0xFFFFFFFF;
-						}
-						else
-						{
-							return;
-						}
+						sPD002V30.RS485Data.State	=	0;
 					}
 					else
 					{
 						return;
 					}
 				break;
-		case APP_CMD_CTBIAODINGS2:		/*称重抽屉标定步骤2:输入数量*/
-				if(CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
+		case APP_CMD_CTBIAODINGS2:			/*称重抽屉标定步骤2:输入数量，计算单重，保存单重*/
+				if(sPD002V30.ADCSS3CH1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
 				{
-					unsigned long WeiT	=	CS5530_1.Data.WeighFilt	-	CS5530_1.Data.Origin;
-					CS5530_1.Data.Quantity	=	sPD002V30.RS485Data.Data;
-					CS5530_1.Data.WeighPie	=	(WeiT+200)/CS5530_1.Data.Quantity;
+					unsigned long WeiT	=	sPD002V30.ADCSS3CH1.Data.WeighFilt	-	sPD002V30.ADCSS3CH1.Data.Origin;	//获取放入的药品后的药品总重量
+					sPD002V30.ADCSS3CH1.Data.Quantity	=	sPD002V30.RS485Data.Data;														//数量
+					sPD002V30.ADCSS3CH1.Data.WeighPie	=	(WeiT)/sPD002V30.ADCSS3CH1.Data.Quantity;						//计算单重
 					sPD002V30.RS485Data.State	=	0;
-					CS5530_1.Data.WeighFilt	=0xFFFFFFFF;
+					sPD002V30.ADCSS3CH1.Data.WeighFilt	=0xFFFFFFFF;
+					
+					AT24C02_SaveData();		//保存数据,一页一通道，前4字节存数量，后4字节存单重
 				}
 				else
 				{
@@ -433,33 +520,98 @@ void PD002V30_CMD_Server(void)
 				}
 				break;
 		case APP_CMD_CTJIAYAO:			/*称重抽屉加药*/
-				if(State	==	0x01)			//清零第一步，打开抽屉
+				if(State	==	0x01)			//加药第一步，更新原点值，打开抽屉
 				{
-					if(CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
+					unsigned long	QuantityNew		=	0;		//数量值
+					unsigned long	WeighPieNew		=	0;		//单重
+					QuantityNew	=	sPD002V30.ADCSS3CH1.Data.Quantity;		//新数量值
+					WeighPieNew	=	sPD002V30.ADCSS3CH1.Data.WeighPie;		//新单重值
+	
+					if(QuantityNew==0||WeighPieNew==0)
+					{					
+						AT24C02_ReadData();		//读数据,一页一通道，前4字节存数量，后4字节存单重
+						QuantityNew	=	sPD002V30.ADCSS3CH1.Data.Quantity;		//新数量值
+						WeighPieNew	=	sPD002V30.ADCSS3CH1.Data.WeighPie;		//新单重值
+						if(QuantityNew==0||WeighPieNew==0)		//未标定
+						{
+							return;			//未标定
+						}
+					}					
+					if(sPD002V30.ADCSS3CH1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
 					{
-						CS5530_1.Data.Origin	=	CS5530_1.Data.WeighFilt	-	CS5530_1.Data.Quantity*CS5530_1.Data.WeighPie;
-						CS5530_1.Data.WeighFilt	=0xFFFFFFFF;
+						sPD002V30.ADCSS3CH1.Data.Origin	=	sPD002V30.ADCSS3CH1.Data.WeighFilt	-	sPD002V30.ADCSS3CH1.Data.Quantity*sPD002V30.ADCSS3CH1.Data.WeighPie;		//记录新原点值
+						sPD002V30.ADCSS3CH1.Data.WeighFilt	=0xFFFFFFFF;
 					}
 					else
 					{
 						return;
 					}
 				}
-				else if(State	==	0x02)	//清零第二步，记录初始AD
+				else if(State	==	0x02)	//加药第二步，关闭抽屉后计算剩余数量，保存数量，上报剩余数量
 				{
-					if(CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
+					if(sPD002V30.ADCSS3CH1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
 					{
 						sPD002V30.RS485Data.State	=	0;
-						if(CS5530_1.Data.WeighLive>CS5530_1.Data.Origin)
+						if(sPD002V30.ADCSS3CH1.Data.WeighLive>=(sPD002V30.ADCSS3CH1.Data.Origin	-	(sPD002V30.ADCSS3CH1.Data.WeighPie/10)))			//避免出现低于原点值
 						{
-							CS5530_1.Data.Quantity=(CS5530_1.Data.WeighLive-CS5530_1.Data.Origin+500)/CS5530_1.Data.WeighPie;
+							sPD002V30.ADCSS3CH1.Data.Quantity=(sPD002V30.ADCSS3CH1.Data.WeighLive-sPD002V30.ADCSS3CH1.Data.Origin	+	(sPD002V30.ADCSS3CH1.Data.WeighPie/5))/sPD002V30.ADCSS3CH1.Data.WeighPie;
 						}
-						else
+						sPD002V30.RS485Data.Data	=	sPD002V30.ADCSS3CH1.Data.Quantity;		//485数据
+						sPD002V30.ADCSS3CH1.Data.WeighFilt	=0xFFFFFFFF;						
+						AT24C02_SaveData();		//保存数据,一页一通道，前4字节存数量，后4字节存单重
+					}
+					else
+					{
+						return;
+					}
+				}
+				else
+				{
+					return;
+				}
+				
+				break;
+		case APP_CMD_CTFAYAO:				/*称重抽屉发药*/
+				if(State	==	0x01)			//加药第一步，更新原点值，打开抽屉
+				{
+					unsigned long	QuantityNew		=	0;		//数量值
+					unsigned long	WeighPieNew		=	0;		//单重
+					QuantityNew	=	sPD002V30.ADCSS3CH1.Data.Quantity;		//新数量值
+					WeighPieNew	=	sPD002V30.ADCSS3CH1.Data.WeighPie;		//新单重值
+	
+					if(QuantityNew==0||WeighPieNew==0)
+					{					
+						AT24C02_ReadData();		//读数据,一页一通道，前4字节存数量，后4字节存单重
+						QuantityNew	=	sPD002V30.ADCSS3CH1.Data.Quantity;		//新数量值
+						WeighPieNew	=	sPD002V30.ADCSS3CH1.Data.WeighPie;		//新单重值
+						if(QuantityNew==0||WeighPieNew==0)		//未标定
 						{
-							CS5530_1.Data.Quantity=(CS5530_1.Data.Origin-CS5530_1.Data.WeighLive+500)/CS5530_1.Data.WeighPie;
+							return;			//未标定
 						}
-						sPD002V30.RS485Data.Data	=	CS5530_1.Data.Quantity;
-						CS5530_1.Data.WeighFilt	=0xFFFFFFFF;
+					}
+					
+					if(sPD002V30.ADCSS3CH1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
+					{
+						sPD002V30.ADCSS3CH1.Data.Origin	=	sPD002V30.ADCSS3CH1.Data.WeighFilt	-	sPD002V30.ADCSS3CH1.Data.Quantity*sPD002V30.ADCSS3CH1.Data.WeighPie;		//记录新原点值
+						sPD002V30.ADCSS3CH1.Data.WeighFilt	=0xFFFFFFFF;
+					}
+					else
+					{
+						return;
+					}
+				}
+				else if(State	==	0x02)	//加药第二步，关闭抽屉后计算剩余数量，保存数量，上报剩余数量
+				{
+					if(sPD002V30.ADCSS3CH1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
+					{
+						sPD002V30.RS485Data.State	=	0;
+						if(sPD002V30.ADCSS3CH1.Data.WeighLive>=(sPD002V30.ADCSS3CH1.Data.Origin	-	(sPD002V30.ADCSS3CH1.Data.WeighPie/10)))			//避免出现低于原点值
+						{
+							sPD002V30.ADCSS3CH1.Data.Quantity=(sPD002V30.ADCSS3CH1.Data.WeighLive-sPD002V30.ADCSS3CH1.Data.Origin	+	(sPD002V30.ADCSS3CH1.Data.WeighPie/5))/sPD002V30.ADCSS3CH1.Data.WeighPie;
+						}
+						sPD002V30.RS485Data.Data	=	sPD002V30.ADCSS3CH1.Data.Quantity;		//485数据
+						sPD002V30.ADCSS3CH1.Data.WeighFilt	=0xFFFFFFFF;						
+						AT24C02_SaveData();		//保存数据,一页一通道，前4字节存数量，后4字节存单重
 					}
 					else
 					{
@@ -519,39 +671,34 @@ u8 PD002V30_GetBufferArray(void)
 void CS5530_Configuration(void)
 {
 	//SS3接口，外面
-	CS5530_1.Port.CS_PORT=GPIOB;
-	CS5530_1.Port.CS_Pin=GPIO_Pin_12;
+	sPD002V30.ADCSS3CH1.Port.CS_PORT=GPIOB;
+	sPD002V30.ADCSS3CH1.Port.CS_Pin=GPIO_Pin_12;
 	
-	CS5530_1.Port.SDI_PORT=GPIOB;
-	CS5530_1.Port.SDI_Pin=GPIO_Pin_15;
+	sPD002V30.ADCSS3CH1.Port.SDI_PORT=GPIOB;
+	sPD002V30.ADCSS3CH1.Port.SDI_Pin=GPIO_Pin_15;
 	
-	CS5530_1.Port.SDO_PORT=GPIOB;
-	CS5530_1.Port.SDO_Pin=GPIO_Pin_14;
+	sPD002V30.ADCSS3CH1.Port.SDO_PORT=GPIOB;
+	sPD002V30.ADCSS3CH1.Port.SDO_Pin=GPIO_Pin_14;
 	
-	CS5530_1.Port.SCLK_PORT=GPIOB;
-	CS5530_1.Port.SCLK_Pin=GPIO_Pin_13;
+	sPD002V30.ADCSS3CH1.Port.SCLK_PORT=GPIOB;
+	sPD002V30.ADCSS3CH1.Port.SCLK_Pin=GPIO_Pin_13;
 	
 	
 	//SS4接口，里面
-	CS5530_2.Port.CS_PORT=GPIOA;
-	CS5530_2.Port.CS_Pin=GPIO_Pin_8;
+	sPD002V30.ADCSS4CH2.Port.CS_PORT=GPIOA;
+	sPD002V30.ADCSS4CH2.Port.CS_Pin=GPIO_Pin_8;
 	
-	CS5530_2.Port.SDI_PORT=GPIOB;
-	CS5530_2.Port.SDI_Pin=GPIO_Pin_15;
+	sPD002V30.ADCSS4CH2.Port.SDI_PORT=GPIOB;
+	sPD002V30.ADCSS4CH2.Port.SDI_Pin=GPIO_Pin_15;
 	
-	CS5530_2.Port.SDO_PORT=GPIOB;
-	CS5530_2.Port.SDO_Pin=GPIO_Pin_14;
+	sPD002V30.ADCSS4CH2.Port.SDO_PORT=GPIOB;
+	sPD002V30.ADCSS4CH2.Port.SDO_Pin=GPIO_Pin_14;
 	
-	CS5530_2.Port.SCLK_PORT=GPIOB;
-	CS5530_2.Port.SCLK_Pin=GPIO_Pin_13;
+	sPD002V30.ADCSS4CH2.Port.SCLK_PORT=GPIOB;
+	sPD002V30.ADCSS4CH2.Port.SCLK_Pin=GPIO_Pin_13;	
 	
-	
-	
-	
-	
-	
-	CS5530_Initialize(&CS5530_1);
-	CS5530_Initialize(&CS5530_2);
+	CS5530_Initialize(&sPD002V30.ADCSS3CH1);
+	CS5530_Initialize(&sPD002V30.ADCSS4CH2);
 }
 /*******************************************************************************
 * 函数名			:	
@@ -562,8 +709,8 @@ void CS5530_Configuration(void)
 void CS5530_Server(void)
 {
 #if 1
-	CS5530_Process(&CS5530_1);		//SS3接口，外面
-	CS5530_Process(&CS5530_2);		//SS4接口，里面
+	CS5530_Process(&sPD002V30.ADCSS3CH1);		//SS3接口，外面
+	CS5530_Process(&sPD002V30.ADCSS4CH2);		//SS4接口，里面
 	
 //	if(((CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)&&(CS5530_2.Data.WeighFilt	!=0xFFFFFFFF))
 //		&&((CS5530_1.Data.WeighFilt	!=0x00)&&(CS5530_2.Data.WeighFilt	!=0x00)))

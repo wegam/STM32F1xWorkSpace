@@ -91,22 +91,26 @@ unsigned char AT24C02_Read(sI2CDef *sI2C,unsigned char Addr)
 void AT24C02_WritePage(sI2CDef *sI2C,unsigned char StartAddr,unsigned char *Buffer)
 {
 	unsigned char i	=	0;
+
 	
 	I2C_Start(sI2C);
 	
 	I2C_SendByte(sI2C,Write_24C02Addr);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB）
 	
-	I2C_WaitAck(sI2C);
+	if(I2C_WaitAck(sI2C)	==	I2C_NACK)
+			return;
 	
 	I2C_SendByte(sI2C,StartAddr);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB）
 	
-	I2C_WaitAck(sI2C);
+	if(I2C_WaitAck(sI2C)	==	I2C_NACK)
+			return;
 	
 	for(i=0;i<8;i++)
 	{
 		I2C_SendByte(sI2C,Buffer[i]);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB）
 	
-		I2C_WaitAck(sI2C);
+		if(I2C_WaitAck(sI2C)	==	I2C_NACK)
+			return;
 	}
 	
 	I2C_Stop(sI2C);
@@ -124,28 +128,27 @@ void AT24C02_WritePage(sI2CDef *sI2C,unsigned char StartAddr,unsigned char *Buff
 unsigned char AT24C02_ReadBuffer(sI2CDef *sI2C,unsigned char Addr,unsigned char *Buffer,unsigned char Length)
 {
 	unsigned char i	=	0;
-	
-	unsigned char Data	=	0;
-	
+		
 	I2C_Start(sI2C);
 	
 	I2C_SendByte(sI2C,Write_24C02Addr);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB）
 	
-	I2C_WaitAck(sI2C);
+	if(I2C_WaitAck(sI2C)	==	I2C_NACK)
+			return 0;
 	
 	I2C_SendByte(sI2C,Addr);						//发送待读取地址
 	
-	I2C_WaitAck(sI2C);
+	if(I2C_WaitAck(sI2C)	==	I2C_NACK)
+			return 0;
 	
 	I2C_Start(sI2C);
 	
 	I2C_SendByte(sI2C,Read_24C02Addr);	//发送待读取地址
 	
-	I2C_WaitAck(sI2C);	
+	if(I2C_WaitAck(sI2C)	==	I2C_NACK)
+			return 0;	
 	
-	
-	
-	for(i=0;i<8;i++)
+	for(i=0;i<Length;i++)
 	{
 		I2C_SDASetIn(sI2C);
 		
@@ -161,6 +164,7 @@ unsigned char AT24C02_ReadBuffer(sI2CDef *sI2C,unsigned char Addr,unsigned char 
 	
 	I2C_Stop(sI2C);
 
+	return 0;
 }
 
 

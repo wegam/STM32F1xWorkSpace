@@ -13,7 +13,7 @@ unsigned char AT24C02_Read(sI2CDef *sI2C,unsigned char Addr);
 
 void AT24C02_WritePage(sI2CDef *sI2C,unsigned char StartAddr,unsigned char *Buffer);
 
-void AT24C02_WritePage(sI2CDef *sI2C,unsigned char StartAddr,unsigned char *Buffer);
+
 unsigned char AT24C02_ReadBuffer(sI2CDef *sI2C,unsigned char Addr,unsigned char *Buffer,unsigned char Length);
 
 #endif

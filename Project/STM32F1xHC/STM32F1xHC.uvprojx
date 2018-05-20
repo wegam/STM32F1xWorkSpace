@@ -1103,58 +1103,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -1237,11 +1185,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -1310,6 +1253,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -2519,58 +2467,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -2653,11 +2549,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -2726,6 +2617,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -3935,58 +3831,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -4069,11 +3913,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -4142,6 +3981,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -5351,58 +5195,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -5485,11 +5277,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -5558,6 +5345,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -6767,58 +6559,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -6901,11 +6641,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -6974,6 +6709,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -8183,58 +7923,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -8317,11 +8005,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -8390,6 +8073,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -9599,58 +9287,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -9733,11 +9369,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -9806,6 +9437,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -11015,58 +10651,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -11149,11 +10733,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -11222,6 +10801,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -12431,58 +12015,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -12565,11 +12097,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -12638,6 +12165,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -13847,58 +13379,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -13981,11 +13461,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -14054,6 +13529,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -15263,58 +14743,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -15397,11 +14825,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -15470,6 +14893,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -16679,58 +16107,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -16813,11 +16189,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -16886,6 +16257,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -18095,58 +17471,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -18229,11 +17553,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -18302,6 +17621,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -19511,58 +18835,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -19645,11 +18917,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -19718,6 +18985,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -20927,58 +20199,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -21061,11 +20281,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -21134,6 +20349,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -22343,58 +21563,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -22477,11 +21645,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -22550,6 +21713,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -23759,58 +22927,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -23893,11 +23009,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -23966,6 +23077,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -25175,58 +24291,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -25309,11 +24373,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -25382,6 +24441,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -26591,58 +25655,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -26725,11 +25737,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -26798,6 +25805,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -28007,58 +27019,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -28141,11 +27101,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -28214,6 +27169,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -29423,58 +28383,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -29557,11 +28465,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -29630,6 +28533,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -30839,58 +29747,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -30973,11 +29829,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -31046,6 +29897,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -32255,58 +31111,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -32389,11 +31193,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -32462,6 +31261,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -33671,58 +32475,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -33805,11 +32557,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -33878,6 +32625,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -35087,58 +33839,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -35221,11 +33921,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -35294,6 +33989,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -36503,58 +35203,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -36637,11 +35285,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -36710,6 +35353,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -37872,58 +36520,6 @@
               <FilePath>..\..\Driver\Components\SCR\R61509V.c</FilePath>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -38006,11 +36602,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -38079,6 +36670,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -39241,58 +37837,6 @@
               <FilePath>..\..\Driver\Components\SCR\R61509V.c</FilePath>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -39375,11 +37919,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -39448,6 +37987,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -40610,58 +39154,6 @@
               <FilePath>..\..\Driver\Components\SCR\R61509V.c</FilePath>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -40744,11 +39236,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -40817,6 +39304,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -41979,58 +40471,6 @@
               <FilePath>..\..\Driver\Components\SCR\R61509V.c</FilePath>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -42113,11 +40553,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -42186,6 +40621,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -43348,58 +41788,6 @@
               <FilePath>..\..\Driver\Components\SCR\R61509V.c</FilePath>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -43482,11 +41870,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -43555,6 +41938,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -44717,58 +43105,6 @@
               <FilePath>..\..\Driver\Components\SCR\R61509V.c</FilePath>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -44851,11 +43187,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -44924,6 +43255,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -46133,58 +44469,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -46267,11 +44551,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -46340,6 +44619,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -47549,58 +45833,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -47683,11 +45915,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -47756,6 +45983,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -48965,58 +47197,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -49099,11 +47279,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -49172,6 +47347,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -50381,58 +48561,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -50515,11 +48643,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -50588,6 +48711,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -51797,58 +49925,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>R61509VNB1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\R61509VNB1.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>R61905V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61905V.c</FilePath>
@@ -51931,11 +50007,6 @@
               <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
             </File>
             <File>
-              <FileName>I2C.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\Components\SCR\I2C.C</FilePath>
-            </File>
-            <File>
               <FileName>AT24C02.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
@@ -52004,6 +50075,11 @@
               <FileName>HC_RS485.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
             </File>
           </Files>
         </Group>

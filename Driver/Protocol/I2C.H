@@ -8,7 +8,11 @@
 
 //#include "STM32_GPIO.H"
 
-
+typedef	enum	_I2CACK				//带反馈锁控制标志及吸合时间
+{
+	I2C_NACK	=0,
+	I2C_ACK		=1
+}I2CACKDef;
 
 
 typedef	struct	_I2C				//带反馈锁控制标志及吸合时间

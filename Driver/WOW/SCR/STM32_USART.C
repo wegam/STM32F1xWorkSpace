@@ -2211,7 +2211,7 @@ u16	RS485_ReadBufferIDLE(
 )	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer，
 {
 	u16 length=0;
-	if(USART_GetFlagStatus(RS485_Info->USARTx, USART_FLAG_TC)	!=	RESET	&&	USART_GetFlagStatus(RS485_Info->USARTx, USART_FLAG_TXE)	!=	RESET)
+	if(USART_GetFlagStatus(RS485_Info->USARTx, USART_FLAG_TC)	!=	RESET	&&	USART_GetFlagStatus(RS485_Info->USARTx, USART_FLAG_TXE)	!=	RESET)	//发送完成，可以接收
 	{
 		RS485_RX_EN(RS485_Info);
 		length=USART_ReadBufferIDLE(RS485_Info->USARTx,RevBuffer,RxdBuffer);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
