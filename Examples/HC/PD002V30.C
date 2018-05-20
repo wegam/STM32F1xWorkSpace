@@ -39,6 +39,7 @@
 
 PD002V30Def sPD002V30;
 #define BufferSize	12
+#define Bus485Size	64
 #define Command_ReadData	(unsigned char)0x05
 #define Command_SendData	(unsigned char)0x06
 //#define	USART_TO_RS485		//USART转485，485转USART测试
@@ -70,16 +71,18 @@ u8	RS485_PD_txAddr=0;						//发送序号
 u8	RS485_PD_rxAddr=0;						//接收序号
 
 RS485_TypeDef BUS485;
-u8 Bus485Rx[32]={0};
-u8 Bus485Re[32]={0};
-u8 Bus485Tx[32]={0};
+u8 Bus485Rx[Bus485Size+5]={0};
+u8 Bus485Re[Bus485Size+5]={0};
+u8 Bus485Tx[Bus485Size+5]={0};
+
 
 u8 DebugRx[32]={0};
 u8 DebugRe[32]={0};
 u8 DebugTx[32]={0};
 
 
-CS5530Def CS5530_1,CS5530_2,CS5530_3;
+CS5530Def CS5530_1;		//SS3接口，外面
+CS5530Def CS5530_2;		//SS4接口，里面
 u32 Value_AD1=0;
 u32 Value_AD2=0;
 
@@ -148,6 +151,7 @@ void PD002V30_Server(void)
 {	
 	
 	IWDG_Feed();								//独立看门狗喂狗
+	CS5530_Server();			//读取AD值
 	
 	RunTime++;
 	if(RunTime	==	100)
@@ -184,7 +188,7 @@ void PD002V30_Server(void)
 		
 		RunTime=0;
 		Seg_Server();					//数码更新接口
-		CS5530_Server();			//读取AD值
+//		CS5530_Server();			//读取AD值
 
 		Wedata++;
 		if(Wedata>=0xFF)
@@ -268,7 +272,7 @@ void PD002V30_USART_Cofiguration(void)
 	BUS485.USARTx	=	USART2;
 	BUS485.RS485_CTL_PORT	=	GPIOA;
 	BUS485.RS485_CTL_Pin	=	GPIO_Pin_1;
-	RS485_DMA_ConfigurationNR	(&BUS485,19200,(u32*)Bus485Rx,9);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&BUS485,19200,(u32*)Bus485Rx,Bus485Size);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
 	USART_DMA_ConfigurationNR	(USART1,115200,(u32*)DebugRx,64);	//USART_DMA配置--查询方式，不开中断
 }
@@ -303,7 +307,7 @@ void PD002V30_USART_Server(void)
 void PD002V30_RS485_Server(void)
 {
 	u8 Num	=	0;
-	Num	=	RS485_ReadBufferIDLE			(&BUS485,(u32*)Bus485Re,(u32*)Bus485Rx);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	Num	=	RS485_ReadBufferIDLE(&BUS485,(u32*)Bus485Re,(u32*)Bus485Rx);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(Num)
 	{
 		PD002V30RS485ProCCDef	RS485Rx;
@@ -332,6 +336,8 @@ void PD002V30_RS485_Server(void)
 			
 		}
 	}
+	PD002V30_CMD_Server();
+	RS485_ReadBufferIDLE(&BUS485,(u32*)Bus485Re,(u32*)Bus485Rx);	
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -374,10 +380,11 @@ void PD002V30_CMD_Server(void)
 					}
 					else if(State	==	0x02)	//清零第二步，记录初始AD
 					{
-						CS5530_1.Flag.GetOri	=	1;
-						if(CS5530_GetOrigin(&CS5530_1)	!=0xFFFFFFFF)		//获取原点值
+						if(CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)		//获取原点值
 						{
+							CS5530_1.Data.Origin	=	CS5530_1.Data.WeighFilt;
 							sPD002V30.RS485Data.State	=	0;
+							CS5530_1.Data.WeighFilt	=0xFFFFFFFF;
 						}
 						else
 						{
@@ -399,6 +406,7 @@ void PD002V30_CMD_Server(void)
 						if(CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
 						{
 							sPD002V30.RS485Data.State	=	0;
+							CS5530_1.Data.WeighFilt	=0xFFFFFFFF;
 						}
 						else
 						{
@@ -417,19 +425,60 @@ void PD002V30_CMD_Server(void)
 					CS5530_1.Data.Quantity	=	sPD002V30.RS485Data.Data;
 					CS5530_1.Data.WeighPie	=	(WeiT+200)/CS5530_1.Data.Quantity;
 					sPD002V30.RS485Data.State	=	0;
+					CS5530_1.Data.WeighFilt	=0xFFFFFFFF;
 				}
 				else
 				{
 					return;
 				}
 				break;
-		default:
-			break;
+		case APP_CMD_CTJIAYAO:			/*称重抽屉加药*/
+				if(State	==	0x01)			//清零第一步，打开抽屉
+				{
+					if(CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
+					{
+						CS5530_1.Data.Origin	=	CS5530_1.Data.WeighFilt	-	CS5530_1.Data.Quantity*CS5530_1.Data.WeighPie;
+						CS5530_1.Data.WeighFilt	=0xFFFFFFFF;
+					}
+					else
+					{
+						return;
+					}
+				}
+				else if(State	==	0x02)	//清零第二步，记录初始AD
+				{
+					if(CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)		//获取稳定AD值
+					{
+						sPD002V30.RS485Data.State	=	0;
+						if(CS5530_1.Data.WeighLive>CS5530_1.Data.Origin)
+						{
+							CS5530_1.Data.Quantity=(CS5530_1.Data.WeighLive-CS5530_1.Data.Origin+500)/CS5530_1.Data.WeighPie;
+						}
+						else
+						{
+							CS5530_1.Data.Quantity=(CS5530_1.Data.Origin-CS5530_1.Data.WeighLive+500)/CS5530_1.Data.WeighPie;
+						}
+						sPD002V30.RS485Data.Data	=	CS5530_1.Data.Quantity;
+						CS5530_1.Data.WeighFilt	=0xFFFFFFFF;
+					}
+					else
+					{
+						return;
+					}
+				}
+				else
+				{
+					return;
+				}
+				
+				break;
+		default:	return;
 	}
-	SysTick_DeleymS(10);											//SysTick延时nmS
-	sPD002V30.RS485Data.Bcc8	=	BCC8(&sPD002V30.RS485Data.SerialNumber,9);
+	SysTick_DeleymS(20);											//SysTick延时nmS
+	sPD002V30.RS485Data.Bcc8	=	BCC8(&sPD002V30.RS485Data.SerialNumber,9);	
 	memcpy(Bus485Tx,(u32*)&sPD002V30.RS485Data,12);
 	RS485_DMASend(&BUS485,(u32*)Bus485Tx,12);	//RS485-DMA发送程序
+	SysTick_DeleymS(20);											//SysTick延时nmS
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -469,6 +518,7 @@ u8 PD002V30_GetBufferArray(void)
 *******************************************************************************/
 void CS5530_Configuration(void)
 {
+	//SS3接口，外面
 	CS5530_1.Port.CS_PORT=GPIOB;
 	CS5530_1.Port.CS_Pin=GPIO_Pin_12;
 	
@@ -482,7 +532,7 @@ void CS5530_Configuration(void)
 	CS5530_1.Port.SCLK_Pin=GPIO_Pin_13;
 	
 	
-	
+	//SS4接口，里面
 	CS5530_2.Port.CS_PORT=GPIOA;
 	CS5530_2.Port.CS_Pin=GPIO_Pin_8;
 	
@@ -495,6 +545,11 @@ void CS5530_Configuration(void)
 	CS5530_2.Port.SCLK_PORT=GPIOB;
 	CS5530_2.Port.SCLK_Pin=GPIO_Pin_13;
 	
+	
+	
+	
+	
+	
 	CS5530_Initialize(&CS5530_1);
 	CS5530_Initialize(&CS5530_2);
 }
@@ -506,23 +561,27 @@ void CS5530_Configuration(void)
 *******************************************************************************/
 void CS5530_Server(void)
 {
-	CS5530_Process(&CS5530_1);
-	CS5530_Process(&CS5530_2);
-	if(((CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)&&(CS5530_2.Data.WeighFilt	!=0xFFFFFFFF))
-		&&((CS5530_1.Data.WeighFilt	!=0x00)&&(CS5530_2.Data.WeighFilt	!=0x00)))
-	{
-		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",CS5530_1.Data.WeighFilt,CS5530_2.Data.WeighFilt);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		CS5530_1.Data.WeighFilt	=	0;
-		CS5530_2.Data.WeighFilt	=	0;
-	}
+#if 1
+	CS5530_Process(&CS5530_1);		//SS3接口，外面
+	CS5530_Process(&CS5530_2);		//SS4接口，里面
 	
-//	u32 temp1=0,temp2=0;
-//	temp2	=	CS5530_ReadData(&CS5530_1);		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值
-//	temp1	=	CS5530_ReadData(&CS5530_2);		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值
+//	if(((CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)&&(CS5530_2.Data.WeighFilt	!=0xFFFFFFFF))
+//		&&((CS5530_1.Data.WeighFilt	!=0x00)&&(CS5530_2.Data.WeighFilt	!=0x00)))
+//	{
+//		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",CS5530_1.Data.WeighFilt,CS5530_2.Data.WeighFilt);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//		CS5530_1.Data.WeighFilt	=	0;
+//		CS5530_2.Data.WeighFilt	=	0;
+//	}
+#endif
+
+#if 0	
+	u32 temp1=0,temp2=0;
+	temp1	=	CS5530_ReadData(&CS5530_1);		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS3接口，外面
+	temp2	=	CS5530_ReadData(&CS5530_2);		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS4接口，里面
 	
 //	temp2	=	CS5530_GetWeigh(&CS5530_1);		//获取稳定的AD值
 //	temp1	=	CS5530_GetWeigh(&CS5530_2);		//获取稳定的AD值
-//	
+	
 //	if(temp1>Value_AD1)
 //	{
 //		Value_ADB1	=	temp1	-	Value_AD1;
@@ -544,22 +603,24 @@ void CS5530_Server(void)
 //	{
 ////		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",temp1>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 //	}
-//	if((temp1!=0xFFFFFFFF)&&(temp2!=0xFFFFFFFF))
-//	{
-//		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",temp1,temp2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-//	}
-//	if(temp1!=0xFFFFFFFF)
-//	{
-//		Value_AD1	=	temp1;
-//		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",Value_AD1);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-//	}
-//	if(temp2!=0xFFFFFFFF)
-//	{
-//		Value_AD2	=	temp2;
-//		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",Value_AD2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-//	}
-//	Value_AD1	=	temp1;
-//	Value_AD2	=	temp2;
+	if((temp1!=0xFFFFFFFF)&&(temp2!=0xFFFFFFFF))
+	{
+		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",temp1>>2,temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		return;
+	}
+	if(temp1!=0xFFFFFFFF)
+	{
+		Value_AD1	=	temp1;
+		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",temp1>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+	}
+	if(temp2!=0xFFFFFFFF)
+	{
+		Value_AD2	=	temp2;
+		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+	}
+	Value_AD1	=	temp1;
+	Value_AD2	=	temp2;
+#endif
 }
 /*******************************************************************************
 * 函数名			:	function

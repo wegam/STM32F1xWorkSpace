@@ -516,7 +516,6 @@ u32	CS5530_ReadData(CS5530Def *pInfo)
 {
 	u32 ADC_Value=0xFFFFFFFF;
 	
-//	CS5530_CS_HIGH(Pinfo);
 	CS5530_CS_LOW(pInfo);		
 	if(CS5530_SDO_STATE(pInfo) == 0)
 	{			
@@ -683,10 +682,6 @@ unsigned long CS5530_GetOrigin(CS5530Def *pInfo)
 {
 	if(pInfo->Flag.GetOri)	//获取原点标记
 	{
-		if(pInfo->Data.Origin	!=0)
-		{
-			pInfo->Data.Origin	=	0;
-		}
 		if((pInfo->Data.WeighFilt!= 0xFFFFFFFF)&&(pInfo->Data.WeighFilt!= 0))
 		{
 			pInfo->Flag.GetOri	=	0;
