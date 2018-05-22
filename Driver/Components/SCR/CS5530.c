@@ -352,7 +352,7 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 	
 	CS5530_Status=0x0200000;		//150
 	
-	CS5530_Status=0x01100000;		//1200
+	CS5530_Status=0x03000000;		//1200
 	
 	CS5530_WriteRegister(pInfo,CS5530_WRITE_GAIN,CS5530_Status);			//增益寄存器	
 		
@@ -497,9 +497,9 @@ void CS5530_PowerUpBac(CS5530Def *pInfo)
 	
 	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_Status);			//写配置寄存器
 	
-	CS5530_WriteRegister(pInfo,CS5530_WRITE_GAIN,0x00FFFFFF);						//写增益寄存器
+//	CS5530_WriteRegister(pInfo,CS5530_WRITE_GAIN,0x00FFFFFF);						//写增益寄存器
 	
-//	CS5530_WriteRegister(Pinfo,CS5530_WRITE_GAIN,0x00100000);					//写增益寄存器
+	CS5530_WriteRegister(pInfo,CS5530_WRITE_GAIN,0x01000000);					//写增益寄存器
 	
 	CS5530_WriteCommand(pInfo,CS5530_START_CONTINUOUS);									//执行连续转换
 	
@@ -520,7 +520,7 @@ u32	CS5530_ReadData(CS5530Def *pInfo)
 	if(CS5530_SDO_STATE(pInfo) == 0)
 	{			
 		ADC_Value=CS5530_GetADData(pInfo)>>8;		//获取24位原码值---读出4个字节，低8位为空值
-		SysTick_DeleymS(100);				//SysTick延时nmS
+//		SysTick_DeleymS(10);				//SysTick延时nmS
 	}
 	CS5530_CS_HIGH(pInfo);
 	return ADC_Value;
@@ -632,7 +632,7 @@ unsigned long CS5530_GetWeigh(CS5530Def *pInfo)
 		}
 		else
 		{
-			*WeighFilt	=	0xFFFFFFFF;
+//			*WeighFilt	=	0xFFFFFFFF;
 			return 0xFFFFFFFF;
 		}
 	}	

@@ -5,9 +5,9 @@
 #include "stm32f10x_gpio.h"
 
 
-#define DataNum										10	//计算时需要获取的数据个数
-#define	WeighCmpMax									400	//相邻AD值允许差值大小
-#define	WeighVarMax									1600	//允许最大方差
+#define DataNum										20	//计算时需要获取的数据个数
+#define	WeighCmpMax									100	//相邻AD值允许差值大小
+#define	WeighVarMax									500	//允许最大方差
 #define CS5530_OF_MAX_NUM					10	/*最近连续采样的10次都溢出,表示数据已经溢出了*/
 #define CS5530_CONTINUOUS_IGNORE	10	/*开始连续转换时,要忽略前10(资料上推荐是5)个不准确的数据*/
 

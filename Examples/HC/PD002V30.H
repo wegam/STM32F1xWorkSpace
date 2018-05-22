@@ -41,7 +41,7 @@ typedef	struct
 	
 	sI2CDef 			Port;
 }AT24C02Def;
-typedef	struct	_PD002V30RS485Pro
+typedef	struct	_MS200Pro
 {
 	struct
 	{
@@ -58,13 +58,23 @@ typedef	struct	_PD002V30RS485Pro
 	unsigned char		State;				//运行状态位
 	unsigned char		ErrFlag;			//错误码
 	unsigned char		Bcc8;					//异或校验(流水号到错误码）
+}MS200ProCCDef;
+typedef	struct	_PD002V30RS485Pro
+{
+	struct
+	{
+		unsigned char Time;
+		unsigned char Retry;
+	}Data;
+	MS200ProCCDef	Pro;
 }PD002V30RS485ProCCDef;
+
 typedef	struct _PD002V30
 {
 	CS5530Def 	ADCSS3CH1;		//SS3接口，外面
 	CS5530Def 	ADCSS4CH2;		//SS4接口，里面
 	AT24C02Def	I2C;
-	PD002V30RS485ProCCDef	RS485Data;
+	PD002V30RS485ProCCDef	RS485;
 }PD002V30Def;
 
 
@@ -79,7 +89,7 @@ void PD002V30_Server(void);
 void PD002V30_USART_Cofiguration(void);
 void PD002V30_USART_Server(void);
 void PD002V30_RS485_Server(void);
-void PD002V30_RS485_Ack(PD002V30RS485ProCCDef *RS485Data);
+void PD002V30_RS485_Ack(MS200ProCCDef *Pro);
 void PD002V30_CMD_Server(void);
 
 void AT24C02_Configuration(void);
