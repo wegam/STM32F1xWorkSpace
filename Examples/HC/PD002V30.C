@@ -398,7 +398,7 @@ void PD002V30_RS485_Server(void)
 		memcpy((u8*)&MS200Pro,Bus485Re,Num);
 		Address	=	MS200Pro.Address;
 		//======校验地址
-		if(((Address&0x0F)	==SwitchID)||((Address&0x0F)	==SwitchID+1))
+		if(((Address&0x07)	==SwitchID)||((Address&0x07)	==SwitchID+1))
 		{			
 			u8 Bcc8	=	0;
 			//数据校验：校验正确后应答

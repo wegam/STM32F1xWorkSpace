@@ -55,7 +55,7 @@ Page£º
 *******************************************************************************/
 void Usart_ISP_Cof(ISP_Conf_TypeDef *ISP_Conf)
 {
-	USART_DMA_ConfigurationEV	(ISP_Conf->USARTx,115200,(u32*)ISP_Conf->ISP_DATA.ISP_RxBuffer,ISP_BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖÐ¶Ï
+	USART_DMA_ConfigurationEV	(ISP_Conf->USARTx,115200,ISP_BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖÐ¶Ï
 	GPIO_Configuration_OPP50	(ISP_Conf->RESET_CTL_PORT,ISP_Conf->RESET_CTL_Pin);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È50MHz----V20170605
 	GPIO_Configuration_OPP50	(ISP_Conf->BOOT0_CTL_PORT,ISP_Conf->BOOT0_CTL_Pin);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È50MHz----V20170605
 	Usart_ISP_Reset(ISP_Conf);																																								//ÖØÖÃ±à³ÌÆ÷---»Ö¸´ËùÓÐ²ÎÊýÎªÄ¬ÈÏÖµ
@@ -96,7 +96,7 @@ void Usart_ISP_Process(ISP_Conf_TypeDef *ISP_Conf)
 *******************************************************************************/
 void Usart_ISP_SlaveProcess(ISP_Conf_TypeDef *ISP_Conf)		//Ä£¿é×÷Îª´Ó»úÊ±µÄ´¦Àí³ÌÐò
 {
-	ISP_Conf->ISP_DATA.ReceivedLen=USART_ReadBufferIDLE(ISP_Conf->USARTx,(u32*)ISP_Conf->ISP_DATA.ISP_RvBuffer,(u32*)ISP_Conf->ISP_DATA.ISP_RxBuffer);	//´®¿Ú¿ÕÏÐÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓÐÊý¾Ý£¬½«Êý¾Ý¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊý¾Ý¸öÊý£¬È»ºóÖØÐÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
+	ISP_Conf->ISP_DATA.ReceivedLen=USART_ReadBufferIDLE(ISP_Conf->USARTx,(u8*)ISP_Conf->ISP_DATA.ISP_RvBuffer);	//´®¿Ú¿ÕÏÐÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓÐÊý¾Ý£¬½«Êý¾Ý¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊý¾Ý¸öÊý£¬È»ºóÖØÐÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
 	if(ISP_Conf->ISP_DATA.ReceivedLen)
 	{
 		ISP_Conf->OverRunTime=0;									//³¬Ê±Ê±¼ä
@@ -250,7 +250,7 @@ void Usart_ISP_CheckFun(ISP_Conf_TypeDef *ISP_Conf)				//¼ì²âISPÄ£¿é¹¤×÷Ä£Ê½---¿
 void Usart_ISP_ACK(ISP_Conf_TypeDef *ISP_Conf)	//ISPÓ¦´ð
 {
 	ISP_Conf->ISP_DATA.Command[0]=ISP_ANSWER_ACK;
-	USART_DMASend(ISP_Conf->USARTx,(u32*)ISP_Conf->ISP_DATA.Command,1);	//´®¿ÚDMA·¢ËÍ³ÌÐò
+	USART_DMASend(ISP_Conf->USARTx,(u8*)ISP_Conf->ISP_DATA.Command,1);	//´®¿ÚDMA·¢ËÍ³ÌÐò
 }
 /*******************************************************************************
 * º¯ÊýÃû			:	Usart_ISP_NACK
@@ -261,7 +261,7 @@ void Usart_ISP_ACK(ISP_Conf_TypeDef *ISP_Conf)	//ISPÓ¦´ð
 void Usart_ISP_NACK(ISP_Conf_TypeDef *ISP_Conf)		//ISP²»Ó¦´ð
 {
 	ISP_Conf->ISP_DATA.Command[0]=ISP_ANSWER_NACK;
-	USART_DMASend(ISP_Conf->USARTx,(u32*)ISP_Conf->ISP_DATA.Command,1);	//´®¿ÚDMA·¢ËÍ³ÌÐò
+	USART_DMASend(ISP_Conf->USARTx,(u8*)ISP_Conf->ISP_DATA.Command,1);	//´®¿ÚDMA·¢ËÍ³ÌÐò
 }
 
 /*******************************************************************************
@@ -302,7 +302,7 @@ void Usart_ISP_CommandRead(ISP_Conf_TypeDef *ISP_Conf)			//´®¿Ú½ÓÊÕÃüÁî£¨Ö÷»ú->´
 		ISP_Conf->ISP_DATA.USARTSendLen=15;												//´®¿ÚÐèÒª·¢ËÍµÄÊý¾Ý³¤¶È
 		
 		memcpy(ISP_Conf->ISP_DATA.ISP_TxBuffer, ISP_Conf->ISP_DATA.ISP_TvBuffer, ISP_Conf->ISP_DATA.USARTSendLen);
-		USART_DMASend(ISP_Conf->USARTx,(u32*)ISP_Conf->ISP_DATA.ISP_TxBuffer,ISP_Conf->ISP_DATA.USARTSendLen);	//´®¿ÚDMA·¢ËÍ³ÌÐò	
+		USART_DMASend(ISP_Conf->USARTx,(u8*)ISP_Conf->ISP_DATA.ISP_TxBuffer,ISP_Conf->ISP_DATA.USARTSendLen);	//´®¿ÚDMA·¢ËÍ³ÌÐò	
 			
 	}
 	else if(C0==ISP_COMMAND_GetVS)	//»ñÈ¡×Ô¾Ù³ÌÐò°æ±¾¼° Flash µÄ¶Á±£»¤×´Ì¬
@@ -317,7 +317,7 @@ void Usart_ISP_CommandRead(ISP_Conf_TypeDef *ISP_Conf)			//´®¿Ú½ÓÊÕÃüÁî£¨Ö÷»ú->´
 		ISP_Conf->ISP_DATA.USARTSendLen=5;												//´®¿ÚÐèÒª·¢ËÍµÄÊý¾Ý³¤¶È
 		
 		memcpy(ISP_Conf->ISP_DATA.ISP_TxBuffer, ISP_Conf->ISP_DATA.ISP_TvBuffer, ISP_Conf->ISP_DATA.USARTSendLen);
-		USART_DMASend(ISP_Conf->USARTx,(u32*)ISP_Conf->ISP_DATA.ISP_TxBuffer,ISP_Conf->ISP_DATA.USARTSendLen);	//´®¿ÚDMA·¢ËÍ³ÌÐò	
+		USART_DMASend(ISP_Conf->USARTx,(u8*)ISP_Conf->ISP_DATA.ISP_TxBuffer,ISP_Conf->ISP_DATA.USARTSendLen);	//´®¿ÚDMA·¢ËÍ³ÌÐò	
 	}
 	else if(C0==ISP_COMMAND_GetID)	//»ñÈ¡Ð¾Æ¬ ID
 	{
@@ -331,7 +331,7 @@ void Usart_ISP_CommandRead(ISP_Conf_TypeDef *ISP_Conf)			//´®¿Ú½ÓÊÕÃüÁî£¨Ö÷»ú->´
 		ISP_Conf->ISP_DATA.USARTSendLen=5;												//´®¿ÚÐèÒª·¢ËÍµÄÊý¾Ý³¤¶È
 		
 		memcpy(ISP_Conf->ISP_DATA.ISP_TxBuffer, ISP_Conf->ISP_DATA.ISP_TvBuffer, ISP_Conf->ISP_DATA.USARTSendLen);
-		USART_DMASend(ISP_Conf->USARTx,(u32*)ISP_Conf->ISP_DATA.ISP_TxBuffer,ISP_Conf->ISP_DATA.USARTSendLen);	//´®¿ÚDMA·¢ËÍ³ÌÐò	
+		USART_DMASend(ISP_Conf->USARTx,(u8*)ISP_Conf->ISP_DATA.ISP_TxBuffer,ISP_Conf->ISP_DATA.USARTSendLen);	//´®¿ÚDMA·¢ËÍ³ÌÐò	
 	}
 	else if(C0==ISP_COMMAND_RM)			//´ÓÓ¦ÓÃ³ÌÐòÖ¸¶¨µÄµØÖ·¿ªÊ¼¶ÁÈ¡×î¶à 256 ¸ö×Ö½ÚµÄ´æ´¢Æ÷¿Õ¼ä£º¶ÁÊý¾Ý·ÖÎå²½£º1-¶ÁÊý¾ÝÃüÁî£¬2-¶ÁÊý¾ÝÆðÊ¼µØÖ·£¬3-ÐèÒª¶ÁÈ¡µÄ³¤¶È£¬4-¶ÁÊý¾Ý¹ý³Ì£¬5-ÉÏ±¨Êý¾Ý
 	{
@@ -592,7 +592,7 @@ void Usart_ISP_SendBuffer(ISP_Conf_TypeDef *ISP_Conf)	//ISPÉÏ´«Êý¾Ý£¨´Ó»ú->Ö÷»ú)
 
 	ISP_Conf->ISP_DATA.ISP_TxBuffer[0]=0x79;
 	memcpy(&ISP_Conf->ISP_DATA.ISP_TxBuffer[1], ISP_Conf->ISP_DATA.ISP_TvBuffer, ISP_Conf->ISP_DATA.USARTSendLen+1);	//¸´ÖÆÊý¾Ý
-	USART_DMASend(ISP_Conf->USARTx,(u32*)ISP_Conf->ISP_DATA.ISP_TxBuffer,ISP_Conf->ISP_DATA.USARTSendLen+2);				//´®¿ÚDMA·¢ËÍ³ÌÐò
+	USART_DMASend(ISP_Conf->USARTx,(u8*)ISP_Conf->ISP_DATA.ISP_TxBuffer,ISP_Conf->ISP_DATA.USARTSendLen+2);				//´®¿ÚDMA·¢ËÍ³ÌÐò
 	Usart_ISP_SetSlaveStatus(ISP_Conf,ISP_STATUS_WaitCommand);				//ÒÑ¾­Íê³ÉÊý¾Ý·¢ËÍÃüÁî£¬×´Ì¬¸üÐÂÎªµÈ´ýÏÂÒ»¸öÃüÁîISP_STATUS_WaitCommand
 
 	
@@ -1019,7 +1019,7 @@ void Usart_MISP_CommandSend(ISP_Conf_TypeDef *ISP_Conf,unsigned char Command)	//
 {
 	ISP_Conf->ISP_DATA.Command[0]=Command;
 	ISP_Conf->ISP_DATA.Command[1]=Command^0XFF;
-	USART_DMASend(ISP_Conf->USARTx,(u32*)ISP_Conf->ISP_DATA.Command,2);	//´®¿ÚDMA·¢ËÍ³ÌÐò
+	USART_DMASend(ISP_Conf->USARTx,(u8*)ISP_Conf->ISP_DATA.Command,2);	//´®¿ÚDMA·¢ËÍ³ÌÐò
 }
 /*******************************************************************************
 *º¯ÊýÃû			:	Usart_MISP_ReadAck
@@ -1029,7 +1029,7 @@ void Usart_MISP_CommandSend(ISP_Conf_TypeDef *ISP_Conf,unsigned char Command)	//
 *******************************************************************************/
 bool Usart_MISP_ReadAck(ISP_Conf_TypeDef *ISP_Conf)			//Ö÷»ú¶ÁÈ¡´Ó»úÓ¦´ð:ÓÐÓ¦´ð·µ»ØTRUE£¬·ñÔò·µ»ØFALSE
 {
-	ISP_Conf->ISP_DATA.ReceivedLen=USART_ReadBufferIDLE(ISP_Conf->USARTx,(u32*)ISP_Conf->ISP_DATA.ISP_RvBuffer,(u32*)ISP_Conf->ISP_DATA.ISP_RxBuffer);	//´®¿Ú¿ÕÏÐÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓÐÊý¾Ý£¬½«Êý¾Ý¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄ
+	ISP_Conf->ISP_DATA.ReceivedLen=USART_ReadBufferIDLE(ISP_Conf->USARTx,(u8*)ISP_Conf->ISP_DATA.ISP_RvBuffer);	//´®¿Ú¿ÕÏÐÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓÐÊý¾Ý£¬½«Êý¾Ý¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄ
 	if(ISP_Conf->ISP_DATA.ReceivedLen)
 	{
 		if(ISP_Conf->ISP_DATA.ISP_RvBuffer[0]==0x79)
@@ -1058,7 +1058,7 @@ void Usart_ISP_Send(ISP_Conf_TypeDef *ISP_Conf)						//·¢ËÍº¯Êý°üÀ¨´Ó»ú·¢ËÍÓ¦´ð¡
 	{
 		memcpy(ISP_Conf->ISP_DATA.ISP_TxBuffer, ISP_Conf->ISP_DATA.ISP_TvBuffer,ISP_Conf->ISP_DATA.USARTSendLen);		//¸´ÖÆÊý¾Ý
 		memset(ISP_Conf->ISP_DATA.ISP_TvBuffer,0xFF, ISP_BufferSize);	//½ÓÊÕ»º³åÇø
-		USART_DMASend(ISP_Conf->USARTx,(u32*)ISP_Conf->ISP_DATA.ISP_TxBuffer,ISP_Conf->ISP_DATA.USARTSendLen);			//´®¿ÚDMA·¢ËÍ³ÌÐò
+		USART_DMASend(ISP_Conf->USARTx,(u8*)ISP_Conf->ISP_DATA.ISP_TxBuffer,ISP_Conf->ISP_DATA.USARTSendLen);			//´®¿ÚDMA·¢ËÍ³ÌÐò
 		ISP_Conf->ISP_DATA.USARTSendLen=0;
 	}
 }
@@ -1139,7 +1139,7 @@ void Usart_ISP_Reset(ISP_Conf_TypeDef *ISP_Conf)	//ÖØÖÃ±à³ÌÆ÷---»Ö¸´ËùÓÐ²ÎÊýÎªÄ¬
 *******************************************************************************/
 void BSP_Configuration(BSP_Conf_TypeDef *BSP_Conf)		//ÅäÖÃº¯Êý
 {
-	USART_DMA_ConfigurationEV	(BSP_Conf->BSP_Port.USARTx,115200,(u32*)BSP_Conf->BSP_DATA.BSP_RxBuffer,ISP_BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖÐ¶Ï
+	USART_DMA_ConfigurationEV	(BSP_Conf->BSP_Port.USARTx,115200,ISP_BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖÐ¶Ï
 	GPIO_Configuration_OPP50	(BSP_Conf->BSP_Port.RESET_CTL_PORT,BSP_Conf->BSP_Port.RESET_CTL_Pin);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È50MHz----V20170605
 	GPIO_Configuration_OPP50	(BSP_Conf->BSP_Port.BOOT0_CTL_PORT,BSP_Conf->BSP_Port.BOOT0_CTL_Pin);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È50MHz----V20170605
 	BSP_Reset(BSP_Conf);																																								//ÖØÖÃ±à³ÌÆ÷---»Ö¸´ËùÓÐ²ÎÊýÎªÄ¬ÈÏÖµ
@@ -1163,7 +1163,7 @@ void BSP_SendBuffer(BSP_Conf_TypeDef *BSP_Conf)						//Í¨¹ý´®¿Ú·¢ËÍÊý¾Ý£¬µ±¼ì²âµ
 	if(BSP_Conf->BSP_DATA.USARTSendLen!=0)
 	{
 		memcpy(BSP_Conf->BSP_DATA.BSP_TxBuffer,BSP_Conf->BSP_DATA.BSP_TvBuffer,BSP_Conf->BSP_DATA.USARTSendLen);					//´ÓTvBuffer¿½±´Êý¾Ýµ½TxBuffer		
-		USART_DMASend(BSP_Conf->BSP_Port.USARTx,(u32*)BSP_Conf->BSP_DATA.BSP_TxBuffer,BSP_Conf->BSP_DATA.USARTSendLen);		//´®¿ÚDMA·¢ËÍ³ÌÐò
+		USART_DMASend(BSP_Conf->BSP_Port.USARTx,(u8*)BSP_Conf->BSP_DATA.BSP_TxBuffer,BSP_Conf->BSP_DATA.USARTSendLen);		//´®¿ÚDMA·¢ËÍ³ÌÐò
 		memset(BSP_Conf->BSP_DATA.BSP_TvBuffer,0xFF, BSP_Conf->BSP_DATA.USARTSendLen);																		//Çå¿Õ·¢ËÍ±¸·ÝÇø
 		BSP_Conf->BSP_DATA.USARTSendLen=0;			//Çå¿Õ·¢ËÍÇø
 	}
@@ -1815,7 +1815,7 @@ void USM_BSP_ReadUnProtect(BSP_Conf_TypeDef *BSP_Conf)		//½ûÖ¹¶Á±£»¤
 void USM_BSP_GetAck(BSP_Conf_TypeDef *BSP_Conf)		//»ñÈ¡´Ó»úÓ¦´ð
 {
 	unsigned char RxNum=0;
-	RxNum=USART_ReadBufferIDLE(BSP_Conf->BSP_Port.USARTx,(u32*)BSP_Conf->BSP_DATA.BSP_RvBuffer,(u32*)BSP_Conf->BSP_DATA.BSP_RxBuffer);	//´®¿Ú¿ÕÏÐÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓÐÊý¾Ý£¬½«Êý¾Ý¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄ
+	RxNum=USART_ReadBufferIDLE(BSP_Conf->BSP_Port.USARTx,(u8*)BSP_Conf->BSP_DATA.BSP_RvBuffer);	//´®¿Ú¿ÕÏÐÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓÐÊý¾Ý£¬½«Êý¾Ý¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄ
 	if((RxNum!=0)&&(BSP_Conf->BSP_DATA.BSP_RvBuffer[0]==BSP_ACK))
 	{
 		BSP_Conf->BSP_DATA.BSP_RvBuffer[0]=0xFF;		//Çå³ýÓ¦´ð±êÊ¶
@@ -1832,7 +1832,7 @@ void USM_BSP_SendCommand(BSP_Conf_TypeDef *BSP_Conf,BSP_COMMAND_TypeDef Command)
 {
 	BSP_Conf->BSP_DATA.Command[0]=Command;
 	BSP_Conf->BSP_DATA.Command[1]=Command^0XFF;
-	USART_DMASend(BSP_Conf->BSP_Port.USARTx,(u32*)BSP_Conf->BSP_DATA.Command,2);	//´®¿ÚDMA·¢ËÍ³ÌÐò
+	USART_DMASend(BSP_Conf->BSP_Port.USARTx,(u8*)BSP_Conf->BSP_DATA.Command,2);	//´®¿ÚDMA·¢ËÍ³ÌÐò
 }
 /*******************************************************************************
 *º¯ÊýÃû			:	function
@@ -1846,7 +1846,7 @@ void USM_BSP_SendBuffer(BSP_Conf_TypeDef *BSP_Conf)						//·¢ËÍº¯Êý°üÀ¨´Ó»ú·¢ËÍÓ
 	{
 		memcpy(BSP_Conf->BSP_DATA.BSP_TxBuffer, BSP_Conf->BSP_DATA.BSP_TvBuffer,BSP_Conf->BSP_DATA.USARTSendLen);				//¸´ÖÆÊý¾Ý
 		memset(BSP_Conf->BSP_DATA.BSP_TvBuffer,0xFF, BSP_BufferSize);				//½ÓÊÕ»º³åÇø
-		USART_DMASend(BSP_Conf->BSP_Port.USARTx,(u32*)BSP_Conf->BSP_DATA.BSP_TxBuffer,BSP_Conf->BSP_DATA.USARTSendLen);	//´®¿ÚDMA·¢ËÍ³ÌÐò
+		USART_DMASend(BSP_Conf->BSP_Port.USARTx,(u8*)BSP_Conf->BSP_DATA.BSP_TxBuffer,BSP_Conf->BSP_DATA.USARTSendLen);	//´®¿ÚDMA·¢ËÍ³ÌÐò
 		BSP_Conf->BSP_DATA.USARTSendLen=0;
 	}
 }

@@ -492,11 +492,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -1064,6 +1059,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -1697,11 +1697,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -2269,6 +2264,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -2783,7 +2783,7 @@
               <MiscControls></MiscControls>
               <Define>USART_TEST</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Library\Startup\STM32F10x;..\..\Library\C;..\..\Library\ARM\Include;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Driver\Protocol;..\..\Driver\Tool;..\..\Examples\DEMO\include;..\..\Examples\WOW</IncludePath>
+              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Library\Startup\STM32F10x;..\..\Library\C;..\..\Library\ARM\Include;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Driver\Protocol;..\..\Driver\Tool;..\..\Examples\DEMO\include;..\..\Examples\WOW;.\main</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2900,11 +2900,6 @@
               <FileName>LK3U_40MR.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
-            </File>
-            <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
             </File>
             <File>
               <FileName>OFFLINE_ISP.C</FileName>
@@ -3474,6 +3469,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -4107,11 +4107,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -4679,6 +4674,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -5312,11 +5312,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -5884,6 +5879,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -6517,11 +6517,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -7089,6 +7084,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -7722,11 +7722,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -8294,6 +8289,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -8927,11 +8927,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -9499,6 +9494,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -10132,11 +10132,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -10704,6 +10699,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -11337,11 +11337,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -11909,6 +11904,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -12542,11 +12542,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -13114,6 +13109,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -13747,11 +13747,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -14319,6 +14314,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -14952,11 +14952,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -15524,6 +15519,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -16157,11 +16157,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -16729,6 +16724,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -17362,11 +17362,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -17934,6 +17929,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -18567,11 +18567,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -19139,6 +19134,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -19772,11 +19772,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -20344,6 +20339,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -20977,11 +20977,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -21549,6 +21544,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -22063,7 +22063,7 @@
               <MiscControls></MiscControls>
               <Define>USBtoSPI</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Library\Startup\STM32F10x;..\..\Library\C;..\..\Library\ARM\Include;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Driver\Protocol;..\..\Driver\Tool;..\..\Examples\DEMO\include;..\..\Examples\WOW</IncludePath>
+              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Library\Startup\STM32F10x;..\..\Library\C;..\..\Library\ARM\Include;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Driver\Protocol;..\..\Driver\Tool;..\..\Examples\DEMO\include;..\..\Examples\WOW;.\main;..\..\Driver\Protocol</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -22180,11 +22180,6 @@
               <FileName>LK3U_40MR.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
-            </File>
-            <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
             </File>
             <File>
               <FileName>OFFLINE_ISP.C</FileName>
@@ -22754,6 +22749,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -23387,11 +23387,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -23959,6 +23954,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -24592,11 +24592,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -25164,6 +25159,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -25797,11 +25797,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -26369,6 +26364,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -27002,11 +27002,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -27574,6 +27569,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -28207,11 +28207,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -28779,6 +28774,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -29412,11 +29412,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -29984,6 +29979,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -30617,11 +30617,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -31189,6 +31184,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -31822,11 +31822,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -32394,6 +32389,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -33027,11 +33027,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -33599,6 +33594,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -34232,11 +34232,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -34804,6 +34799,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -35437,11 +35437,6 @@
               <FilePath>..\..\Examples\WOW\LK3U_40MR.C</FilePath>
             </File>
             <File>
-              <FileName>MX25L4006E.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Examples\WOW\MX25L4006E.C</FilePath>
-            </File>
-            <File>
               <FileName>OFFLINE_ISP.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\OFFLINE_ISP.C</FilePath>
@@ -36009,6 +36004,11 @@
               <FileName>CardReader.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
           </Files>
         </Group>

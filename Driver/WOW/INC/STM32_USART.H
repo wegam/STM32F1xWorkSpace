@@ -25,7 +25,13 @@
 #include "stm32f10x_type.h"
 #include "stm32f10x_usart.h"
 
-
+typedef struct _uLink
+{	
+	unsigned short 	DataLen;			//´æ´¢µÄÊı¾İ³¤¶È
+	unsigned short	Serial;				//´æ´¢µÄĞòºÅ
+	unsigned char* 	DataAddr;			//Êı¾İ¶¯Ì¬´æ´¢¿Õ¼ä
+	struct _uLink* Next;					//ÏÂÒ»¸ö½Úµã	:
+}uLinkDef;
 
 typedef struct
 {
@@ -42,9 +48,9 @@ typedef struct
 
 //---------------------------´®¿Ú
 //*****************USART_DMA³õÊ¼»¯
-void	USART_DMA_ConfigurationNR	(USART_TypeDef* USARTx,u32 USART_BaudRate,u32 *RxdBuffer,u32 BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
-void 	USART_DMA_ConfigurationEV	(USART_TypeDef* USARTx,u32 USART_BaudRate,u32 *RxdBuffer,u32 BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï--Å¼Ğ£Ñé
-void 	USART_DMA_ConfigurationOD	(USART_TypeDef* USARTx,u32 USART_BaudRate,u32 *RxdBuffer,u32 BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï--ÆæĞ£Ñé
+void	USART_DMA_ConfigurationNR	(USART_TypeDef* USARTx,u32 USART_BaudRate,u16 BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
+void 	USART_DMA_ConfigurationEV	(USART_TypeDef* USARTx,u32 USART_BaudRate,u16 BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï--Å¼Ğ£Ñé
+void 	USART_DMA_ConfigurationOD	(USART_TypeDef* USARTx,u32 USART_BaudRate,u16 BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï--ÆæĞ£Ñé
 
 void 	USART_DMA_ConfigurationIT	(USART_TypeDef* USARTx,u32 USART_BaudRate,u8 NVICPreemptionPriority,u8 NVIC_SubPriority,u32 *RxdBuffer,u32 BufferSize);	//USART_DMAÅäÖÃ--ÖĞ¶Ï·½Ê½
 void 	USART_DMA_Configuration		(USART_TypeDef* USARTx,u32 USART_BaudRate,u8 NVICPreemptionPriority,u8 NVIC_SubPriority,u32 *RxdBuffer,u32 *TxdBuffer,u32 BufferSize);	//USART_DMAÅäÖÃ---¾É
@@ -52,11 +58,11 @@ void 	USART_DMA_Configuration		(USART_TypeDef* USARTx,u32 USART_BaudRate,u8 NVIC
 void	USART_DMA_ConfigurationNRRemap	(USART_TypeDef* USARTx,u32 USART_BaudRate,u32 *RxdBuffer,u32 BufferSize);	//USART_DMAÅäÖÃ(Ó³Éä)--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
 
 //*****************´®¿Ú½ÓÊÕ
-u16	USART_ReadBufferIDLE	(USART_TypeDef* USARTx,u32 *RevBuffer,u32 *RxdBuffer);	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı£¬È»ºóÖØĞÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
+u16	USART_ReadBufferIDLE	(USART_TypeDef* USARTx,u8 *RevBuffer);	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı
 
 //*****************´®¿Ú·¢ËÍ
 u16	USART_DMAPrintf		(USART_TypeDef* USARTx,const char *format,...);					//×Ô¶¨Òåprintf´®¿ÚDMA·¢ËÍ³ÌĞò,ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊı
-u16	USART_DMASend			(USART_TypeDef* USARTx,u32 *tx_buffer,u16 BufferSize);	//´®¿ÚDMA·¢ËÍ³ÌĞò
+u16	USART_DMASend			(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);	//´®¿ÚDMA·¢ËÍ³ÌĞò
 
 
 
@@ -66,10 +72,10 @@ u16	USART_DMASend			(USART_TypeDef* USARTx,u32 *tx_buffer,u16 BufferSize);	//´®¿
 
 //---------------------------RS485
 //*****************RS485³õÊ¼»¯---Ê¹ÓÃDMA¿ÕÏĞ½ÓÊÕ£¬±êÖ¾²éÑ¯·½Ê½
-void	RS485_DMA_ConfigurationNR	(RS485_TypeDef *RS485_Info,u32 USART_BaudRate,u32 *RxdBuffer,u32 BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï,ÅäÖÃÍêÄ¬ÈÏÎª½ÓÊÕ×´Ì¬
-void	RS485_DMA_ConfigurationNRRemap	(RS485_TypeDef *RS485_Info,u32 USART_BaudRate,u32 *RxdBuffer,u32 BufferSize);	//USART_DMAÅäÖÃ(Ó³Éä)--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï,ÅäÖÃÍêÄ¬ÈÏÎª½ÓÊÕ×´Ì¬
+void	RS485_DMA_ConfigurationNR			(RS485_TypeDef *RS485_Info,u32 USART_BaudRate,u16 BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï,ÅäÖÃÍêÄ¬ÈÏÎª½ÓÊÕ×´Ì¬
+void	RS485_DMA_ConfigurationNRRemap(RS485_TypeDef *RS485_Info,u32 USART_BaudRate,u32 *RxdBuffer,u32 BufferSize);	//USART_DMAÅäÖÃ(Ó³Éä)--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï,ÅäÖÃÍêÄ¬ÈÏÎª½ÓÊÕ×´Ì¬
 //*****************RS485½ÓÊÕ
-u16		RS485_ReadBufferIDLE			(RS485_TypeDef *RS485_Info,u32 *RevBuffer,u32 *RxdBuffer);	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı£¬È»ºóÖØĞÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
+u16		RS485_ReadBufferIDLE			(RS485_TypeDef *RS485_Info,u8 *RevBuffer);	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı£¬È»ºóÖØĞÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
 
 //*****************RS485·¢ËÍ
 u16 	RS485_DMAPrintf						(RS485_TypeDef *RS485_Info,const char *format,...);					//×Ô¶¨Òåprintf´®¿ÚDMA·¢ËÍ³ÌĞò,ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊı

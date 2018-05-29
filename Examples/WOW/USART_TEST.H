@@ -9,7 +9,7 @@
 
 void Usart_test_Configuration(void);
 void Usart_test_Server(void);
-void Usart_test(void);
+
 
 	
 #endif

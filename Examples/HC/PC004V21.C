@@ -109,17 +109,19 @@
 #define	Data_H				PC004V10_Num[11]											//数据高位
 #define	Data_L				PC004V10_Num[12]											//数据低位
 
-#define	PC002Test			//测试PC002通讯
+//#define	PC002Test			//测试PC002通讯
+#define	USART_TO_485
 //************485通讯数据
 //#define	
 
-#define	PC004V10_BufferSize 32															//DMA1缓冲大小
+#define	PC004V10_BufferSize 256															//DMA1缓冲大小
 
 //u8 RxBuffer[PC004V10_BufferSize]={0};								//RS485缓存
 //u8 ReBuffer[PC004V10_BufferSize]={0};								//RS485缓存
 
 u8 RS485RxB[PC004V10_BufferSize]={0};								//RS485缓存
 u8 RS485RvB[PC004V10_BufferSize]={0};								//RS485缓存
+u8 RS485Txd[PC004V10_BufferSize]={0};								//RS485缓存
 
 u8 PC004V10_Buffer[PC004V10_BufferSize]={0};								//RS485缓存
 u8 PC004V10_TBuffer[PC004V10_BufferSize]={0};								//RS485缓存
@@ -139,7 +141,7 @@ u8 Buzzer_time=0;						//开机蜂鸣器响应次数
 
 u8 Self_Dsp=0;							//拔码开关为0时，自检测试显示标识变量
 
-u8 num=0;
+u16 num=0;
 u8 PB1Flg=0;
 u8 PW1Flg=0;
 u16 KeyTime=0;
@@ -212,7 +214,23 @@ void PC004V21_Server(void)
 	
 	IWDG_Feed();								//独立看门狗喂狗
 	
+	num = DMA1_Channel5->CNDTR;															//DMA_GetCurrDataCounter(DMA1_Channel5);
 	
+#ifdef USART_TO_485
+	status	=	USART_ReadBufferIDLE(USART1,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(status)
+	{
+		memcpy(RS485Txd,RS485RvB,status);
+		RS485_DMASend(&RS485B,(u32*)RS485Txd,status);					//RS485-DMA发送程序
+		SysTick_DeleymS(1);				//SysTick延时nmS
+	}
+	status	=	RS485_ReadBufferIDLE(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(status)
+	{
+		USART_DMASend(USART1,RS485RvB,status);
+	}
+	return;
+#endif	
 	
 #ifdef PC002Test
 	if(SYSTime++>500)
@@ -220,7 +238,7 @@ void PC004V21_Server(void)
 		SYSTime	=	0;
 		RS485_DMASend(&RS485B,(u32*)&RxData,1);	//RS485-DMA发送程序
 	}
-	status	=	RS485_ReadBufferIDLE(&RS485B,(u32*)RS485RvB,(u32*)RS485RxB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	status	=	RS485_ReadBufferIDLE(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(status	==	9)
 	{
 		u32 AD1=0,AD2=0;
@@ -237,7 +255,7 @@ void PC004V21_Server(void)
 	{
 		RxData=0;
 	}
-	status	=	RS485_ReadBufferIDLE(&RS485B,(u32*)RS485RvB,(u32*)RS485RxB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	status	=	RS485_ReadBufferIDLE(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(status)
 	{
 		RxData+=1;
@@ -271,7 +289,7 @@ void PC004V21_Server(void)
 	}
 	else
 	{
-		RS485_ReadBufferIDLE			(&RS485B,(u32*)RS485RvB,(u32*)RS485RxB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+		RS485_ReadBufferIDLE			(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	}
 //	return;
 	if(SYSTime>=1000)
@@ -435,9 +453,9 @@ void PD002V30_USART_Cofiguration(void)
 	RS485A.RS485_CTL_PORT	=	GPIOA;
 	RS485A.RS485_CTL_Pin	=	GPIO_Pin_1;
 	
-	RS485_DMA_ConfigurationNR	(&RS485B,115200,(u32*)RS485RxB,32);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485B,19200,128);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
-	USART_DMA_ConfigurationNR	(USART1,115200,(u32*)RS485RxB,64);	//USART_DMA配置--查询方式，不开中断
+	USART_DMA_ConfigurationNR	(USART1,115200,128);	//USART_DMA配置--查询方式，不开中断
 }
 /*******************************************************************************
 * 函数名			:	PC004V21_KEYData
@@ -512,14 +530,14 @@ u8 PC004V10_485_TR(void)				//485收发程序//通讯接口
 				memcpy(PC004V10_Num,PC004V10_Buffer,13);								//复制数据						
 
 				PC004V10_Buffer[3]|=0x80;						//修改回执位
-				USART_DMASend(USART2,(u32*)PC004V10_Buffer,(u32)num);		//返回回执给网关板
+				USART_DMASend(USART2,PC004V10_Buffer,(u32)num);		//返回回执给网关板
 				
 				PC004V10_CAN_TX();					//CAN发送数据，地址，命令类型，数据
 			}
 			else		//单元地址错误
 			{
 				PC004V10_Buffer[3]|=0xE0;																//修改回执位
-				USART_DMASend(USART2,(u32*)PC004V10_Buffer,(u32)num);		//返回回执给网关板
+				USART_DMASend(USART2,PC004V10_Buffer,(u32)num);		//返回回执给网关板
 			}
 			/**********************************************/
 		}

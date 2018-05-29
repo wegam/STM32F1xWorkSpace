@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xWOW' 
- * Target:  'OFFLINE_ISP' 
+ * Target:  'USART_TEST' 
  */
 
 #ifndef RTE_COMPONENTS_H
