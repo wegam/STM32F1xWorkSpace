@@ -678,13 +678,13 @@ void CAN_StdTX_DATA(
 	TransmitMailbox = CAN_Transmit(&TxMessage);
 	i = 0;
 	// 用于检查消息传输是否正常
-	while((CAN_TransmitStatus(TransmitMailbox) != CANTXOK) && (i != 0xFF))
+	while((CAN_TransmitStatus(TransmitMailbox) != CANTXOK) && (i <= 0xFF))
 	{
 		i++;
 	}
 	i = 0;
 	// 检查返回的挂号的信息数目
-	while((CAN_MessagePending(CAN_FIFO0) < 1) && (i != 0xFF))
+	while((CAN_MessagePending(CAN_FIFO0) < 1) && (i <= 0xFF))
 	{
 		i++;
 	}

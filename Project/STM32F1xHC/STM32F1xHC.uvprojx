@@ -11062,7 +11062,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>6</TargetSelection>
+          <TargetSelection>11</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -11076,7 +11076,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>Segger\JL2CM3.dll</Driver>
+            <Driver>STLink\ST-LINKIII-KEIL_SWO.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -19246,7 +19246,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>6</TargetSelection>
+          <TargetSelection>12</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -19260,7 +19260,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>Segger\JL2CM3.dll</Driver>
+            <Driver>BIN\CMSIS_AGDI.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -19274,7 +19274,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -37154,7 +37154,7 @@
               <MiscControls></MiscControls>
               <Define>PL010V13</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main</IncludePath>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main;..\..\Driver\Protocol;..\..\Driver\Tool</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

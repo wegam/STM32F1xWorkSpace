@@ -352,7 +352,7 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 	
 	CS5530_Status=0x0200000;		//150
 	
-	CS5530_Status=0x03000000;		//1200
+	CS5530_Status=0x01000000;		//1200
 	
 	CS5530_WriteRegister(pInfo,CS5530_WRITE_GAIN,CS5530_Status);			//ÔöÒæ¼Ä´æÆ÷	
 		

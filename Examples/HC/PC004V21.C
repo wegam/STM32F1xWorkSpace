@@ -110,7 +110,8 @@
 #define	Data_L				PC004V10_Num[12]											//数据低位
 
 //#define	PC002Test			//测试PC002通讯
-#define	USART_TO_485
+//#define	USART_TO_485
+//#define	PD002TEST
 //************485通讯数据
 //#define	
 
@@ -214,15 +215,45 @@ void PC004V21_Server(void)
 	
 	IWDG_Feed();								//独立看门狗喂狗
 	
-	num = DMA1_Channel5->CNDTR;															//DMA_GetCurrDataCounter(DMA1_Channel5);
 	
+	num = DMA1_Channel5->CNDTR;															//DMA_GetCurrDataCounter(DMA1_Channel5);
+#ifdef PD002TEST
+	status	=	USART_ReadBufferIDLE(USART1,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(status)
+	{
+		SysTick_DeleymS(1);				//SysTick延时nmS
+		memcpy(RS485Txd,RS485RvB,status);
+		RS485_DMASend(&RS485B,RS485Txd,status);					//RS485-DMA发送程序
+//		SysTick_DeleymS(1);				//SysTick延时nmS
+	}
+	status	=	RS485_ReadBufferIDLE(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(status)
+	{
+		if(RS485RvB[3]	==	0x0A)
+		{
+//			memset(RS485RvB,0x00,status);
+//			return;
+		}
+		else
+		{
+			memcpy(RS485Txd,RS485RvB,status);
+			RS485Txd[3]		=	0x0B;			//异或校验
+			RS485Txd[11]	=	BCC8(&RS485Txd[2],9);			//异或校验
+			RS485_DMASend(&RS485B,RS485Txd,12);					//RS485-DMA发送程序
+		}
+		USART_DMASend(USART1,RS485RvB,status);
+	}
+	return;
+
+#endif	
 #ifdef USART_TO_485
 	status	=	USART_ReadBufferIDLE(USART1,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(status)
 	{
+		SysTick_DeleymS(1);				//SysTick延时nmS
 		memcpy(RS485Txd,RS485RvB,status);
 		RS485_DMASend(&RS485B,(u32*)RS485Txd,status);					//RS485-DMA发送程序
-		SysTick_DeleymS(1);				//SysTick延时nmS
+//		SysTick_DeleymS(1);				//SysTick延时nmS
 	}
 	status	=	RS485_ReadBufferIDLE(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(status)
@@ -251,27 +282,27 @@ void PC004V21_Server(void)
 #endif
 	
 	SYSTime++;
-	if(RxData>=250)
-	{
-		RxData=0;
-	}
-	status	=	RS485_ReadBufferIDLE(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-	if(status)
-	{
-		RxData+=1;
-	}
-	if(SYSTime	==500)
-	{
-		SYSTime	=	0;
-		RxData+=1;
-		RS485_DMASend(&RS485B,(u32*)&RxData,1);	//RS485-DMA发送程序
-		SysTick_DeleymS(5);				//SysTick延时nmS
-		return;
-	}
+//	if(RxData>=250)
+//	{
+//		RxData=0;
+//	}
+//	status	=	RS485_ReadBufferIDLE(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+//	if(status)
+//	{
+//		RxData+=1;
+//	}
+//	if(SYSTime	==500)
+//	{
+//		SYSTime	=	0;
+//		RxData+=1;
+//		RS485_DMASend(&RS485B,&RxData,1);	//RS485-DMA发送程序
+//		SysTick_DeleymS(5);				//SysTick延时nmS
+//		return;
+//	}
 	
 	SwitchID=PC004V21_GetSwitchID();	//获取当前设备ID//机柜号
-	NumW=(SwitchID>>4)&0x0F;					//MS拨码为槽号
-	NumF=SwitchID&0x0F;								//发药数量--LS拨码为发药数量
+	NumW=(SwitchID>>4)&0x0F;					//MS拨码为槽号（HSL,右边最低位）
+	NumF=SwitchID&0x0F;								//发药数量--LS拨码为发药数量（HSH拨码)
 //	SwitchIDBAC=0xFF;								//ID备份---ID变化时更新
 	if(SwitchIDBAC!=SwitchID)
 	{		
@@ -280,12 +311,12 @@ void PC004V21_Server(void)
 		PC004V10_TBuffer[1]=0xFF;		//0xFF,NumW,NumF
 		PC004V10_TBuffer[2]=NumW;		//0xFF,NumW,NumF
 		PC004V10_TBuffer[3]=NumF;		//0xFF,NumW,NumF
-		RS485_DMASend	(&RS485B,(u32*)PC004V10_TBuffer,4);	//RS485-DMA发送程序
+		RS485_DMASend	(&RS485B,PC004V10_TBuffer,4);	//RS485-DMA发送程序
 //		RS485_DMAPrintf(&RS485_Conf,"请求更新，发药槽号:%d,发药数量：%d",NumW,NumF);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 	}
 	if(SYSTime	==500)
 	{
-		RS485_DMASend(&RS485B,(u32*)PC004V10_TBuffer,11);	//RS485-DMA发送程序		
+		RS485_DMASend(&RS485B,PC004V10_TBuffer,11);	//RS485-DMA发送程序		
 	}
 	else
 	{
@@ -301,7 +332,7 @@ void PC004V21_Server(void)
 			num=0;
 //			RS485_DMASend(&RS485_Conf,(u32*)PC004V10_TBuffer,11);	//RS485-DMA发送程序
 		}
-//		GPIO_Toggle	(GPIOB,GPIO_Pin_0);		//将GPIO相应管脚输出翻转----V20170605//锁接口
+		GPIO_Toggle	(GPIOB,GPIO_Pin_0);		//将GPIO相应管脚输出翻转----V20170605//锁接口
 //		TxMessage.Data[3]=num;
 //		PC004V10_CAN_COMMAD();					//CAN发送命令函数，地址，命令类型，数据--时间同步--发送获取D命令
 //		PC004V10_Num[0]=num;
@@ -310,12 +341,12 @@ void PC004V21_Server(void)
 	}
 	if(PB1in)		//无按键
 	{	
-		if(KeyTime>=10&&KeyTime<3000)
+		if(KeyTime>=10&&KeyTime<3000)	//短按键
 		{			
 			if(PB1Flg==0)
 					PB1Flg=1;
 		}
-		else if(KeyTime>=3000)
+		else if(KeyTime>=3000)	//长按
 		{
 			if(PB1Flg==0)
 					PB1Flg=2;
@@ -335,7 +366,7 @@ void PC004V21_Server(void)
 		
 		PC004V10_TBuffer[0]=0x01;
 		
-		RS485_DMASend(&RS485B,(u32*)PC004V10_TBuffer,1);	//RS485-DMA发送程序
+		RS485_DMASend(&RS485B,PC004V10_TBuffer,1);	//RS485-DMA发送程序
 		CAN_StdTX_DATA(0x01,0x08,PC004V10_CANBuffer);			//CAN使用标准帧发送数据
 		
 		PB1Flg=0;
@@ -350,8 +381,8 @@ void PC004V21_Server(void)
 		PC004V10_TBuffer[0]=0x02;
 		PC004V10_TBuffer[1]=NumW;
 		PC004V10_TBuffer[2]=NumF;
-		RS485_DMASend(&RS485B,(u32*)PC004V10_TBuffer,3);	//RS485-DMA发送程序
-//		RS485_DMAPrintf(&RS485_Conf,"%d,%d",NumW,NumF);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		RS485_DMASend(&RS485B,PC004V10_TBuffer,3);	//RS485-DMA发送程序
+//		RS485_DMAPrintf(&RS485B,"%d,%d",NumW,NumF);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 		CAN_StdTX_DATA(0x01,0x08,PC004V10_CANBuffer);			//CAN使用标准帧发送数据
 		if(PW1Flg==0)
 		{
@@ -376,7 +407,7 @@ void PC004V21_Server(void)
 			PC004V10_TBuffer[3]=RxMessage.Data[3];	
 			PC004V10_TBuffer[4]=RxMessage.Data[4];	
 			PC004V10_TBuffer[5]=RxMessage.Data[5];	//错误类型
-			RS485_DMASend(&RS485B,(u32*)PC004V10_TBuffer,6);	//RS485-DMA发送程序
+			RS485_DMASend(&RS485B,PC004V10_TBuffer,6);	//RS485-DMA发送程序
 			
 		}
 		if(RxMessage.StdId==0x01)
@@ -385,7 +416,7 @@ void PC004V21_Server(void)
 			PC004V10_TBuffer[1]=RxMessage.Data[1];
 			PC004V10_TBuffer[2]=RxMessage.Data[2];
 			PC004V10_TBuffer[3]=RxMessage.Data[3];	//错误类型
-			RS485_DMASend(&RS485B,(u32*)PC004V10_TBuffer,4);	//RS485-DMA发送程序
+			RS485_DMASend(&RS485B,PC004V10_TBuffer,4);	//RS485-DMA发送程序
 		}
 	}
 	//**************检查通讯标志位，查看是否为通讯中断，如果是，则此次时间增量无效
@@ -453,7 +484,7 @@ void PD002V30_USART_Cofiguration(void)
 	RS485A.RS485_CTL_PORT	=	GPIOA;
 	RS485A.RS485_CTL_Pin	=	GPIO_Pin_1;
 	
-	RS485_DMA_ConfigurationNR	(&RS485B,19200,128);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485B,115200,128);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
 	USART_DMA_ConfigurationNR	(USART1,115200,128);	//USART_DMA配置--查询方式，不开中断
 }
@@ -485,7 +516,7 @@ void PC004V21_KEYData(void)		//按键发药处理函数
 	
 	PC004V10_TBuffer[10]=BCC8(PC004V10_TBuffer,10);		//异或校验
 	
-	RS485_DMASend(&RS485B,(u32*)PC004V10_TBuffer,11);	//RS485-DMA发送程序
+	RS485_DMASend(&RS485B,PC004V10_TBuffer,11);	//RS485-DMA发送程序
 }
 /*******************************************************************************
 * 函数名		:

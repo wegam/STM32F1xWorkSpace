@@ -180,10 +180,10 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 		
 		if(CS5530_ADC_Value	!= 0xFFFFFFFF)
 		{
-//			CS5530_ADC_Value	=	CS5530_ADC_Value>>2;
-			LCD_Printf(0		,128,32	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
+			CS5530_ADC_Value	=	CS5530_ADC_Value>>2;
+//			LCD_Printf(0		,128,32	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
 			USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",CS5530_ADC_Value);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数	
-			READ_GAIN=CS5530_ReadRegister(&CS5530,CS5530_READ_GAIN);				//增益寄存器
+//			READ_GAIN=CS5530_ReadRegister(&CS5530,CS5530_READ_GAIN);				//增益寄存器
 		}
 	}
 	return;
@@ -533,7 +533,7 @@ void LCD_Server(void)			//显示服务相关
 void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 {
 #if Master			//主机
-	RxNum=RS485_ReadBufferIDLE(&RS485,(u32*)RevBuffe,(u32*)RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum=RS485_ReadBufferIDLE(&RS485,RevBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(		RxNum								\
 			&&	(RevBuffe[0]	==	0xFB)			\
 			&&	(RevBuffe[1]	==	0xF6)			\
@@ -559,7 +559,7 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 		TxdBuffe[1]	=	0xF5;
 		TxdBuffe[2]	=	SlaveID;
 		TxdBuffe[3]	=	0x01;
-		RS485_DMASend	(&RS485,(u32*)TxdBuffe,4);	//RS485-DMA发送程序
+		RS485_DMASend	(&RS485,TxdBuffe,4);	//RS485-DMA发送程序
 		if(SlaveID++>=250)
 			SlaveID	=	1;
 	}
@@ -751,7 +751,7 @@ void RS485_Configuration(void)
 	RS485.RS485_CTL_PORT=GPIOA;
 	RS485.RS485_CTL_Pin=GPIO_Pin_11;
 	
-	RS485_DMA_ConfigurationNR	(&RS485,115200,(u32*)RxdBuffe,Rs485Size);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485,115200,Rs485Size);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -764,7 +764,7 @@ void RS485_Configuration(void)
 *******************************************************************************/
 void USART_Configuration(void)
 {
-	USART_DMA_ConfigurationNR	(USART1,115200,(u32*)RxdBuffe,Rs485Size);	//USART_DMA配置--查询方式，不开中断
+	USART_DMA_ConfigurationNR	(USART1,115200,Rs485Size);	//USART_DMA配置--查询方式，不开中断
 }
 /*******************************************************************************
 * 函数名		:	

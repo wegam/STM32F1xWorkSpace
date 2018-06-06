@@ -17,6 +17,7 @@
 #include "STM32_USART.H"
 
 #include "STM32_GPIO.H"
+#include "STM32_SYSTICK.H"
 
 #include "stm32f10x_dma.h"
 #include "stm32f10x_gpio.h"
@@ -58,12 +59,18 @@
 ###############################################################################*/
 
 //--------USART»´æ÷±‰¡ø∂®“Â
-#define	uRxSize		512			//ƒ¨»œ¥Æø⁄DMAΩ” ’ª∫≥Â¥Û–°
+#define	uRxSize		256				//ƒ¨»œ¥Æø⁄DMAΩ” ’ª∫≥Â¥Û–°
+#define	uTxSize		uRxSize		//ƒ¨»œ¥Æø⁄DMA∑¢ÀÕª∫≥Â¥Û–°
 #define	uBaudRate	115200	//ƒ¨»œ¥Æø⁄≤®Ãÿ¬ 
 unsigned char uRx1Addr[uRxSize]	=	{0};					//¥Æø⁄1Ω” ’ª∫≥Â«¯µÿ÷∑::∑¢ÀÕª∫≥Â«¯µÿ÷∑‘⁄∑¢ÀÕ ˝æ› ±…Ë∂®£¨¥Æø⁄≈‰÷√ ±ΩË”√Ω” ’ª∫≥Â«¯µÿ÷∑
 unsigned char uRx2Addr[uRxSize]	=	{0};					//¥Æø⁄2Ω” ’ª∫≥Â«¯µÿ÷∑::∑¢ÀÕª∫≥Â«¯µÿ÷∑‘⁄∑¢ÀÕ ˝æ› ±…Ë∂®£¨¥Æø⁄≈‰÷√ ±ΩË”√Ω” ’ª∫≥Â«¯µÿ÷∑
 unsigned char uRx3Addr[uRxSize]	=	{0};					//¥Æø⁄3Ω” ’ª∫≥Â«¯µÿ÷∑::∑¢ÀÕª∫≥Â«¯µÿ÷∑‘⁄∑¢ÀÕ ˝æ› ±…Ë∂®£¨¥Æø⁄≈‰÷√ ±ΩË”√Ω” ’ª∫≥Â«¯µÿ÷∑
 unsigned char uRx4Addr[uRxSize]	=	{0};					//¥Æø⁄4Ω” ’ª∫≥Â«¯µÿ÷∑::∑¢ÀÕª∫≥Â«¯µÿ÷∑‘⁄∑¢ÀÕ ˝æ› ±…Ë∂®£¨¥Æø⁄≈‰÷√ ±ΩË”√Ω” ’ª∫≥Â«¯µÿ÷∑
+
+unsigned char uTx1Addr[uTxSize]	=	{0};					//¥Æø⁄1∑¢ÀÕª∫≥Â«¯µÿ÷∑::Ω´¥˝∑¢ÀÕ ˝æ›øΩ±¥µΩ¥Àª∫≥ÂΩ¯––∑¢ÀÕ
+unsigned char uTx2Addr[uTxSize]	=	{0};					//¥Æø⁄2∑¢ÀÕª∫≥Â«¯µÿ÷∑::Ω´¥˝∑¢ÀÕ ˝æ›øΩ±¥µΩ¥Àª∫≥ÂΩ¯––∑¢ÀÕ
+unsigned char uTx3Addr[uTxSize]	=	{0};					//¥Æø⁄3∑¢ÀÕª∫≥Â«¯µÿ÷∑::Ω´¥˝∑¢ÀÕ ˝æ›øΩ±¥µΩ¥Àª∫≥ÂΩ¯––∑¢ÀÕ
+unsigned char uTx4Addr[uTxSize]	=	{0};					//¥Æø⁄4∑¢ÀÕª∫≥Â«¯µÿ÷∑::Ω´¥˝∑¢ÀÕ ˝æ›øΩ±¥µΩ¥Àª∫≥ÂΩ¯––∑¢ÀÕ
 
 uLinkDef	uLink1;				//¥Æø⁄1¡¥±ÌÕ∑
 uLinkDef	uLink2;				//¥Æø⁄2¡¥±ÌÕ∑
@@ -76,13 +83,25 @@ volatile unsigned short gUSART3_BufferSizebac=0;		//¥Æø⁄3DMAª∫≥Â¥Û–°±∏∑›£¨≈‰÷√ ±
 volatile unsigned short gUART4_BufferSizebac=0;			//¥Æø⁄4DMAª∫≥Â¥Û–°±∏∑›£¨≈‰÷√ ±–¥»Î µº ÷µ£¨º∆À„Ω” ’ ˝æ›∏ˆ ˝¿Ô–Ë“™ π”√
 volatile unsigned short gUART5_BufferSizebac=0;			//----ŒﬁDMA
 
+volatile unsigned short gUSART1_BufferSizeRema=0;		//¥Æø⁄1DMAª∫≥Â¥Û–° £”‡
+volatile unsigned short gUSART2_BufferSizeRema=0;		//¥Æø⁄2DMAª∫≥Â¥Û–° £”‡
+volatile unsigned short gUSART3_BufferSizeRema=0;		//¥Æø⁄3DMAª∫≥Â¥Û–° £”‡
+volatile unsigned short gUART4_BufferSizeRema=0;		//¥Æø⁄4DMAª∫≥Â¥Û–° £”‡
+volatile unsigned short gUART5_BufferSizeRema=0;		//----ŒﬁDMA
+
+volatile unsigned short gUSART1_RetryCount=0;		//¥Æø⁄1÷ÿ ‘º∆ ˝
+volatile unsigned short gUSART2_RetryCount=0;		//¥Æø⁄2÷ÿ ‘º∆ ˝
+volatile unsigned short gUSART3_RetryCount=0;		//¥Æø⁄3÷ÿ ‘º∆ ˝
+volatile unsigned short gUART4_RetryCount=0;		//¥Æø⁄4÷ÿ ‘º∆ ˝
+volatile unsigned short gUART5_RetryCount=0;		//----ŒﬁDMA
+
 //char	*DMAPrintf_Buffer=NULL;			//USART_DMAPrintf∂ØÃ¨ø’º‰µÿ÷∑
 char	DMAPrintf_Buffer[128]={0x00};			//4K¥Æø⁄printf¥Ú”°¥Ê¥¢ø’º‰(∂ØÃ¨ø’º‰”– ±ø…ƒ‹…Í«Î ß∞‹)
 
 //--------ƒ⁄≤ø π”√∫Ø ˝∂®“Â
 //*****************RS485 ’∑¢øÿ÷∆
 void RS485_TX_EN(RS485_TypeDef *RS485_Info);	//∑¢ πƒ‹
-u8 RS485_RX_EN(RS485_TypeDef *RS485_Info);		// ’ πƒ‹£¨“—æ≠…Ë÷√Œ™Ω” ’◊¥Ã¨∑µªÿ1£¨∑Ò‘Ú∑µªÿ0
+void RS485_RX_EN(RS485_TypeDef *RS485_Info);		// ’ πƒ‹£¨“—æ≠…Ë÷√Œ™Ω” ’◊¥Ã¨∑µªÿ1£¨∑Ò‘Ú∑µªÿ0
 
 
 /*******************************************************************************
@@ -1557,7 +1576,7 @@ u16	USART_ReadBufferIDLE(
 						memcpy(RevBuffer,uRx2Addr,length);													//∏¥÷∆÷∏∂®¥Û–°µƒ ˝æ›
 						
 						//------÷ÿ–¬÷∏œÚΩ” ’ª∫≥Â«¯µÿ÷∑≤¢ πƒ‹DMAΩ” ’			
-						DMA1_Channel6->CMAR=(u32)uRx1Addr;							//÷ÿ–¬…Ë÷√DMAΩ” ’µÿ÷∑
+						DMA1_Channel6->CMAR=(u32)uRx2Addr;							//÷ÿ–¬…Ë÷√DMAΩ” ’µÿ÷∑
 						DMA1_Channel6->CNDTR=gUSART2_BufferSizebac;			//÷ÿ–¬…Ë÷√Ω” ’ ˝æ›∏ˆ ˝
 						DMA1_Channel6->CCR |=(u32)0x00000001;						//DMA_Cmd(DMA1_Channel6,ENABLE);//DMAΩ” ’ø™∆Ù3						
 						return length;			//∑µªÿΩ” ’µΩµƒ ˝æ›∏ˆ ˝
@@ -1578,7 +1597,7 @@ u16	USART_ReadBufferIDLE(
 						memcpy(RevBuffer,uRx3Addr,length);													//∏¥÷∆÷∏∂®¥Û–°µƒ ˝æ›
 						
 						//------÷ÿ–¬÷∏œÚΩ” ’ª∫≥Â«¯µÿ÷∑≤¢ πƒ‹DMAΩ” ’			
-						DMA1_Channel3->CMAR=(u32)uRx1Addr;							//÷ÿ–¬…Ë÷√DMAΩ” ’µÿ÷∑
+						DMA1_Channel3->CMAR=(u32)uRx3Addr;							//÷ÿ–¬…Ë÷√DMAΩ” ’µÿ÷∑
 						DMA1_Channel3->CNDTR=gUSART3_BufferSizebac;			//÷ÿ–¬…Ë÷√Ω” ’ ˝æ›∏ˆ ˝
 						DMA1_Channel3->CCR |=(u32)0x00000001;						//DMA_Cmd(DMA1_Channel3,ENABLE);//DMAΩ” ’ø™∆Ù3						
 						return length;			//∑µªÿΩ” ’µΩµƒ ˝æ›∏ˆ ˝
@@ -1599,7 +1618,7 @@ u16	USART_ReadBufferIDLE(
 						memcpy(RevBuffer,uRx4Addr,length);													//∏¥÷∆÷∏∂®¥Û–°µƒ ˝æ›
 						
 						//------÷ÿ–¬÷∏œÚΩ” ’ª∫≥Â«¯µÿ÷∑≤¢ πƒ‹DMAΩ” ’			
-						DMA2_Channel3->CMAR=(u32)uRx1Addr;							//÷ÿ–¬…Ë÷√DMAΩ” ’µÿ÷∑
+						DMA2_Channel3->CMAR=(u32)uRx4Addr;							//÷ÿ–¬…Ë÷√DMAΩ” ’µÿ÷∑
 						DMA2_Channel3->CNDTR=gUART4_BufferSizebac;			//÷ÿ–¬…Ë÷√Ω” ’ ˝æ›∏ˆ ˝
 						DMA2_Channel3->CCR |=(u32)0x00000001;						//DMA_Cmd(DMA2_Channel3,ENABLE);//DMAΩ” ’ø™∆Ù3						
 						return length;			//∑µªÿΩ” ’µΩµƒ ˝æ›∏ˆ ˝
@@ -1695,11 +1714,13 @@ u16 USART_DMASend(
 									u16 BufferSize													//…Ë∂®∑¢ÀÕ ˝æ›¥Û–°
 )		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
 {
+	if(BufferSize>uTxSize)	//∑¿÷πƒ⁄¥Ê“Á≥ˆ
+		BufferSize	=	uTxSize;
 	switch(*(u32*)&USARTx)
 	{
 		case USART1_BASE:
 					//ºÏ≤ÈUSART”–Œﬁ≈‰÷√
-					if((u16)(USARTx->CR1 &0x2000)!= 0x2000)					//¥Æø⁄Œ¥¥Úø™
+					if((u16)(USARTx->CR1 &0x2000)!= 0x2000)					//¥Æø⁄Œ¥≈‰÷√
 					{
 						USART_DMA_ConfigurationNR	(USART1,uBaudRate,uRxSize);	//USART_DMA≈‰÷√--≤È—Ø∑Ω Ω£¨≤ªø™÷–∂œ
 					}
@@ -1708,10 +1729,11 @@ u16 USART_DMASend(
 						||((DMA1_Channel4->CCR&0x00000001)==0)				//Õ®µ¿Œ¥ø™∆Ù
 						)
 					{
+						memcpy(uTx1Addr,tx_buffer,BufferSize);
 						DMA1_Channel4->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel4,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
 						DMA1->IFCR = DMA1_FLAG_GL4;										//DMA_ClearFlag(DMA1_FLAG_TC4);	//«Â≥˝±Í÷æ						
 						DMA1_Channel4->CNDTR 	=BufferSize;						//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-						DMA1_Channel4->CMAR 	=(u32)tx_buffer;				//∑¢ÀÕª∫≥Â«¯
+						DMA1_Channel4->CMAR 	=(u32)uTx1Addr;				//∑¢ÀÕª∫≥Â«¯
 						DMA1_Channel4->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel4,ENABLE);//DMA∑¢ÀÕø™∆Ù3
 						return BufferSize;
 					}
@@ -1731,10 +1753,11 @@ u16 USART_DMASend(
 						||((DMA1_Channel7->CCR&0x00000001)==0)				//Õ®µ¿Œ¥ø™∆Ù
 						)
 					{
+						memcpy(uTx2Addr,tx_buffer,BufferSize);
 						DMA1_Channel7->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel7,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
 						DMA1->IFCR = DMA1_FLAG_GL7;										//DMA_ClearFlag(DMA1_FLAG_TC7);	//«Â≥˝±Í÷æ						
 						DMA1_Channel7->CNDTR 	=BufferSize;						//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-						DMA1_Channel7->CMAR 	=(u32)tx_buffer;				//∑¢ÀÕª∫≥Â«¯
+						DMA1_Channel7->CMAR 	=(u32)uTx2Addr;				//∑¢ÀÕª∫≥Â«¯
 						DMA1_Channel7->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel7,ENABLE);//DMA∑¢ÀÕø™∆Ù3
 						return BufferSize;
 					}
@@ -1750,10 +1773,11 @@ u16 USART_DMASend(
 						||((DMA1_Channel2->CCR&0x00000001)==0)				//Õ®µ¿Œ¥ø™∆Ù
 						)
 					{
+						memcpy(uTx3Addr,tx_buffer,BufferSize);
 						DMA1_Channel2->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel2,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
 						DMA1->IFCR = DMA1_FLAG_GL2;										//DMA_ClearFlag(DMA1_FLAG_TC2);	//«Â≥˝±Í÷æ						
 						DMA1_Channel2->CNDTR 	=BufferSize;						//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-						DMA1_Channel2->CMAR 	=(u32)tx_buffer;				//∑¢ÀÕª∫≥Â«¯
+						DMA1_Channel2->CMAR 	=(u32)uTx3Addr;				//∑¢ÀÕª∫≥Â«¯
 						DMA1_Channel2->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel2,ENABLE);//DMA∑¢ÀÕø™∆Ù3
 						return BufferSize;
 					}
@@ -1769,10 +1793,11 @@ u16 USART_DMASend(
 						||((DMA2_Channel5->CCR&0x00000001)==0)				//Õ®µ¿Œ¥ø™∆Ù
 						)
 					{
+						memcpy(uTx4Addr,tx_buffer,BufferSize);
 						DMA2_Channel5->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel2,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
 						DMA2->IFCR = DMA2_FLAG_GL5;										//DMA_ClearFlag(DMA2_FLAG_TC5);	//«Â≥˝±Í÷æ						
 						DMA2_Channel5->CNDTR 	=BufferSize;						//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-						DMA2_Channel5->CMAR 	=(u32)tx_buffer;				//∑¢ÀÕª∫≥Â«¯
+						DMA2_Channel5->CMAR 	=(u32)uTx4Addr;				//∑¢ÀÕª∫≥Â«¯
 						DMA2_Channel5->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA2_Channel5,ENABLE);//DMA∑¢ÀÕø™∆Ù3
 						return BufferSize;
 					}
@@ -1784,8 +1809,151 @@ u16 USART_DMASend(
 	}	
 	return 0;
 }
-
-
+/*******************************************************************************
+*∫Ø ˝√˚			:	USART_DMASend
+*π¶ƒ‹√Ë ˆ		:	¥Æø⁄◊¥Ã¨ºÏ≤È--ºÏ≤ÈDMAª∫¥Ê¥Û–°≈–∂œ π”√◊¥Ã¨
+* ‰»Î				: 
+*∑µªÿ÷µ			:	
+*******************************************************************************/
+USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//¥Æø⁄◊¥Ã¨ºÏ≤È
+{
+	USARTStatusDef	Status	=	USART_IDLESTD;
+	FlagStatus bitstatus = RESET;
+	unsigned short	BufferSize	=	0;			// £”‡ª∫¥Ê¥Û–°
+	switch(*(u32*)&USARTx)
+	{
+		case USART1_BASE:
+				//Ω” ’◊¥Ã¨ºÏ≤È
+				BufferSize	=	DMA1_Channel5->CNDTR;		//ªÒ»°Ω” ’ª∫¥Ê £”‡ø’º‰
+				if(BufferSize<gUSART1_BufferSizebac)	//ª∫¥Ê‘⁄ºı–°£¨±Ì æ‘⁄ π”√
+				{
+					if(gUSART1_BufferSizeRema	== BufferSize)
+					{
+						gUSART1_RetryCount++;
+						if(gUSART1_RetryCount>=5)
+						{
+							gUSART1_RetryCount	=	0;
+							Status	&=	0xFF^USART_ReceSTD;					//…Ë÷√Ω” ’±Í÷æ
+						}
+					}
+					else
+					{
+						gUSART1_BufferSizeRema	=	BufferSize;
+						Status	|=	USART_ReceSTD;					//…Ë÷√Ω” ’±Í÷æ
+					}					
+				}
+				//∑¢ÀÕ◊¥Ã¨ºÏ≤È
+				if((DMA1_Channel4->CNDTR!=0)&&((DMA1_Channel4->CCR&0x00000001)!=0))
+				{
+					Status	|=	USART_SendSTD;					//…Ë÷√∑¢ÀÕ±Í÷æ
+				}
+				else
+				{
+					bitstatus	=	USART_GetFlagStatus(USART1,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+					if(bitstatus	!=	SET)
+						Status	|=	USART_SendSTD;					//…Ë÷√∑¢ÀÕ±Í÷æ
+				}
+				break;
+		case USART2_BASE:
+				//Ω” ’◊¥Ã¨ºÏ≤È
+				BufferSize	=	DMA1_Channel6->CNDTR;		//ªÒ»°Ω” ’ª∫¥Ê £”‡ø’º‰
+				if(BufferSize<gUSART2_BufferSizebac)	//ª∫¥Ê‘⁄ºı–°£¨±Ì æ‘⁄ π”√
+				{
+					if(gUSART2_BufferSizeRema	== BufferSize)
+					{
+						gUSART2_RetryCount++;
+						if(gUSART2_RetryCount>=5)
+						{
+							gUSART2_RetryCount	=	0;
+							Status	&=	0xFF^USART_ReceSTD;					//…Ë÷√Ω” ’±Í÷æ
+						}
+					}
+					else
+					{
+						gUSART2_BufferSizeRema	=	BufferSize;
+						Status	|=	USART_ReceSTD;					//…Ë÷√Ω” ’±Í÷æ
+					}
+				}
+				//∑¢ÀÕ◊¥Ã¨ºÏ≤È
+				if((DMA1_Channel7->CNDTR!=0)&&((DMA1_Channel7->CCR&0x00000001)!=0))
+				{
+					Status	|=	USART_SendSTD;					//…Ë÷√∑¢ÀÕ±Í÷æ
+				}
+				else
+				{
+					bitstatus	=	USART_GetFlagStatus(USART2,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+					if(bitstatus	!=	SET)
+						Status	|=	USART_SendSTD;					//…Ë÷√∑¢ÀÕ±Í÷æ
+				}
+				break;
+		case USART3_BASE:
+				//Ω” ’◊¥Ã¨ºÏ≤È
+				BufferSize	=	DMA1_Channel3->CNDTR;		//ªÒ»°Ω” ’ª∫¥Ê £”‡ø’º‰
+				if(BufferSize<gUSART3_BufferSizebac)	//ª∫¥Ê‘⁄ºı–°£¨±Ì æ‘⁄ π”√
+				{
+					if(gUSART3_BufferSizeRema	== BufferSize)
+					{
+						gUSART3_RetryCount++;
+						if(gUSART3_RetryCount>=5)
+						{
+							gUSART3_RetryCount	=	0;
+							Status	&=	0xFF^USART_ReceSTD;					//…Ë÷√Ω” ’±Í÷æ
+						}
+					}
+					else
+					{
+						gUSART3_BufferSizeRema	=	BufferSize;
+						Status	|=	USART_ReceSTD;					//…Ë÷√Ω” ’±Í÷æ
+					}
+				}
+				//∑¢ÀÕ◊¥Ã¨ºÏ≤È
+				if((DMA1_Channel2->CNDTR!=0)&&((DMA1_Channel2->CCR&0x00000001)!=0))
+				{
+					Status	|=	USART_SendSTD;					//…Ë÷√∑¢ÀÕ±Í÷æ
+				}
+				else
+				{
+					bitstatus	=	USART_GetFlagStatus(USART3,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+					if(bitstatus	!=	SET)
+						Status	|=	USART_SendSTD;					//…Ë÷√∑¢ÀÕ±Í÷æ
+				}
+				break;
+		case UART4_BASE:
+				//Ω” ’◊¥Ã¨ºÏ≤È
+				BufferSize	=	DMA2_Channel3->CNDTR;		//ªÒ»°Ω” ’ª∫¥Ê £”‡ø’º‰
+				if(BufferSize<gUART4_BufferSizebac)	//ª∫¥Ê‘⁄ºı–°£¨±Ì æ‘⁄ π”√
+				{
+					if(gUART4_BufferSizeRema	== BufferSize)
+					{
+						gUART4_RetryCount++;
+						if(gUART4_RetryCount>=5)
+						{
+							gUART4_RetryCount	=	0;
+							Status	&=	0xFF^USART_ReceSTD;					//…Ë÷√Ω” ’±Í÷æ
+						}
+					}
+					else
+					{
+						gUART4_BufferSizeRema	=	BufferSize;
+						Status	|=	USART_ReceSTD;					//…Ë÷√Ω” ’±Í÷æ
+					}
+				}
+				//∑¢ÀÕ◊¥Ã¨ºÏ≤È
+				if((DMA2_Channel5->CNDTR!=0)&&((DMA2_Channel5->CCR&0x00000001)!=0))
+				{
+					Status	|=	USART_SendSTD;					//…Ë÷√∑¢ÀÕ±Í÷æ
+				}
+				else
+				{
+					bitstatus	=	USART_GetFlagStatus(UART4,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+					if(bitstatus	!=	SET)
+						Status	|=	USART_SendSTD;				//…Ë÷√∑¢ÀÕ±Í÷æ
+				}
+				break;
+		default:break;
+	}
+	return Status;
+}
 
 
 
@@ -1808,184 +1976,9 @@ void RS485_TX_EN(RS485_TypeDef *RS485_Info)
 * ‰»Î				: 
 *∑µªÿ÷µ			:	“—æ≠…Ë÷√Œ™Ω” ’◊¥Ã¨∑µªÿ1£¨∑Ò‘Ú∑µªÿ0
 *******************************************************************************/
-u8 RS485_RX_EN(RS485_TypeDef *RS485_Info)
+void RS485_RX_EN(RS485_TypeDef *RS485_Info)
 {
-//	RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;
-	//----∑¢ÀÕ«∞ºÏ≤Èœ‡πÿ¥Æø⁄∑¢ÀÕ◊¥Ã¨£¨»Áπ˚œ¬‘⁄∑¢ÀÕ∆‰À¸ ˝æ›£¨‘Úµ»¥˝£®∑µªÿ0£©£¨∑Ò‘Ú«Â≥˝œ‡πÿ±Í÷æŒª∫Ûø™∆Ù∑¢ÀÕ
-	
-	u32	DMA_status=0;			//DMA◊¥Ã¨	
-	USART_TypeDef* USARTx=RS485_Info->USARTx;
-	
-	if(USARTx==USART1)
-	{
-		//1----œ»ªÒ»°DMA◊¥Ã¨£¨»Áπ˚“—æ≠ø™∆Ù£¨‘ÚºÏ≤‚DMA∫ÕUSART «∑ÒÕÍ≥…£¨»Áπ˚Œ¥ø™∆Ù£¨÷±Ω”∑¢ÀÕ ˝æ›
-		DMA_status=*(vu32*)DMA1_Channel4_BASE;
-		if((DMA_status&0x00000001)==0x00000001)						//DMAÕ®µ¿“—æ≠ πƒ‹
-		{
-			u16 CurrDataCounter=0;																	//œ‡πÿDMAÕ®µ¿ £”‡ø’º‰¥Û–°£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			CurrDataCounter=DMA_GetCurrDataCounter(DMA1_Channel4);	//ªÒ»°DMA∑¢ÀÕª∫≥Â«¯ £”‡ ˝æ›∏ˆ ˝£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			if(CurrDataCounter==0)						//DMA ˝æ›“—¥´ÀÕ
-			{
-				FlagStatus bitstatus = RESET;
-				bitstatus=USART_GetFlagStatus(USART1,USART_FLAG_TXE);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-				if(bitstatus==SET)
-				{	
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					
-					RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;
-					return 1;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-				}
-				else
-					return 0;
-			}
-			else
-					return 0;
-		}
-		else
-		{
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			
-			RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;
-			return 1;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-		}
-	}
-	else if(USARTx==USART2)
-	{
-		//1----œ»ªÒ»°DMA◊¥Ã¨£¨»Áπ˚“—æ≠ø™∆Ù£¨‘ÚºÏ≤‚DMA∫ÕUSART «∑ÒÕÍ≥…£¨»Áπ˚Œ¥ø™∆Ù£¨÷±Ω”∑¢ÀÕ ˝æ›
-		DMA_status=*(vu32*)DMA1_Channel7_BASE;
-		if((DMA_status&0x00000001)==0x00000001)						//DMAÕ®µ¿“—æ≠ πƒ‹
-		{
-			u16 CurrDataCounter=0;																	//œ‡πÿDMAÕ®µ¿ £”‡ø’º‰¥Û–°£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			CurrDataCounter=DMA_GetCurrDataCounter(DMA1_Channel7);	//ªÒ»°DMA∑¢ÀÕª∫≥Â«¯ £”‡ ˝æ›∏ˆ ˝£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			if(CurrDataCounter==0)						//DMA ˝æ›“—¥´ÀÕ
-			{
-				FlagStatus bitstatus = RESET;
-				bitstatus=USART_GetFlagStatus(USART2,USART_FLAG_TXE);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-				if(bitstatus==SET)
-				{	
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					
-					RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;
-					return 1;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-				}
-				else
-					return 0;
-			}
-			else
-					return 0;
-		}
-		else
-		{
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			
-			RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;
-			return 1;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-		}
-	}
-	else if(USARTx==USART3)
-	{
-		//1----œ»ªÒ»°DMA◊¥Ã¨£¨»Áπ˚“—æ≠ø™∆Ù£¨‘ÚºÏ≤‚DMA∫ÕUSART «∑ÒÕÍ≥…£¨»Áπ˚Œ¥ø™∆Ù£¨÷±Ω”∑¢ÀÕ ˝æ›
-		DMA_status=*(vu32*)DMA1_Channel2_BASE;
-		if((DMA_status&0x00000001)==0x00000001)						//DMAÕ®µ¿“—æ≠ πƒ‹
-		{
-			u16 CurrDataCounter=0;																	//œ‡πÿDMAÕ®µ¿ £”‡ø’º‰¥Û–°£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			CurrDataCounter=DMA_GetCurrDataCounter(DMA1_Channel2);	//ªÒ»°DMA∑¢ÀÕª∫≥Â«¯ £”‡ ˝æ›∏ˆ ˝£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			if(CurrDataCounter==0)						//DMA ˝æ›“—¥´ÀÕ
-			{
-				FlagStatus bitstatus = RESET;
-				bitstatus=USART_GetFlagStatus(USART3,USART_FLAG_TXE);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-				if(bitstatus==SET)
-				{	
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					
-					RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;
-					return 1;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-				}
-				else
-					return 0;
-			}
-			else
-					return 0;
-		}
-		else
-		{
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			
-			RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;
-			return 1;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-		}
-	}
-	else if(USARTx==UART4)
-	{
-		//1----œ»ªÒ»°DMA◊¥Ã¨£¨»Áπ˚“—æ≠ø™∆Ù£¨‘ÚºÏ≤‚DMA∫ÕUSART «∑ÒÕÍ≥…£¨»Áπ˚Œ¥ø™∆Ù£¨÷±Ω”∑¢ÀÕ ˝æ›
-		DMA_status=*(vu32*)DMA2_Channel5_BASE;
-		if((DMA_status&0x00000001)==0x00000001)						//DMAÕ®µ¿“—æ≠ πƒ‹
-		{
-			u16 CurrDataCounter=0;																	//œ‡πÿDMAÕ®µ¿ £”‡ø’º‰¥Û–°£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			CurrDataCounter=DMA_GetCurrDataCounter(DMA2_Channel5);	//ªÒ»°DMA∑¢ÀÕª∫≥Â«¯ £”‡ ˝æ›∏ˆ ˝£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			if(CurrDataCounter==0)						//DMA ˝æ›“—¥´ÀÕ
-			{
-				FlagStatus bitstatus = RESET;
-				bitstatus=USART_GetFlagStatus(UART4,USART_FLAG_TXE);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-				if(bitstatus==SET)
-				{
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					
-					RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;
-					return 1;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-				}
-				else
-					return 0;
-			}
-			else
-					return 0;
-		}
-		else
-		{
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			
-			// πƒ‹RS485∑¢ÀÕ
-			RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;
-			return 1;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-		}
-	}
-	else if(USARTx==UART5)
-	{
-		//UART5≤ª÷ß≥÷DMA
-	}	
-	return 0;
+	RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;	
 }
 
 /*******************************************************************************
@@ -2033,30 +2026,15 @@ u16	RS485_ReadBufferIDLE(
 )	//¥Æø⁄ø’œ–ƒ£ Ω∂¡¥Æø⁄Ω” ’ª∫≥Â«¯£¨»Áπ˚”– ˝æ›£¨Ω´ ˝æ›øΩ±¥µΩRevBuffer,≤¢∑µªÿΩ” ’µΩµƒ ˝æ›∏ˆ ˝£¨»ª∫Û÷ÿ–¬Ω´Ω” ’ª∫≥Â«¯µÿ÷∑÷∏œÚRxdBuffer£¨
 {
 	u16 length=0;
-	if(USART_GetFlagStatus(RS485_Info->USARTx, USART_FLAG_TC)	!=	RESET	&&	USART_GetFlagStatus(RS485_Info->USARTx, USART_FLAG_TXE)	!=	RESET)	//∑¢ÀÕÕÍ≥…£¨ø…“‘Ω” ’
+	USARTStatusDef	Status	=	USART_IDLESTD;
+	Status	=	USART_Status(RS485_Info->USARTx);		//¥Æø⁄◊¥Ã¨ºÏ≤È
+	
+	if(Status	==	USART_IDLESTD)		//¥Æø⁄ø’œ–£¨ø…“‘∏ƒŒ™Ω” ’
 	{
 		RS485_RX_EN(RS485_Info);
 		length=USART_ReadBufferIDLE(RS485_Info->USARTx,RevBuffer);	//¥Æø⁄ø’œ–ƒ£ Ω∂¡¥Æø⁄Ω” ’ª∫≥Â«¯£¨»Áπ˚”– ˝æ›£¨Ω´ ˝æ›øΩ±¥µΩRevBuffer,≤¢∑µªÿΩ” ’µΩµƒ ˝æ›∏ˆ ˝£¨»ª∫Û÷ÿ–¬Ω´Ω” ’ª∫≥Â«¯µÿ÷∑÷∏œÚRxdBuffer
 	}
 	return length;
-	
-//	u16 length=0;
-
-//	if((RS485_Info->USARTx==USART1)&&(DMA1_Channel4->CNDTR	!=0) && (DMA1_Channel4->CCR &&0x01== 0x01))
-//		return 0;
-//	else if((RS485_Info->USARTx==USART2)&&(DMA1_Channel7->CNDTR	!=0) && (DMA1_Channel7->CCR &&0x01== 0x01))
-//		return 0;
-//	else if((RS485_Info->USARTx==USART3)&&(DMA1_Channel2->CNDTR	!=0) && (DMA1_Channel2->CCR &&0x01== 0x01))
-//		return 0;
-//	else if((RS485_Info->USARTx==UART4)&&(DMA2_Channel5->CNDTR	!=0) && (DMA2_Channel5->CCR &&0x01== 0x01))
-//		return 0;
-
-//	if(USART_GetFlagStatus(RS485_Info->USARTx, USART_FLAG_TC)	!=	RESET	&&	USART_GetFlagStatus(RS485_Info->USARTx, USART_FLAG_TXE)	!=	RESET)
-//	{
-//		RS485_RX_EN(RS485_Info);
-//		length=USART_ReadBufferIDLE(RS485_Info->USARTx,RevBuffer,RxdBuffer);	//¥Æø⁄ø’œ–ƒ£ Ω∂¡¥Æø⁄Ω” ’ª∫≥Â«¯£¨»Áπ˚”– ˝æ›£¨Ω´ ˝æ›øΩ±¥µΩRevBuffer,≤¢∑µªÿΩ” ’µΩµƒ ˝æ›∏ˆ ˝£¨»ª∫Û÷ÿ–¬Ω´Ω” ’ª∫≥Â«¯µÿ÷∑÷∏œÚRxdBuffer
-//	}
-//	return length;
 }
 
 /*******************************************************************************
@@ -2099,7 +2077,7 @@ u16	RS485_DMAPrintf(RS485_TypeDef *RS485_Info,const char *format,...)						//◊‘∂
 	va_end(args); 
 	//8)**********Ω´µ»∑¢ÀÕª∫≥Â«¯¥Û–°£® ˝æ›∏ˆ ˝£©º∞ª∫≥Â«¯µÿ÷∑∑¢∏¯DMAø™∆Ù∑¢ÀÕ
 	//8)**********DMA∑¢ÀÕÕÍ≥…∫Û◊¢“‚”¶∏√ Õ∑≈ª∫≥Â«¯£∫free(USART_BUFFER);
-	BufferSize=RS485_DMASend(RS485_Info,(u32*)DMAPrintf_Buffer,BufferSize);	//RS485-DMA∑¢ÀÕ≥Ã–Ú
+	BufferSize=RS485_DMASend(RS485_Info,(u8*)DMAPrintf_Buffer,BufferSize);	//RS485-DMA∑¢ÀÕ≥Ã–Ú
 	return BufferSize;			//∑µªÿ∑¢ÀÕ ˝æ›¥Û–°
 
 }
@@ -2111,227 +2089,24 @@ u16	RS485_DMAPrintf(RS485_TypeDef *RS485_Info,const char *format,...)						//◊‘∂
 *******************************************************************************/
 u16 RS485_DMASend(
 									RS485_TypeDef *RS485_Info,		//∞¸∫¨RS485—°”√µƒ¥Æø⁄∫≈∫Õ ’∑¢øÿ÷∆Ω≈–≈œ¢
-									u32 *tx_buffer,								//¥˝∑¢ÀÕ ˝æ›ª∫≥Â«¯µÿ÷∑
+									u8 *tx_buffer,								//¥˝∑¢ÀÕ ˝æ›ª∫≥Â«¯µÿ÷∑
 									u16 BufferSize								//…Ë∂®∑¢ÀÕ ˝æ›¥Û–°
 )		//RS485-DMA∑¢ÀÕ≥Ã–Ú
 {
 	//----∑¢ÀÕ«∞ºÏ≤Èœ‡πÿ¥Æø⁄∑¢ÀÕ◊¥Ã¨£¨»Áπ˚œ¬‘⁄∑¢ÀÕ∆‰À¸ ˝æ›£¨‘Úµ»¥˝£®∑µªÿ0£©£¨∑Ò‘Ú«Â≥˝œ‡πÿ±Í÷æŒª∫Ûø™∆Ù∑¢ÀÕ
 	
 	u32	DMA_status=0;			//DMA◊¥Ã¨	
+	USARTStatusDef	Status	=	USART_IDLESTD;
 	USART_TypeDef* USARTx=RS485_Info->USARTx;
 	
-	if(USARTx==USART1)
+	Status	=	USART_Status(USARTx);		//¥Æø⁄◊¥Ã¨ºÏ≤È
+	if(Status	!=USART_IDLESTD)
 	{
-		//1----œ»ªÒ»°DMA◊¥Ã¨£¨»Áπ˚“—æ≠ø™∆Ù£¨‘ÚºÏ≤‚DMA∫ÕUSART «∑ÒÕÍ≥…£¨»Áπ˚Œ¥ø™∆Ù£¨÷±Ω”∑¢ÀÕ ˝æ›
-		DMA_status=*(vu32*)DMA1_Channel4_BASE;
-		if((DMA_status&0x00000001)==0x00000001)						//DMAÕ®µ¿“—æ≠ πƒ‹
-		{
-			u16 CurrDataCounter=0;																	//œ‡πÿDMAÕ®µ¿ £”‡ø’º‰¥Û–°£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			CurrDataCounter=DMA_GetCurrDataCounter(DMA1_Channel4);	//ªÒ»°DMA∑¢ÀÕª∫≥Â«¯ £”‡ ˝æ›∏ˆ ˝£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			if(CurrDataCounter==0)						//DMA ˝æ›“—¥´ÀÕ
-			{
-				FlagStatus bitstatus = RESET;
-				bitstatus=USART_GetFlagStatus(USART1,USART_FLAG_TXE);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-				if(bitstatus==SET)
-				{	
-					// πƒ‹RS485∑¢ÀÕ
-					RS485_TX_EN(RS485_Info);
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					
-					DMA_ClearFlag(DMA1_FLAG_TC4);									//«Â≥˝±Í÷æ
-					DMA_Cmd(DMA1_Channel4,DISABLE);								//DMA∑¢ÀÕπÿ±’
-					
-					//----ø…“‘ºÃ–¯∑¢ÀÕ–¬ ˝æ›
-					DMA1_Channel4->CNDTR =BufferSize;								//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-					DMA1_Channel4->CMAR =(u32)tx_buffer;						//∑¢ÀÕª∫≥Â«¯	
-					DMA_Cmd(DMA1_Channel4,ENABLE);									//DMA∑¢ÀÕø™∆Ù3
-					return BufferSize;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-				}
-				else
-					return 0;
-			}
-		}
-		else
-		{
-			// πƒ‹RS485∑¢ÀÕ
-			RS485_TX_EN(RS485_Info);
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			
-			DMA1_Channel4->CNDTR =BufferSize;										//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-			DMA1_Channel4->CMAR =(u32)tx_buffer;							//∑¢ÀÕª∫≥Â«¯	
-			DMA_Cmd(DMA1_Channel4,ENABLE);											//DMA∑¢ÀÕø™∆Ù3
-			return BufferSize;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-		}
+		return 0;
 	}
-	else if(USARTx==USART2)
-	{
-		//1----œ»ªÒ»°DMA◊¥Ã¨£¨»Áπ˚“—æ≠ø™∆Ù£¨‘ÚºÏ≤‚DMA∫ÕUSART «∑ÒÕÍ≥…£¨»Áπ˚Œ¥ø™∆Ù£¨÷±Ω”∑¢ÀÕ ˝æ›
-		DMA_status=*(vu32*)DMA1_Channel7_BASE;
-		if((DMA_status&0x00000001)==0x00000001)						//DMAÕ®µ¿“—æ≠ πƒ‹
-		{
-			u16 CurrDataCounter=0;																	//œ‡πÿDMAÕ®µ¿ £”‡ø’º‰¥Û–°£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			CurrDataCounter=DMA_GetCurrDataCounter(DMA1_Channel7);	//ªÒ»°DMA∑¢ÀÕª∫≥Â«¯ £”‡ ˝æ›∏ˆ ˝£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			if(CurrDataCounter==0)						//DMA ˝æ›“—¥´ÀÕ
-			{
-				FlagStatus bitstatus = RESET;
-				bitstatus=USART_GetFlagStatus(USART2,USART_FLAG_TXE);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-				if(bitstatus==SET)
-				{	
-					// πƒ‹RS485∑¢ÀÕ
-					RS485_TX_EN(RS485_Info);
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					
-					DMA_ClearFlag(DMA1_FLAG_TC7);									//«Â≥˝±Í÷æ
-					DMA_Cmd(DMA1_Channel7,DISABLE);								//DMA∑¢ÀÕπÿ±’
-					
-					//----ø…“‘ºÃ–¯∑¢ÀÕ–¬ ˝æ›
-					DMA1_Channel7->CNDTR =BufferSize;								//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-					DMA1_Channel7->CMAR =(u32)tx_buffer;						//∑¢ÀÕª∫≥Â«¯	
-					DMA_Cmd(DMA1_Channel7,ENABLE);									//DMA∑¢ÀÕø™∆Ù3
-					return BufferSize;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-				}
-				else
-					return 0;
-			}
-			else
-					return 0;
-		}
-		else
-		{
-			// πƒ‹RS485∑¢ÀÕ
-			RS485_TX_EN(RS485_Info);
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			DMA1_Channel7->CNDTR =BufferSize;								//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-			DMA1_Channel7->CMAR =(u32)tx_buffer;						//∑¢ÀÕª∫≥Â«¯	
-			DMA_Cmd(DMA1_Channel7,ENABLE);									//DMA∑¢ÀÕø™∆Ù3
-			return BufferSize;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-		}
-	}
-	else if(USARTx==USART3)
-	{
-		//1----œ»ªÒ»°DMA◊¥Ã¨£¨»Áπ˚“—æ≠ø™∆Ù£¨‘ÚºÏ≤‚DMA∫ÕUSART «∑ÒÕÍ≥…£¨»Áπ˚Œ¥ø™∆Ù£¨÷±Ω”∑¢ÀÕ ˝æ›
-		DMA_status=*(vu32*)DMA1_Channel2_BASE;
-		if((DMA_status&0x00000001)==0x00000001)						//DMAÕ®µ¿“—æ≠ πƒ‹
-		{
-			u16 CurrDataCounter=0;																	//œ‡πÿDMAÕ®µ¿ £”‡ø’º‰¥Û–°£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			CurrDataCounter=DMA_GetCurrDataCounter(DMA1_Channel2);	//ªÒ»°DMA∑¢ÀÕª∫≥Â«¯ £”‡ ˝æ›∏ˆ ˝£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			if(CurrDataCounter==0)						//DMA ˝æ›“—¥´ÀÕ
-			{
-				FlagStatus bitstatus = RESET;
-				bitstatus=USART_GetFlagStatus(USART3,USART_FLAG_TXE);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-				if(bitstatus==SET)
-				{	
-					// πƒ‹RS485∑¢ÀÕ
-					RS485_TX_EN(RS485_Info);
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					
-					DMA_ClearFlag(DMA1_FLAG_TC2);									//«Â≥˝±Í÷æ
-					DMA_Cmd(DMA1_Channel2,DISABLE);								//DMA∑¢ÀÕπÿ±’
-					
-					//----ø…“‘ºÃ–¯∑¢ÀÕ–¬ ˝æ›
-					DMA1_Channel2->CNDTR =BufferSize;								//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-					DMA1_Channel2->CMAR =(u32)tx_buffer;						//∑¢ÀÕª∫≥Â«¯	
-					DMA_Cmd(DMA1_Channel2,ENABLE);									//DMA∑¢ÀÕø™∆Ù3
-					return BufferSize;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-				}
-				else
-					return 0;
-			}
-			else
-					return 0;
-		}
-		else
-		{
-			// πƒ‹RS485∑¢ÀÕ
-			RS485_TX_EN(RS485_Info);
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			DMA1_Channel2->CNDTR =BufferSize;										//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-			DMA1_Channel2->CMAR =(u32)tx_buffer;							//∑¢ÀÕª∫≥Â«¯	
-			DMA_Cmd(DMA1_Channel2,ENABLE);											//DMA∑¢ÀÕø™∆Ù3
-			return BufferSize;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-		}
-	}
-	else if(USARTx==UART4)
-	{
-		//1----œ»ªÒ»°DMA◊¥Ã¨£¨»Áπ˚“—æ≠ø™∆Ù£¨‘ÚºÏ≤‚DMA∫ÕUSART «∑ÒÕÍ≥…£¨»Áπ˚Œ¥ø™∆Ù£¨÷±Ω”∑¢ÀÕ ˝æ›
-		DMA_status=*(vu32*)DMA2_Channel5_BASE;
-		if((DMA_status&0x00000001)==0x00000001)						//DMAÕ®µ¿“—æ≠ πƒ‹
-		{
-			u16 CurrDataCounter=0;																	//œ‡πÿDMAÕ®µ¿ £”‡ø’º‰¥Û–°£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			CurrDataCounter=DMA_GetCurrDataCounter(DMA2_Channel5);	//ªÒ»°DMA∑¢ÀÕª∫≥Â«¯ £”‡ ˝æ›∏ˆ ˝£¨»Áπ˚ «0£¨‘Ú±Ì æDMA ˝æ›“—æ≠¥´ÀÕ
-			if(CurrDataCounter==0)						//DMA ˝æ›“—¥´ÀÕ
-			{
-				FlagStatus bitstatus = RESET;
-				bitstatus=USART_GetFlagStatus(UART4,USART_FLAG_TXE);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-				if(bitstatus==SET)
-				{
-					// πƒ‹RS485∑¢ÀÕ
-					RS485_TX_EN(RS485_Info);
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					__nop();
-					
-					DMA_ClearFlag(DMA2_FLAG_TC5);									//«Â≥˝±Í÷æ
-					DMA_Cmd(DMA2_Channel5,DISABLE);								//DMA∑¢ÀÕπÿ±’
-					
-					//----ø…“‘ºÃ–¯∑¢ÀÕ–¬ ˝æ›
-					DMA2_Channel5->CNDTR =BufferSize;								//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-					DMA2_Channel5->CMAR =(u32)tx_buffer;						//∑¢ÀÕª∫≥Â«¯	
-					DMA_Cmd(DMA2_Channel5,ENABLE);									//DMA∑¢ÀÕø™∆Ù3
-					return BufferSize;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-				}
-				else
-					return 0;
-			}
-			else
-					return 0;
-		}
-		else
-		{
-			// πƒ‹RS485∑¢ÀÕ
-			RS485_TX_EN(RS485_Info);
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			__nop();
-			DMA2_Channel5->CNDTR =BufferSize;										//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-			DMA2_Channel5->CMAR =(u32)tx_buffer;							//∑¢ÀÕª∫≥Â«¯	
-			DMA_Cmd(DMA2_Channel5,ENABLE);											//DMA∑¢ÀÕø™∆Ù3
-			return BufferSize;			//»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°
-		}
-	}
-	else if(USARTx==UART5)
-	{
-		//UART5≤ª÷ß≥÷DMA
-		BufferSize=0;
-	}	
+	SysTick_DeleymS(1);				//SysTick—” ±nmS
+	RS485_TX_EN(RS485_Info);
+	USART_DMASend	(USARTx,(u8*)tx_buffer,BufferSize);		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
 	return 0;
 
 }

@@ -198,7 +198,7 @@ void PL010V13_Server(void)
 //		RevBuffe[3]=0;
 	}
 	
-	#if 1
+	#if 0
 	if(DelayTime>=100)
 	{
 		

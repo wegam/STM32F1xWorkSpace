@@ -41,7 +41,13 @@ typedef struct
 	GPIO_TypeDef* 	RS485_CTL_PORT;				//GPIOX
 	unsigned short 	RS485_CTL_Pin;				//GPIO_Pin_x
 }RS485_TypeDef;
-
+typedef enum
+{
+	USART_IDLESTD	=	0,		//´®¿Ú¿ÕÏÐ
+	USART_ReceSTD	=	1,		//´®¿ÚÕýÔÚ½ÓÊÕÖÐ
+	USART_SendSTD	=	2,		//´®¿ÚÕýÔÚ·¢ËÍÖÐ
+	USART_RTSTD		=	3			//´®¿ÚÕýÔÚÊÕ·¢ÖÐ
+}USARTStatusDef;
 //#define RS485_TX_EN			(RS485_TypeDef->RS485_CTL_PORT->BSRR		= R61509V_sPinfo->R61509V_sCS_Pin)
 //#define RS485_RX_EN			(R61509V_sPinfo->R61509V_sCS_PORT->BRR 		= R61509V_sPinfo->R61509V_sCS_Pin)
 
@@ -62,7 +68,8 @@ u16	USART_ReadBufferIDLE	(USART_TypeDef* USARTx,u8 *RevBuffer);	//´®¿Ú¿ÕÏÐÄ£Ê½¶Á
 
 //*****************´®¿Ú·¢ËÍ
 u16	USART_DMAPrintf		(USART_TypeDef* USARTx,const char *format,...);					//×Ô¶¨Òåprintf´®¿ÚDMA·¢ËÍ³ÌÐò,ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊý
-u16	USART_DMASend			(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);	//´®¿ÚDMA·¢ËÍ³ÌÐò
+u16	USART_DMASend			(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);		//´®¿ÚDMA·¢ËÍ³ÌÐò
+USARTStatusDef	USART_Status(USART_TypeDef* USARTx);		//´®¿Ú×´Ì¬¼ì²é
 
 
 
@@ -79,7 +86,7 @@ u16		RS485_ReadBufferIDLE			(RS485_TypeDef *RS485_Info,u8 *RevBuffer);	//´®¿Ú¿ÕÏ
 
 //*****************RS485·¢ËÍ
 u16 	RS485_DMAPrintf						(RS485_TypeDef *RS485_Info,const char *format,...);					//×Ô¶¨Òåprintf´®¿ÚDMA·¢ËÍ³ÌÐò,ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊý
-u16 	RS485_DMASend							(RS485_TypeDef *RS485_Info,u32 *tx_buffer,u16 BufferSize);	//RS485-DMA·¢ËÍ³ÌÐò
+u16 	RS485_DMASend							(RS485_TypeDef *RS485_Info,u8 *tx_buffer,u16 BufferSize);	//RS485-DMA·¢ËÍ³ÌÐò
 
 
 void 	USART_ConfigurationIT(USART_TypeDef* USARTx,u32 USART_BaudRate,u8 PreemptionPriority,u8 SubPriority);	//USART_ÅäÖÃ---³£¹æÖÐ¶Ï·½Ê½
