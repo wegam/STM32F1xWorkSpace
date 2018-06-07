@@ -76,7 +76,7 @@
 #define SWDIO_CLR()          	SWDIO_PORT ->BRR 	= SWDIO_PIN  //SWDIO_OUT(0)
 
 #define SWDIO_IN()    	GPIO_ReadInputDataBit(SWDIO_PORT,SWDIO_PIN)//BITBAND_REG(PTB->PDIR, n)
-#define SWDIO_IN()    	SWDIO_PORT->IDR & SWDIO_PIN//BITBAND_REG(PTB->PDIR, n)
+//#define SWDIO_IN()    	SWDIO_PORT->IDR & SWDIO_PIN//BITBAND_REG(PTB->PDIR, n)
 #define SWDIO_OUT(n)    {if ( n ) SWDIO_SET(); else SWDIO_CLR();}
 
 

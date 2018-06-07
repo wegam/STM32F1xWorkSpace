@@ -282,6 +282,18 @@ void PC004V21_Server(void)
 #endif
 	
 	SYSTime++;
+	//锁接口LED指示灯
+	{
+		if(SYSTime%1000<50)
+		{
+			PB0	=	1;
+		}
+		else
+		{
+			PB0	=	0;
+		}
+	}
+	
 //	if(RxData>=250)
 //	{
 //		RxData=0;
@@ -332,7 +344,7 @@ void PC004V21_Server(void)
 			num=0;
 //			RS485_DMASend(&RS485_Conf,(u32*)PC004V10_TBuffer,11);	//RS485-DMA发送程序
 		}
-		GPIO_Toggle	(GPIOB,GPIO_Pin_0);		//将GPIO相应管脚输出翻转----V20170605//锁接口
+//		GPIO_Toggle	(GPIOB,GPIO_Pin_0);		//将GPIO相应管脚输出翻转----V20170605//锁接口
 //		TxMessage.Data[3]=num;
 //		PC004V10_CAN_COMMAD();					//CAN发送命令函数，地址，命令类型，数据--时间同步--发送获取D命令
 //		PC004V10_Num[0]=num;

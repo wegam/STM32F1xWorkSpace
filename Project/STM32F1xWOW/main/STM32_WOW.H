@@ -174,7 +174,10 @@
 #endif
 
 
-
+//*********************************SWDTEST*********************************//
+#ifdef SWDTEST
+	#include "SWDTEST.H"
+#endif
 
 
 

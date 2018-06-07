@@ -401,7 +401,10 @@ void WOW_Configuration(void)
 	IAP_Configuration();
 #endif
 
-
+//*********************************SWDTEST*********************************//
+#ifdef SWDTEST
+	SWDTEST_Configuration();
+#endif
 
 
 
@@ -787,6 +790,11 @@ void WOW_Server(void)
 //*********************************IAP*********************************//
 #ifdef IAP
 	IAP_Server();
+#endif
+
+//*********************************SWDTEST*********************************//
+#ifdef SWDTEST
+	SWDTEST_Server();
 #endif
 
 
