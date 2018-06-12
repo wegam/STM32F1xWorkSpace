@@ -94,10 +94,10 @@ void PC012V13_Server(void)
 void RS485_Server(void)
 {
 	u8 Num	=	0;
-	Num	=	RS485_ReadBufferIDLE			(&PORT485B,(u32*)RevBuffe2,(u32*)RxdBuffe2);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	Num	=	RS485_ReadBufferIDLE			(&PORT485B,RevBuffe2);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(Num)
 	{
-		RS485_DMASend	(&PORT485C,(u32*)RevBuffe2,Num);	//RS485-DMA发送程序
+		RS485_DMASend	(&PORT485C,RevBuffe2,Num);	//RS485-DMA发送程序
 	}
 }
 /*******************************************************************************
@@ -201,23 +201,23 @@ void RS485_Configuration(void)
 	OUT485.USARTx=UART4;
 	OUT485.RS485_CTL_PORT=GPIOA;
 	OUT485.RS485_CTL_Pin=GPIO_Pin_15;	
-	RS485_DMA_ConfigurationNR	(&OUT485,19200,(u32*)RxdBuffe,8);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态	
+	RS485_DMA_ConfigurationNR	(&OUT485,19200,8);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态	
 	
 	
 	PORT485A.USARTx=USART3;
 	PORT485A.RS485_CTL_PORT=GPIOB;
 	PORT485A.RS485_CTL_Pin=GPIO_Pin_1;	
-	RS485_DMA_ConfigurationNR	(&PORT485A,19200,(u32*)RxdBuffe1,8);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&PORT485A,19200,8);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
 	PORT485B.USARTx=USART2;
 	PORT485B.RS485_CTL_PORT=GPIOA;
 	PORT485B.RS485_CTL_Pin=GPIO_Pin_1;	
-	RS485_DMA_ConfigurationNR	(&PORT485B,19200,(u32*)RxdBuffe2,8);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&PORT485B,19200,8);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
 	PORT485C.USARTx=USART1;
 	PORT485C.RS485_CTL_PORT=GPIOA;
 	PORT485C.RS485_CTL_Pin=GPIO_Pin_11;	
-	RS485_DMA_ConfigurationNR	(&PORT485C,19200,(u32*)RxdBuffe3,8);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&PORT485C,19200,8);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 //================
 

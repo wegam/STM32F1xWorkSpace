@@ -7193,7 +7193,7 @@
               <MiscControls></MiscControls>
               <Define>PC001V21</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC</IncludePath>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;..\..\Driver\Protocol;..\..\Driver\Tool;.\main</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -8557,7 +8557,7 @@
               <MiscControls></MiscControls>
               <Define>PC001V22</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC</IncludePath>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main;..\..\Driver\Protocol;..\..\Driver\Tool</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -9921,7 +9921,7 @@
               <MiscControls></MiscControls>
               <Define>PC001V25</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main;..\..\Driver\Tool</IncludePath>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main;..\..\Driver\Tool;..\..\Driver\Protocol</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -12649,7 +12649,7 @@
               <MiscControls></MiscControls>
               <Define>PC006V20</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC</IncludePath>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;..\..\Driver\Protocol;..\..\Driver\Tool;.\main</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -14013,7 +14013,7 @@
               <MiscControls></MiscControls>
               <Define>PC006V21</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC</IncludePath>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main;..\..\Driver\Protocol;..\..\Driver\Tool</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -15377,7 +15377,7 @@
               <MiscControls></MiscControls>
               <Define>PC012V13</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main</IncludePath>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main;..\..\Driver\Protocol;..\..\Driver\Tool</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -16741,7 +16741,7 @@
               <MiscControls></MiscControls>
               <Define>PC016V20</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;..\..\Examples\DEMO\include;.\main;..\..\Driver\Tool</IncludePath>
+              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;..\..\Examples\DEMO\include;.\main;..\..\Driver\Tool;..\..\Driver\Protocol</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -18105,7 +18105,7 @@
               <MiscControls></MiscControls>
               <Define>PC018V10</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC</IncludePath>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main;..\..\Driver\Protocol;..\..\Driver\Tool</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

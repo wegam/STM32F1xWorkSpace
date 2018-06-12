@@ -787,13 +787,14 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 //		vsprintf( string , format, ap );    
 //		va_end( ap );
 	
-
-	u16 i=0;		//ÏÔÊ¾
+	unsigned short	MaxV,MaxH;	//±ß½çÖµ
+	unsigned short	i=0;				//ÏÔÊ¾
 	char	Char_Buffer[256];		//¼ÇÂ¼formatÄÚÂë
 	//1)**********»ñÈ¡Êý¾Ý¿í¶È
 	u16 num=strlen((const char*)format);		//»ñÈ¡Êý¾Ý¿í¶È
 	//2)**********¶¨Òå»º³åÇø´óÐ¡±äÁ¿
-	unsigned int BufferSize;
+	unsigned int BufferSize;	
+	
 	//3)**********argsÎª¶¨ÒåµÄÒ»¸öÖ¸Ïò¿É±ä²ÎÊýµÄ±äÁ¿£¬va_listÒÔ¼°ÏÂ±ßÒªÓÃµ½µÄva_start,va_end¶¼ÊÇÊÇÔÚ¶¨Òå£¬¿É±ä²ÎÊýº¯ÊýÖÐ±ØÐëÒªÓÃµ½ºê£¬ ÔÚstdarg.hÍ·ÎÄ¼þÖÐ¶¨Òå
 	va_list args; 
 	//5)**********³õÊ¼»¯argsµÄº¯Êý£¬Ê¹ÆäÖ¸Ïò¿É±ä²ÎÊýµÄµÚÒ»¸ö²ÎÊý£¬formatÊÇ¿É±ä²ÎÊýµÄÇ°Ò»¸ö²ÎÊý
@@ -803,7 +804,26 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 	num=BufferSize;
 	//7)**********½áÊø¿É±ä²ÎÊýµÄ»ñÈ¡
 	va_end(args);                                      		
-	
+
+	switch(LCDSYS->Flag.Rotate)
+	{
+		case Draw_Rotate_90D:
+			MaxV	=	LCDSYS->Data.MaxH;
+			MaxH	=	LCDSYS->Data.MaxV;
+			break;
+		case Draw_Rotate_180D:
+			MaxV	=	LCDSYS->Data.MaxV;
+			MaxH	=	LCDSYS->Data.MaxH;
+			break;
+		case Draw_Rotate_270D:
+			MaxV	=	LCDSYS->Data.MaxH;
+			MaxH	=	LCDSYS->Data.MaxV;
+			break;
+		default:
+			MaxV	=	LCDSYS->Data.MaxV;
+			MaxH	=	LCDSYS->Data.MaxH;
+			break;
+	}	
 	for(i=0;i<num;i++)
 	{ 
 		unsigned char dst=Char_Buffer[i];
@@ -816,21 +836,21 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 			dst=Char_Buffer[i+1];
 			word=word|dst;			
 			//ÏÔÊ¾³¬ÏÞÅÐ¶Ï
-			if(font==16&&x>LCDSYS->Data.MaxV-16)
+			if(font==16&&x>MaxH-16)
 			{
 				x=0;
 				y+=16;
 			}
-			if(font==32&&x>LCDSYS->Data.MaxV-32)
+			if(font==32&&x>MaxH-32)
 			{
 				x=0;
 				y+=32;
 			}
-			if(font==16&&y>LCDSYS->Data.MaxV-16)
+			if(font==16&&y>MaxV-16)
 			{
 				y=x=0;
 			}
-			if(font==32&&y>LCDSYS->Data.MaxV-32)
+			if(font==32&&y>MaxV-32)
 			{
 				y=x=0;
 			}
@@ -859,16 +879,16 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 		}
 		else		//µ¥×Ö½Ú
 		{			
-			if(x>LCDSYS->Data.MaxH-16)
+			if(x>MaxH-16)
 			{
 				x=0;
 				y+=32;
 			}
-			if(font==16&&y>LCDSYS->Data.MaxH-16)
+			if(font==16&&y>MaxH-16)
 			{
 				y=x=0;
 			}
-			if((font==32)&&(y>LCDSYS->Data.MaxH-32))
+			if((font==32)&&(y>MaxH-32))
 			{
 				y=x=0;
 			}

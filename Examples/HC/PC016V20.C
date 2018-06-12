@@ -142,24 +142,24 @@ void PC016V20_Configuration(void)
 	//---¿éºÅ1
 	//---ÃÜÂë£º0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
 	CardReaderCmd_SetArea[4]	=	0x00;
-	USART_DMASend	(ICCardReadPort1,(u32*)CardReaderCmd_SetArea,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
-	USART_DMASend	(ICCardReadPort2,(u32*)CardReaderCmd_SetArea,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
-	USART_DMASend	(ICCardReadPort3,(u32*)CardReaderCmd_SetArea,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
-	USART_Send		(ICCardReadPort4,(u8*)CardReaderCmd_SetArea,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
+	USART_DMASend	(ICCardReadPort1,CardReaderCmd_SetArea,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
+	USART_DMASend	(ICCardReadPort2,CardReaderCmd_SetArea,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
+	USART_DMASend	(ICCardReadPort3,CardReaderCmd_SetArea,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
+	USART_Send		(ICCardReadPort4,CardReaderCmd_SetArea,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
 	SysTick_DeleymS(100);					//SysTickÑÓÊ±nmS
 	//========================ÉÏµç¶Á¿¨
 	
-	USART_DMASend	(ICCardReadPort1,(u32*)CardReaderCmd_ReadData,14);	//´®¿ÚDMA·¢ËÍ³ÌĞò
+	USART_DMASend	(ICCardReadPort1,CardReaderCmd_ReadData,14);	//´®¿ÚDMA·¢ËÍ³ÌĞò
 
-	USART_DMASend	(ICCardReadPort2,(u32*)CardReaderCmd_ReadData,14);	//´®¿ÚDMA·¢ËÍ³ÌĞò
+	USART_DMASend	(ICCardReadPort2,CardReaderCmd_ReadData,14);	//´®¿ÚDMA·¢ËÍ³ÌĞò
 
-	USART_DMASend	(ICCardReadPort3,(u32*)CardReaderCmd_ReadData,14);	//´®¿ÚDMA·¢ËÍ³ÌĞò
+	USART_DMASend	(ICCardReadPort3,CardReaderCmd_ReadData,14);	//´®¿ÚDMA·¢ËÍ³ÌĞò
 
 	USART_Send		(ICCardReadPort4,(u8*)CardReaderCmd_ReadData,14);			//´®¿Ú5·¢ËÍ³ÌĞò
 	
 	SysTick_DeleymS(100);					//SysTickÑÓÊ±nmS
 	//Ğ´¿¨
-	USART_DMASend	(ICCardReadPort1,(u32*)CardReaderCmd_WriteData,sizeof(CardReaderCmd_WriteData));	//´®¿ÚDMA·¢ËÍ³ÌĞò
+	USART_DMASend	(ICCardReadPort1,CardReaderCmd_WriteData,sizeof(CardReaderCmd_WriteData));	//´®¿ÚDMA·¢ËÍ³ÌĞò
 		
 
 	//========================SysTick³õÊ¼»¯£ºÓÃ×÷ÖÜÆÚÉ¨ÃèPC016V20_Server
@@ -235,7 +235,7 @@ void MessageServer(sBoradDef*	sBorad)				//Íâ²¿×ÜÏßÏûÏ¢´¦Àí
 {
 	u16 Num	=	0;
 	//=====================================¼ì²éÍâ²¿×ÜÏßÊÇ·ñÓĞÃüÁî
-	Num	=	RS485_ReadBufferIDLE(&RS485_Bus,(u32*)&(sBorad->sPlu.BusData.sFarmeRev),(u32*)&(sBorad->sPlu.BusData.sFarmeRxd));	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı£¬È»ºóÖØĞÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
+	Num	=	RS485_ReadBufferIDLE(&RS485_Bus,(u8*)&(sBorad->sPlu.BusData.sFarmeRev));	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı£¬È»ºóÖØĞÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
 	if(Num)			//Ö»Òª×ÜÏßÓĞÏûÏ¢´«Êä¾ÍÇåÁã¼ÆÊ±£¬ÒÔÃâÊı¾İ»Ø¸´Ê±×ÜÏß³åÍ»
 	{
 		sBorad->sPlu.Time.TimeBUS	=	0;				//ÇåÁã£¬ÒÔÃâÊı¾İ»Ø¸´Ê±×ÜÏß³åÍ»
@@ -324,7 +324,7 @@ void MessageAck(sBoradDef*	sBorad)			//Íâ²¿×ÜÏßÓ¦´ğ
 	}
 	RS485BusTxd[7]	=	Temp1;
 	
-	RS485_DMASend(&RS485_Bus,(u32*)RS485BusTxd,9);	//RS485-DMA·¢ËÍ³ÌĞò
+	RS485_DMASend(&RS485_Bus,RS485BusTxd,9);	//RS485-DMA·¢ËÍ³ÌĞò
 }
 /*******************************************************************************
 *º¯ÊıÃû			:	function
@@ -714,7 +714,7 @@ void MessageSend(sBoradDef*	sBorad)			//·¢ËÍÏûÏ¢/ÏûÏ¢ÉÏ±¨
 		RS485BusTxd[11]	=	Port->sBus.sBusFarme.Bcc8;
 		RS485BusTxd[12]	=	Port->sBus.sBusFarme.End;
 	}
-	RS485_DMASend(&RS485_Bus,(u32*)RS485BusTxd,6+RS485BusTxd[6]+3);	//RS485-DMA·¢ËÍ³ÌĞò
+	RS485_DMASend(&RS485_Bus,RS485BusTxd,6+RS485BusTxd[6]+3);	//RS485-DMA·¢ËÍ³ÌĞò
 }
 //======
 
@@ -1263,11 +1263,11 @@ void CardReaderSendData(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize)		//Ï
 {
 	if(USARTx	==	ICCardReadPort4)	//ÎŞDMA
 	{
-		USART_Send		(USARTx,(u8*)tx_buffer,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
+		USART_Send		(USARTx,tx_buffer,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
 	}
 	else
 	{
-		USART_DMASend	(USARTx,(u32*)tx_buffer,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
+		USART_DMASend	(USARTx,tx_buffer,14);	//ÉèÖÃ¶ÁÍ·¶Á¿¨ÉÈÇø¡¢¿éºÅ¡¢KEYA/KEYB¡¢¶Á¿¨ÃÜÂë0x44
 	}
 }
 
@@ -1293,7 +1293,7 @@ u16 CardReaderReadData(USART_TypeDef* USARTx,u8 *RevBuffer,u8 *RxdBuffer)			//¼ì
 	}
 	else
 	{
-		Num	=	USART_ReadBufferIDLE(USARTx,(u32*)RevBuffer,(u32*)RxdBuffer);	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı£¬È»ºóÖØĞÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
+		Num	=	USART_ReadBufferIDLE(USARTx,RevBuffer);	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı£¬È»ºóÖØĞÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
 	}
 	return Num;
 }
@@ -1402,7 +1402,7 @@ void HALUsartRemapDisable(void)												//¹Ø±Õ´®¿Ú¸´ÓÃ
 {
 	GPIO_PinRemapConfig(GPIO_Remap_USART1,DISABLE);				//I/O¿ÚÖØÓ³Éä¿ªÆô
 	GPIO_ResetBits(RS485_Seg7.RS485_CTL_PORT,	RS485_Seg7.RS485_CTL_Pin);			//ÊÍ·Å×ÜÏß
-	USART_DMA_ConfigurationNR	((sBorad.Port2.sReader.UartPort),ICCardReadBaudRate,(u32*)(sBorad.Port2.sReader.Rxd),CardDataSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
+	USART_DMA_ConfigurationNR	((sBorad.Port2.sReader.UartPort),ICCardReadBaudRate,CardDataSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
 }
 
 /*******************************************************************************
@@ -1417,7 +1417,7 @@ void HALUsartRemapDisable(void)												//¹Ø±Õ´®¿Ú¸´ÓÃ
 void HALSendSeg(u32* Buffer,u16 Length)		//ÏòÊıÂë¹Ü·¢ËÍÊı¾İ
 {
 //	HALUsartRemapEnable();											//Ê¹ÄÜ´®¿Ú¸´ÓÃ
-	RS485_DMASend(&RS485_Seg7,Buffer,Length);	//RS485-DMA·¢ËÍ³ÌĞò
+	RS485_DMASend(&RS485_Seg7,(u8*)Buffer,Length);	//RS485-DMA·¢ËÍ³ÌĞò
 }
 //======
 
@@ -1500,7 +1500,7 @@ void RS485_Configuration(void)			//RS485ÅäÖÃ
 	RS485_Bus.RS485_CTL_PORT	=	Bus485CtlPort;
 	RS485_Bus.RS485_CTL_Pin		=	Bus485CtlPin;
 	
-	RS485_DMA_ConfigurationNR	(&RS485_Bus,Bus485BaudRate,(u32*)&(sBorad.sPlu.BusData.sFarmeRxd),Bus485BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï,ÅäÖÃÍêÄ¬ÈÏÎª½ÓÊÕ×´Ì¬
+	RS485_DMA_ConfigurationNR	(&RS485_Bus,Bus485BaudRate,Bus485BufferSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï,ÅäÖÃÍêÄ¬ÈÏÎª½ÓÊÕ×´Ì¬
 	
 	//============================ÊıÂë¹ÜÏÔÊ¾485
 	RS485_Seg7.USARTx	=	Seg485PortRmap;	
@@ -1520,9 +1520,9 @@ void RS485_Configuration(void)			//RS485ÅäÖÃ
 *******************************************************************************/
 void CardReader_Configuration(void)			//Ñ¡ÔñÏàÓ¦¶Ë¿Ú¶Á¿¨Æ÷ÅäÖÃ
 {
-	USART_DMA_ConfigurationNR	((sBorad.Port1.sReader.UartPort),ICCardReadBaudRate,(u32*)(sBorad.Port1.sReader.Rxd),CardDataSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
-	USART_DMA_ConfigurationNR	((sBorad.Port2.sReader.UartPort),ICCardReadBaudRate,(u32*)(sBorad.Port2.sReader.Rxd),CardDataSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
-	USART_DMA_ConfigurationNR	((sBorad.Port3.sReader.UartPort),ICCardReadBaudRate,(u32*)(sBorad.Port3.sReader.Rxd),CardDataSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
+	USART_DMA_ConfigurationNR	((sBorad.Port1.sReader.UartPort),ICCardReadBaudRate,CardDataSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
+	USART_DMA_ConfigurationNR	((sBorad.Port2.sReader.UartPort),ICCardReadBaudRate,CardDataSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
+	USART_DMA_ConfigurationNR	((sBorad.Port3.sReader.UartPort),ICCardReadBaudRate,CardDataSize);	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
 	USART_ConfigurationIT			((sBorad.Port4.sReader.UartPort),ICCardReadBaudRate,0,0);	//USART_ÅäÖÃ---³£¹æÖĞ¶Ï·½Ê½//UART5²»Ö§³ÖDMA´«Êä
 	
 //	USART_DMA_ConfigurationNRRemap	(ICCardReadPort2,ICCardReadBaudRate,(u32*)&ICCardReadRxd2,ICCardReadBufferSize);	//USART_DMAÅäÖÃ(Ó³Éä)--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï

@@ -175,7 +175,7 @@ void SWITCHID_Configuration(sSYSDef* sUser)			//拔码开关初始化及读数
 	sUser->sPlu.SWITCHID.SW6_PORT	=	GPIOB;
 	sUser->sPlu.SWITCHID.SW6_Pin	=	GPIO_Pin_15;
 	
-	SWITCHID_Conf(&(sUser->sPlu.SWITCHID));		//
+	SwitchIdInitialize(&(sUser->sPlu.SWITCHID));		//
 	SWITCHID_Read(&(sUser->sPlu.SWITCHID));		//
 	
 	sUser->sPlu.SwitchData	=	((sUser->sPlu.SWITCHID).nSWITCHID)&0x3F;

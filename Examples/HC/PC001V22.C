@@ -133,7 +133,7 @@ void PC001V22_Conf(void)
 	RS4852.RS485_CTL_PORT=GPIOA;
 	RS4852.RS485_CTL_Pin=GPIO_Pin_1;
 	
-	RS485_DMA_ConfigurationNR	(&RS4852,19200,(u32*)RxdBuffer,RxBufferSize);	//USART_DMA配置--查询方式，不开中断
+	RS485_DMA_ConfigurationNR	(&RS4852,19200,RxBufferSize);	//USART_DMA配置--查询方式，不开中断
 }
 
 

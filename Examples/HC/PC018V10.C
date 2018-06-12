@@ -164,7 +164,7 @@ void RS485_Configuration(void)			//RS485配置
 	RS485_Info.RS485_CTL_PORT	=	GPIOA;
 	RS485_Info.RS485_CTL_Pin	=	GPIO_Pin_8;
 	RS485_Info.USARTx	=	USART1;
-	RS485_DMA_ConfigurationNR	(&RS485_Info,RS485_BaudRate,(u32*)RS485Rxd,RS485_BufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485_Info,RS485_BaudRate,RS485_BufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -178,13 +178,13 @@ void RS485_Configuration(void)			//RS485配置
 void RS485_Server(void)							//RS485收发处理
 {
 	u16 Num	=	0;
-	Num	=	RS485_ReadBufferIDLE(&RS485_Info,(u32*)RS485Rev,(u32*)RS485Rxd);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	Num	=	RS485_ReadBufferIDLE(&RS485_Info,RS485Rev);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(Num)
 	{
 		DisplayNum	=	RS485Rev[0];
 		DisplayNum	=	(DisplayNum<<8)+RS485Rev[1];
 		memcpy(RS485Txd,RS485Rev,Num);									//复制数据
-		RS485_DMASend	(&RS485_Info,(u32*)RS485Rev,Num);	//RS485-DMA发送程序
+		RS485_DMASend	(&RS485_Info,RS485Rev,Num);	//RS485-DMA发送程序
 	}
 }
 /*******************************************************************************
@@ -238,8 +238,8 @@ void Seg7_Test(void)		//数码管显示测试
 *******************************************************************************/
 void WriteNumSeg7(u16 Num)		//向数码管写入数据
 {
-	STM32_SPI_ReadWriteData(SPI2,0x8F);		//亮度 0x80（关）<0x88<0x89<0x8A<0x8B<0x8C<0x8D<0x8E<0x8F
-	STM32_SPI_ReadWriteData(SPI2,0x40);		//地址模式  0x40-自增;0x44-固定地址
+	SPI_ReadWriteByteSPI(SPI2,0x8F);		//亮度 0x80（关）<0x88<0x89<0x8A<0x8B<0x8C<0x8D<0x8E<0x8F
+	SPI_ReadWriteByteSPI(SPI2,0x40);		//地址模式  0x40-自增;0x44-固定地址
 	Seg7Buffer[0]	=	0xC0;												//起始地址
 	if(Num/1000	!=	0)
 	{
@@ -266,7 +266,7 @@ void WriteNumSeg7(u16 Num)		//向数码管写入数据
 		Seg7Buffer[5]=0x00;
 	}
 	Seg7Buffer[7]=Seg7_Code[Num%10];	
-	STM32_SPI_SendBuffer(SPI2,8,Seg7Buffer);			//发送数据
+	SPI_WriteBufferSPI(SPI2,8,Seg7Buffer);			//发送数据
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -284,35 +284,35 @@ void WriteStatus(char StatusCode)		//向数码管写入状态
 	//状态1-------------"P-on"	//上电，未读取地址
 	else if(StatusCode	==	1)	
 	{
-		STM32_SPI_ReadWriteData(SPI2,0x8F);		//亮度
-		STM32_SPI_ReadWriteData(SPI2,0x40);		//地址自增
+		SPI_ReadWriteByteSPI(SPI2,0x8F);		//亮度
+		SPI_ReadWriteByteSPI(SPI2,0x40);		//地址自增
 		Seg7Buffer[1]=Seg7_Code[22];									//
 		Seg7Buffer[3]=Seg7_Code[23];
 		Seg7Buffer[5]=Seg7_Code[17];
 		Seg7Buffer[7]=Seg7_Code[18];
-		STM32_SPI_SendBuffer(SPI2,8,Seg7Buffer);			//发送数据
+		SPI_WriteBufferSPI(SPI2,8,Seg7Buffer);			//发送数据
 	}
 	//状态2-------------"ID-n"	//显示此窗口号
 	else if(StatusCode	==	2)	
 	{
-		STM32_SPI_ReadWriteData(SPI2,0x8F);		//亮度
-		STM32_SPI_ReadWriteData(SPI2,0x40);		//地址自增
+		SPI_ReadWriteByteSPI(SPI2,0x8F);		//亮度
+		SPI_ReadWriteByteSPI(SPI2,0x40);		//地址自增
 		Seg7Buffer[1]=Seg7_Code[24];							//
 		Seg7Buffer[3]=Seg7_Code[13];
 		Seg7Buffer[5]=Seg7_Code[23];
 		Seg7Buffer[7]=Seg7_Code[6];
-		STM32_SPI_SendBuffer(SPI2,8,Seg7Buffer);			//发送数据
+		SPI_WriteBufferSPI(SPI2,8,Seg7Buffer);			//发送数据
 	}
 	//状态3-------------"uP--"	//升级中
 	else if(StatusCode	==	3)	
 	{
-		STM32_SPI_ReadWriteData(SPI2,0x8F);		//亮度
-		STM32_SPI_ReadWriteData(SPI2,0x40);		//地址自增
+		SPI_ReadWriteByteSPI(SPI2,0x8F);		//亮度
+		SPI_ReadWriteByteSPI(SPI2,0x40);		//地址自增
 		Seg7Buffer[1]=Seg7_Code[20];							//
 		Seg7Buffer[3]=Seg7_Code[22];
 		Seg7Buffer[5]=Seg7_Code[23];
 		Seg7Buffer[7]=Seg7_Code[23];
-		STM32_SPI_SendBuffer(SPI2,8,Seg7Buffer);			//发送数据
+		SPI_WriteBufferSPI(SPI2,8,Seg7Buffer);			//发送数据
 	}
 	else
 	{

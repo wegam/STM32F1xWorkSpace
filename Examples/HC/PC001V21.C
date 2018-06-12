@@ -234,7 +234,7 @@ void PC001V21_USART1_Server(void)
 		tx2_tcont=0;
 		RS485_Bus_TXEN;																			//rs485总线发送使能
 		memcpy(txBuffer_Bus, rxBuffer1,num);
-		USART_DMASend(USART3,(u32*)txBuffer_Bus,num);				//串口DMA发送程序
+		USART_DMASend(USART3,txBuffer_Bus,num);				//串口DMA发送程序
 #else
 		if((rxBuffer1[0]==Command_ReadData)&&((rxBuffer1[1]==SwitchID)||(rxBuffer_Bus[1]==0x00)))
 		{
@@ -242,7 +242,7 @@ void PC001V21_USART1_Server(void)
 			tx1_tcont=0;
 			txBuffer1[0]=Command_ReadData;
 			txBuffer1[1]=SwitchID;			
-			USART_DMASend(USART1,(u32*)txBuffer1,BufferSize);	//串口DMA发送程序						
+			USART_DMASend(USART1,txBuffer1,BufferSize);	//串口DMA发送程序						
 		}
 		else if((rxBuffer1[0]==DR_CTRL)&&(rxBuffer1[1]==SwitchID))
 		{
@@ -250,7 +250,7 @@ void PC001V21_USART1_Server(void)
 		}
 #endif
 		memset(rxBuffer1, 0x00, BufferSize);
-		USART_DMA_RxEN(USART1,(u32*)rxBuffer1,BufferSize);	//重新设定接收缓冲区地址及大小并使能DMA接收		
+		USART_DMA_RxEN(USART1,rxBuffer1,BufferSize);	//重新设定接收缓冲区地址及大小并使能DMA接收		
 	}
 	//*********************清除发送标志***********************************
 	if(txflg1==1)
@@ -321,7 +321,7 @@ void PC001V21_4851_Server(void)
 			}		
 		}
 		memset(rxBuffer_PD, 0x00, num);
-		USART_DMA_RxEN(USART2,(u32*)rxBuffer_PD,BufferSize);	//重新设定接收缓冲区地址及大小并使能DMA接收		
+		USART_DMA_RxEN(USART2,rxBuffer_PD,BufferSize);	//重新设定接收缓冲区地址及大小并使能DMA接收		
 	}
 	//*********************DMA发送处理***********************************
 	if(flg3_txEN)
@@ -331,7 +331,7 @@ void PC001V21_4851_Server(void)
 		flg3_txEN=0;
 		txBuffer_PD[0]=Command_ReadData;
 		txBuffer_PD[1]=RS485_PD_txAddr;
-		USART_DMASend(USART2,(u32*)txBuffer_PD,2);						//自定义printf串口DMA发送程序
+		USART_DMASend(USART2,txBuffer_PD,2);						//自定义printf串口DMA发送程序
 	}
 	if(txflg3==1)
 	{
@@ -389,11 +389,11 @@ void PC001V21_4852_Server(void)
 			RS485_Bus_TXEN;		//rs485总线发送使能
 			txBuffer_Bus[0]=Command_ReadData;
 			txBuffer_Bus[1]=SwitchID;
-			USART_DMASend(USART3,(u32*)txBuffer_Bus,BufferSize);			//自定义printf串口DMA发送程序
+			USART_DMASend(USART3,txBuffer_Bus,BufferSize);			//自定义printf串口DMA发送程序
 		}
 #endif
 		memset(rxBuffer_Bus, 0x00, BufferSize);
-		USART_DMA_RxEN(USART3,(u32*)rxBuffer_Bus,BufferSize);	//重新设定接收缓冲区地址及大小并使能DMA接收
+		USART_DMA_RxEN(USART3,rxBuffer_Bus,BufferSize);	//重新设定接收缓冲区地址及大小并使能DMA接收
 		
 	}
 	//*********************DMA发送处理***********************************

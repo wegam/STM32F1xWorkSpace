@@ -313,8 +313,8 @@ void PC004V21_Server(void)
 //	}
 	
 	SwitchID=PC004V21_GetSwitchID();	//获取当前设备ID//机柜号
-	NumW=((SwitchID>>4)&0x0F)|(SwitchID<<1&0x10);			//MS拨码为槽号（HSH,右边最低位）
-	NumF=SwitchID&0x07;														//发药数量--LS拨码为发药数量（HSL拨码)
+	NumW=(SwitchID>>4)&0x0F;					//MS拨码为槽号（HSL,右边最低位）
+	NumF=SwitchID&0x0F;								//发药数量--LS拨码为发药数量（HSH拨码)
 //	SwitchIDBAC=0xFF;								//ID备份---ID变化时更新
 	if(SwitchIDBAC!=SwitchID)
 	{		
