@@ -140,7 +140,7 @@ void PD002V30_Configuration(void)
 	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
-//	PWM_OUT(TIM2,PWM_OUTChannel1,1,700);						//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,1,700);						//PWM设定-20161127版本
 	
 	CS5530_Configuration();					//CS5530初始化
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
@@ -176,10 +176,10 @@ void PD002V30_Server(void)
 	
 	CS5530_Server();			//读取AD值
 
-	PD002V30_RS485_Server();
+//	PD002V30_RS485_Server();
 	PD002V30_USART_Server();
-	PD002V30_CMD_Server();		//命令处理
-	PD002V30_WORK_Server();		//状态处理
+//	PD002V30_CMD_Server();		//命令处理
+//	PD002V30_WORK_Server();		//状态处理
 	
 //	RunTime++;
 
@@ -393,25 +393,25 @@ void PD002V30_USART_Server(void)
 //	
 //	sPD002V30.ADCSS3CH1.Data.WeighFilt	=	0xFFFFFFFF;
 //	sPD002V30.ADCSS4CH2.Data.WeighFilt	=	0xFFFFFFFF;
+//	temp1	=	MS200.CH1SS3.ADC.Data.WeighLive>>0;		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS3接口，外面
+//	temp2	=	MS200.CH2SS4.ADC.Data.WeighLive>>0;		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS4接口，里面
+	
 	temp1	=	MS200.CH1SS3.ADC.Data.WeighLive>>0;		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS3接口，外面
 	temp2	=	MS200.CH2SS4.ADC.Data.WeighLive>>0;		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS4接口，里面
-	
-//	temp1	=	CS5530_ReadData(&sPD002V30.ADCSS3CH1)>>2;		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS3接口，外面
-//	temp2	=	CS5530_ReadData(&sPD002V30.ADCSS4CH2)>>2;		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS4接口，里面
 	if((temp1!=0xFFFFFFFF)&&(temp2!=0xFFFFFFFF))
 	{
-		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",temp1,temp2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",temp1>>2,temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 		return;
 	}
-	if(temp1!=0xFFFFFFFF)
+	if((temp1!=0xFFFFFFFF)&&(Value_AD1!=temp1))
 	{
 		Value_AD1	=	temp1;
-		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",temp1);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",temp1>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 	}
-	if(temp2!=0xFFFFFFFF)
+	if((temp2!=0xFFFFFFFF)&&(Value_AD2!=temp2))
 	{
 		Value_AD2	=	temp2;
-		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",temp2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 	}
 }
 /*******************************************************************************
@@ -1086,13 +1086,14 @@ void CS5530_Server(void)
 //		CS5530_1.Data.WeighFilt	=	0;
 //		CS5530_2.Data.WeighFilt	=	0;
 //	}
+	return;
 #endif
 
 #if 0	
 	u32 temp1=0,temp2=0;
 
-	temp1	=	CS5530_ReadData(&CS5530_1);		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS3接口，外面
-	temp2	=	CS5530_ReadData(&CS5530_2);		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS4接口，里面
+	temp1	=	CS5530_ReadData(&MS200.CH1SS3.ADC);		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS3接口，外面
+//	temp2	=	CS5530_ReadData(&MS200.CH2SS4.ADC);		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS4接口，里面
 	
 //	temp2	=	CS5530_GetWeigh(&CS5530_1);		//获取稳定的AD值
 //	temp1	=	CS5530_GetWeigh(&CS5530_2);		//获取稳定的AD值
@@ -1120,18 +1121,18 @@ void CS5530_Server(void)
 //	}
 	if((temp1!=0xFFFFFFFF)&&(temp2!=0xFFFFFFFF))
 	{
-		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",temp1>>2,temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",temp1>>0,temp2>>0);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 		return;
 	}
 	if(temp1!=0xFFFFFFFF)
 	{
 		Value_AD1	=	temp1;
-		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",temp1>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",temp1>>0);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 	}
 	if(temp2!=0xFFFFFFFF)
 	{
 		Value_AD2	=	temp2;
-		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",temp2>>0);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 	}
 	Value_AD1	=	temp1;
 	Value_AD2	=	temp2;

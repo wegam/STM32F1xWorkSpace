@@ -31482,8 +31482,8 @@
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
           <SimDllArguments> -REMAP</SimDllArguments>
-          <SimDlgDll>DCM.DLL</SimDlgDll>
-          <SimDlgDllArguments>-pCM3</SimDlgDllArguments>
+          <SimDlgDll>DARMSTM.DLL</SimDlgDll>
+          <SimDlgDllArguments>-pSTM32F103VC</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
           <TargetDllArguments></TargetDllArguments>
           <TargetDlgDll>TCM.DLL</TargetDlgDll>
@@ -31522,7 +31522,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>1</TargetSelection>
+          <TargetSelection>12</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -31536,7 +31536,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>BIN\UL2CM3.DLL</Driver>
+            <Driver>BIN\CMSIS_AGDI.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -31745,7 +31745,7 @@
               <MiscControls></MiscControls>
               <Define>PD014V15</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC</IncludePath>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main;..\..\Driver\Protocol;..\..\Driver\Tool</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -38248,7 +38248,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>6</TargetSelection>
+          <TargetSelection>12</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -38262,7 +38262,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>Segger\JL2CM3.dll</Driver>
+            <Driver>BIN\CMSIS_AGDI.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>

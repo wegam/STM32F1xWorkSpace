@@ -76,6 +76,7 @@ u8	DspFlg	=	0;
 
 u16 BKlight	=	0;
 
+u8 line	=	0;
 
 
 CS5530Def CS5530;
@@ -158,7 +159,7 @@ void PL010V15_Server(void)
 //	RS485_Server();		//通讯管理---负责信息的接收与发送
 //	LCD_Server();				//显示服务相关
 	CS5530_Server();	//称重服务，AD值处理，获取稳定值
-	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
+//	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -172,6 +173,19 @@ void PL010V15_Server(void)
 void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 {
 #if 1
+	CS5530_Process(&CS5530);
+	if((CS5530.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530.Data.WeighLive	!=CS5530_ADC_Value))
+	{
+		if(line>=240)
+			line	=	0;
+		CS5530_ADC_Value	=	CS5530.Data.WeighLive>>0;
+		LCD_Printf(0		,line,16	,"AD:%0.8d",CS5530_ADC_Value>>2);				//待发药槽位，后边的省略号就是可变参数
+		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+		line+=16;		
+	}
+	return;
+#endif
+#if 0
 	CS5530_Time++;
 	if(CS5530_Time>=50)		//1秒钟
 	{
@@ -181,8 +195,8 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 		if(CS5530_ADC_Value	!= 0xFFFFFFFF)
 		{
 			CS5530_ADC_Value	=	CS5530_ADC_Value>>2;
-//			LCD_Printf(0		,128,32	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
-			USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",CS5530_ADC_Value);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数	
+			LCD_Printf(0		,128,32	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
+			USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",CS5530_ADC_Value);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
 //			READ_GAIN=CS5530_ReadRegister(&CS5530,CS5530_READ_GAIN);				//增益寄存器
 		}
 	}
@@ -493,7 +507,7 @@ void LCD_Server(void)			//显示服务相关
 	SysTick_DeleymS(1000);				//SysTick延时nmS
 	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白
 #endif
-#if 1
+#if 0
 //	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白
 	
 	LCD_Printf(0		,0,32	,"萘");									//待发药槽位，后边的省略号就是可变参数
@@ -764,7 +778,10 @@ void RS485_Configuration(void)
 *******************************************************************************/
 void USART_Configuration(void)
 {
-	USART_DMA_ConfigurationNR	(USART1,115200,Rs485Size);	//USART_DMA配置--查询方式，不开中断
+//	//1.6版本为USART1
+//	USART_DMA_ConfigurationNR	(USART1,115200,Rs485Size);	//USART_DMA配置--查询方式，不开中断
+	//1.7版本为UART4
+	USART_DMA_ConfigurationNR	(UART4,115200,Rs485Size);	//USART_DMA配置--查询方式，不开中断
 }
 /*******************************************************************************
 * 函数名		:	

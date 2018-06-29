@@ -377,7 +377,7 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 	
 //	CS5530_Status=CS5530_Status|0x6000;																	//240sps
 
-//	CS5530_Status=CS5530_Status&(~CS5530_CONF_SHORT_INPUTS);						//正常输入,通道输入不短接
+	CS5530_Status=CS5530_Status&(~CS5530_CONF_SHORT_INPUTS);						//正常输入,通道输入不短接
 	
 //	CS5530_Status=CS5530_Status|CS5530_CONF_SHORT_INPUTS;								//设置为输入短路
 

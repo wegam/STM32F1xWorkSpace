@@ -59,7 +59,7 @@ void PD014V14_Configuration(void)
 	
 	PD014V14_PinSet();
 	
-	RS485_DMA_ConfigurationNR	(&PD014R485,19200,(u32*)PD014_Conf.PD014_DATA.RxdBuffe,RS485BufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&PD014R485,19200,RS485BufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
 	IWDG_Configuration(5000);			//独立看门狗配置---参数单位ms	
 	
@@ -135,7 +135,7 @@ PD014_CMD_TypeDef PD014V14_CommandProcess(void)		//PD014V14命令处理函数
 		
 	u8 RxNum=0;		//串口接收到的数据个数
 	
-	RxNum=RS485_ReadBufferIDLE(&PD014R485,(u32*)PD014_Conf.PD014_DATA.RevBuffe,(u32*)PD014_Conf.PD014_DATA.RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum=RS485_ReadBufferIDLE(&PD014R485,PD014_Conf.PD014_DATA.RevBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	
 	if(RxNum==0)
 	{
@@ -403,7 +403,7 @@ void PD014V14_GetOnlieDevice(void)			//获取在线发药头
 	PD014_Conf.PD014_DATA.TxdBuffe[1]=PD014_Conf.PD014_DATA.SWITCHID;							//拨码开关地址
 	PD014_Conf.PD014_DATA.TxdBuffe[2]=PD014_Conf.PD014_DATA.OnlieDevice;					//在线发药头数据
 	PD014_Conf.PD014_DATA.TxdBuffe[3]=BCC8(PD014_Conf.PD014_DATA.TxdBuffe,3);			//异或校验;
-	RS485_DMASend(&PD014R485,(u32*)PD014_Conf.PD014_DATA.TxdBuffe,4);
+	RS485_DMASend(&PD014R485,PD014_Conf.PD014_DATA.TxdBuffe,4);
 }
 /*******************************************************************************
 * 函数名			:	PD014V14_GetOnlieStatus
@@ -417,7 +417,7 @@ void PD014V14_GetOnlieStatus(void)			//获取状态
 	PD014_Conf.PD014_DATA.TxdBuffe[1]=PD014_Conf.PD014_DATA.SWITCHID;							//拨码开关地址
 	memcpy(&(PD014_Conf.PD014_DATA.TxdBuffe[2]),PD014_Conf.PD014_DATA.STATUS,8);	//设备状态
 	PD014_Conf.PD014_DATA.TxdBuffe[10]=BCC8(PD014_Conf.PD014_DATA.TxdBuffe,10);		//异或校验;
-	RS485_DMASend(&PD014R485,(u32*)PD014_Conf.PD014_DATA.TxdBuffe,11);						//RS485-DMA发送程序
+	RS485_DMASend(&PD014R485,PD014_Conf.PD014_DATA.TxdBuffe,11);						//RS485-DMA发送程序
 }
 /*******************************************************************************
 * 函数名			:	PD014V14_SetWSD
@@ -459,7 +459,7 @@ void PD014V14_ACK(void)
 {
 	PD014_Conf.PD014_DATA.TxdBuffe[0]=PD014_ACK;
 	PD014_Conf.PD014_DATA.TxdBuffe[1]=PD014_ACK^0xFF;
-	RS485_DMASend(&PD014R485,(u32*)PD014_Conf.PD014_DATA.TxdBuffe,2);	//RS485-DMA发送程序
+	RS485_DMASend(&PD014R485,PD014_Conf.PD014_DATA.TxdBuffe,2);	//RS485-DMA发送程序
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -471,7 +471,7 @@ void PD014V14_NACK(void)		//NACK返回3字节，NACK标识、错误内容、BCC校验码
 {
 //	PD014_Conf.PD014_DATA.TxdBuffe[0]=PD014_NACK;
 //	PD014_Conf.PD014_DATA.TxdBuffe[1]=PD014_NACK^0xFF;
-	RS485_DMASend(&PD014R485,(u32*)PD014_Conf.PD014_DATA.TxdBuffe,3);	//RS485-DMA发送程序
+	RS485_DMASend(&PD014R485,PD014_Conf.PD014_DATA.TxdBuffe,3);	//RS485-DMA发送程序
 }
 /*******************************************************************************
 * 函数名			:	function
