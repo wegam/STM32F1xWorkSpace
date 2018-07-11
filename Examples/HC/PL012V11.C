@@ -37,6 +37,8 @@
 #include "string.h"				//串和内存操作函数头文件
 #include "stm32f10x_dma.h"
 
+LCDDef	sLCD;
+
 u16	DelayTime=0x1000;
 u16	LCDTime=0;
 u16	DSPTime=0;

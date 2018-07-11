@@ -381,8 +381,8 @@ void ADC_TempSensorConfiguration(u32 *ADC_DATA)
 float Get_ADC_Temperature(u32 ADC_DATA)
 {
 	float Result=0.0;
-	Result=(1.43-ADC_DATA*3.3/4096)*1000/4.35 + 25;
-	return Result;
+	Result=(1.43-(ADC_DATA*3.3)/4096)*1000/4.35 + 25;
+	return (float)Result;
 
 }
 /*******************************************************************************

@@ -110,8 +110,9 @@
 #define	Data_L				PC004V10_Num[12]											//数据低位
 
 //#define	PC002Test			//测试PC002通讯
-//#define	USART_TO_485
-//#define	PD002TEST
+//#define	USART_TO_485	//纯数据转发
+//#define	PD002TEST				//称重控制板测试
+#define	PD003V11TEST		//智能药盒测试
 //************485通讯数据
 //#define	
 
@@ -123,6 +124,9 @@
 u8 RS485RxB[PC004V10_BufferSize]={0};								//RS485缓存
 u8 RS485RvB[PC004V10_BufferSize]={0};								//RS485缓存
 u8 RS485Txd[PC004V10_BufferSize]={0};								//RS485缓存
+
+u8 USART1Rxd[PC004V10_BufferSize]={0};								//RS485缓存
+u8 USART1Txd[PC004V10_BufferSize]={0};								//RS485缓存
 
 u8 PC004V10_Buffer[PC004V10_BufferSize]={0};								//RS485缓存
 u8 PC004V10_TBuffer[PC004V10_BufferSize]={0};								//RS485缓存
@@ -169,7 +173,7 @@ void PC004V21_Configuration(void)
 	
 	PC004V21_PinSet();
 	
-	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
+	SysTick_Configuration(500);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	
@@ -216,13 +220,13 @@ void PC004V21_Server(void)
 	IWDG_Feed();								//独立看门狗喂狗
 	
 	
-	num = DMA1_Channel5->CNDTR;															//DMA_GetCurrDataCounter(DMA1_Channel5);
+//	num = DMA1_Channel5->CNDTR;															//DMA_GetCurrDataCounter(DMA1_Channel5);
 #ifdef PD002TEST
-	status	=	USART_ReadBufferIDLE(USART1,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	status	=	USART_ReadBufferIDLE(USART1,USART1Rxd);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(status)
 	{
 		SysTick_DeleymS(1);				//SysTick延时nmS
-		memcpy(RS485Txd,RS485RvB,status);
+		memcpy(RS485Txd,USART1Rxd,status);
 		RS485_DMASend(&RS485B,RS485Txd,status);					//RS485-DMA发送程序
 //		SysTick_DeleymS(1);				//SysTick延时nmS
 	}
@@ -231,34 +235,40 @@ void PC004V21_Server(void)
 	{
 		if(RS485RvB[3]	==	0x0A)
 		{
-//			memset(RS485RvB,0x00,status);
-//			return;
+			memset(RS485RvB,0x00,status);
+			return;
 		}
 		else
 		{
 			memcpy(RS485Txd,RS485RvB,status);
+			memcpy(USART1Txd,RS485RvB,status);
 			RS485Txd[3]		=	0x0B;			//异或校验
-			RS485Txd[11]	=	BCC8(&RS485Txd[2],9);			//异或校验
+			RS485Txd[11]	=	BCC8(&RS485Txd[2],9);				//异或校验
 			RS485_DMASend(&RS485B,RS485Txd,12);					//RS485-DMA发送程序
 		}
-		USART_DMASend(USART1,RS485RvB,status);
+		USART_DMASend(USART1,USART1Txd,status);
 	}
 	return;
 
-#endif	
+#endif
+#ifdef PD003V11TEST		//智能药盒测试
+	PD003V11FUN();
+	return;
+#endif
 #ifdef USART_TO_485
-	status	=	USART_ReadBufferIDLE(USART1,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	status	=	USART_ReadBufferIDLE(USART1,USART1Rxd);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(status)
 	{
 		SysTick_DeleymS(1);				//SysTick延时nmS
-		memcpy(RS485Txd,RS485RvB,status);
-		RS485_DMASend(&RS485B,(u32*)RS485Txd,status);					//RS485-DMA发送程序
-//		SysTick_DeleymS(1);				//SysTick延时nmS
+		memcpy(RS485Txd,USART1Rxd,status);
+		RS485_DMASend(&RS485B,RS485Txd,status);					//RS485-DMA发送程序
+		SysTick_DeleymS(1);				//SysTick延时nmS
 	}
 	status	=	RS485_ReadBufferIDLE(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(status)
 	{
-		USART_DMASend(USART1,RS485RvB,status);
+		memcpy(USART1Txd,RS485RvB,status);
+		USART_DMASend(USART1,USART1Txd,status);
 	}
 	return;
 #endif	
@@ -267,7 +277,7 @@ void PC004V21_Server(void)
 	if(SYSTime++>500)
 	{
 		SYSTime	=	0;
-		RS485_DMASend(&RS485B,(u32*)&RxData,1);	//RS485-DMA发送程序
+		RS485_DMASend(&RS485B,&RxData,1);	//RS485-DMA发送程序
 	}
 	status	=	RS485_ReadBufferIDLE(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(status	==	9)
@@ -457,6 +467,99 @@ void PC004V21_Server(void)
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
+* 输入			: 命令：0x11发药，0x12盘点，0x13加药,0x14
+* 返回值			: void
+*******************************************************************************/
+void PD003V11FUN(void)		//智能药盒测试
+{
+	u16 len	=	0;
+	static u8 BOXID[6]={0};	//电子标签
+	static u8 serail=1;			//流水号
+	if(serail>=0xFE)
+		serail	=	1;
+	len	=	USART_ReadBufferIDLE(USART1,USART1Rxd);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(len)
+	{
+		//===测试药盒ID号
+		if(BOXID[0]	==	0x00)
+		{
+			BOXID[0]	=	0x9E;
+			BOXID[1]	=	0xB1;
+			BOXID[2]	=	0x18;
+			BOXID[3]	=	0x19;
+			BOXID[4]	=	0x00;
+			BOXID[5]	=	0x00;
+		}
+		if((USART1Rxd[0]==0x11)||(USART1Rxd[0]==0x12)||(USART1Rxd[0]==0x13)||(USART1Rxd[0]==0x14))
+		{
+			RS485Txd[0]	=	0xFA;
+			RS485Txd[1]	=	0xF5;
+			RS485Txd[2]	=	serail++;	//流水号
+			memcpy(&RS485Txd[3],BOXID,6);	//电子标签
+			RS485Txd[9]	=	0x00;	//软件自定义
+			RS485Txd[10]	=	0x00;	//软件自定义
+			RS485Txd[11]	=	USART1Rxd[0];	//命令类型
+			RS485Txd[12]	=	0x01;	//物理盘点此位必须是0x01
+			RS485Txd[13]	=	0x01;	//1-6，该位对应某个位置药盒执行指令
+			RS485Txd[14]	=	0x00;	//运行状态位
+			RS485Txd[15]	=	0x00;	//错误状态
+			RS485Txd[16]	=	BCC8(&RS485Txd[3],13);	//校验
+		}
+		RS485_DMASend(&RS485B,RS485Txd,17);					//RS485-DMA发送程序
+	}
+	len	=	RS485_ReadBufferIDLE(&RS485B,RS485RvB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(len)
+	{
+		//接收到药盒应答消息
+		if(RS485RvB[14]	==	0x0A)
+		{
+			USART_DMAPrintf(USART1,"智能药盒应答\r\n");
+//			USART_DMASend(USART1,RS485RvB,len);		//串口DMA发送程序
+			memset(RS485RvB,0x00,17);
+			return;
+		}
+//		USART_DMASend(USART1,RS485RvB,len);		//串口DMA发送程序
+		//应答药盒
+		SysTick_DeleymS(10);				//SysTick延时nmS
+		memcpy(RS485Txd,RS485RvB,len);
+		RS485Txd[14]	=	0X0B;			//应答位
+		RS485Txd[16]	=	BCC8(&RS485Txd[3],13);			//校验位
+		RS485_DMASend(&RS485B,RS485Txd,len);				//RS485-DMA发送程序
+		if(RS485RvB[11]	==	0x14)
+		{
+			memcpy(BOXID,&RS485RvB[3],6);
+			USART_DMAPrintf(USART1,"接收到电子标签：%0.2X %0.2X %0.2X %0.2X %0.2X %0.2X\r\n",BOXID[0],BOXID[1],BOXID[2],BOXID[3],BOXID[4],BOXID[5],BOXID[6]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+			return;
+		}
+		switch(RS485RvB[15])
+		{
+			case	0xE0:USART_DMAPrintf(USART1,"智能药盒超时未取\r\n");
+						break;
+			case	0xE1:USART_DMAPrintf(USART1,"ID不能读取\r\n");
+						break;
+			case	0xE2:USART_DMAPrintf(USART1,"智能药盒盒内药量不足，不满足发药数\r\n");
+						break;
+			case	0xE3:USART_DMAPrintf(USART1,"智能药盒发药数是0或者超过72，属于发药数量越界\r\n");
+						break;
+			case	0xE4:USART_DMAPrintf(USART1,"智能药盒动作盘点计算数据不是0-72，明显错误\r\n");
+						break;
+			case	0xE5:USART_DMAPrintf(USART1,"药盒电子标签信息和存取记录不匹配\r\n");
+						break;
+			case	0xE6:USART_DMAPrintf(USART1,"智能药盒位置位不是1-6\r\n");
+						break;
+			case	0xE7:USART_DMAPrintf(USART1,"智能药盒异常拔出收回\r\n");
+						break;
+			case	0xE8:USART_DMAPrintf(USART1,"智能药盒异常拔出\r\n");
+						break;			
+			default:break;			
+		}
+		memset(RS485RvB,0x00,17);
+		return;
+	}
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
 * 输入			: void
 * 返回值			: void
 *******************************************************************************/
@@ -496,7 +599,7 @@ void PD002V30_USART_Cofiguration(void)
 	RS485A.RS485_CTL_PORT	=	GPIOA;
 	RS485A.RS485_CTL_Pin	=	GPIO_Pin_1;
 	
-	RS485_DMA_ConfigurationNR	(&RS485B,115200,128);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485B,19200,128);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
 	USART_DMA_ConfigurationNR	(USART1,115200,128);	//USART_DMA配置--查询方式，不开中断
 }

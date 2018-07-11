@@ -18,7 +18,7 @@
 #include "PL012V11LCD.H"
 
 
-//#define	USE_R61509V
+#define	USE_R61509V
 #define	USE_ILI9326
 
 #ifdef	USE_R61509V

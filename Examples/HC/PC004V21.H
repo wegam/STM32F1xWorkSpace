@@ -8,6 +8,10 @@ void PC004V21_Server(void);
 void PC004V21_PinSet(void);
 
 
+
+void PD003V11FUN(void);		//智能药盒测试
+
+
 void PC004V21_KEYData(void);		//按键发药处理函数
 
 void PD002V30_USART_Cofiguration(void);

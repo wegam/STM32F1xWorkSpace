@@ -13,14 +13,14 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
-#ifdef PL009V31				//称重LCD板---双称重
+#ifdef PL010V17				//智能药架称重LCD板---单称重
 
-#include "PL009V31.H"
+#include "PL010V17.H"
 
 #include "R61509V.h"
 #include "CS5530.H"
 
-
+#include "GT32L32M0180.H"
 #include "STM32F10x_BitBand.H"
 #include "STM32_GPIO.H"
 #include "STM32_SYS.H"
@@ -28,6 +28,7 @@
 #include "STM32_WDG.H"
 #include "STM32_PWM.H"
 #include "STM32_USART.H"
+#include "STM32_ADC.H"
 
 
 #include "SWITCHID.H"
@@ -36,11 +37,9 @@
 #include "stdlib.h"				//串和内存操作函数头文件
 #include "stm32f10x_dma.h"
 
-#define TestChN1		//单通道测试,屏蔽后为双通道
-#define TestFloat		//未启用通道不配置，屏蔽后：未开启通道会主动关闭,双通道时无效
 
 
-//#define	Master	1		//0--从机，1-主机
+#define	Master	1		//0--从机，1-主机
 u16	DelayTime=0x1000;
 u16	LCDTime=0;
 u16	DSPTime=0;
@@ -78,14 +77,14 @@ u8	DspFlg	=	0;
 
 u16 BKlight	=	0;
 
+u8 line	=	0;
+u8 lineT	=	0;
 
 
 CS5530Def CS5530;
-CS5530Def CS5530B;
 u32	CS5530_Time	=	0;
 u32	CS5530_ADC_CMP			=	0;
 u32 CS5530_ADC_Value		=0xFFFFFFFF;
-u32 CS5530_ADC_ValueB		=0xFFFFFFFF;
 u32 CS5530_ADC_Valuebac	=0xFFFFFFFF;
 
 u32	WeigthARR[100]	=	{0};
@@ -97,6 +96,8 @@ u32 SsW	=	0;	//单重
 u8	St	=	0;	//步骤
 u8	SN	=	0;	//数量
 u8	SNb	=	0;	//备存数量
+u32 TempData	=	0;		//温度
+u32 TempDataB	=	0;		//温度
 
 u16 weighVar[20]={0};
 u8	VarN	=	0;
@@ -106,8 +107,8 @@ u32 Rand	=	0;
 u16 HX	=	0;
 u16	HY	=	0;
 unsigned short	Color	=	0;
-u8 Rxdata	=0;
-u32 SYSTIME	=	0;
+u8 ADCc	=	0;
+u32 READ_GAIN	=	0;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -115,37 +116,32 @@ u32 SYSTIME	=	0;
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL009V31_Configuration(void)
+void PL010V17_Configuration(void)
 {
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
 	
 	GPIO_DeInitAll();							//将所有的GPIO关闭----V20170605	
 	
-//	SwitchID_Configuration();
-//	
+	SwitchID_Configuration();
+	
 	CS5530_Configuration();
 	
-//	RS485_Configuration();
+	RS485_Configuration();
 	
-	LCD_Configuration();	
+	USART_Configuration();
+	
+	SysTick_DeleymS(500);				//SysTick延时nmS
+	
+	LCD_Configuration();
+	
+	ADC_TempSensorConfiguration(&TempData);
 	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(2000);			//独立看门狗配置---参数单位ms	
 
-	PWM_OUT(TIM2,PWM_OUTChannel1,1,500);	//PWM设定-20161127版本--运行指示灯
-	USART_DMA_ConfigurationNR	(USART1,115200,64);	//USART_DMA配置--查询方式，不开中断
-//	PWM_OUT(TIM2,PWM_OUTChannel4,500,200);		//PWM设定-20161127版本--背光
-//	LCD_Clean(LCD565_RED);			//清除屏幕函数--
-//	LCD_Printf(100,100,32,"时钟");					//后边的省略号就是可变参数
-//	LCD_Printf(100,130,32,"%02d:",hour);		//后边的省略号就是可变参数
-//	LCD_Printf(148,130,32,"%02d:",min);			//后边的省略号就是可变参数
-//	LCD_Printf(196,130,32,"%02d",second);		//后边的省略号就是可变参数
-//	R61509V_DrawCircle(200,120, 100, 1, R61509V_YELLOW );		//画一个圆形框
+//	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--运行指示灯
 	
-//	Display.Init	=	PL010V15_Configuration;
-//	GPIO_Configuration_OPP50(GPIOB,GPIO_Pin_12);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
-//	GPIO_SetBits(GPIOB,GPIO_Pin_12);
 }
 /*******************************************************************************
 * 函数名		:	
@@ -154,14 +150,36 @@ void PL009V31_Configuration(void)
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL009V31_Server(void)
+void PL010V17_Server(void)
 {	
-//	GPIO_Toggle	(GPIOB,	GPIO_Pin_3);		//将GPIO相应管脚输出翻转----V20170605
-//	IWDG_Feed();				//独立看门狗喂狗
-//	RS485_Server();			//通讯管理---负责信息的接收与发送
-	LCD_Server();				//显示服务相关
-	CS5530_Server();	//称重服务，AD值处理，获取稳定值
+	IWDG_Feed();				//独立看门狗喂狗
+//	RS485_Server();		//通讯管理---负责信息的接收与发送
+//	LCD_Server();				//显示服务相关
+	CS5530_Server();		//称重服务，AD值处理，获取稳定值
+	TempSensor_Server();	//内部温度传感器
 //	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void TempSensor_Server(void)
+{
+	if(TempDataB!=TempData)
+	{
+		float	TempR	=	0.0;
+		if(lineT>=240)
+			lineT	=	0;		
+		TempDataB	=	TempData;
+		TempR	=	Get_ADC_Temperature(TempDataB);												//获取内部温度传感器温度
+		LCD_Printf(100		,lineT,16	,"温度:%0.8f",TempR);		//待发药槽位，后边的省略号就是可变参数
+		lineT+=16;	
+	}
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -174,26 +192,42 @@ void PL009V31_Server(void)
 *******************************************************************************/
 void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 {
+#if 1
 	CS5530_Process(&CS5530);
-	
-	if((CS5530_ADC_Value	!=	CS5530.Data.WeighLive)&&(0	!=	CS5530.Data.WeighLive)&&(0xFFFFFFFF	!=	CS5530.Data.WeighLive))
+	if((CS5530.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530.Data.WeighLive	!=CS5530_ADC_Value))
 	{
-		CS5530_ADC_Value	=	CS5530.Data.WeighLive;
-		CS5530_ADC_Value	=	CS5530.Data.WeighLive;
-		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		return;
+		if(line>=240)
+			line	=	0;
+		CS5530_ADC_Value	=	CS5530.Data.WeighLive>>0;
+		LCD_Printf(0		,line,16	,"AD:%0.8d",CS5530_ADC_Value>>2);				//待发药槽位，后边的省略号就是可变参数
+		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+		line+=16;		
 	}
-#ifndef TestChN1	//双通道
-//	return;
-	CS5530_Process(&CS5530B);
-	if((CS5530_ADC_Value	!=	CS5530B.Data.WeighLive)&&(0	!=	CS5530B.Data.WeighLive)&&(0xFFFFFFFF	!=	CS5530B.Data.WeighLive))
-	{
-		CS5530_ADC_ValueB	=	CS5530B.Data.WeighLive;
-		CS5530_ADC_ValueB	=	CS5530B.Data.WeighLive;
-		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",CS5530_ADC_ValueB>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		return;
-	}
+	return;
 #endif
+#if 0
+	CS5530_Time++;
+	if(CS5530_Time>=50)		//1秒钟
+	{
+		CS5530_Time=0;
+		CS5530_ADC_Value	=	CS5530_ReadData(&CS5530);									//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值
+		
+		if(CS5530_ADC_Value	!= 0xFFFFFFFF)
+		{
+			CS5530_ADC_Value	=	CS5530_ADC_Value>>2;
+			LCD_Printf(0		,128,32	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
+			USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",CS5530_ADC_Value);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+//			READ_GAIN=CS5530_ReadRegister(&CS5530,CS5530_READ_GAIN);				//增益寄存器
+		}
+	}
+	return;
+#endif
+	CS5530_Process(&CS5530);
+	if(CS5530_ADC_Value	!=	CS5530.Data.Origin)
+	{
+		CS5530_ADC_Value	=	CS5530.Data.Origin;
+		LCD_Printf(0		,128,32	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
+	}
 //	if(CS5530_Time++>=50)		//1秒钟
 //	{		
 //		CS5530_Time=0;
@@ -287,18 +321,6 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 *******************************************************************************/
 void LCD_Server(void)			//显示服务相关
 {
-#if 0
-	u32 LCDTime=100;
-//	u8 i	=	0;
-	for(Color	=	0;Color<=0xFFFF;)
-	{
-		LCD_Fill(10,10,380,20,Color);			//清除屏幕函数--
-//		LCD_Clean(Color);			//清除屏幕函数--
-		SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-		Color+=50;
-//		GPIO_Toggle	(GPIOB,	GPIO_Pin_3);		//将GPIO相应管脚输出翻转----V20170605
-	}
-#endif
 #if 0
 	millisecond++;
 	if(millisecond>=999)
@@ -508,18 +530,18 @@ void LCD_Server(void)			//显示服务相关
 #if 0
 //	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白
 	
-//	LCD_Printf(0		,0,32	,"萘");									//待发药槽位，后边的省略号就是可变参数
+	LCD_Printf(0		,0,32	,"萘");									//待发药槽位，后边的省略号就是可变参数
 	
-//	LCD_Printf(0		,0,16	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-//	LCD_Printf(0		,16,16	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-//	LCD_Printf(0		,32,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-//	LCD_Printf(0		,64,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-//	LCD_Printf(0		,96,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
+	LCD_Printf(0		,0,16	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
+	LCD_Printf(0		,16,16	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
+	LCD_Printf(0		,32,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
+	LCD_Printf(0		,64,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
+	LCD_Printf(0		,96,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
 	LCD_Printf(0		,128,32	,"测试显示……");									//待发药槽位，后边的省略号就是可变参数
 	LCD_Printf(0		,160,32	,"怲试显示……");									//待发药槽位，后边的省略号就是可变参数
 
-//	SysTick_DeleymS(1000);				//SysTick延时nmS
-//	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白	
+	SysTick_DeleymS(1000);				//SysTick延时nmS
+	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白	
 #endif
 	if(DspFlg)
 	{
@@ -544,28 +566,8 @@ void LCD_Server(void)			//显示服务相关
 *******************************************************************************/
 void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 {
-	
-	RxNum=RS485_ReadBufferIDLE(&RS485,RevBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-	if(RxNum)
-	{
-		Rxdata	=	RevBuffe[0];
-		SysTick_DeleymS(10);				//SysTick延时nmS
-		RS485_DMASend	(&RS485,&Rxdata,1);	//RS485-DMA发送程序
-		LCD_Printf(0		,0	,32,"收到数据%d",Rxdata);				//待发药槽位，后边的省略号就是可变参数
-		return;
-	}
-//	else
-//	{
-//		if(SYSTIME++>=500)
-//		{
-//			SYSTIME	=	0;
-//			RS485_DMASend	(&RS485,(u32*)&Rxdata,1);	//RS485-DMA发送程序
-//			SysTick_DeleymS(5);				//SysTick延时nmS
-//		}
-//	}
-	return;
 #if Master			//主机
-	RxNum=RS485_ReadBufferIDLE(&RS485,(u32*)RevBuffe,(u32*)RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum=RS485_ReadBufferIDLE(&RS485,RevBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(		RxNum								\
 			&&	(RevBuffe[0]	==	0xFB)			\
 			&&	(RevBuffe[1]	==	0xF6)			\
@@ -591,12 +593,12 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 		TxdBuffe[1]	=	0xF5;
 		TxdBuffe[2]	=	SlaveID;
 		TxdBuffe[3]	=	0x01;
-		RS485_DMASend	(&RS485,(u32*)TxdBuffe,4);	//RS485-DMA发送程序
+		RS485_DMASend	(&RS485,TxdBuffe,4);	//RS485-DMA发送程序
 		if(SlaveID++>=250)
 			SlaveID	=	1;
 	}
 #else
-	
+	RxNum=RS485_ReadBufferIDLE(&RS485,(u32*)RevBuffe,(u32*)RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(		RxNum												\
 			&&(RevBuffe[0]	==	0xFA)			\
 			&&(RevBuffe[1]	==	0xF5)			\
@@ -621,7 +623,7 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 			TxdBuffe[3]	=	(CS5530_ADC_Value>>16)&0xFF;
 			TxdBuffe[4]	=	(CS5530_ADC_Value>>8)&0xFF;
 			TxdBuffe[5]	=	(CS5530_ADC_Value>>0)&0xFF;
-			RS485_DMASend	(&RS485,TxdBuffe,6);	//RS485-DMA发送程序
+			RS485_DMASend	(&RS485,(u32*)TxdBuffe,6);	//RS485-DMA发送程序
 		}
 	}
 #endif
@@ -699,28 +701,28 @@ void LCD_Configuration(void)
 	Port	=	&(sLCD.Port);
 	SPIx		=	&(sLCD.GT32L32.SPI);
 	
-	Port->sCS_PORT		=	GPIOB;
-	Port->sCS_Pin			=	GPIO_Pin_7;
+	Port->sCS_PORT		=	GPIOA;
+	Port->sCS_Pin			=	GPIO_Pin_12;
 	
-	Port->sDC_PORT		=	GPIOB;
-	Port->sDC_Pin			=	GPIO_Pin_6;
+	Port->sDC_PORT		=	GPIOA;
+	Port->sDC_Pin			=	GPIO_Pin_8;
 	
-	Port->sWR_PORT		=	GPIOB;
-	Port->sWR_Pin			=	GPIO_Pin_8;
+	Port->sWR_PORT		=	GPIOA;
+	Port->sWR_Pin			=	GPIO_Pin_15;
 	
-	Port->sRD_PORT		=	GPIOB;
+	Port->sRD_PORT		=	GPIOC;
 	Port->sRD_Pin			=	GPIO_Pin_5;
 	
-	Port->sREST_PORT	=	GPIOB;
-	Port->sREST_Pin		=	GPIO_Pin_9;
+	Port->sREST_PORT	=	GPIOD;
+	Port->sREST_Pin		=	GPIO_Pin_2;
 	
-	Port->sBL_PORT		=	GPIOB;
+	Port->sBL_PORT		=	GPIOA;
 	Port->sBL_Pin			=	GPIO_Pin_3;
 	
-	Port->sTE_PORT		=	GPIOB;
+	Port->sTE_PORT		=	GPIOC;
 	Port->sTE_Pin			=	GPIO_Pin_4;
 	
-	Port->sDATABUS_PORT	=	GPIOE;
+	Port->sDATABUS_PORT	=	GPIOB;
 	Port->sDATABUS_Pin	=	GPIO_Pin_All;
 	
 	sLCD.Flag.Rotate	=	Draw_Rotate_90D;	//使用旋转角度	
@@ -754,40 +756,19 @@ void LCD_Configuration(void)
 *******************************************************************************/
 void CS5530_Configuration(void)
 {
-	CS5530.Port.CS_PORT=GPIOD;
-	CS5530.Port.CS_Pin=GPIO_Pin_8;
+	CS5530.Port.CS_PORT=GPIOC;
+	CS5530.Port.CS_Pin=GPIO_Pin_3;
 	
-	CS5530.Port.SDI_PORT=GPIOB;
-	CS5530.Port.SDI_Pin=GPIO_Pin_15;
+	CS5530.Port.SDI_PORT=GPIOC;
+	CS5530.Port.SDI_Pin=GPIO_Pin_2;
 	
-	CS5530.Port.SDO_PORT=GPIOB;
-	CS5530.Port.SDO_Pin=GPIO_Pin_14;
+	CS5530.Port.SDO_PORT=GPIOC;
+	CS5530.Port.SDO_Pin=GPIO_Pin_1;
 	
-	CS5530.Port.SCLK_PORT=GPIOB;
-	CS5530.Port.SCLK_Pin=GPIO_Pin_13;
+	CS5530.Port.SCLK_PORT=GPIOC;
+	CS5530.Port.SCLK_Pin=GPIO_Pin_0;
 	
 	CS5530_Initialize(&CS5530);
-
-#ifndef TestChN1		//双通道
-	CS5530B.Port.CS_PORT=GPIOB;
-	CS5530B.Port.CS_Pin=GPIO_Pin_12;
-	
-	CS5530B.Port.SDI_PORT=GPIOB;
-	CS5530B.Port.SDI_Pin=GPIO_Pin_15;
-	
-	CS5530B.Port.SDO_PORT=GPIOB;
-	CS5530B.Port.SDO_Pin=GPIO_Pin_14;
-	
-	CS5530B.Port.SCLK_PORT=GPIOB;
-	CS5530B.Port.SCLK_Pin=GPIO_Pin_13;
-	
-	CS5530_Initialize(&CS5530B);
-#else
-	#ifndef TestFloat		//未启用通道配置为非浮空
-		GPIO_Configuration_OPP50(GPIOB,GPIO_Pin_12);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
-		GPIO_SetBits(GPIOB,GPIO_Pin_12);
-	#endif
-#endif
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -800,16 +781,28 @@ void CS5530_Configuration(void)
 *******************************************************************************/
 void RS485_Configuration(void)
 {
-	RS485.USARTx=USART2;
+	RS485.USARTx=USART1;
 	RS485.RS485_CTL_PORT=GPIOA;
-	RS485.RS485_CTL_Pin=GPIO_Pin_1;
+	RS485.RS485_CTL_Pin=GPIO_Pin_11;
 	
-	RS485_DMA_ConfigurationNR	(&RS485,9600,Rs485Size);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485,115200,Rs485Size);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
-
-
-
-
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void USART_Configuration(void)
+{
+//	//1.6版本为USART1
+//	USART_DMA_ConfigurationNR	(USART1,115200,Rs485Size);	//USART_DMA配置--查询方式，不开中断
+	//1.7版本为UART4
+	USART_DMA_ConfigurationNR	(UART4,115200,Rs485Size);	//USART_DMA配置--查询方式，不开中断
+}
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 

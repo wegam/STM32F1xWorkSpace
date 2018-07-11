@@ -121,7 +121,7 @@ extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 #define LCD_DATABUS_PORT		(pLcdPort->sDATABUS_PORT)
 
 #if 1
-	#define LCD_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,2000,500)	//(R61509V_BL_PORT->BSRR = R61509V_BL_PIN)
+	#define LCD_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,500)	//(R61509V_BL_PORT->BSRR = R61509V_BL_PIN)
 	#define LCD_BL_OFF	PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,5,0)		//(R61509V_BL_PORT->BRR = R61509V_BL_PIN)
 #else
 	#define LCD_BL_ON		(pLcdPort->sBL_PORT->BSRR = pLcdPort->sBL_Pin)
@@ -156,7 +156,7 @@ extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 #define LCD565_GBLUE			0X07FF
 #define LCD565_RED       	0xF800
 #define LCD565_MAGENTA   	0xF81F
-#define LCD565_GREEN     	0x07E0		//0X07E0
+#define LCD565_GREEN     	0x07E0	//0X07E0
 #define LCD565_CYAN      	0x7FFF
 #define LCD565_YELLOW    	0xFFE0
 #define LCD565_BROWN 			0XBC40 	//棕色
