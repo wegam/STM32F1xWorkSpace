@@ -30,12 +30,15 @@
 #include "STM32_USART.H"
 #include "STM32_ADC.H"
 
+#include "DS18B20.H"
+
 
 #include "SWITCHID.H"
 
 #include "string.h"				//串和内存操作函数头文件
 #include "stdlib.h"				//串和内存操作函数头文件
 #include "stm32f10x_dma.h"
+
 
 
 
@@ -52,6 +55,7 @@ u16 millisecond=0;
 
 
 RS485_TypeDef  RS485;
+OneWrieDef DS18B20;
 #define	Rs485Size	256
 u8 RxdBuffe[Rs485Size]={0};
 u8 RevBuffe[Rs485Size]={0};
@@ -71,6 +75,7 @@ u8 SwitchID=0;	//拔码开关地址
 
 LCDDef	sLCD;
 
+double	WenDubac	=	0.0;
 
 //R61509VDef R61509V;
 u8	DspFlg	=	0;
@@ -128,7 +133,9 @@ void PL010V17_Configuration(void)
 	
 	RS485_Configuration();
 	
-	USART_Configuration();
+	DS18B20_Server();
+	
+//	USART_Configuration();
 	
 	SysTick_DeleymS(500);				//SysTick延时nmS
 	
@@ -152,12 +159,39 @@ void PL010V17_Configuration(void)
 *******************************************************************************/
 void PL010V17_Server(void)
 {	
+	unsigned short	tmepr=0;
+	double	WenDu	=	0.0;
 	IWDG_Feed();				//独立看门狗喂狗
 //	RS485_Server();		//通讯管理---负责信息的接收与发送
 //	LCD_Server();				//显示服务相关
-	CS5530_Server();		//称重服务，AD值处理，获取稳定值
-	TempSensor_Server();	//内部温度传感器
+//	CS5530_Server();		//称重服务，AD值处理，获取稳定值
+//	TempSensor_Server();	//内部温度传感器
+	tmepr	=	DS18B20_Read(&DS18B20);						//复位Dallas,返回结果
+	WenDu	=	tmepr*0.0625;
+//	if(WenDubac!=WenDu)
+//	{
+		WenDubac	=	WenDu;
+		if(lineT>=240)
+			lineT	=	0;	
+		LCD_Printf(200		,lineT,16	,"温度:%4.4f℃",WenDubac);		//待发药槽位，后边的省略号就是可变参数
+//		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",tmepr);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+		lineT+=16;	
+//	}
 //	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
+}
+/*******************************************************************************
+* 函数名		:	
+* 功能描述	:	 
+* 输入		:	
+* 输出		:
+* 返回 		:
+*******************************************************************************/
+void DS18B20_Server(void)
+{	
+	DS18B20.Data_Port	=	GPIOC;
+	DS18B20.Data_Pin	=	GPIO_Pin_11;
+	DS18B20_Configuration(&DS18B20);
+	DS18B20_Read(&DS18B20);						//复位Dallas,返回结果
 }
 /*******************************************************************************
 * 函数名			:	function

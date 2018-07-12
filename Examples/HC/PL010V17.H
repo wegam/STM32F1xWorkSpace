@@ -12,7 +12,7 @@
 void PL010V17_Configuration(void);
 void PL010V17_Server(void);
 
-
+void DS18B20_Server(void);
 void CS5530_Server(void);		//称重服务，AD值处理，获取稳定值
 void TempSensor_Server(void);	//内部温度传感器
 void LCD_Server(void);	//显示服务相关

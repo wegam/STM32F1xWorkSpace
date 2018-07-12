@@ -1209,6 +1209,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1263,6 +1268,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -2578,6 +2588,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2632,6 +2647,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -3947,6 +3967,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4001,6 +4026,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -5316,6 +5346,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5370,6 +5405,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -6685,6 +6725,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -6739,6 +6784,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -8054,6 +8104,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -8108,6 +8163,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -9423,6 +9483,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -9477,6 +9542,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -10792,6 +10862,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -10846,6 +10921,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -12161,6 +12241,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -12215,6 +12300,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -13530,6 +13620,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -13584,6 +13679,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -14899,6 +14999,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -14953,6 +15058,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -16268,6 +16378,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -16322,6 +16437,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -17637,6 +17757,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -17691,6 +17816,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -19006,6 +19136,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -19060,6 +19195,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -20375,6 +20515,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -20429,6 +20574,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -21744,6 +21894,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -21798,6 +21953,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -23113,6 +23273,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -23167,6 +23332,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -24482,6 +24652,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -24536,6 +24711,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -25851,6 +26031,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -25905,6 +26090,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -27220,6 +27410,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -27274,6 +27469,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -28589,6 +28789,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -28643,6 +28848,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -29958,6 +30168,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -30012,6 +30227,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -31327,6 +31547,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -31381,6 +31606,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -32696,6 +32926,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -32750,6 +32985,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -34065,6 +34305,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -34119,6 +34364,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -35434,6 +35684,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -35488,6 +35743,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -36756,6 +37016,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -36810,6 +37075,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -38078,6 +38348,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -38132,6 +38407,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -39400,6 +39680,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -39454,6 +39739,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -40722,6 +41012,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -40776,6 +41071,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -42044,6 +42344,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -42098,6 +42403,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -43366,6 +43676,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -43420,6 +43735,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -44688,6 +45008,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -44742,6 +45067,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -46057,6 +46387,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -46111,6 +46446,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -47426,6 +47766,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -47480,6 +47825,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -48795,6 +49145,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -48849,6 +49204,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -50164,6 +50524,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -50218,6 +50583,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -51533,6 +51903,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
             </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -51587,6 +51962,11 @@
               <FileName>I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
             </File>
           </Files>
         </Group>

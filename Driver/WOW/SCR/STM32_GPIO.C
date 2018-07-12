@@ -47,7 +47,7 @@ void GPIO_ClockConf(GPIO_TypeDef* GPIOx,						//GPIO端口
 //			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 			if(((GPIO_Pin_x&GPIO_Pin_13)==GPIO_Pin_13)||((GPIO_Pin_x&GPIO_Pin_14)==GPIO_Pin_14)||((GPIO_Pin_x&GPIO_Pin_15)==GPIO_Pin_15)||(GPIO_Pin_x==GPIO_Pin_All))
 			{
-				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO, ENABLE);
+				RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 				//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable,ENABLE);			//关闭SW功能
 				GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);		//关闭JTAG,SW功能开启
 			}

@@ -112,7 +112,10 @@ HC595_Pindef HC595_Conf;
 u8 dnum1=1;
 u8 dnum2=2;
 
-
+u32 USTime	=	0;
+u32 USTime2	=	0;
+u8 	USFlag1	=	0;
+u8 	USFlag2	=	0;
 //sI2CDef sI2C;
 unsigned char Tedata	=	0;
 unsigned char Wedata	=	0;
@@ -388,6 +391,21 @@ void PD002V30_USART_Cofiguration(void)
 void PD002V30_USART_Server(void)
 {
 	u32 temp1=0,temp2=0;	//串口打印
+	if(USTime<10000)		//10秒
+	{
+		USTime++;
+		return;
+	}
+	else
+	{
+		if(USTime2++>10000)	//超时计时10秒
+		{
+			USFlag1	=	0;
+			USFlag2	=	0;
+			USTime	=	0;
+			USTime2	=	0;
+		}
+	}
 //	temp1	=	sPD002V30.ADCSS3CH1.Data.WeighFilt;
 //	temp2	=	sPD002V30.ADCSS4CH2.Data.WeighFilt;
 //	
@@ -398,20 +416,29 @@ void PD002V30_USART_Server(void)
 	
 	temp1	=	MS200.CH1SS3.ADC.Data.WeighLive>>0;		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS3接口，外面
 	temp2	=	MS200.CH2SS4.ADC.Data.WeighLive>>0;		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS4接口，里面
-	if((temp1!=0xFFFFFFFF)&&(temp2!=0xFFFFFFFF))
-	{
-		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",temp1>>2,temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		return;
-	}
-	if((temp1!=0xFFFFFFFF)&&(Value_AD1!=temp1))
+//	if((temp1!=0xFFFFFFFF)&&(temp2!=0xFFFFFFFF))
+//	{
+//		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",temp1>>2,temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//		return;
+//	}
+	if((temp1!=0xFFFFFFFF)&&(Value_AD1!=temp1)&&(USFlag1==0))
 	{
 		Value_AD1	=	temp1;
+		USFlag1	=	1;
 		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",temp1>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		return;
 	}
-	if((temp2!=0xFFFFFFFF)&&(Value_AD2!=temp2))
+	if((temp2!=0xFFFFFFFF)&&(Value_AD2!=temp2)&&(USFlag2==0))
 	{
 		Value_AD2	=	temp2;
-		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		USFlag2	=	1;
+		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数		
+	}
+	if((USFlag1==1)&&(USFlag2==1))
+	{
+		USFlag1	=	0;
+		USFlag2	=	0;
+		USTime	=	0;
 	}
 }
 /*******************************************************************************
