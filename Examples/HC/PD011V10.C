@@ -67,11 +67,11 @@ void PD011V10_Configuration(void)
 	
 	PD011V10_PinSet();
 	
-	RS485_DMA_ConfigurationNR	(&RS485_1,9600,(u32*)RxdBuffer1,RxBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	RS485_DMA_ConfigurationNR	(&RS485_4,9600,(u32*)RxdBuffer4,RxBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485_1,9600,RxBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485_4,9600,RxBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
-	USART_DMA_ConfigurationNR	(USART2,9600,(u32*)RxdBuffer2,RxBufferSize);	//USART_DMA配置--查询方式，不开中断
-	USART_DMA_ConfigurationNR	(USART3,9600,(u32*)RxdBuffer3,RxBufferSize);	//USART_DMA配置--查询方式，不开中断
+	USART_DMA_ConfigurationNR	(USART2,9600,RxBufferSize);	//USART_DMA配置--查询方式，不开中断
+	USART_DMA_ConfigurationNR	(USART3,9600,RxBufferSize);	//USART_DMA配置--查询方式，不开中断
 	
 //	RS485_RX_EN(&RS485_4);
 	
@@ -104,9 +104,9 @@ void PD011V10_Server(void)
 		TxdBuffer1[0]++;
 		if(TxdBuffer1[0]>=255)
 			TxdBuffer1[0]=0;
-		RS485_DMASend(&RS485_1,(u32*)TxdBuffer1,RxBufferSize);	//RS485-DMA发送程序
+		RS485_DMASend(&RS485_1,TxdBuffer1,RxBufferSize);	//RS485-DMA发送程序
 	}
-	RxNum=RS485_ReadBufferIDLE(&RS485_4,(u32*)RevBuffer4,(u32*)RxdBuffer4);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum=RS485_ReadBufferIDLE(&RS485_4,RevBuffer4);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
 		PWM_OUT(TIM2,PWM_OUTChannel1,RevBuffer4[0],500);						//PWM设定-20161127版本
@@ -117,9 +117,9 @@ void PD011V10_Server(void)
 		TxdBuffer2[0]++;
 		if(TxdBuffer2[0]>=255)
 			TxdBuffer2[0]=0;
-		USART_DMASend(USART2,(u32*)TxdBuffer2,RxBufferSize);	//RS485-DMA发送程序
+		USART_DMASend(USART2,TxdBuffer2,RxBufferSize);	//RS485-DMA发送程序
 	}
-	RxNum=USART_ReadBufferIDLE(USART3,(u32*)RevBuffer3,(u32*)RxdBuffer3);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum=USART_ReadBufferIDLE(USART3,RevBuffer3);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
 		PWM_OUT(TIM2,PWM_OUTChannel1,RevBuffer3[0],500);						//PWM设定-20161127版本
