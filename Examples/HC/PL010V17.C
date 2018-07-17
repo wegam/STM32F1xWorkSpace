@@ -171,11 +171,11 @@ void PL010V17_Server(void)
 //	if(WenDubac!=WenDu)
 //	{
 		WenDubac	=	WenDu;
-		if(lineT>=240)
+		if(lineT>=240-32)
 			lineT	=	0;	
-		LCD_Printf(200		,lineT,16	,"温度:%4.4f℃",WenDubac);		//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(100		,lineT,32	,"温度:%4.4f℃",WenDubac);		//待发药槽位，后边的省略号就是可变参数
 //		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",tmepr);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
-		lineT+=16;	
+		lineT+=32;	
 //	}
 //	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
 }
@@ -188,8 +188,8 @@ void PL010V17_Server(void)
 *******************************************************************************/
 void DS18B20_Server(void)
 {	
-	DS18B20.Data_Port	=	GPIOC;
-	DS18B20.Data_Pin	=	GPIO_Pin_11;
+	DS18B20.Data_Port	=	GPIOA;
+	DS18B20.Data_Pin	=	GPIO_Pin_10;
 	DS18B20_Configuration(&DS18B20);
 	DS18B20_Read(&DS18B20);						//复位Dallas,返回结果
 }
