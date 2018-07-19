@@ -5,6 +5,15 @@
 #include "stdint.h"
 #include "debug_cm.h"
 
+//================================================低位先传
+
+//================================================专业术语
+/*
+
+DPACC		Debug Port accesses 		调试端口访问
+APACC		Access Port accesses		访问端口访问 
+
+*/
 #define ERROR                           1
 #define SUCCESS                         0
 #define MAX_SWD_RETRY   								1				//最大重试次数

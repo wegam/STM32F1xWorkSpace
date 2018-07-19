@@ -1,0 +1,13 @@
+
+Driver/Protocol/debug_cm.h
+Driver/Protocol/swd.c
+Driver/Protocol/swd.h
+Project/STM32F1xHC/STM32F1xHC.uvguix.WOW
+Project/STM32F1xHC/STM32F1xHC.uvoptx
+Project/STM32F1xHC/STM32F1xHC.uvprojx
+Project/STM32F1xWOW/OutPut/Obj/SWDTEST.hex
+Project/STM32F1xWOW/STM32F1xWOW.uvguix.WOW
+Project/STM32F1xWOW/STM32F1xWOW.uvoptx
+Project/STM32F1xWOW/STM32F1xWOW.uvprojx
+STM32F1xWorkSpace.uvmpw
+STM32F1xWorkSpace.uvmpw.uvgui.WOW

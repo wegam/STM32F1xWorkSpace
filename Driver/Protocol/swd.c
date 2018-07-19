@@ -33,6 +33,10 @@
 
 #define MAX_TIMEOUT 1
 
+/* Read 32-bit word from target memory. */
+// AP CSW register, base value
+#define CSW_VALUE (CSW_RESERVED | CSW_MSTRDBG | CSW_HPROT | CSW_DBGSTAT | CSW_SADDRINC)
+
 typedef struct
 {
     unsigned long r[16];
@@ -286,7 +290,7 @@ void Line_Rest(void)
 	SWDIO_SET();
 	for(i = 0; i < 51; i++)
 	{
-			SW_CLOCK_CYCLE();
+		SW_CLOCK_CYCLE();
 	}
 	
 }
@@ -435,9 +439,7 @@ unsigned char SWJ_WriteAP(unsigned long adr, unsigned long val)
     return err;
 }
 
-/* Read 32-bit word from target memory. */
-// AP CSW register, base value
-#define CSW_VALUE (CSW_RESERVED | CSW_MSTRDBG | CSW_HPROT | CSW_DBGSTAT | CSW_SADDRINC)
+
 
 
 // Write target memory.

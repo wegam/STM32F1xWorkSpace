@@ -38,6 +38,8 @@ extern "C" {
 #define DP_SELECT      0x08        // Select Register (JTAG R/W & SW W)
 #define DP_RESEND      0x08        // Resend (SW Read Only)ÖØ·¢¼Ä´æÆ÷
 #define DP_RDBUFF      0x0C        // Read Buffer (Read Only)¶Á»º³å
+	
+#define DPIDR		0x00	//DPIDR, Debug Port Identification Register£¨µ÷ÊÔ½Ó¿ÚÐÅÏ¢¼Ä´æÆ÷£©
 
 // Abort Register definitions
 #define DAPABORT       0x00000001  // DAP Abort
@@ -77,8 +79,8 @@ extern "C" {
 
 // Access Port Register Addresses
 #define AP_CSW         0x00        // ¿ØÖÆ¼Ä´æÆ÷ºÍ×´Ì¬×Ö¼Ä´æÆ÷Control and Status Word
-#define AP_TAR         0x04        // Transfer Address
-#define AP_DRW         0x0C        // Êý¾Ý¶Á/Ð´¼Ä´æÆ÷Data Read/Write
+#define AP_TAR         0x04        // Transfer Address Register ´«ÊäµØÖ·¼Ä´æÆ÷
+#define AP_DRW         0x0C        // Data Read/WriteÊý¾Ý¶Á/Ð´¼Ä´æÆ÷
 #define AP_BD0         0x10        // Banked Data 0
 #define AP_BD1         0x14        // Banked Data 1
 #define AP_BD2         0x18        // Banked Data 2

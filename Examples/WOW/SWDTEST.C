@@ -45,18 +45,18 @@ unsigned short Time	=	0;
 *******************************************************************************/
 void SWDTEST_Configuration(void)
 {
-	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
-	
-	GPIO_DeInitAll();							//将所有的GPIO关闭----V20170605
-	
-	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
-	
-	GPIO_Configuration_OPP50	(SWDIO_PORT,SWDIO_PIN);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
-	GPIO_Configuration_OPP50	(SWCLK_PORT,SWCLK_PIN);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
-	
-	SW_PinInit();
-	
-	SWJ_InitDebug();
+//	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
+//	
+//	GPIO_DeInitAll();							//将所有的GPIO关闭----V20170605
+//	
+//	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
+//	
+//	GPIO_Configuration_OPP50	(SWDIO_PORT,SWDIO_PIN);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+//	GPIO_Configuration_OPP50	(SWCLK_PORT,SWCLK_PIN);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+//	
+//	SW_PinInit();
+//	
+//	SWJ_InitDebug();
 }
 
 /*******************************************************************************
@@ -68,11 +68,11 @@ void SWDTEST_Configuration(void)
 *******************************************************************************/
 void SWDTEST_Server(void)		//CRC--TEST
 {	
-	if(Time++>1000)
-	{
-		Time	=	0;
-		SWJ_InitDebug();
-	}
+//	if(Time++>1000)
+//	{
+//		Time	=	0;
+//		SWJ_InitDebug();
+//	}
 }
 
 
