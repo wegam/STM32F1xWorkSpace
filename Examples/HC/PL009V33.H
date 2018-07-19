@@ -1,5 +1,5 @@
-#ifndef __PL010V17_H
-#define __PL010V17_H
+#ifndef __PL009V33_H
+#define __PL009V33_H
 
 
 
@@ -9,8 +9,8 @@
 //}PL010V15Def;
 
 
-void PL010V17_Configuration(void);
-void PL010V17_Server(void);
+void PL009V33_Configuration(void);
+void PL009V33_Server(void);
 
 void DS18B20_Server(void);
 void CS5530_Server(void);		//称重服务，AD值处理，获取稳定值

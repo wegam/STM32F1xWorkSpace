@@ -143,10 +143,10 @@ void PD002V30_Configuration(void)
 	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
-	PWM_OUT(TIM2,PWM_OUTChannel1,1,700);						//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,1,500);						//PWM设定-20161127版本
 	
 	CS5530_Configuration();					//CS5530初始化
-//	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
+	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	
 	PD002V30_USART_Cofiguration();
 	
@@ -391,14 +391,14 @@ void PD002V30_USART_Cofiguration(void)
 void PD002V30_USART_Server(void)
 {
 	u32 temp1=0,temp2=0;	//串口打印
-	if(USTime<10000)		//10秒
+	if(USTime<500)		//1秒
 	{
 		USTime++;
 		return;
 	}
 	else
 	{
-		if(USTime2++>10000)	//超时计时10秒
+		if(USTime2++>500)	//超时计时1秒
 		{
 			USFlag1	=	0;
 			USFlag2	=	0;
@@ -416,8 +416,10 @@ void PD002V30_USART_Server(void)
 	
 	temp1	=	MS200.CH1SS3.ADC.Data.WeighLive>>0;		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS3接口，外面
 	temp2	=	MS200.CH2SS4.ADC.Data.WeighLive>>0;		//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值		//SS4接口，里面
-//	if((temp1!=0xFFFFFFFF)&&(temp2!=0xFFFFFFFF))
+//	if(((temp1!=0xFFFFFFFF)&&(Value_AD1!=temp1))&&((temp2!=0xFFFFFFFF)&&(Value_AD2!=temp2)))
 //	{
+//		Value_AD1	=	temp1;
+//		Value_AD2	=	temp2;
 //		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",temp1>>2,temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 //		return;
 //	}
@@ -426,19 +428,21 @@ void PD002V30_USART_Server(void)
 		Value_AD1	=	temp1;
 		USFlag1	=	1;
 		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",temp1>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		return;
+		SysTick_DeleymS(20);				//SysTick延时nmS
 	}
 	if((temp2!=0xFFFFFFFF)&&(Value_AD2!=temp2)&&(USFlag2==0))
 	{
 		Value_AD2	=	temp2;
 		USFlag2	=	1;
-		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数		
+		USART_DMAPrintf	(USART1,"CH2:%0.8X\r\n",temp2>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数	
+		SysTick_DeleymS(20);				//SysTick延时nmS		
 	}
 	if((USFlag1==1)&&(USFlag2==1))
 	{
 		USFlag1	=	0;
 		USFlag2	=	0;
 		USTime	=	0;
+		USTime2	=	0;
 	}
 }
 /*******************************************************************************

@@ -13,9 +13,9 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
-#ifdef PL010V17				//智能药架称重LCD板---单称重
+#ifdef PL009V33				//智能药架称重LCD板---单称重
 
-#include "PL010V17.H"
+#include "PL009V33.H"
 
 #include "R61509V.h"
 #include "CS5530.H"
@@ -82,11 +82,13 @@ u8	DspFlg	=	0;
 
 u16 BKlight	=	0;
 
-u8 line	=	0;
+u8 lineCH1	=	0;
+u8 lineCH2	=	0;
 u8 lineT	=	0;
 
 
-CS5530Def CS5530;
+CS5530Def CS5530CH1;
+CS5530Def CS5530CH2;
 u32	CS5530_Time	=	0;
 u32	CS5530_ADC_CMP			=	0;
 u32 CS5530_ADC_Value		=0xFFFFFFFF;
@@ -121,7 +123,7 @@ u32 READ_GAIN	=	0;
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL010V17_Configuration(void)
+void PL009V33_Configuration(void)
 {
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
 	
@@ -147,7 +149,7 @@ void PL010V17_Configuration(void)
 	
 //	IWDG_Configuration(2000);			//独立看门狗配置---参数单位ms	
 
-//	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--运行指示灯
+//	PWM_OUT(TIM2,PWM_OUTChannel1,2,500);	//PWM设定-20161127版本--运行指示灯
 	
 }
 /*******************************************************************************
@@ -157,14 +159,14 @@ void PL010V17_Configuration(void)
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL010V17_Server(void)
+void PL009V33_Server(void)
 {	
 	unsigned short	tmepr=50;
 	double	WenDu	=	0.0;
 	IWDG_Feed();				//独立看门狗喂狗
 //	RS485_Server();		//通讯管理---负责信息的接收与发送
 //	LCD_Server();				//显示服务相关
-//	CS5530_Server();		//称重服务，AD值处理，获取稳定值
+	CS5530_Server();		//称重服务，AD值处理，获取稳定值
 //	TempSensor_Server();	//内部温度传感器
 //	tmepr	=	DS18B20_Read(&DS18B20);						//复位Dallas,返回结果
 	WenDu	=	tmepr*0.0625;
@@ -173,7 +175,7 @@ void PL010V17_Server(void)
 		WenDubac	=	WenDu;
 		if(lineT>=240)
 			lineT	=	0;	
-		LCD_Printf(200		,lineT,16	,"温度:%4.4f℃",WenDubac);		//待发药槽位，后边的省略号就是可变参数
+//		LCD_Printf(200		,lineT,16	,"温度:%4.4f℃",WenDubac);		//待发药槽位，后边的省略号就是可变参数
 //		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",tmepr);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
 		lineT+=16;	
 //	}
@@ -227,16 +229,36 @@ void TempSensor_Server(void)
 void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 {
 #if 1
-	CS5530_Process(&CS5530);
-	if((CS5530.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530.Data.WeighLive	!=CS5530_ADC_Value))
+	CS5530_ADC_Value	=	0;
+	CS5530_Process(&CS5530CH1);
+	if((CS5530CH1.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530CH1.Data.WeighLive	!=CS5530_ADC_Value))
 	{
-		if(line>=240)
-			line	=	0;
-		CS5530_ADC_Value	=	CS5530.Data.WeighLive>>0;
-		LCD_Printf(0		,line,16	,"AD:%0.8d",CS5530_ADC_Value>>2);				//待发药槽位，后边的省略号就是可变参数
+		if(lineCH1>=240)
+			lineCH1	=	0;
+		CS5530_ADC_Value	=	CS5530CH1.Data.WeighLive>>0;
+		LCD_Printf(0		,lineCH1,16	,"AD:%0.8d",CS5530_ADC_Value>>2);				//待发药槽位，后边的省略号就是可变参数
 		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
-		line+=16;		
+		lineCH1+=16;
+		
+		CS5530CH1.Data.WeighLive	=0xFFFFFFFF;
+		SysTick_DeleymS(50);				//SysTick延时nmS
 	}
+	CS5530_ADC_Value	=	0;
+	CS5530_Process(&CS5530CH2);
+	if((CS5530CH2.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530CH2.Data.WeighLive	!=CS5530_ADC_Value))
+	{
+		if(lineCH2>=240)
+			lineCH2	=	0;
+		CS5530_ADC_Value	=	CS5530CH2.Data.WeighLive>>0;
+		LCD_Printf(200		,lineCH2,16	,"AD:%0.8d",CS5530_ADC_Value>>2);				//待发药槽位，后边的省略号就是可变参数
+		USART_DMAPrintf	(UART4,"CH2:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+		lineCH2+=16;	
+
+		CS5530CH2.Data.WeighLive	=0xFFFFFFFF;
+		
+		SysTick_DeleymS(50);				//SysTick延时nmS
+	}
+	
 	return;
 #endif
 #if 0
@@ -256,93 +278,6 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 	}
 	return;
 #endif
-	CS5530_Process(&CS5530);
-	if(CS5530_ADC_Value	!=	CS5530.Data.Origin)
-	{
-		CS5530_ADC_Value	=	CS5530.Data.Origin;
-		LCD_Printf(0		,128,32	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
-	}
-//	if(CS5530_Time++>=50)		//1秒钟
-//	{		
-//		CS5530_Time=0;
-//		CS5530_ADC_Valuebac=CS5530_ReadData(&CS5530);	//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值
-//		if(CS5530_ADC_Valuebac!=0xFFFFFFFF)
-//		{
-//			
-////			CS5530_ADC_Valuebac>>=5;		//19位精度
-//			
-//			if(CS5530_ADC_Value==CS5530_ADC_Valuebac)
-//			{
-//				DspFlg	=	0;
-//			}
-//			if(CS5530_ADC_Value>=CS5530_ADC_Valuebac)
-//			{
-//				CS5530_ADC_CMP	=	CS5530_ADC_Value-CS5530_ADC_Valuebac;
-//			}
-//			else
-//			{
-//				CS5530_ADC_CMP	=	CS5530_ADC_Valuebac-CS5530_ADC_Value;				
-//			}
-//			DspFlg	=	1;
-//			CS5530_ADC_Value	=	CS5530_ADC_Valuebac;
-//			
-//			if(CS5530_ADC_CMP>100)
-//			{
-//				NuW	=	0;
-//				return;
-//			}
-//			WeigthARR[NuW]	=	CS5530_ADC_Value;
-//			if(NuW++>=20-1)
-//			{
-//				long	temp	=	0;
-//				//We1
-//				
-//				u8 i	=	0;
-//				
-//				temp	=	CS5530_GetWeightUseMedinaFilter(&CS5530);
-//				
-//				if(temp>200)
-//				{
-//					NuW	=	0;
-//					return;
-//				}
-//				NuW	=	0;
-//				We1	=	WeigthARR[i];
-//				for(i=1;i<20;i++)
-//				{
-//					We1	=	(We1+WeigthARR[i])/2;
-//				}
-//				if(St	==	1)
-//				{
-//					St=0;
-//					BsW	=	We1;
-//				}
-//				else if(St	==	2)
-//				{
-//					SsW	=	(We1	-	BsW)/10;
-//					St	=	3;
-//					SN	=	10;
-//					SNb	=	10;
-//				}
-//				else if(St	==	3)
-//				{
-//					SN	=	(We1-BsW+500)/SsW;	//计数数量
-//					if(SN!=SNb)
-//					{
-//						SNb	=	SN;
-//						PL010V13_PrintfString(0		,128,32	,"数量%0.3d",SNb);				//待发药槽位，后边的省略号就是可变参数
-//					}
-//				}
-//				DspFlg1	=	1;
-//			}
-//				
-//		}
-//		else
-//		{
-////			We1	=0;
-////			NuW	=0;
-//		}
-//	}
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -382,212 +317,6 @@ void LCD_Server(void)			//显示服务相关
 		LCD_Printf(196,130,32,"%02d",second);		//后边的省略号就是可变参数
 	}
 #endif
-#if 0		//画圆
-	unsigned short i	=	0;
-	for(i=1;i<100;i++)
-	{
-		LCD_DrawCircle(200,	120, i, 0, LCD565_WHITE );			//画一个圆形框	
-	}
-	for(i=100;i>0;i--)
-	{
-		LCD_DrawCircle(200,	120, i, 0, LCD565_BLACK );			//画一个圆形框	
-	}
-	LCD_DrawCircle(50,	60, 50, 0, LCD565_YELLOW );			//画一个圆形框	
-	LCD_DrawCircle(340,	60,	50, 0, LCD565_YELLOW );			//画一个圆形框	
-	LCD_DrawCircle(50,	180, 50, 0, LCD565_YELLOW );			//画一个圆形框	
-	LCD_DrawCircle(340,	180, 50, 0, LCD565_YELLOW );			//画一个圆形框	
-	LCD_DrawCircle(200,	120, 100, 0, LCD565_YELLOW );			//画一个圆形框	
-	
-	SysTick_DeleymS(500);					//SysTick延时nmS
-	LCD_Clean(LCD565_BLACK);		//清除屏幕函数--
-#endif
-#if 0		//画圆
-//	LCD_Fill(10,10,50,50,LCD565_YELLOW);	//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
-	
-//	LCD_DrawRectangle(10,130,60,180,LCD565_YELLOW);			//画一个矩形框
-	
-//	R61509V_ShowChar(10,120,32,5,"sdsdf");
-	
-	LCD_DrawCircle(50,	50, 50, 1, LCD565_YELLOW );			//画一个圆形框	
-	LCD_DrawCircle(350,	50,	50, 1, LCD565_YELLOW );			//画一个圆形框	
-	LCD_DrawCircle(50,	190, 50, 1, LCD565_YELLOW );			//画一个圆形框	
-	LCD_DrawCircle(350,	190, 50, 1, LCD565_YELLOW );			//画一个圆形框	
-	LCD_DrawCircle(200,	120, 100, 1, LCD565_YELLOW );			//画一个圆形框	
-	
-	SysTick_DeleymS(500);					//SysTick延时nmS
-	LCD_Clean(LCD565_RED);		//清除屏幕函数--
-#endif
-#if 0		//画点测试
-	u16 x=0,y=0;
-	for(y=0;y<sLCD.Data.MaxH;y++)
-	{
-		for(x=0;x<sLCD.Data.MaxV;x++)
-		{
-			LCD_DrawDot(x,y,LCD565_YELLOW);
-//			SysTick_DeleyuS(10);				//SysTick延时nmS
-		}
-	}
-	SysTick_DeleymS(100);				//SysTick延时nmS
-	LCD_Clean(LCD565_RED);			//清除屏幕函数--
-#endif	
-#if 0			//测试波形绘制
-	u16 x=0,y=0;
-	
-	Rand	=	rand();
-	x	=	HX;
-	y	=	R61509V_H-Rand%200;
-	LCD_DrawDot(x,y,LCD565_YELLOW);
-//	R61509V_DrawLine(x,HY,x,y,R61509V_YELLOW);
-	HY	=	y;
-	if(HX++>=R61509V_V)
-	{
-		HX	=	0;
-		LCD_Clean(LCD565_RED);			//清除屏幕函数--
-//		SysTick_DeleymS(500);				//SysTick延时nmS
-	}
-//	SysTick_DeleymS(100);					//SysTick延时nmS
-#endif
-#if 0		//刷屏测试
-	u32 LCDTime=500;
-////	u8 i	=	0;
-//	for(Color	=	0;Color<=0xFFFF;)
-//	{
-//		LCD_Clean(Color);			//清除屏幕函数--
-//		SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-//		Color+=100;		
-//	}
-	
-	
-	LCD_Clean(LCD565_WHITE);		//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-
-	LCD_Clean(LCD565_BLACK);		//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-	
-	LCD_Clean(LCD565_BLUE);		//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-	
-	LCD_Clean(LCD565_BRED);			//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-	
-	LCD_Clean(LCD565_GRED);			//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-	
-	LCD_Clean(LCD565_GBLUE);			//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-	
-	LCD_Clean(LCD565_RED);			//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-	
-	LCD_Clean(LCD565_MAGENTA);			//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-	
-	LCD_Clean(LCD565_GREEN);			//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-	
-	LCD_Clean(LCD565_CYAN);			//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-	
-	LCD_Clean(LCD565_YELLOW);			//清除屏幕函数--
-	SysTick_DeleymS(LCDTime);				//SysTick延时nmS
-#endif
-#if 0	//画直线
-	HX	=	0;HY	=	10;
-//	for(HY	=	10;HY<=10;HY++)
-//	{
-//		for(HX	=	10;HX<=400;)
-//		{
-//			LCD_DrawDot(HX,HY,R61509V_YELLOW);
-//			HX	+=	1;
-//			SysTick_DeleymS(10);				//SysTick延时nmS
-//		}
-//	}
-//	R61509V_SetWindowAddress(0,10,100,10);//设置窗地址
-//	R61509V_SetWindowAddress(0,10,300,10);//设置窗地址
-//	for(HX=0;HX<=400;HX++)
-//	{
-//		R61509V_WriteData16(R61509V_YELLOW); 	//笔画颜色	
-//	}
-	R61509V_DrawLine(0,100,500,100,R61509V_YELLOW);
-	R61509V_DrawLine(100,0,100,230,R61509V_YELLOW);
-	R61509V_DrawLine(350,0,350,230,R61509V_YELLOW);
-	SysTick_DeleymS(1000);				//SysTick延时nmS
-	R61509V_Clean(R61509V_RED);			//清除屏幕函数--蓝白
-//	//清除直线
-//	HX	=	10;HY	=	10;
-//	for(HX	=	10;HX<230;HX++)
-//	{
-//		for(HY	=	10;HY<=380;)
-//		{
-//			LCD_DrawDot(HX,HY,R61509V_RED);
-//			HY	+=	5;
-//			SysTick_DeleymS(100);				//SysTick延时nmS
-//		}
-//	}
-
-//	LCD_Clean(R61509V_RED);			//清除屏幕函数--蓝白
-#endif
-#if 0	//LCD驱动调试.----画线
-	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白
-	HX	=	10;HY	=	10;
-	for(HY	=	10;HY<=230;)
-	{
-		LCD_DrawLine(10,HY,390,HY,LCD565_YELLOW);
-		HY	+=	5;
-	}
-	SysTick_DeleymS(1000);				//SysTick延时nmS
-	HX	=	10;HY	=	10;
-	for(HX	=	10;HX<=390;)
-	{
-		LCD_DrawLine(HX,10,HX,230,LCD565_YELLOW);
-		HX	+=	5;
-//		SysTick_DeleymS(100);				//SysTick延时nmS
-	}
-	SysTick_DeleymS(1000);				//SysTick延时nmS
-	//清除
-	HX	=	10;HY	=	10;
-	for(HY	=	10;HY<=230;)
-	{
-		LCD_DrawLine(10,HY,390,HY,LCD565_RED);
-		HY	+=	5;
-	}
-	SysTick_DeleymS(1000);				//SysTick延时nmS
-	HX	=	10;HY	=	10;
-	for(HX	=	10;HX<=390;)
-	{
-		LCD_DrawLine(HX,10,HX,230,LCD565_RED);
-		HX	+=	5;
-	}
-	SysTick_DeleymS(1000);				//SysTick延时nmS
-	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白
-#endif
-#if 0
-//	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白
-	
-	LCD_Printf(0		,0,32	,"萘");									//待发药槽位，后边的省略号就是可变参数
-	
-	LCD_Printf(0		,0,16	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-	LCD_Printf(0		,16,16	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-	LCD_Printf(0		,32,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-	LCD_Printf(0		,64,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-	LCD_Printf(0		,96,32	,"显示测试……");									//待发药槽位，后边的省略号就是可变参数
-	LCD_Printf(0		,128,32	,"测试显示……");									//待发药槽位，后边的省略号就是可变参数
-	LCD_Printf(0		,160,32	,"怲试显示……");									//待发药槽位，后边的省略号就是可变参数
-
-	SysTick_DeleymS(1000);				//SysTick延时nmS
-	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白	
-#endif
-	if(DspFlg)
-	{
-		DspFlg	=	0;
-//		LCD_Printf(0		,32,32	,"%0.8d",CS5530_ADC_CMP);				//待发药槽位，后边的省略号就是可变参数
-//		LCD_Printf(0		,64	,32	,"%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
-	}
-	if(DspFlg1)
-	{
-		DspFlg1	=	0;
-//		LCD_Printf(0		,96,32	,"%0.8d",We1);				//待发药槽位，后边的省略号就是可变参数
-	}
 }
 /*******************************************************************************
 * 函数名			:	RS485_Server
@@ -759,7 +488,7 @@ void LCD_Configuration(void)
 	Port->sDATABUS_PORT	=	GPIOB;
 	Port->sDATABUS_Pin	=	GPIO_Pin_All;
 	
-	sLCD.Flag.Rotate	=	Draw_Rotate_90D;	//使用旋转角度	
+	sLCD.Flag.Rotate	=	Draw_Rotate_270D;	//使用旋转角度	
 	
 	SPIx->Port.SPIx=SPI1;
 	
@@ -790,19 +519,35 @@ void LCD_Configuration(void)
 *******************************************************************************/
 void CS5530_Configuration(void)
 {
-	CS5530.Port.CS_PORT=GPIOC;
-	CS5530.Port.CS_Pin=GPIO_Pin_3;
+	CS5530CH1.Port.CS_PORT=GPIOC;
+	CS5530CH1.Port.CS_Pin=GPIO_Pin_3;
 	
-	CS5530.Port.SDI_PORT=GPIOC;
-	CS5530.Port.SDI_Pin=GPIO_Pin_2;
+	CS5530CH1.Port.SDI_PORT=GPIOC;
+	CS5530CH1.Port.SDI_Pin=GPIO_Pin_2;
 	
-	CS5530.Port.SDO_PORT=GPIOC;
-	CS5530.Port.SDO_Pin=GPIO_Pin_1;
+	CS5530CH1.Port.SDO_PORT=GPIOC;
+	CS5530CH1.Port.SDO_Pin=GPIO_Pin_1;
 	
-	CS5530.Port.SCLK_PORT=GPIOC;
-	CS5530.Port.SCLK_Pin=GPIO_Pin_0;
+	CS5530CH1.Port.SCLK_PORT=GPIOC;
+	CS5530CH1.Port.SCLK_Pin=GPIO_Pin_0;
 	
-	CS5530_Initialize(&CS5530);
+	CS5530_Initialize(&CS5530CH1);
+	
+	CS5530CH2.Port.CS_PORT=GPIOA;
+	CS5530CH2.Port.CS_Pin=GPIO_Pin_1;
+	
+	CS5530CH2.Port.SDI_PORT=GPIOC;
+	CS5530CH2.Port.SDI_Pin=GPIO_Pin_2;
+	
+	CS5530CH2.Port.SDO_PORT=GPIOC;
+	CS5530CH2.Port.SDO_Pin=GPIO_Pin_1;
+	
+	CS5530CH2.Port.SCLK_PORT=GPIOC;
+	CS5530CH2.Port.SCLK_Pin=GPIO_Pin_0;
+	
+	CS5530_Initialize(&CS5530CH2);
+	
+//	CS5530_PowerDown(&CS5530CH2);		//CS5530断电
 }
 /*******************************************************************************
 * 函数名			:	function

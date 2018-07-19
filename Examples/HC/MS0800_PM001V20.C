@@ -2,6 +2,11 @@
 
 #include "MS0800_PM001V20.H"
 
+#include	"stdio.h"			//用于printf
+#include	"string.h"		//用于printf
+#include	"stdarg.h"		//用于获取不确定个数的参数
+#include	"stdlib.h"		//malloc动态申请内存空间
+
 /*##############################################################################
 ################################################################################
 # 项目名		:	MS0800_PC004V10	
@@ -166,7 +171,7 @@ void MS0800_PM001V20_Server(void)
 
 	PM001V20_BUZZER(SYS_Time);					//BUZZER
 	PM001V20_WORK_LED(SYS_Time);				//WORK_LED	
-	MS0800_PM001V20_PROCESS(SYS_Time);
+	MS0800_PM001V20_PROCESS(SYS_Time);	//消息处理
 	//***********计时转换485控制引脚方式
 	/***********************
 	if(TX_FLag==1)
@@ -230,25 +235,25 @@ u8 MS0800_PM001V20_TR(void)				//通讯接口
 	{	
 		PM001V20_RS4851_CTL(RS485TX);
 		PM001V20_delay(1000);
-		USART_DMASend(USART2,(u32*)PM001V20_RXBuffer,(u32)num1);
+		USART_DMASend(USART2,PM001V20_RXBuffer,(u32)num1);
 		return 1;
 	}
 	else if(num2)		//串口2 接收到数据通过串口1转发到上位机
 	{
-		USART_DMASend(USART1,(u32*)PM001V20_TXBuffer,(u32)num2);
+		USART_DMASend(USART1,PM001V20_TXBuffer,(u32)num2);
 		return 1;
 	}
-	//2)**********DMA发送完成后清规BUFFER
+	//2)**********DMA发送完成后清除BUFFER
 	else if(USART_TX_DMAFlagClear(USART1))
 	{
 //		PM001V20_delay(8000);
-		memset(PM001V20_TXBuffer,0,PM001V20_BufferSize);			//初始化缓冲
+		memset(PM001V20_TXBuffer,0,PM001V20_BufferSize);			//清除缓冲
 		return 1;
 	}
 	else if(USART_TX_DMAFlagClear(USART2))
 	{
 //		PM001V20_delay(8000);
-		memset(PM001V20_RXBuffer,0,PM001V20_BufferSize);			//初始化缓冲
+		memset(PM001V20_RXBuffer,0,PM001V20_BufferSize);			//清除缓冲
 		return 1;
 	}
 	//3)**********数据发送完成后将485控制脚拉低转为接收模式并且清除标志和数据
@@ -396,7 +401,7 @@ void Time_Sync(void)
 	PM001V20_RXBuffer[2]=~PM001V20_RXBuffer[0];
 	PM001V20_RXBuffer[3]=~PM001V20_RXBuffer[1];
 	PM001V20_RXBuffer[5]=0x06;	
-	USART_DMASend(USART2,(u32*)PM001V20_RXBuffer,13);
+	USART_DMASend(USART2,PM001V20_RXBuffer,13);
 }
 
 
