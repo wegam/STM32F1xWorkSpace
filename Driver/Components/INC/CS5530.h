@@ -152,7 +152,7 @@ u32 CS5530_GetADData(CS5530Def *pInfo);
 u32 CS5530_ReadRegister(CS5530Def *pInfo, u8 command);
 void CS5530_ClearBuf(CS5530Def *pInfo);
 void CS5530_PowerUp(CS5530Def *pInfo);		//CS5530上电及初始化
-
+void CS5530_PowerDown(CS5530Def *pInfo);
 
 
 

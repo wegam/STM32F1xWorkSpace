@@ -143,7 +143,7 @@ void PL009V33_Configuration(void)
 	
 	LCD_Configuration();
 	
-	ADC_TempSensorConfiguration(&TempData);
+//	ADC_TempSensorConfiguration(&TempData);
 	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
@@ -229,29 +229,33 @@ void TempSensor_Server(void)
 void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 {
 #if 1
-	CS5530_ADC_Value	=	0;
+	
 	CS5530_Process(&CS5530CH1);
+	CS5530_Process(&CS5530CH2);
+	
+	CS5530_ADC_Value	=	0;
 	if((CS5530CH1.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530CH1.Data.WeighLive	!=CS5530_ADC_Value))
 	{
 		if(lineCH1>=240)
 			lineCH1	=	0;
 		CS5530_ADC_Value	=	CS5530CH1.Data.WeighLive>>0;
-		LCD_Printf(0		,lineCH1,16	,"AD:%0.8d",CS5530_ADC_Value>>2);				//待发药槽位，后边的省略号就是可变参数
-		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>5);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+		LCD_Printf(0		,lineCH1,16	,"AD:%0.8d",CS5530_ADC_Value>>5);				//待发药槽位，后边的省略号就是可变参数
+		
 		lineCH1+=16;
 		
 		CS5530CH1.Data.WeighLive	=0xFFFFFFFF;
 		SysTick_DeleymS(50);				//SysTick延时nmS
 	}
 	CS5530_ADC_Value	=	0;
-	CS5530_Process(&CS5530CH2);
+	
 	if((CS5530CH2.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530CH2.Data.WeighLive	!=CS5530_ADC_Value))
 	{
 		if(lineCH2>=240)
 			lineCH2	=	0;
 		CS5530_ADC_Value	=	CS5530CH2.Data.WeighLive>>0;
-		LCD_Printf(200		,lineCH2,16	,"AD:%0.8d",CS5530_ADC_Value>>2);				//待发药槽位，后边的省略号就是可变参数
-		USART_DMAPrintf	(UART4,"CH2:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+		USART_DMAPrintf	(UART4,"CH2:%0.8X\r\n",CS5530_ADC_Value>>5);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+		LCD_Printf(200		,lineCH2,16	,"AD:%0.8d",CS5530_ADC_Value>>5);				//待发药槽位，后边的省略号就是可变参数		
 		lineCH2+=16;	
 
 		CS5530CH2.Data.WeighLive	=0xFFFFFFFF;

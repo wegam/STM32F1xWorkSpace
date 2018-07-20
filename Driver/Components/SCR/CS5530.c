@@ -406,6 +406,56 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 * 输入			: void
 * 返回值			: void
 *******************************************************************************/
+void CS5530_PowerDown(CS5530Def *pInfo)
+{
+	u8 num=0;
+	u16 retry	=	0;	//重试
+	CS5530_CS_LOW(pInfo);
+	SysTick_DeleymS(200);				//SysTick延时nmS
+	//1)向系统所有ADC发送复位序列
+	//1.1、************写入15个SYNC1命令(0XFF)
+	for(num=0;num<15;num++)
+	{
+		CS5530_WriteOneByte(pInfo, CS5530_SYNC1);
+		SysTick_DeleymS(5);				//SysTick延时nmS
+	}
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	//1.2、************写入1个SYNC0命令（0XFE）
+	CS5530_WriteOneByte(pInfo, CS5530_SYNC0);
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	
+	//2)写配置寄存器 写入CS5530复位命令 RS为1
+	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_CONF_SYSTEM_RESET);
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	CS5530_WriteOneByte(pInfo, CS5530_NULL_BYTE);
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_CONF_NORMAL_MODE);
+	SysTick_DeleymS(50);				//SysTick延时nmS
+	
+	//检测RV是否为1(复位成 功后为1),如果不为1再继续读取配置寄存器		
+	do
+	{ 
+		CS5530_Status = CS5530_ReadRegister(pInfo, CS5530_READ_CONFIG);
+		SysTick_DeleymS(50);				//SysTick延时nmS
+	}
+	while(((CS5530_Status & CS5530_CONF_RESET_STATUS) != 0)&&(retry++<=100));
+	
+	if(retry>=100)
+	{
+		return;
+	}
+	
+	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_CONF_POWER_SAVE_MODE);
+	
+	CS5530_Delay(500);
+	CS5530_CS_HIGH(pInfo);
+}
+/*******************************************************************************
+* 函数名			:	CS5530_PowerUp
+* 功能描述		:	CS5530上电及初始化
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
 void CS5530_PowerUpBac(CS5530Def *pInfo)
 {
 	u8 num=0;
