@@ -11,7 +11,22 @@
 /*
 
 DPACC		Debug Port accesses 		调试端口访问
-APACC		Access Port accesses		访问端口访问 
+APACC		Access Port accesses		访问端口访问
+
+SELECT	AP Select register			AP选择寄存器
+
+*/
+
+//================================================MEM-AP registers 内存访问端口寄存器
+/*
+
+CSW					Control/Status Word register			控制/状态字寄存器
+TAR					Transfer Address Register					传输地址寄存器
+DRW					Data Read/Write register					数据读/写寄存器
+BD0 to BD3	Banked Data Registers							存储数据寄存器
+CFG					Configuration register						配置寄存器
+BASE				Debug Base Address register				调试基地址寄存器
+IDR					Identification Register						设备识别寄存器
 
 */
 #define ERROR                           1
