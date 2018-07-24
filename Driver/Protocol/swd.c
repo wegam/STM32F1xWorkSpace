@@ -4,6 +4,8 @@
 //#include "errors.h"
 //#include "stdbool.h"
 
+#include "debug_cm.h"
+
 
 #ifndef SWD_DEBUG
 #define SWD_DEBUG       0

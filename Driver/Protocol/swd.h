@@ -3,7 +3,7 @@
 
 #include "swd_pin.h"
 #include "stdint.h"
-#include "debug_cm.h"
+//#include "debug_cm.h"
 
 //================================================低位先传
 
@@ -51,6 +51,105 @@ APACC		Access Port accesses		访问端口访问
 #define SWD_REG_R        	(1<<1)			//读写位：0-写，1-读
 #define SWD_REG_W        	(0<<1)			//读写位：0-写，1-读
 #define SWD_REG_ADR(a)    (a & 0x0c)	//DP或者AP寄存器的地址区域，低位先发送
+
+//低位先传
+typedef enum	_AddrInc
+{
+	AddrIncOff		=	0x00,		//地址自增关闭，在任何数据读/写寄存器访问之后，在TAR中的值不变。
+	AddrIncSingle	=	0x01,		//在成功的数据读/写寄存器访问之后，在TAR中的地址按访问的大小递增。
+	AddrIncPacked	=	0x02		//打包传输，暂未理解
+}AddrIncDef;
+
+typedef enum	_CswSize	//访问地址宽度
+{
+	SizeByte		=	0x00,		//Byte (8-bits)
+	Halfword		=	0x01,		//(16-bits)
+	SizeWord		=	0x02,		//(32-bits)
+	Doubleword	=	0x03,		//(64-bits)
+	Size128Bit	=	0x04,		//(128-bits)
+	Size256Bit	=	0x05		//(256-bits)
+}CswSizeDef;
+typedef enum	_TrnMode	//Transfer mode（传输模式)
+{
+	TrnNormal		=	0x00,		//Normal operation.(普通)
+	Trnverify		=	0x01,		//Pushed-verify operation.（...验证）
+	Trncompare	=	0x02,		//Pushed-compare operation.（...比较）
+	TrnReserved	=	0x03		//Reserved.
+}TrnModeDef;
+
+
+typedef struct _MEMAPCSW		//Control/Status Word register(MEM-AP)
+{
+	unsigned long	Size					:3;			//Bit[2:0]地址访问字段大小，暂理解为数据位宽，查看 _CswSize
+	unsigned long	Reserved0			:1;			//Bit[3]Reserved0
+	unsigned long	AddrInc				:2;			//Bit[5:4]地址自增控制，查看 _AddrInc
+	unsigned long DeviceEn 			:1;			//Bit[6]Device enabled.
+	unsigned long TrInProg 			:1;			//Bit[7]Transfer in progress:传输状态，只读位，0-空闲，可以传输；1-忙，正在传输数据
+	unsigned long Mode 					:4;			//Bit[11:8]Mode of operation:操作模式，0-基本模式，常规使用方式；1-Barrier support enabled，不了解，没找到使用
+	unsigned long Type 					:4;			//Bit[15:12]See the entry for {Prot}.bits[30:24]
+	unsigned long Bits					:7;			//Bit[22:16]Reserved1
+	unsigned long SPIDEN				:1;			//Bit[23]0-禁止安全访问；1-使能安全访问
+	unsigned long Prot					:7;			//Bit[30:24]Debug software access enable
+	unsigned long DbgSwEnable		:1;			//Bit[31]Debug software access enable	
+}MEMAPCSWDef;
+
+typedef struct _MEMAPDRW		//Data Read/Write register(MEM-AP)
+{
+	unsigned long	Size					:3;			//Bit[2:0]地址访问字段大小，暂理解为数据位宽，查看 _CswSize
+	unsigned long	Reserved0			:1;			//Bit[3]Reserved0
+	unsigned long	AddrInc				:2;			//Bit[5:4]地址自增控制，查看 _AddrInc
+	unsigned long DeviceEn 			:1;			//Bit[6]Device enabled.
+	unsigned long TrInProg 			:1;			//Bit[7]Transfer in progress:传输状态，只读位，0-空闲，可以传输；1-忙，正在传输数据
+	unsigned long Mode 					:4;			//Bit[11:8]Mode of operation:操作模式，0-基本模式，常规使用方式；1-Barrier support enabled，不了解，没找到使用
+	unsigned long Type 					:4;			//Bit[15:12]See the entry for {Prot}.bits[30:24]
+	unsigned long Bits					:7;			//Bit[22:16]Reserved1
+	unsigned long SPIDEN				:1;			//Bit[23]0-禁止安全访问；1-使能安全访问
+	unsigned long Prot					:7;			//Bit[30:24]Debug software access enable
+	unsigned long DbgSwEnable		:1;			//Bit[31]Debug software access enable	
+}MEMAPDRWDef;
+
+//=============================================DP register descriptions（DP寄存器描述)
+typedef struct _ABORT		//AP Abort register（AP中止寄存器）：中止寄存器强制AP事务中止
+{
+	unsigned long	DAPABORT			:1;			//Bit[0]Debug Port address bank select, see DPBANKSEL on page 2-59.
+	unsigned long	STKCMPCLR			:1;			//Bit[1]Write 1 to this bit to clear the CTRL/STAT.STICKYCMP sticky compare bit to 0.
+	unsigned long	STKERRCLR			:1;			//Bit[2]Write 1 to this bit to clear the CTRL/STAT.STICKYERR sticky error bit to 0.
+	unsigned long WDERRCLR 			:1;			//Bit[3]Write 1 to this bit to clear the CTRL/STAT.WDATAERR write data error bit to 0.
+	unsigned long ORUNERRCLR		:1;			//Bit[4]Write 1 to this bit to clear the CTRL/STAT.STICKYORUN overrun error bit to 0.
+	unsigned long Reserved 			:27;		//Bit[31:5]Write 1 to this bit to clear the CTRL/STAT.WDATAERR write data error bit to 0.
+}ABORTDef;
+typedef struct _CSR		//CTRL/STAT, Control/Status register（控制/状态寄存器）
+{
+	unsigned long	ORUNDETECT		:1;			//Bit[0]overrun detection:此位设置为1以启用溢出检测。
+	unsigned long	STICKYORUN		:1;			//Bit[1]溢出标志：0-未溢出，1-溢出
+	unsigned long	TRNMODE				:2;			//Bit[3:2]Transfer mode：传输模式查看 _TrnMode
+	unsigned long STICKYCMP 		:1;			//Bit[4]This bit is set to 1 when a match occurs on a pushed-compare or a pushed-verify operation
+	unsigned long STICKYERR			:1;			//Bit[5]This bit is set to 1 if an error is returned by an AP transaction
+	unsigned long READOK 				:1;			//Bit[6]DPv1 or higher 读数据链路的定义
+	unsigned long WDATAERR			:1;			//Bit[7]DPv1 or higher 写数据链路的定义
+	unsigned long MASKLANE			:4;			//Bit[11:8]指示在推送比较和推送验证操作中要屏蔽的字节。
+	unsigned long TRNCNT				:12;		//Bit[23:12]Transaction counter（传输计数器）.
+	unsigned long	Reserved			:2;			//Bit[25:24]Reserved
+	unsigned long	CDBGRSTREQ		:1;			//Bit[26]Debug reset request（调试复位请求）
+	unsigned long	CDBGRSTACK		:1;			//Bit[27]Debug reset acknowledge（调试复位应答/状态位）
+	unsigned long	CDBGPRWUPREQ	:1;			//Bit[28]Debug powerup request（调试上电请求）
+	unsigned long	CDBGPWRUPACK	:1;			//Bit[29]Debug powerup acknowledge（调试上电应答/状态位）
+	unsigned long	CSYSPWRUPREQ	:1;			//Bit[30]System powerup request（系统上电请求）
+	unsigned long	CSYSPWRUPACK	:1;			//Bit[31]System powerup acknowledge（系统上电应答/状态标志位）
+}CSRDef;
+typedef struct _EVENTSTAT		//Event Status register（事件状态寄存器）
+{
+	unsigned long	EA						:1;			//Bit[0]Event status flag:0-有事件需要处理；1-无需要处理事件
+	unsigned long	Reserved			:31;		//Bit[31:1]为0
+}EVENTSTATDef;
+
+typedef struct _SELECT		//AP Select register(AP选择寄存器）
+{
+	unsigned long	DPBANKSEL			:4;			//Bit[3:0]Debug Port address bank select, see DPBANKSEL on page 2-59.
+	unsigned long	APBANKSEL			:4;			//Bit[7:4]Selects the active four-word register bank on the current AP
+	unsigned long	Reserved			:16;		//Bit[23:8]地址自增控制，查看 _AddrInc
+	unsigned long APSEL 				:8;			//Bit[31:24]Selects an AP.
+}SELECTDef;
 
 
 //低位先传

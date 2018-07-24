@@ -36,6 +36,12 @@ SPI_FLASH使用功能测试
 #include "STM32_SYSTICK.H"
 
 unsigned short Time	=	0;
+SWJKeyDef	SWK;
+unsigned char	*p	=	NULL;
+unsigned char	Test	=	0;
+unsigned long	*pCSW	=	0;
+
+MEMAPCSWDef	CSW;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -57,6 +63,15 @@ void SWDTEST_Configuration(void)
 //	SW_PinInit();
 //	
 //	SWJ_InitDebug();
+	SWK.Start	=	1;
+	SWK.APnDP	=	1;
+	p	=	(unsigned char*)&SWK;
+	Test	=	*p;
+	
+	CSW.Size	=	2;
+	CSW.DbgSwEnable	=	1;
+	pCSW=(unsigned long*)&CSW;
+
 }
 
 /*******************************************************************************
@@ -68,6 +83,7 @@ void SWDTEST_Configuration(void)
 *******************************************************************************/
 void SWDTEST_Server(void)		//CRC--TEST
 {	
+
 //	if(Time++>1000)
 //	{
 //		Time	=	0;
