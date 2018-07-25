@@ -135,6 +135,21 @@ void SPI_InitializeSPI(SPIDef *pInfo)
 		default		: break;
 	}
 	//3)**********SPI配置选项
+	//3.1)----------SPI波特率检查
+	if(
+			(SPI_BaudRatePrescaler_2		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		||(SPI_BaudRatePrescaler_4		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		||(SPI_BaudRatePrescaler_8		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		||(SPI_BaudRatePrescaler_16		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		||(SPI_BaudRatePrescaler_32		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		||(SPI_BaudRatePrescaler_64		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		||(SPI_BaudRatePrescaler_128	!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		||(SPI_BaudRatePrescaler_256	!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		)
+	{
+		//未设置波特率使用最高
+		pInfo->Port.SPI_BaudRatePrescaler_x	=	SPI_BaudRatePrescaler_2;
+	}
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;				//设置方向				（2线全双工、2线只接收、一线发送、一线接收）
 	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;															//模式         	（从或主设备）
 	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;													//宽度         	（8或16位）
