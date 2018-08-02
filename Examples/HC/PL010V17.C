@@ -133,9 +133,9 @@ void PL010V17_Configuration(void)
 	
 	RS485_Configuration();
 	
-//	DS18B20_Server();
+	DS18B20_Server();
 	
-	USART_Configuration();
+//	USART_Configuration();
 	
 	SysTick_DeleymS(500);				//SysTick延时nmS
 	
@@ -166,7 +166,7 @@ void PL010V17_Server(void)
 //	LCD_Server();				//显示服务相关
 //	CS5530_Server();		//称重服务，AD值处理，获取稳定值
 //	TempSensor_Server();	//内部温度传感器
-//	tmepr	=	DS18B20_Read(&DS18B20);						//复位Dallas,返回结果
+	tmepr	=	DS18B20_Read(&DS18B20);						//复位Dallas,返回结果
 	WenDu	=	tmepr*0.0625;
 //	if(WenDubac!=WenDu)
 //	{
@@ -188,8 +188,8 @@ void PL010V17_Server(void)
 *******************************************************************************/
 void DS18B20_Server(void)
 {	
-	DS18B20.Data_Port	=	GPIOC;
-	DS18B20.Data_Pin	=	GPIO_Pin_11;
+	DS18B20.Data_Port	=	GPIOA;
+	DS18B20.Data_Pin	=	GPIO_Pin_10;
 	DS18B20_Configuration(&DS18B20);
 	DS18B20_Read(&DS18B20);						//复位Dallas,返回结果
 }
