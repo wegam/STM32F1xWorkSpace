@@ -39,11 +39,68 @@
 // AP CSW register, base value
 #define CSW_VALUE (CSW_RESERVED | CSW_MSTRDBG | CSW_HPROT | CSW_DBGSTAT | CSW_SADDRINC)
 
-typedef struct
+/*******************************************************************************
+*函数名			:	SWD_TransRequest
+*功能描述		:	发送起始请求
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned char SWD_TransRequest(unsigned char request)
 {
-    unsigned long r[16];
-    unsigned long xpsr;
-} DEBUG_STATE;
+	unsigned char ack 		= 0;
+	unsigned char bit 		= 0;
+	unsigned char parity	=	0;
+	unsigned char num 		= 0;
+  unsigned char temp 		= 0;
+  SWJRequestDef *Request=(SWJRequestDef*)&request;
+  
+  request=request<<1;
+	//=============计算校验位：request低4位1的个数为奇数校验为1，否则为0
+  temp  = request&0x0F;
+	for(num=0;num<4;num++)
+	{
+    parity  += temp&0x01;
+    temp>>=1;
+  }
+  Request->Start  = 0x01;
+  Request->Parity = parity&0x01;  
+  Request->Stop   = 0x00;
+  Request->Park   = 0x01;
+  
+	SWDIO_SET_OUTPUT();		//SWDIO设置为输出
+	SWDIO_SET();//SWDIO_OUT(1)
+  SWDIO_CLR();//SWDIO_OUT(0)
+  SWDIO_SET();//SWDIO_OUT(1)
+	/* Packet Request */
+	SW_WRITE_BIT(Request->Start);     /* Start Bit */		//起始位：值为1
+	SW_WRITE_BIT(Request->APnDP);     /* APnDP Bit */		//寄存器访问方式：0-DPACC访问，1-APACC访问
+	SW_WRITE_BIT(Request->RnW);       /* RnW Bit */			//读写位：0-写，1-读
+	SW_WRITE_BIT(Request->Addr0);     /* Addr2 Bit */				//DP或者AP寄存器的地址区域，低位先发送--低位
+	SW_WRITE_BIT(Request->Addr1);     /* Addr3 Bit */				//DP或者AP寄存器的地址区域，低位先发送--高位
+	SW_WRITE_BIT(Request->Parity);    /* Parity Bit */		//奇偶校验位：0-APnDP到Addr中1的个数为偶数；1--APnDP到Addr中1的个数为奇数
+	SW_WRITE_BIT(Request->Stop);      /* Stop Bit */			//停止位：值为0
+	SW_WRITE_BIT(Request->Park);      /* Park Bit */			//单一位：传输该位时，主机拉高然后不再驱动该位
+  
+	SWDIO_SET_INPUT();			//SWDIO设置为输入
+
+	/* Turnaround */
+	//    for(n = 1; n; n--)
+	//    {
+	//        SW_CLOCK_CYCLE();
+	//    }
+	SW_CLOCK_CYCLE();
+	/* Acknowledge response */	//读应答
+	for(num = 0; num < 3; num++)
+	{
+			bit = SW_READ_BIT();		//读一位数据
+			ack  |= bit << num;
+	}
+	return ack;
+}
+
 /*******************************************************************************
 *函数名			:	SWD_TransferOnce
 *功能描述		:	单次传输：读/写传输
@@ -59,42 +116,10 @@ unsigned char SWD_TransferOnce(unsigned long request, unsigned long *data)
     unsigned long bit;
     unsigned long val;
     unsigned long parity;
-
     unsigned long n;
-		SWDIO_SET_OUTPUT();		//SWDIO设置为输出
-    /* Packet Request */
-    parity = 0;
-    SW_WRITE_BIT(1);         /* Start Bit */		//起始位：值为1
-    bit = request & 0x1;
-    SW_WRITE_BIT(bit);       /* APnDP Bit */		//寄存器访问方式：0-DPACC访问，1-APACC访问
-    parity += bit;
-    bit = (request >> 1) & 0x1;
-    SW_WRITE_BIT(bit);       /* RnW Bit */			//读写位：0-写，1-读
-    parity += bit;
-    bit = request >> 2;
-    SW_WRITE_BIT(bit);       /* A2 Bit */				//DP或者AP寄存器的地址区域，低位先发送--低位
-    parity += bit;
-    bit = request >> 3;
-    SW_WRITE_BIT(bit);       /* A3 Bit */				//DP或者AP寄存器的地址区域，低位先发送--高位
-    parity += bit;
-    SW_WRITE_BIT(parity);    /* Parity Bit */		//奇偶校验位：0-APnDP到Addr中1的个数为偶数；1--APnDP到Addr中1的个数为奇数
-    SW_WRITE_BIT(0);         /* Stop Bit */			//停止位：值为0
-    SW_WRITE_BIT(1);         /* Park Bit */			//单一位：传输该位时，主机拉高然后不再驱动该位
 
-    SWDIO_SET_INPUT();			//SWDIO设置为输入
-
-    /* Turnaround */
-//    for(n = 1; n; n--)
-//    {
-//        SW_CLOCK_CYCLE();
-//    }
-		SW_CLOCK_CYCLE();
-    /* Acknowledge response */	//读应答
-    for(n = 0; n < 3; n++)
-    {
-        bit = SW_READ_BIT();		//读一位数据
-        ack  |= bit << n;
-    }
+		ack = SWD_TransRequest(request);
+  
     switch(ack)
     {
         case DAP_TRANSFER_OK:			//应答OK，根据请求类型执行相应操作
@@ -235,7 +260,7 @@ unsigned char SWD_Transfer(unsigned long request, unsigned long *data)
 
     for(i = 0; i < MAX_SWD_RETRY; i++)
     {
-        ack = SWD_TransferOnce(request, data);
+        ack = SWD_TransferOnce(request, data);		//单次传输：读/写传输
 
         // if ack != WAIT
         if(ack != DAP_TRANSFER_WAIT)
@@ -243,7 +268,6 @@ unsigned char SWD_Transfer(unsigned long request, unsigned long *data)
             return ack;
         }
     }
-
     return ack;
 }
 
@@ -259,8 +283,8 @@ static void SWJ_SendClock(unsigned long count, unsigned char swdio_logic)
 }
 */
 /*******************************************************************************
-*函数名			:	SWD_Transfer
-*功能描述		:	数据传输-读写，失败时在最大重试范围内重试
+*函数名			:	SWJ_SendData
+*功能描述		:	发送16字节数据
 *输入				: request-请求参数；*data-读数据时为保存数据指针，写数据时为待写入的数据
 *返回值			:	ack 状态
 *修改时间		:	无
@@ -289,7 +313,10 @@ static void SWJ_SendData(uint16_t data)
 void Line_Rest(void)
 {
 	unsigned long i;
-	SWDIO_SET();
+  SWDIO_SET_OUTPUT();
+	SWDIO_SET();//SWDIO_OUT(1)
+  SWDIO_CLR();//SWDIO_OUT(0)
+  SWDIO_SET();//SWDIO_OUT(1)
 	for(i = 0; i < 51; i++)
 	{
 		SW_CLOCK_CYCLE();
@@ -313,7 +340,7 @@ void Line_Rest(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-unsigned char SWJ_JTAG2SWD(void)
+static unsigned char SWJ_JTAG2SWD(void)
 {
     unsigned long i;
 	SWDIO_SET_OUTPUT();
@@ -344,7 +371,7 @@ unsigned char SWJ_JTAG2SWD(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-unsigned char SWJ_ReadDP(unsigned char adr, unsigned long *val)
+static unsigned char SWJ_ReadDP(unsigned char adr, unsigned long *val)
 {
 	unsigned long tmp_in;
 	unsigned char ack;
@@ -371,7 +398,7 @@ unsigned char SWJ_WriteDP(unsigned char adr, unsigned long val)
     unsigned char ack;
     unsigned char err;
 
-    req = SWD_REG_DP | SWD_REG_W | SWD_REG_ADR(adr);
+    req = SWD_REG_DP | SWD_REG_W | SWD_REG_ADR(adr);		//DP访问&写模式&adr
     ack = SWD_Transfer(req, &val);
 
     (ack == DAP_TRANSFER_OK) ? (err = 0) : (err = 1);
@@ -473,6 +500,15 @@ static unsigned char SWJ_WriteData(unsigned long addr, unsigned long data)
     (ack == DAP_TRANSFER_OK) ? (err = 0) : (err = 1);
     return err;
 }
+/*******************************************************************************
+*函数名			:	SWJ_WriteMem8
+*功能描述		:	往内存写一个8位数据
+*输入				: adr-地址；val-待写入数据
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //往目标内存写数据u8
 //1故障 0正常
 static unsigned char SWJ_WriteMem8(unsigned long addr, unsigned char val)
@@ -486,6 +522,15 @@ static unsigned char SWJ_WriteMem8(unsigned long addr, unsigned char val)
     err = SWJ_WriteData(addr, tmp);
     return err;
 }
+/*******************************************************************************
+*函数名			:	SWJ_WriteMem32
+*功能描述		:	往内存写一个32位数据
+*输入				: adr-地址；val-待写入数据
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //往目标内存写数据u32
 //1故障 0正常
 unsigned char SWJ_WriteMem32(unsigned long addr, unsigned long val)
@@ -497,6 +542,15 @@ unsigned char SWJ_WriteMem32(unsigned long addr, unsigned long val)
     return err;
 }
 
+/*******************************************************************************
+*函数名			:	SWJ_WriteBlock
+*功能描述		:	块写入
+*输入				: adr-地址；buf-待写入数据起始地址，len-待写入的数据长度
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 // Write 32-bit word aligned values to target memory using address auto-increment.
 // size is in bytes.
 //
@@ -544,7 +598,15 @@ static unsigned char SWJ_WriteBlock(unsigned long addr, unsigned char *buf, unsi
     (ack == DAP_TRANSFER_OK) ? (err = 0) : (err = 1);
     return 0;
 }
-
+/*******************************************************************************
+*函数名			:	SWJ_ReadData
+*功能描述		:	读数据
+*输入				: adr-地址；val-读取的数据存储地址
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 // Read target memory.
 //往目标内存读数据
 //1故障 0正常
@@ -565,6 +627,15 @@ static unsigned char SWJ_ReadData(unsigned long addr, unsigned long *val)
     (ack == DAP_TRANSFER_OK) ? (err = 0) : (err = 1);
     return err;
 }
+/*******************************************************************************
+*函数名			:	SWJ_ReadMem32
+*功能描述		:	从内存读一个32位数据
+*输入				: adr-地址；val-读取的数据存储地址
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //往目标内存读数据u32
 //1故障 0正常
 static unsigned char SWJ_ReadMem32(unsigned long addr, unsigned long *val)
@@ -574,6 +645,15 @@ static unsigned char SWJ_ReadMem32(unsigned long addr, unsigned long *val)
     err = SWJ_ReadData(addr, val);
     return err;
 }
+/*******************************************************************************
+*函数名			:	SWJ_ReadMem8
+*功能描述		:	从内存读一个8位数据
+*输入				: adr-地址；val-读取的数据存储地址
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //往目标内存读数据u8
 //1故障 0正常
 static unsigned char SWJ_ReadMem8(unsigned long addr, unsigned char *val)
@@ -589,7 +669,15 @@ static unsigned char SWJ_ReadMem8(unsigned long addr, unsigned char *val)
 
     return err;
 }
-
+/*******************************************************************************
+*函数名			:	SWJ_ReadBlock
+*功能描述		:	块读取
+*输入				: adr-地址；buf-读取的数据存储起始地址，len-待读取的数据长度
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 // Read 32-bit word aligned values from target memory using address auto-increment.
 // size is in bytes.
 //往目标内存读数据
@@ -638,7 +726,15 @@ static unsigned char SWJ_ReadBlock(unsigned long addr, unsigned char *buf, unsig
 }
 
 #define TARGET_AUTO_INCREMENT_PAGE_SIZE    (0x400)
-
+/*******************************************************************************
+*函数名			:	swd_write_memory
+*功能描述		:	写寄存器
+*输入				: adr-地址；buf-读取的数据存储起始地址，len-待读取的数据长度
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 // Write unaligned data to target memory.
 // size is in bytes.
 //往目标内存写数据
@@ -690,7 +786,15 @@ unsigned char swd_write_memory(unsigned long address, unsigned char *data, unsig
 
     return 0;
 }
-
+/*******************************************************************************
+*函数名			:	swd_read_memory
+*功能描述		:	读寄存器
+*输入				: adr-地址；buf-读取的数据存储起始地址，len-待读取的数据长度
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 // Read unaligned data from target memory.
 // size is in bytes.
 //往目标内存读数据
@@ -740,12 +844,30 @@ unsigned char swd_read_memory(unsigned long address, unsigned char *data, unsign
 
     return 0;
 }
-//往目标内存读数据
+/*******************************************************************************
+*函数名			:	SWJ_ReadMem
+*功能描述		:	从目标内存读数据
+*输入				: adr-地址；buf-读取的数据存储起始地址，len-待读取的数据长度
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+//从目标内存读数据
 //1故障 0正常
 unsigned char SWJ_ReadMem(unsigned long addr, unsigned char *buf, unsigned long len)
 {
     return swd_read_memory(addr, buf, len);
 }
+/*******************************************************************************
+*函数名			:	SWJ_WriteMem
+*功能描述		:	往目标内存写数据
+*输入				: adr-地址；buf-读取的数据存储起始地址，len-待读取的数据长度
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //往目标内存写数据
 //1故障 0正常
 unsigned char SWJ_WriteMem(unsigned long addr, unsigned char *buf, unsigned long len)
@@ -753,7 +875,15 @@ unsigned char SWJ_WriteMem(unsigned long addr, unsigned char *buf, unsigned long
     return swd_write_memory(addr, buf, len);
 }
 
-
+/*******************************************************************************
+*函数名			:	SWJ_WaitUntilHalted
+*功能描述		:	等目标Halt
+*输入				: 
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //等目标Halt
 //1故障 0正常
 static unsigned char SWJ_WaitUntilHalted(void)
@@ -777,6 +907,15 @@ static unsigned char SWJ_WaitUntilHalted(void)
 
     return DAP_TRANSFER_ERROR;		//0x08传输错误--校验错误	
 }
+/*******************************************************************************
+*函数名			:	SWJ_SetTargetState
+*功能描述		:	设置目标状态
+*输入				: 
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //设置目标复位状态
 //1故障 0正常
 unsigned char SWJ_SetTargetState(TARGET_RESET_STATE state)
@@ -821,6 +960,15 @@ unsigned char SWJ_SetTargetState(TARGET_RESET_STATE state)
 
     return 0;
 }
+/*******************************************************************************
+*函数名			:	SWJ_WriteCoreReg
+*功能描述		:	写目标内核寄存器
+*输入				: 
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //写目标核寄存器
 //1故障 0正常
 static unsigned char SWJ_WriteCoreReg(unsigned long n, unsigned long val)
@@ -844,6 +992,15 @@ static unsigned char SWJ_WriteCoreReg(unsigned long n, unsigned long val)
 
     return 1;
 }
+/*******************************************************************************
+*函数名			:	SWJ_ReadCoreReg
+*功能描述		:	读目标内核寄存器
+*输入				: 
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //读目标核寄存器
 //1故障 0正常
 static unsigned char SWJ_ReadCoreReg(unsigned long n, unsigned long *val)
@@ -871,6 +1028,15 @@ static unsigned char SWJ_ReadCoreReg(unsigned long n, unsigned long *val)
 
     return err;
 }
+/*******************************************************************************
+*函数名			:	swd_write_debug_state
+*功能描述		:	写debug状态
+*输入				: 
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //写debug状态
 //1故障 0正常
 unsigned char swd_write_debug_state(DEBUG_STATE *state)
@@ -909,7 +1075,15 @@ unsigned char swd_write_debug_state(DEBUG_STATE *state)
 
     return 0;
 }
-
+/*******************************************************************************
+*函数名			:	swd_flash_syscall_exec
+*功能描述		:	flash状态回读
+*输入				: 
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //flash状态回读????????????????????
 //1故障 0正常
 unsigned char swd_flash_syscall_exec(const FLASH_SYSCALL *sysCallParam, unsigned long entry, unsigned long arg1, unsigned long arg2, unsigned long arg3, unsigned long arg4)
@@ -957,36 +1131,45 @@ unsigned char swd_flash_syscall_exec(const FLASH_SYSCALL *sysCallParam, unsigned
 
     return 0;
 }
-
+/*******************************************************************************
+*函数名			:	SWJ_InitDebug
+*功能描述		:	将设备JTAG/SWD状态初始化
+*输入				: 
+*返回值			:	err
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 //将设备JTAG/SWD状态初始化
 //1故障 0正常
 unsigned char SWJ_InitDebug(void)
 {
-    unsigned long tmp = 0;
-    unsigned long val;
+  unsigned long tmp = 0;
+  unsigned long val;
+  unsigned char ack;
     /*JTAG 转到 SWD*/
     SWJ_JTAG2SWD();
 	
-    if(SWJ_ReadDP(DP_IDCODE, &val))
+    if(SWJ_ReadDP(DP_IDCODE, &val))		//读DPACC
     {
         return 1;
     }
 		
-		return 0;
-		
     SWD_TRACE("DP_IDCODE:0x%X\r\n", val);
 
-    SWJ_WriteDP(DP_ABORT, STKCMPCLR | STKERRCLR | WDERRCLR | ORUNERRCLR);
+    SWJ_WriteDP(DP_ABORT, STKCMPCLR	|	STKERRCLR	|	WDERRCLR	|	ORUNERRCLR);
 
     /* Ensure CTRL/STAT register selected in DPBANKSEL */
-    SWJ_WriteDP(DP_SELECT, 0);
+    //SWJ_WriteDP(DP_SELECT, 0);
 
     /* Power ups */
-    SWJ_WriteDP(DP_CTRL_STAT, CSYSPWRUPREQ | CDBGPWRUPREQ);
-
+    SWJ_WriteDP(DP_CTRL_STAT, CSYSPWRUPREQ | CDBGPWRUPREQ);   // System Power-up Request  // Debug Power-up Request
+    
+    //等待上电成功
     do
-    {
-        if(!SWJ_ReadDP(DP_CTRL_STAT, &tmp))
+    { 
+        ack = SWJ_ReadDP(DP_CTRL_STAT, &tmp);
+        if(0!=ack)
         {
             return 0;
         }

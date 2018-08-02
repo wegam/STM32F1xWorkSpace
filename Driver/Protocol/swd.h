@@ -3,7 +3,7 @@
 
 #include "swd_pin.h"
 #include "stdint.h"
-//#include "debug_cm.h"
+#include "debug_cm.h"
 
 //================================================低位先传
 
@@ -16,7 +16,7 @@ APACC		Access Port accesses		访问端口访问
 */
 #define ERROR                           1
 #define SUCCESS                         0
-#define MAX_SWD_RETRY   								1				//最大重试次数
+#define MAX_SWD_RETRY   								5				//最大重试次数
 
 // DAP Transfer Response
 #define DAP_TRANSFER_OK                 (1<<0)	//0x01正常
@@ -77,7 +77,6 @@ typedef enum	_TrnMode	//Transfer mode（传输模式)
 	TrnReserved	=	0x03		//Reserved.
 }TrnModeDef;
 
-
 typedef struct _MEMAPCSW		//Control/Status Word register(MEM-AP)
 {
 	unsigned long	Size					:3;			//Bit[2:0]地址访问字段大小，暂理解为数据位宽，查看 _CswSize
@@ -109,47 +108,82 @@ typedef struct _MEMAPDRW		//Data Read/Write register(MEM-AP)
 }MEMAPDRWDef;
 
 //=============================================DP register descriptions（DP寄存器描述)
-typedef struct _ABORT		//AP Abort register（AP中止寄存器）：中止寄存器强制AP事务中止
+//typedef struct _ABORT		//AP Abort register（AP中止寄存器）：中止寄存器强制AP事务中止
+//{
+//	unsigned long	DAPABORT			:1;			//Bit[0]Debug Port address bank select, see DPBANKSEL on page 2-59.
+//	unsigned long	STKCMPCLR			:1;			//Bit[1]Write 1 to this bit to clear the CTRL/STAT.STICKYCMP sticky compare bit to 0.
+//	unsigned long	STKERRCLR			:1;			//Bit[2]Write 1 to this bit to clear the CTRL/STAT.STICKYERR sticky error bit to 0.
+//	unsigned long WDERRCLR 			:1;			//Bit[3]Write 1 to this bit to clear the CTRL/STAT.WDATAERR write data error bit to 0.
+//	unsigned long ORUNERRCLR		:1;			//Bit[4]Write 1 to this bit to clear the CTRL/STAT.STICKYORUN overrun error bit to 0.
+//	unsigned long Reserved 			:27;		//Bit[31:5]Write 1 to this bit to clear the CTRL/STAT.WDATAERR write data error bit to 0.
+//}ABORTDef;
+//typedef struct _CSR		//CTRL/STAT, Control/Status register（控制/状态寄存器）
+//{
+//	unsigned long	ORUNDETECT		:1;			//Bit[0]overrun detection:此位设置为1以启用溢出检测。
+//	unsigned long	STICKYORUN		:1;			//Bit[1]溢出标志：0-未溢出，1-溢出
+//	unsigned long	TRNMODE				:2;			//Bit[3:2]Transfer mode：传输模式查看 _TrnMode
+//	unsigned long STICKYCMP 		:1;			//Bit[4]This bit is set to 1 when a match occurs on a pushed-compare or a pushed-verify operation
+//	unsigned long STICKYERR			:1;			//Bit[5]This bit is set to 1 if an error is returned by an AP transaction
+//	unsigned long READOK 				:1;			//Bit[6]DPv1 or higher 读数据链路的定义
+//	unsigned long WDATAERR			:1;			//Bit[7]DPv1 or higher 写数据链路的定义
+//	unsigned long MASKLANE			:4;			//Bit[11:8]指示在推送比较和推送验证操作中要屏蔽的字节。
+//	unsigned long TRNCNT				:12;		//Bit[23:12]Transaction counter（传输计数器）.
+//	unsigned long	Reserved			:2;			//Bit[25:24]Reserved
+//	unsigned long	CDBGRSTREQ		:1;			//Bit[26]Debug reset request（调试复位请求）
+//	unsigned long	CDBGRSTACK		:1;			//Bit[27]Debug reset acknowledge（调试复位应答/状态位）
+//	unsigned long	CDBGPRWUPREQ	:1;			//Bit[28]Debug powerup request（调试上电请求）
+//	unsigned long	CDBGPWRUPACK	:1;			//Bit[29]Debug powerup acknowledge（调试上电应答/状态位）
+//	unsigned long	CSYSPWRUPREQ	:1;			//Bit[30]System powerup request（系统上电请求）
+//	unsigned long	CSYSPWRUPACK	:1;			//Bit[31]System powerup acknowledge（系统上电应答/状态标志位）
+//}CSRDef;
+typedef struct _DLCR		//Data Link Control Register（数据链路控制寄存器）
 {
-	unsigned long	DAPABORT			:1;			//Bit[0]Debug Port address bank select, see DPBANKSEL on page 2-59.
-	unsigned long	STKCMPCLR			:1;			//Bit[1]Write 1 to this bit to clear the CTRL/STAT.STICKYCMP sticky compare bit to 0.
-	unsigned long	STKERRCLR			:1;			//Bit[2]Write 1 to this bit to clear the CTRL/STAT.STICKYERR sticky error bit to 0.
-	unsigned long WDERRCLR 			:1;			//Bit[3]Write 1 to this bit to clear the CTRL/STAT.WDATAERR write data error bit to 0.
-	unsigned long ORUNERRCLR		:1;			//Bit[4]Write 1 to this bit to clear the CTRL/STAT.STICKYORUN overrun error bit to 0.
-	unsigned long Reserved 			:27;		//Bit[31:5]Write 1 to this bit to clear the CTRL/STAT.WDATAERR write data error bit to 0.
-}ABORTDef;
-typedef struct _CSR		//CTRL/STAT, Control/Status register（控制/状态寄存器）
+	unsigned long	Reserved0			:6;			//Bit[5:0]Event status flag:0-有事件需要处理；1-无需要处理事件
+	unsigned long	Reserved1			:1;			//Bit[6]为0
+	unsigned long	Reserved2			:1;			//Bit[7]为0
+	unsigned long	TURNROUND			:2;			//Bit[9:8]为0
+	unsigned long	Reserved3			:22;		//Bit[31:10]为0
+}DLCRDef;
+typedef struct _DLPIDR		//Data Link Protocol Identification Register（数据链路协议识别寄存器）
 {
-	unsigned long	ORUNDETECT		:1;			//Bit[0]overrun detection:此位设置为1以启用溢出检测。
-	unsigned long	STICKYORUN		:1;			//Bit[1]溢出标志：0-未溢出，1-溢出
-	unsigned long	TRNMODE				:2;			//Bit[3:2]Transfer mode：传输模式查看 _TrnMode
-	unsigned long STICKYCMP 		:1;			//Bit[4]This bit is set to 1 when a match occurs on a pushed-compare or a pushed-verify operation
-	unsigned long STICKYERR			:1;			//Bit[5]This bit is set to 1 if an error is returned by an AP transaction
-	unsigned long READOK 				:1;			//Bit[6]DPv1 or higher 读数据链路的定义
-	unsigned long WDATAERR			:1;			//Bit[7]DPv1 or higher 写数据链路的定义
-	unsigned long MASKLANE			:4;			//Bit[11:8]指示在推送比较和推送验证操作中要屏蔽的字节。
-	unsigned long TRNCNT				:12;		//Bit[23:12]Transaction counter（传输计数器）.
-	unsigned long	Reserved			:2;			//Bit[25:24]Reserved
-	unsigned long	CDBGRSTREQ		:1;			//Bit[26]Debug reset request（调试复位请求）
-	unsigned long	CDBGRSTACK		:1;			//Bit[27]Debug reset acknowledge（调试复位应答/状态位）
-	unsigned long	CDBGPRWUPREQ	:1;			//Bit[28]Debug powerup request（调试上电请求）
-	unsigned long	CDBGPWRUPACK	:1;			//Bit[29]Debug powerup acknowledge（调试上电应答/状态位）
-	unsigned long	CSYSPWRUPREQ	:1;			//Bit[30]System powerup request（系统上电请求）
-	unsigned long	CSYSPWRUPACK	:1;			//Bit[31]System powerup acknowledge（系统上电应答/状态标志位）
-}CSRDef;
-typedef struct _EVENTSTAT		//Event Status register（事件状态寄存器）
+	unsigned long	PROTVSN				:4;			//Bit[3:0]定义实现的串行线调试协议版本，01-V2
+	unsigned long	Reserved			:24;		//Bit[27:4]UNKNOWN
+	unsigned long	TINSTANCE			:4;			//Bit[31:28]实现定义。定义此设备的实例号。	
+}DLPIDRDef;
+typedef struct _EVENTSTAT		//Event Status register（状态寄存器）
 {
-	unsigned long	EA						:1;			//Bit[0]Event status flag:0-有事件需要处理；1-无需要处理事件
-	unsigned long	Reserved			:31;		//Bit[31:1]为0
+	unsigned long	EA						:1;			//Bit[0]事件标识；0--有事件，1--无事件
+	unsigned long	Reserved			:31;		//Bit[31:1]RES0.
 }EVENTSTATDef;
-
-typedef struct _SELECT		//AP Select register(AP选择寄存器）
+typedef struct _RDBUFF		//Event Status register（状态寄存器）
 {
-	unsigned long	DPBANKSEL			:4;			//Bit[3:0]Debug Port address bank select, see DPBANKSEL on page 2-59.
-	unsigned long	APBANKSEL			:4;			//Bit[7:4]Selects the active four-word register bank on the current AP
-	unsigned long	Reserved			:16;		//Bit[23:8]地址自增控制，查看 _AddrInc
-	unsigned long APSEL 				:8;			//Bit[31:24]Selects an AP.
-}SELECTDef;
+	unsigned long	EA						:1;			//Bit[0]事件标识；0--有事件，1--无事件
+	unsigned long	Reserved			:31;		//Bit[31:1]RES0.
+}RDBUFFDef;
+
+//typedef struct _SELECT		//AP Select register(AP选择寄存器）
+//{
+//	unsigned long	DPBANKSEL			:4;			//Bit[3:0]Debug Port address bank select, see DPBANKSEL on page 2-59.调试寄存器地址选择
+//	unsigned long	APBANKSEL			:4;			//Bit[7:4]Selects the active four-word register bank on the current AP 选择当前AP上的活动四字寄存器
+//	unsigned long	Reserved			:16;		//Bit[23:8]地址自增控制，查看 _AddrInc
+//	unsigned long APSEL 				:8;			//Bit[31:24]Selects an AP. AP端口选择
+//}SELECTDef;
+
+typedef struct _TARGETSEL		//Target Selection register（目标选择寄存器）
+{
+	unsigned long	SBO						:1;			//Bit[0]Read-As-One调试寄存器地址选择
+	unsigned long	TDESIGNER			:11;		//Bit[11:1]ID identifies the designer 由JEDEC JEP106延续代码和身份代码组成的11位代码。
+	unsigned long	TPARTNO				:16;		//Bit[27:12]designer of the part 端口编号
+	unsigned long TREVISION 		:4;			//Bit[31:28]Target revision. 目标版本
+}TARGETSELDef;
+
+typedef struct _TARGETID		//Target Identification register（目标识别寄存器）
+{
+	unsigned long	RAO						:1;			//Bit[0]Read-As-One调试寄存器地址选择
+	unsigned long	TDESIGNER			:11;		//Bit[11:1]ID identifies the designer 由JEDEC JEP106延续代码和身份代码组成的11位代码。
+	unsigned long	TPARTNO				:16;		//Bit[27:12]designer of the part 端口编号
+	unsigned long TREVISION 		:4;			//Bit[31:28]Target revision. 目标版本
+}TARGETIDDef;
 
 
 //低位先传
@@ -159,16 +193,17 @@ typedef enum
 	SWJAckWait	=	0x02,		//Wait
 	SWJAckFault	=	0x04		//Fault
 }SWJAckDef;
-typedef struct _SWJKey
+typedef struct _SWJRequest
 {
 	unsigned char Start 	:1;			//起始位：值为1
 	unsigned char APnDP 	:1;			//寄存器访问方式：0-DPACC访问，1-APACC访问
 	unsigned char RnW 		:1;			//读写位：0-写，1-读
-	unsigned char Addr 		:2;			//DP或者AP寄存器的地址区域，低位先发送
+	unsigned char Addr0   :1;			//DP或者AP寄存器的地址区域，低位先发送
+  unsigned char Addr1   :1;			//DP或者AP寄存器的地址区域，低位先发送
 	unsigned char Parity 	:1;			//奇偶校验位：0-APnDP到Addr中1的个数为偶数；1--APnDP到Addr中1的个数为奇数
 	unsigned char Stop 		:1;			//停止位：值为0
 	unsigned char Park	 	:1;			//单一位：传输该位时，主机拉高然后不再驱动该位
-}SWJKeyDef;
+}SWJRequestDef;
 
 
 /*debug_cm.h已经定义
@@ -178,7 +213,11 @@ typedef struct _SWJKey
 #define APSEL          0xFF000000  // APSEL Mask
 */
 
-
+typedef struct
+{
+    unsigned long r[16];
+    unsigned long xpsr;
+} DEBUG_STATE;
 typedef enum
 {
     RESET_HOLD,              // Hold target in reset
@@ -210,7 +249,7 @@ typedef struct
 
 
 //!< API
-unsigned char SWJ_ReadDP(unsigned char adr, unsigned long *val);
+static unsigned char SWJ_ReadDP(unsigned char adr, unsigned long *val);
 unsigned char SWJ_WriteDP(unsigned char adr, unsigned long val);
 unsigned char SWJ_ReadAP(unsigned long adr, unsigned long *val);
 unsigned char SWJ_WriteAP(unsigned long adr, unsigned long val);
@@ -220,7 +259,38 @@ unsigned char SWJ_WriteMem(unsigned long addr, unsigned char *buf, unsigned long
 unsigned char SWJ_SetTargetState(TARGET_RESET_STATE state);
 unsigned char swd_flash_syscall_exec(const FLASH_SYSCALL *sysCallParam, unsigned long entry,unsigned long arg1,unsigned long arg2, unsigned long arg3, unsigned long arg4);
 
+//Driver
+unsigned char SWD_TransRequest(unsigned char request);			//发送起始请求
+unsigned char SWD_TransferOnce(unsigned long request, unsigned long *data);		//单次传输：读/写传输
+unsigned char SWD_Transfer(unsigned long request, unsigned long *data);				//数据传输-读写，失败时在最大重试范围内重试
+static void SWJ_SendData(uint16_t data);			//发送16字节数据
+void Line_Rest(void);			//线路复位--发送至少50个时钟的DIO-1,这里发56个
+static unsigned char SWJ_JTAG2SWD(void);		//从JTAG切换到SWD模式
+static unsigned char SWJ_ReadDP(unsigned char adr, unsigned long *val);		//读DPACC
+unsigned char SWJ_WriteDP(unsigned char adr, unsigned long val);		//写DPACC
+unsigned char SWJ_ReadAP(unsigned long adr, unsigned long *val);		//读APACC
+unsigned char SWJ_WriteAP(unsigned long adr, unsigned long val);		//写APACC
 
+static unsigned char SWJ_WriteData(unsigned long addr, unsigned long data);	//写数据
 
+static unsigned char SWJ_WriteMem8(unsigned long addr, unsigned char val);	//往内存写一个8位数据
+unsigned char SWJ_WriteMem32(unsigned long addr, unsigned long val);				//往内存写一个32位数据
+static unsigned char SWJ_WriteBlock(unsigned long addr, unsigned char *buf, unsigned long len);		//块写入
+static unsigned char SWJ_ReadData(unsigned long addr, unsigned long *val);	//读数据
+static unsigned char SWJ_ReadMem32(unsigned long addr, unsigned long *val);	//从内存读一个32位数据
+static unsigned char SWJ_ReadMem8(unsigned long addr, unsigned char *val);	//从内存读一个8位数据
+static unsigned char SWJ_ReadBlock(unsigned long addr, unsigned char *buf, unsigned long len);		//块读取
+unsigned char swd_write_memory(unsigned long address, unsigned char *data, unsigned long size);		//写寄存器
+unsigned char swd_read_memory(unsigned long address, unsigned char *data, unsigned long size);		//读寄存器
+unsigned char SWJ_ReadMem(unsigned long addr, unsigned char *buf, unsigned long len);							//从目标内存读数据
+unsigned char SWJ_WriteMem(unsigned long addr, unsigned char *buf, unsigned long len);						//往目标内存写数据
+static unsigned char SWJ_WaitUntilHalted(void);			//等目标Halt
+unsigned char SWJ_SetTargetState(TARGET_RESET_STATE state);			//设置目标状态
+static unsigned char SWJ_WriteCoreReg(unsigned long n, unsigned long val);		//写目标内核寄存器
+static unsigned char SWJ_ReadCoreReg(unsigned long n, unsigned long *val);		//读目标内核寄存器
+unsigned char swd_write_debug_state(DEBUG_STATE *state);		//写debug状态
+unsigned char swd_flash_syscall_exec(const FLASH_SYSCALL *sysCallParam, unsigned long entry, unsigned long arg1, unsigned long arg2, unsigned long arg3, unsigned long arg4);	//flash状态回读
+unsigned char SWJ_InitDebug(void);		//将设备JTAG/SWD状态初始化
+void softdelay(unsigned long us);			//软件延时
 
 #endif

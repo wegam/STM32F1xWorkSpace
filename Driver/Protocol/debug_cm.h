@@ -42,7 +42,7 @@ extern "C" {
 #define DPIDR		0x00	//DPIDR, Debug Port Identification Register（调试接口信息寄存器）
 
 // Abort Register definitions
-#define DAPABORT       0x00000001  // DAP Abort
+#define DAPABORT       0x00000001  // DAP Abort                       //AP Abort register（AP中止寄存器）：中止寄存器强制AP事务中止
 #define STKCMPCLR      0x00000002  // Clear STICKYCMP Flag (SW Only)
 #define STKERRCLR      0x00000004  // Clear STICKYERR Flag (SW Only)
 #define WDERRCLR       0x00000008  // Clear WDATAERR Flag (SW Only)

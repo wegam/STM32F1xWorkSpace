@@ -95,8 +95,18 @@ void SW_CLOCK_CYCLE(void)
 *注释				:	wegam@sina.com
 *******************************************************************************/
 void SW_WRITE_BIT(unsigned long bit)
-{
-    SWDIO_OUT(bit);		//设置SWDIO电平
-    SW_CLOCK_CYCLE();	//输出时钟
+{    
+  if(bit&0x01)
+  {
+    SWDIO_PORT ->BSRR	=	SWDIO_PIN; //SWDIO_OUT(1)
+  }
+  else
+  {
+    SWDIO_PORT ->BRR 	= SWDIO_PIN;  //SWDIO_OUT(0)
+  }
+  SWCLK_PORT ->BSRR	=	SWCLK_PIN;  //SWCLK	=	HIGH
+  SWCLK_PORT ->BSRR	=	SWCLK_PIN;  //SWCLK	=	HIGH
+  SWCLK_PORT ->BSRR	=	SWCLK_PIN;  //SWCLK	=	HIGH
+  SWCLK_PORT ->BRR 	=	SWCLK_PIN;  //SWCLK	=	LOW
 }
 

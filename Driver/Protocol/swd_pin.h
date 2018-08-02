@@ -72,7 +72,7 @@
 #define SWCLK_CLR()         	SWCLK_PORT ->BRR 	=	SWCLK_PIN  //SWCLK	=	LOW
 #define RESET_SET()         	RESET_PORT ->BSRR	=	RESET_PIN  //REST	=	HIGH
 #define RESET_CLR()          	RESET_PORT ->BRR 	=	RESET_PIN  //REST	=	LOW
-#define SWDIO_SET()          	SWDIO_PORT ->BSRR	=	SWDIO_PIN   //SWDIO_OUT(1)
+#define SWDIO_SET()          	SWDIO_PORT ->BSRR	=	SWDIO_PIN  //SWDIO_OUT(1)
 #define SWDIO_CLR()          	SWDIO_PORT ->BRR 	= SWDIO_PIN  //SWDIO_OUT(0)
 
 #define SWDIO_IN()    	GPIO_ReadInputDataBit(SWDIO_PORT,SWDIO_PIN)//BITBAND_REG(PTB->PDIR, n)
