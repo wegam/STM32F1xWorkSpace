@@ -36,10 +36,10 @@ void PD010V20_Configuration(void)
 
 	GPIO_DeInitAll();									//将所有的GPIO关闭----V20170605
 	
-//	Sensor_Configuration();	
-//	Switch_Configuration();	
-//	Pmos_Configuration();	
-//	Motor_Configuration();	
+	Sensor_Configuration();	
+	Switch_Configuration();	
+	Pmos_Configuration();	
+	Motor_Configuration();	
 //	RS485_Configuration();	
 //	RS232_Configuration();	
 //	CAN_Configuration();
@@ -63,10 +63,10 @@ void PD010V20_Server(void)
 		RunTime=0;
 		FLASH_Server();
 	}
-//	Sensor_Server();
-//	Switch_Server();
-//	Pmos_Server();
-//	Motor_Server();
+	Sensor_Server();
+	Switch_Server();
+	Pmos_Server();
+	Motor_Server();
 //	RS485_Server();
 //	RS232_Server();
 //	CAN_Server();
@@ -375,7 +375,6 @@ void Motor_Configuration(void)
 void RS485_Configuration(void)
 {
 	unsigned long BaudRate	=	0;
-	unsigned char *RxdB	=	NULL;
 	RS485_TypeDef *RS485_Info	=	NULL;
 	
 	//-------------------------RS485通道1配置
@@ -385,9 +384,8 @@ void RS485_Configuration(void)
 	PD010V20S.RS485A.RS485Cof.RS485_CTL_Pin		=	GPIO_Pin_7;
 	
 	BaudRate		=	PD010V20S.RS485A.BaudRate;
-	RxdB				=	PD010V20S.RS485A.RxdBuffer;
 	RS485_Info	=	&(PD010V20S.RS485A.RS485Cof);
-	RS485_DMA_ConfigurationNR	(RS485_Info,BaudRate,(u32*)RxdB,USARTBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(RS485_Info,BaudRate,USARTBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
 	//-------------------------RS485通道2配置
 	PD010V20S.RS485B.BaudRate									=	19200;	
@@ -396,9 +394,8 @@ void RS485_Configuration(void)
 	PD010V20S.RS485B.RS485Cof.RS485_CTL_Pin		=	GPIO_Pin_9;
 	
 	BaudRate		=	PD010V20S.RS485B.BaudRate;
-	RxdB				=	PD010V20S.RS485B.RxdBuffer;
 	RS485_Info	=	&(PD010V20S.RS485B.RS485Cof);
-	RS485_DMA_ConfigurationNR	(RS485_Info,BaudRate,(u32*)RxdB,USARTBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(RS485_Info,BaudRate,USARTBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -412,7 +409,6 @@ void RS485_Configuration(void)
 void RS232_Configuration(void)
 {
 	unsigned long BaudRate	=	0;
-	unsigned char *RxdB	=	NULL;
 	USART_TypeDef* USARTx	=	NULL;
 	
 	//-------------------------RS232通道1配置
@@ -420,18 +416,16 @@ void RS232_Configuration(void)
 	PD010V20S.RS232A.USARTx		=	USART2;
 	
 	BaudRate	=	PD010V20S.RS232A.BaudRate;
-	RxdB			=	PD010V20S.RS232A.RxdBuffer;
 	USARTx		=	PD010V20S.RS232A.USARTx;
-	USART_DMA_ConfigurationNR	(USARTx,BaudRate,(u32*)RxdB,USARTBufferSize);	//USART_DMA配置--查询方式，不开中断
+	USART_DMA_ConfigurationNR	(USARTx,BaudRate,USARTBufferSize);	//USART_DMA配置--查询方式，不开中断
 	
 	//-------------------------RS232通道2配置
 	PD010V20S.RS232B.BaudRate	=	19200;
 	PD010V20S.RS232B.USARTx		=	USART3;
 	
 	BaudRate	=	PD010V20S.RS232B.BaudRate;
-	RxdB			=	PD010V20S.RS232B.RxdBuffer;
 	USARTx		=	PD010V20S.RS232B.USARTx;
-	USART_DMA_ConfigurationNR	(USARTx,BaudRate,(u32*)RxdB,USARTBufferSize);	//USART_DMA配置--查询方式，不开中断
+	USART_DMA_ConfigurationNR	(USARTx,BaudRate,USARTBufferSize);	//USART_DMA配置--查询方式，不开中断
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -609,7 +603,6 @@ void Motor_Server(void)
 void RS485_Server(void)
 {
 	unsigned char 	RxNum			=	0;
-	unsigned char 	*RxdB			=	NULL;
 	unsigned char 	*RevB			=	NULL;
 	unsigned char 	*TxdB			=	NULL;
 	unsigned short	SwitchID	=	0;
@@ -619,16 +612,15 @@ void RS485_Server(void)
 	SwitchID	=	PD010V20S.Board.SwitchID;
 	
 	//-------------------------RS485通道1
-	RxdB				=	PD010V20S.RS485A.RxdBuffer;
 	RevB				=	PD010V20S.RS485A.RevBuffer;
 	TxdB				=	PD010V20S.RS485A.TxdBuffer;
 	RS485_Info	=	&(PD010V20S.RS485A.RS485Cof);	
-	RxNum	=	RS485_ReadBufferIDLE(RS485_Info,(u32*)RevB,(u32*)RxdB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum	=	RS485_ReadBufferIDLE(RS485_Info,RevB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
 		SysTick_DeleyuS(500);				//SysTick延时nuS
 		memcpy(TxdB,RevB,RxNum);
-		RS485_DMASend(RS485_Info,(u32*)TxdB,RxNum);	//RS485-DMA发送程序
+		RS485_DMASend(RS485_Info,TxdB,RxNum);	//RS485-DMA发送程序
 	}
 #if 0
 //	PD010V20S.Board.Data++;
@@ -663,16 +655,15 @@ void RS485_Server(void)
 #endif
 	
 	//-------------------------RS485通道2
-	RxdB				=	PD010V20S.RS485B.RxdBuffer;
 	RevB				=	PD010V20S.RS485B.RevBuffer;
 	TxdB				=	PD010V20S.RS485B.TxdBuffer;
 	RS485_Info	=	&(PD010V20S.RS485B.RS485Cof);	
-	RxNum	=	RS485_ReadBufferIDLE(RS485_Info,(u32*)RevB,(u32*)RxdB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum	=	RS485_ReadBufferIDLE(RS485_Info,RevB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
 		SysTick_DeleyuS(500);				//SysTick延时nuS
 		memcpy(TxdB,RevB,RxNum);
-		RS485_DMASend(RS485_Info,(u32*)TxdB,RxNum);	//RS485-DMA发送程序
+		RS485_DMASend(RS485_Info,TxdB,RxNum);	//RS485-DMA发送程序
 	}
 	
 }
@@ -688,17 +679,15 @@ void RS485_Server(void)
 void RS232_Server(void)
 {
 	unsigned char RxNum	=	0;
-	unsigned char *RxdB	=	NULL;
 	unsigned char *RevB	=	NULL;
 	unsigned char *TxdB	=	NULL;
 	unsigned long	Time			=	0;
 	USART_TypeDef* USARTx	=	NULL;
 	//-------------------------RS232通道1
-	RxdB				=	PD010V20S.RS232A.RxdBuffer;
 	RevB				=	PD010V20S.RS232A.RevBuffer;
 	TxdB				=	PD010V20S.RS232A.TxdBuffer;
 	USARTx			=	PD010V20S.RS232A.USARTx;
-	RxNum	=	USART_ReadBufferIDLE	(USARTx,(u32*)RevB,(u32*)RxdB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum	=	USART_ReadBufferIDLE	(USARTx,RevB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
 		memcpy(TxdB,RevB,RxNum);
@@ -708,7 +697,6 @@ void RS232_Server(void)
 	Time	=	PD010V20S.RS232A.Time;
 	if(Time%100	==	0)
 	{
-		unsigned char TxData[8]	=	{0x05};	
 		RxNum	=	2;
 		PD010V20S.RS232A.Time	=	0;
 		PD010V20S.Board.Data++;
@@ -717,20 +705,19 @@ void RS232_Server(void)
 			PD010V20S.Board.Data	=	0;
 		}
 		memcpy(TxdB,(unsigned char*)&PD010V20S.Board.Data,RxNum);
-		USART_DMASend(USARTx,(u32*)TxdB,RxNum);	//串口DMA发送程序		
+		USART_DMASend(USARTx,TxdB,RxNum);	//串口DMA发送程序		
 	}
 	PD010V20S.RS232A.Time++;
 #endif
 	//-------------------------RS232通道2
-	RxdB				=	PD010V20S.RS232B.RxdBuffer;
 	RevB				=	PD010V20S.RS232B.RevBuffer;
 	TxdB				=	PD010V20S.RS232B.TxdBuffer;
 	USARTx			=	PD010V20S.RS232B.USARTx;
-	RxNum	=	USART_ReadBufferIDLE	(USARTx,(u32*)RevB,(u32*)RxdB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum	=	USART_ReadBufferIDLE	(USARTx,RevB);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
 		memcpy(TxdB,RevB,RxNum);
-		USART_DMASend(USARTx,(u32*)TxdB,RxNum);	//串口DMA发送程序
+		USART_DMASend(USARTx,TxdB,RxNum);	//串口DMA发送程序
 	}
 	#if 0
 	Time	=	PD010V20S.RS232B.Time;

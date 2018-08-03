@@ -103,7 +103,6 @@ typedef struct	_Motor
 typedef struct	_RS485
 {
 	//____________Buffer
-	unsigned char 	RxdBuffer[USARTBufferSize];				//DMA接收缓存
 	unsigned char 	RevBuffer[USARTBufferSize];				//数据处理缓存
 	unsigned char 	TxdBuffer[USARTBufferSize];				//DMA发送缓存	
 	
@@ -115,7 +114,6 @@ typedef struct	_RS485
 typedef struct	_RS232
 {
 	//____________Buffer
-	unsigned char 	RxdBuffer[USARTBufferSize];				//DMA接收缓存
 	unsigned char 	RevBuffer[USARTBufferSize];				//数据处理缓存
 	unsigned char 	TxdBuffer[USARTBufferSize];				//DMA发送缓存	
 	
