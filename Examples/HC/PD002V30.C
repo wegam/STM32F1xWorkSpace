@@ -1108,7 +1108,7 @@ void CS5530_Server(void)
 {
 #if 1
 	CS5530_Process(&MS200.CH1SS3.ADC);		//SS3接口，外面
-	CS5530_Process(&MS200.CH2SS4.ADC);		//SS4接口，里面
+//	CS5530_Process(&MS200.CH2SS4.ADC);		//SS4接口，里面
 	
 //	if(((CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)&&(CS5530_2.Data.WeighFilt	!=0xFFFFFFFF))
 //		&&((CS5530_1.Data.WeighFilt	!=0x00)&&(CS5530_2.Data.WeighFilt	!=0x00)))

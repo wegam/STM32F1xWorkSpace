@@ -39,10 +39,16 @@ void WOW_Configuration(void)
 	
 //	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
+
 	
 //***********************************TEST***********************************//
 #ifdef DEMO	
 	DEMO_Configuration();
+#endif
+	
+//***********************************CS5530_DEMO***********************************//
+#ifdef CS5530_DEMO	
+	CS5530Demo_Configuration();
 #endif
 //***********************************TEST***********************************//
 #ifdef TEST	
@@ -438,7 +444,11 @@ void WOW_Server(void)
 #ifdef DEMO
 	DEMO_Server();
 #endif
-	
+
+//***********************************CS5530_DEMO***********************************//
+#ifdef CS5530_DEMO
+	CS5530Demo_Server();
+#endif
 //***********************************数字调音板服务程序***********************************//
 #ifdef TEST
 	TEST_Server();

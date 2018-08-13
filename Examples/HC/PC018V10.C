@@ -33,6 +33,8 @@
 Borad_InfoDef	PC018V10_Info;
 RS485_TypeDef	RS485_Info;
 
+SPIDef	pSPI;
+
 u8 RS485Txd[RS485_BufferSize]	=	{0};
 u8 RS485Rxd[RS485_BufferSize]	=	{0};
 u8 RS485Rev[RS485_BufferSize]	=	{0};
@@ -47,6 +49,9 @@ u16	DisplayNum	=	0;			//数码管更新数值
 u16	DisplayBac	=	0;			//数码显示数值
 u16	DisplayTime	=	0;			//数码重更新显示时间----防止数据传输失败
 
+
+
+void SPI_Configuration(void);			//SPI配置
 void RS485_Configuration(void);			//RS485配置
 	
 
@@ -114,7 +119,8 @@ void PC018V10_Configuration(void)
 	
 
 
-	STM32_SPI_ConfigurationNR(SPI2);	//SPI配置---向数码管板发送数据
+//	STM32_SPI_ConfigurationNR(SPI2);	//SPI配置---向数码管板发送数据
+	SPI_Configuration();			//SPI配置
 	RS485_Configuration();						//RS485配置
 
 
@@ -149,6 +155,19 @@ void PC018V10_Server(void)
 //	Seg7_Server();						//数码管显示更新
 	RS485_Server();						//RS485收发处理
 
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void SPI_Configuration(void)
+{
+	pSPI.Port.SPIx	=	SPI2;
 }
 /*******************************************************************************
 * 函数名			:	RS485_Configuration

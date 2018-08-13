@@ -34,6 +34,7 @@ unsigned long CS5530_Status=0x00;
 void CS5530_Delay(u32 time)
 {
 	while(time--);
+//	SysTick_DeleyuS(2);				//SysTick延时nmS
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -136,7 +137,7 @@ void CS5530_Initialize(CS5530Def *pInfo)
 void CS5530_WriteOneByte(CS5530Def *pInfo, u8 dat)
 {
 	u8 i;
-	u16 delayTime	=	1;
+	u16 delayTime	=	1000;
 	for(i=0; i<8; i++)
 	{
 		if((dat&0x80) != 0)
@@ -144,11 +145,11 @@ void CS5530_WriteOneByte(CS5530Def *pInfo, u8 dat)
 		else
 			CS5530_SDI_LOW(pInfo);
 		
-		SysTick_DeleyuS(delayTime);				//SysTick延时nmS
+		CS5530_Delay(delayTime);				//SysTick延时nmS
 		CS5530_SCLK_HIGH(pInfo);
-		SysTick_DeleyuS(delayTime);				//SysTick延时nmS
+		CS5530_Delay(delayTime);				//SysTick延时nmS
 		CS5530_SCLK_LOW(pInfo);
-		SysTick_DeleyuS(delayTime);				//SysTick延时nmS
+		CS5530_Delay(delayTime);				//SysTick延时nmS
 		dat <<= 1;
 	}
 }
@@ -195,13 +196,13 @@ unsigned char CS5530_ReadOneByte(CS5530Def *pInfo)
 	{
 		__nop();
 		__nop();
-		//Delay_us(100);
+//		CS5530_Delay(100);
 		CS5530_SCLK_HIGH(pInfo);
 		__nop();
 		__nop();
 		__nop();
 		__nop();
-		//Delay_us(100);
+//		CS5530_Delay(100);
 		reValue <<= 1;
 		if(CS5530_SDO_STATE(pInfo))
 			reValue++;
@@ -304,7 +305,7 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 	for(num=0;num<15;num++)
 	{
 		CS5530_WriteOneByte(pInfo, CS5530_SYNC1);
-		SysTick_DeleymS(5);				//SysTick延时nmS
+		SysTick_DeleymS(10);				//SysTick延时nmS
 	}
 	SysTick_DeleymS(50);				//SysTick延时nmS
 	//1.2、************写入1个SYNC0命令（0XFE）
@@ -566,7 +567,8 @@ u32	CS5530_ReadData(CS5530Def *pInfo)
 {
 	u32 ADC_Value=0xFFFFFFFF;
 	
-	CS5530_CS_LOW(pInfo);		
+	CS5530_CS_LOW(pInfo);
+	SysTick_DeleymS(1);				//SysTick延时nmS
 	if(CS5530_SDO_STATE(pInfo) == 0)
 	{			
 		ADC_Value=CS5530_GetADData(pInfo)>>8;		//获取24位原码值---读出4个字节，低8位为空值

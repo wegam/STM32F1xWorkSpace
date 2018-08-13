@@ -1195,7 +1195,7 @@ void softdelay(unsigned long us)
         }
     }
 }
-unsigned long ss[10];
+unsigned long sss[10];
 void test(void)
 {
 	unsigned long i = 10, val;
@@ -1212,7 +1212,7 @@ void test(void)
     while(i--)
     {
         SWJ_ReadDP(DP_IDCODE, &val);
-        ss[i] = val;
+        sss[i] = val;
 
 
         softdelay(100);

@@ -537,7 +537,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -1403,7 +1403,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -2269,7 +2269,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -3135,7 +3135,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -3972,7 +3972,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -4910,7 +4910,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -5781,7 +5781,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -6565,7 +6565,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -7796,7 +7796,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -8650,7 +8650,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -9717,7 +9717,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -10529,7 +10529,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -11422,7 +11422,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -11826,7 +11826,7 @@
       <OPTFL>
         <tvExp>1</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
-        <IsCurrentTarget>0</IsCurrentTarget>
+        <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
       <CpuCode>18</CpuCode>
       <Books>
@@ -11973,7 +11973,7 @@
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>MS200,0x0A</ItemText>
+          <ItemText>MS200,0x10</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
@@ -12558,7 +12558,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -13424,7 +13424,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -14290,7 +14290,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -15156,7 +15156,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -16022,7 +16022,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -16426,7 +16426,7 @@
       <OPTFL>
         <tvExp>1</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
-        <IsCurrentTarget>1</IsCurrentTarget>
+        <IsCurrentTarget>0</IsCurrentTarget>
       </OPTFL>
       <CpuCode>18</CpuCode>
       <Books>
@@ -17168,7 +17168,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -18290,7 +18290,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -19341,7 +19341,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -20219,7 +20219,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -22291,7 +22291,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -23545,7 +23545,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -24389,7 +24389,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -25529,7 +25529,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -26315,7 +26315,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -27198,7 +27198,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -28064,7 +28064,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -28930,7 +28930,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Examples\WOW\STM32_LCD.C</Filename>
+          <Filename>&lt;1&gt;..\..\Examples\WOW\STM32_LCD.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -29506,7 +29506,7 @@
       <GroupNumber>2</GroupNumber>
       <FileNumber>17</FileNumber>
       <FileType>1</FileType>
-      <tvExp>1</tvExp>
+      <tvExp>0</tvExp>
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
