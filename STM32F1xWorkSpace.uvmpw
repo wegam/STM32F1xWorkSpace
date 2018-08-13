@@ -15,7 +15,6 @@
 
   <project>
     <PathAndName>.\Project\STM32F1xHC\STM32F1xHC.uvprojx</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
 </ProjectWorkspace>

@@ -36,66 +36,7 @@ void CS5530_Delay(u32 time)
 	while(time--);
 //	SysTick_DeleyuS(2);				//SysTick延时nmS
 }
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	称重板
-* 输入			: void
-* 返回值			: void
-*******************************************************************************/
-void CS5530_CS_LOW(CS5530Def *pInfo)
-{	
-	GPIO_ResetBits(pInfo->Port.CS_PORT, pInfo->Port.CS_Pin);
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	称重板
-* 输入			: void
-* 返回值			: void
-*******************************************************************************/
-void CS5530_CS_HIGH(CS5530Def *pInfo)
-{
-	GPIO_SetBits(pInfo->Port.CS_PORT, pInfo->Port.CS_Pin);
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	称重板
-* 输入			: void
-* 返回值			: void
-*******************************************************************************/
-void CS5530_SDI_LOW(CS5530Def *pInfo)
-{
-	GPIO_ResetBits(pInfo->Port.SDI_PORT, pInfo->Port.SDI_Pin);
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	称重板
-* 输入			: void
-* 返回值			: void
-*******************************************************************************/
-void CS5530_SDI_HIGH(CS5530Def *pInfo)
-{
-	GPIO_SetBits(pInfo->Port.SDI_PORT, pInfo->Port.SDI_Pin);
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	称重板
-* 输入			: void
-* 返回值			: void
-*******************************************************************************/
-void CS5530_SCLK_LOW(CS5530Def *pInfo)
-{
-	GPIO_ResetBits(pInfo->Port.SCLK_PORT, pInfo->Port.SCLK_Pin);
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	称重板
-* 输入			: void
-* 返回值			: void
-*******************************************************************************/
-void CS5530_SCLK_HIGH(CS5530Def *pInfo)
-{
-	GPIO_SetBits(pInfo->Port.SCLK_PORT, pInfo->Port.SCLK_Pin);
-}
+
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	称重板
@@ -141,14 +82,14 @@ void CS5530_WriteOneByte(CS5530Def *pInfo, u8 dat)
 	for(i=0; i<8; i++)
 	{
 		if((dat&0x80) != 0)
-			CS5530_SDI_HIGH(pInfo);
+      pInfo->Port.SDI_PORT->BSRR  = pInfo->Port.SDI_Pin;    //SDI==1
 		else
-			CS5530_SDI_LOW(pInfo);
+      pInfo->Port.SDI_PORT->BRR   = pInfo->Port.SDI_Pin;    //SDI==0
 		
 		CS5530_Delay(delayTime);				//SysTick延时nmS
-		CS5530_SCLK_HIGH(pInfo);
+    pInfo->Port.SCLK_PORT->BSRR   = pInfo->Port.SCLK_Pin;   //SCLK==1
 		CS5530_Delay(delayTime);				//SysTick延时nmS
-		CS5530_SCLK_LOW(pInfo);
+    pInfo->Port.SCLK_PORT->BRR    = pInfo->Port.SCLK_Pin;   //SCLK==0
 		CS5530_Delay(delayTime);				//SysTick延时nmS
 		dat <<= 1;
 	}
@@ -156,7 +97,7 @@ void CS5530_WriteOneByte(CS5530Def *pInfo, u8 dat)
 
 /*******************************************************************************
 * 函数名			:	function
-* 功能描述		:	函数功能说明 
+* 功能描述		:	函数功能说明
 * 输入			: void
 * 返回值			: void
 *******************************************************************************/
@@ -191,22 +132,21 @@ unsigned char CS5530_ReadOneByte(CS5530Def *pInfo)
 	uint8_t i;
 	uint8_t reValue=0;
 
-	CS5530_SDI_LOW(pInfo);
+
+  pInfo->Port.SDI_PORT->BRR    = pInfo->Port.SDI_Pin;       //SDI==0
 	for(i=0; i<8; i++)
 	{
 		__nop();
 		__nop();
-//		CS5530_Delay(100);
-		CS5530_SCLK_HIGH(pInfo);
+    pInfo->Port.SCLK_PORT->BSRR   = pInfo->Port.SCLK_Pin;   //SCLK==1
 		__nop();
 		__nop();
 		__nop();
 		__nop();
-//		CS5530_Delay(100);
 		reValue <<= 1;
 		if(CS5530_SDO_STATE(pInfo))
 			reValue++;
-		CS5530_SCLK_LOW(pInfo);
+    pInfo->Port.SCLK_PORT->BRR    = pInfo->Port.SCLK_Pin;   //SCLK==0
 		__nop();
 		__nop();
 	}
@@ -234,7 +174,7 @@ u32 CS5530_GetADData(CS5530Def *pInfo)
 	if(CS5530_SDO_STATE(pInfo) == 0)
 	{
 //		CS5530_WriteOneByte(pInfo, CS5530_CONTINUOUS_ON);		///*继续连续转换模式*/
-		CS5530_SDI_LOW(pInfo);
+		pInfo->Port.SDI_PORT->BRR    = pInfo->Port.SDI_Pin;       //SDI==0
 		CS5530_ReadOneByte(pInfo);
 		reValue = ((u32)CS5530_ReadOneByte(pInfo)<<24)
 						+((uint32_t)CS5530_ReadOneByte(pInfo)<<16)
@@ -298,7 +238,8 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 {
 	u8 num=0;
 	u16 retry	=	0;	//重试
-	CS5530_CS_LOW(pInfo);
+
+  pInfo->Port.CS_PORT->BRR    = pInfo->Port.CS_Pin;       //CS==0
 	SysTick_DeleymS(200);				//SysTick延时nmS
 	//1)向系统所有ADC发送复位序列
 	//1.1、************写入15个SYNC1命令(0XFF)
@@ -399,7 +340,7 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 //	CS5530_WriteCommand(pInfo,CS5530_START_SINGLE);									//执行单次转换
 	
 	CS5530_Delay(500);
-	CS5530_CS_HIGH(pInfo);
+	pInfo->Port.CS_PORT->BSRR    = pInfo->Port.CS_Pin;       //CS==1
 }
 /*******************************************************************************
 * 函数名			:	CS5530_PowerUp
@@ -411,7 +352,7 @@ void CS5530_PowerDown(CS5530Def *pInfo)
 {
 	u8 num=0;
 	u16 retry	=	0;	//重试
-	CS5530_CS_LOW(pInfo);
+	pInfo->Port.CS_PORT->BRR    = pInfo->Port.CS_Pin;       //CS==0
 	SysTick_DeleymS(200);				//SysTick延时nmS
 	//1)向系统所有ADC发送复位序列
 	//1.1、************写入15个SYNC1命令(0XFF)
@@ -449,7 +390,7 @@ void CS5530_PowerDown(CS5530Def *pInfo)
 	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_CONF_POWER_SAVE_MODE);
 	
 	CS5530_Delay(500);
-	CS5530_CS_HIGH(pInfo);
+	pInfo->Port.CS_PORT->BSRR    = pInfo->Port.CS_Pin;       //CS==1
 }
 /*******************************************************************************
 * 函数名			:	CS5530_PowerUp
@@ -461,7 +402,7 @@ void CS5530_PowerUpBac(CS5530Def *pInfo)
 {
 	u8 num=0;
 	u16 retry	=	0;	//重试
-	CS5530_CS_LOW(pInfo);
+	pInfo->Port.CS_PORT->BSRR    = pInfo->Port.CS_Pin;       //CS==1
 	SysTick_DeleymS(200);				//SysTick延时nmS
 	//1)向系统所有ADC发送复位序列
 	//1.1、************写入15个SYNC1命令(0XFF)
@@ -555,7 +496,7 @@ void CS5530_PowerUpBac(CS5530Def *pInfo)
 	CS5530_WriteCommand(pInfo,CS5530_START_CONTINUOUS);									//执行连续转换
 	
 	CS5530_Delay(500);
-	CS5530_CS_HIGH(pInfo);
+	pInfo->Port.CS_PORT->BRR    = pInfo->Port.CS_Pin;       //CS==0
 }
 /*******************************************************************************
 *函数名			:	CS5530_ReadData
@@ -567,14 +508,14 @@ u32	CS5530_ReadData(CS5530Def *pInfo)
 {
 	u32 ADC_Value=0xFFFFFFFF;
 	
-	CS5530_CS_LOW(pInfo);
+	pInfo->Port.CS_PORT->BRR    = pInfo->Port.CS_Pin;       //CS==0
 	SysTick_DeleymS(1);				//SysTick延时nmS
 	if(CS5530_SDO_STATE(pInfo) == 0)
 	{			
 		ADC_Value=CS5530_GetADData(pInfo)>>8;		//获取24位原码值---读出4个字节，低8位为空值
 //		SysTick_DeleymS(10);				//SysTick延时nmS
 	}
-	CS5530_CS_HIGH(pInfo);
+	pInfo->Port.CS_PORT->BSRR    = pInfo->Port.CS_Pin;       //CS==1
 	return ADC_Value;
 }
 /**********************************************************

@@ -135,12 +135,12 @@ void CS5530_Process(CS5530Def *pInfo);
 
 
 void CS5530_Delay(u32 time);
-void CS5530_CS_LOW(CS5530Def *pInfo);
-void CS5530_CS_HIGH(CS5530Def *pInfo);
+//void CS5530_CS_LOW(CS5530Def *pInfo);
+//void CS5530_CS_HIGH(CS5530Def *pInfo);
 void CS5530_SDI_LOW(CS5530Def *pInfo);
-void CS5530_SDI_HIGH(CS5530Def *pInfo);
-void CS5530_SCLK_LOW(CS5530Def *pInfo);
-void CS5530_SCLK_HIGH(CS5530Def *pInfo);
+//void CS5530_SDI_HIGH(CS5530Def *pInfo);
+//void CS5530_SCLK_LOW(CS5530Def *pInfo);
+//void CS5530_SCLK_HIGH(CS5530Def *pInfo);
 u8 CS5530_SDO_STATE(CS5530Def *pInfo);
 
 void CS5530_WriteOneByte(CS5530Def *pInfo, u8 dat);

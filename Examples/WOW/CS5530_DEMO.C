@@ -64,7 +64,7 @@ void CS5530Demo_Configuration(void)
 	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
-	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
+//	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,500);						//PWM设定-20161127版本
 	

@@ -24,6 +24,34 @@ void TM1616_Initialize(TM1616Def *Pinfo)
 	GPIO_Configuration_OPP50	(Pinfo->STB_PORT,		Pinfo->STB_Pin);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 }
 /*******************************************************************************
+*函数名			:	TM1616_Display
+*功能描述		:	4位数显示
+*输入				: 
+*返回值			:	无
+*******************************************************************************/
+void TM1616_Display(TM1616Def *Pinfo,u16 Data)
+{
+	TM1616_WriteCommand(Pinfo,0x00);		//显示模式
+	TM1616_WriteCommand(Pinfo,0x40);		//地址自增命令	
+
+	Pinfo->STB_PORT->BRR = Pinfo->STB_Pin;		//stb=0;
+	
+	TM1616_WriteByte(Pinfo,0xC0);    //设置起始地址
+	
+	TM1616_WriteByte(Pinfo,TM1616_SegCode[(Data/1000)%10]);
+	TM1616_WriteByte(Pinfo,0x00);
+	TM1616_WriteByte(Pinfo,TM1616_SegCode[(Data/100)%10]);
+	TM1616_WriteByte(Pinfo,0x00);
+	TM1616_WriteByte(Pinfo,TM1616_SegCode[(Data/10)%10]);
+	TM1616_WriteByte(Pinfo,0x00);
+	TM1616_WriteByte(Pinfo,TM1616_SegCode[Data%10]);
+	TM1616_WriteByte(Pinfo,0x00);
+
+	Pinfo->STB_PORT->BSRR = Pinfo->STB_Pin;		//stb=1;
+	
+	TM1616_WriteCommand(Pinfo,0x8D);		//亮度命令	
+}
+/*******************************************************************************
 *函数名			:	function
 *功能描述		:	函数功能说明
 *输入				: 
@@ -59,34 +87,7 @@ static void TM1616_WriteCommand(TM1616Def *Pinfo,unsigned char command)
 	TM1616_WriteByte(Pinfo,command);
 	Pinfo->STB_PORT->BSRR = Pinfo->STB_Pin;		//stb=1;
 }
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
-*输入				: 
-*返回值			:	无
-*******************************************************************************/
-void TM1616_Display(TM1616Def *Pinfo,u16 Data)
-{
-	TM1616_WriteCommand(Pinfo,0x00);		//显示模式
-	TM1616_WriteCommand(Pinfo,0x40);		//地址自增命令	
 
-	Pinfo->STB_PORT->BRR = Pinfo->STB_Pin;		//stb=0;
-	
-	TM1616_WriteByte(Pinfo,0xC0);    //设置起始地址
-	
-	TM1616_WriteByte(Pinfo,TM1616_SegCode[(Data/1000)%10]);
-	TM1616_WriteByte(Pinfo,0x00);
-	TM1616_WriteByte(Pinfo,TM1616_SegCode[(Data/100)%10]);
-	TM1616_WriteByte(Pinfo,0x00);
-	TM1616_WriteByte(Pinfo,TM1616_SegCode[(Data/10)%10]);
-	TM1616_WriteByte(Pinfo,0x00);
-	TM1616_WriteByte(Pinfo,TM1616_SegCode[Data%10]);
-	TM1616_WriteByte(Pinfo,0x00);
-
-	Pinfo->STB_PORT->BSRR = Pinfo->STB_Pin;		//stb=1;
-	
-	TM1616_WriteCommand(Pinfo,0x8D);		//亮度命令	
-}
 
 
 

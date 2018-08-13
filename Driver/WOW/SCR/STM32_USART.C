@@ -59,7 +59,7 @@
 ###############################################################################*/
 
 //--------USART全局变量定义
-#define	uRxSize		256				//默认串口DMA接收缓冲大小
+#define	uRxSize		256				//默认串口DMA接收缓冲大小,如果配置时未输入缓存大小时使用的默认值
 #define	uTxSize		uRxSize		//默认串口DMA发送缓冲大小
 #define	uBaudRate	115200	//默认串口波特率
 unsigned char uRx1Addr[uRxSize]	=	{0};					//串口1接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
@@ -77,23 +77,47 @@ uLinkDef	uLink2;				//串口2链表头
 uLinkDef	uLink3;				//串口3链表头
 uLinkDef	uLink4;				//串口4链表头
 
-volatile unsigned short gUSART1_BufferSizebac=0;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
-volatile unsigned short gUSART2_BufferSizebac=0;		//串口2DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
-volatile unsigned short gUSART3_BufferSizebac=0;		//串口3DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
-volatile unsigned short gUART4_BufferSizebac=0;			//串口4DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
-volatile unsigned short gUART5_BufferSizebac=0;			//----无DMA
+static struct
+{
+  unsigned short nUSART1;
+  unsigned short nUSART2;
+  unsigned short nUSART3;
+  unsigned short nUART4;
+  unsigned short nUART5;	  //----无DMA
+}SetDmaSize;      //配置时设置的DMA接收缓存大小
+static struct
+{
+  unsigned short nUSART1;
+  unsigned short nUSART2;
+  unsigned short nUSART3;
+  unsigned short nUART4;
+  unsigned short nUART5;	  //----无DMA
+}RemaDmaSize;     //DMA开启后剩余DMA接收缓存大小，通过与设置的DMA缓存大小来判断数据是否在接收
+static struct
+{
+  unsigned short nUSART1;
+  unsigned short nUSART2;
+  unsigned short nUSART3;
+  unsigned short nUART4;
+  unsigned short nUART5;	  //----无DMA
+}RetryCount;
+//static unsigned short gUSART1_BufferSizebac=0;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+//static unsigned short gUSART2_BufferSizebac=0;		//串口2DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+//static unsigned short gUSART3_BufferSizebac=0;		//串口3DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+//static unsigned short gUART4_BufferSizebac=0;			//串口4DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+static unsigned short gUART5_BufferSizebac=0;			//----无DMA
 
-volatile unsigned short gUSART1_BufferSizeRema=0;		//串口1DMA缓冲大小剩余
-volatile unsigned short gUSART2_BufferSizeRema=0;		//串口2DMA缓冲大小剩余
-volatile unsigned short gUSART3_BufferSizeRema=0;		//串口3DMA缓冲大小剩余
-volatile unsigned short gUART4_BufferSizeRema=0;		//串口4DMA缓冲大小剩余
-volatile unsigned short gUART5_BufferSizeRema=0;		//----无DMA
+//static unsigned short gUSART1_BufferSizeRema=0;		//串口1DMA缓冲大小剩余
+//static unsigned short gUSART2_BufferSizeRema=0;		//串口2DMA缓冲大小剩余
+//static unsigned short gUSART3_BufferSizeRema=0;		//串口3DMA缓冲大小剩余
+//static unsigned short gUART4_BufferSizeRema=0;		//串口4DMA缓冲大小剩余
+static unsigned short gUART5_BufferSizeRema=0;		//----无DMA
 
-volatile unsigned short gUSART1_RetryCount=0;		//串口1重试计数
-volatile unsigned short gUSART2_RetryCount=0;		//串口2重试计数
-volatile unsigned short gUSART3_RetryCount=0;		//串口3重试计数
-volatile unsigned short gUART4_RetryCount=0;		//串口4重试计数
-volatile unsigned short gUART5_RetryCount=0;		//----无DMA
+//static unsigned short gUSART1_RetryCount=0;		//串口1重试计数
+//static unsigned short gUSART2_RetryCount=0;		//串口2重试计数
+//static unsigned short gUSART3_RetryCount=0;		//串口3重试计数
+//static unsigned short gUART4_RetryCount=0;		//串口4重试计数
+static unsigned short gUART5_RetryCount=0;		//----无DMA
 
 //char	*DMAPrintf_Buffer=NULL;			//USART_DMAPrintf动态空间地址
 char	DMAPrintf_Buffer[128]={0x00};			//4K串口printf打印存储空间(动态空间有时可能申请失败)
@@ -102,7 +126,6 @@ char	DMAPrintf_Buffer[128]={0x00};			//4K串口printf打印存储空间(动态空间有时可能
 //*****************RS485收发控制
 void RS485_TX_EN(RS485_TypeDef *RS485_Info);	//发使能
 void RS485_RX_EN(RS485_TypeDef *RS485_Info);		//收使能，已经设置为接收状态返回1，否则返回0
-
 
 /*******************************************************************************
 *函数名			:	USART_DMA_ConfigurationNr
@@ -137,9 +160,9 @@ void	USART_DMA_ConfigurationNR(
 	{
 		case 	USART1_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUSART1_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART1=uRxSize;
 					else
-						gUSART1_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART1=BufferSize;
 					RXDBuffer	=	uRx1Addr;
 					GPIO_TX=GPIOA;
 					GPIO_RX=GPIOA;
@@ -150,9 +173,9 @@ void	USART_DMA_ConfigurationNR(
 					break;
 		case 	USART2_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUSART2_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART2=uRxSize;
 					else
-						gUSART2_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART2=BufferSize;
 					RXDBuffer	=	uRx2Addr;
 					GPIO_TX=GPIOA;
 					GPIO_RX=GPIOA;
@@ -163,9 +186,9 @@ void	USART_DMA_ConfigurationNR(
 					break;
 		case 	USART3_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUSART3_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART3=uRxSize;
 					else
-						gUSART3_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART3=BufferSize;
 					RXDBuffer	=	uRx3Addr;
 					GPIO_TX=GPIOB;
 					GPIO_RX=GPIOB;
@@ -180,9 +203,9 @@ void	USART_DMA_ConfigurationNR(
 					break;
 		case 	UART4_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUART4_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUART4=uRxSize;
 					else
-						gUART4_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUART4=BufferSize;
 					RXDBuffer	=	uRx4Addr;
 					GPIO_TX=GPIOC;
 					GPIO_RX=GPIOC;
@@ -355,9 +378,9 @@ void	USART_DMA_ConfigurationEV(
 	{
 		case 	USART1_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUSART1_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART1=uRxSize;
 					else
-						gUSART1_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART1=BufferSize;
 					RXDBuffer	=	uRx1Addr;
 					GPIO_TX=GPIOA;
 					GPIO_RX=GPIOA;
@@ -368,9 +391,9 @@ void	USART_DMA_ConfigurationEV(
 					break;
 		case 	USART2_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUSART2_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART2=uRxSize;
 					else
-						gUSART2_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART2=BufferSize;
 					RXDBuffer	=	uRx2Addr;
 					GPIO_TX=GPIOA;
 					GPIO_RX=GPIOA;
@@ -381,9 +404,9 @@ void	USART_DMA_ConfigurationEV(
 					break;
 		case 	USART3_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUSART3_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART3=uRxSize;
 					else
-						gUSART3_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART3=BufferSize;
 					RXDBuffer	=	uRx3Addr;
 					GPIO_TX=GPIOB;
 					GPIO_RX=GPIOB;
@@ -398,9 +421,9 @@ void	USART_DMA_ConfigurationEV(
 					break;
 		case 	UART4_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUART4_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUART4=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
 					else
-						gUART4_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUART4=BufferSize;		  //串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
 					RXDBuffer	=	uRx4Addr;
 					GPIO_TX=GPIOC;
 					GPIO_RX=GPIOC;
@@ -573,9 +596,9 @@ void	USART_DMA_ConfigurationOD(
 	{
 		case 	USART1_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUSART1_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART1=uRxSize;
 					else
-						gUSART1_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART1=BufferSize;
 					RXDBuffer	=	uRx1Addr;
 					GPIO_TX=GPIOA;
 					GPIO_RX=GPIOA;
@@ -586,9 +609,9 @@ void	USART_DMA_ConfigurationOD(
 					break;
 		case 	USART2_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUSART2_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART2=uRxSize;
 					else
-						gUSART2_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART2=BufferSize;
 					RXDBuffer	=	uRx2Addr;
 					GPIO_TX=GPIOA;
 					GPIO_RX=GPIOA;
@@ -599,9 +622,9 @@ void	USART_DMA_ConfigurationOD(
 					break;
 		case 	USART3_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUSART3_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART3=uRxSize;
 					else
-						gUSART3_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUSART3=BufferSize;
 					RXDBuffer	=	uRx3Addr;
 					GPIO_TX=GPIOB;
 					GPIO_RX=GPIOB;
@@ -616,9 +639,9 @@ void	USART_DMA_ConfigurationOD(
 					break;
 		case 	UART4_BASE:
 					if(BufferSize	==	0)	//如果未设定缓存大小，使用默认值
-						gUART4_BufferSizebac=uRxSize;				//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUART4=uRxSize;
 					else
-						gUART4_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+						SetDmaSize.nUART4=BufferSize;
 					RXDBuffer	=	uRx4Addr;
 					GPIO_TX=GPIOC;
 					GPIO_RX=GPIOC;
@@ -1307,7 +1330,7 @@ void	USART_DMA_ConfigurationNRRemap(
 	if(USARTx==USART1)
 	{
 		
-		gUSART1_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+		SetDmaSize.nUSART1=BufferSize;
 		
 		TXD_Pin=GPIO_Pin_6;											//USART1-TX>PA9
 		RXD_Pin=GPIO_Pin_7;										//USART1-RX>PA10
@@ -1325,7 +1348,7 @@ void	USART_DMA_ConfigurationNRRemap(
 	//2.2)**********USART2
 	else if(USARTx==USART2)
 	{
-		gUSART2_BufferSizebac=BufferSize;		//串口2DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+		SetDmaSize.nUSART2=BufferSize;
 		
 		TXD_Pin=GPIO_Pin_2;		//USART2-TX>PA2
 		RXD_Pin=GPIO_Pin_3;		//USART2-RX>PA3
@@ -1342,7 +1365,7 @@ void	USART_DMA_ConfigurationNRRemap(
 	//2.3)**********USART3
 	else if(USARTx==USART3)
 	{
-		gUSART3_BufferSizebac=BufferSize;		//串口3DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+		SetDmaSize.nUSART3=BufferSize;
 		
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);				//关闭AFIO时钟,为关闭JTAG功能
 		GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);  //关闭JTAG功能
@@ -1365,7 +1388,7 @@ void	USART_DMA_ConfigurationNRRemap(
 	//2.4)**********USART4
 	else if(USARTx==UART4)
 	{
-		gUART4_BufferSizebac=BufferSize;		//串口4DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+		SetDmaSize.nUART4=BufferSize;
 		
 		TXD_Pin=GPIO_Pin_10;	//USART1-TX>PC10
 		RXD_Pin=GPIO_Pin_11;	//USART1-RX>PC11
@@ -1550,12 +1573,12 @@ u16	USART_ReadBufferIDLE(
 						//------计算接收长度及读取数据
 						USART1->DR; 																								//读出数据以完成清除标志			
 						length = DMA1_Channel5->CNDTR;															//DMA_GetCurrDataCounter(DMA1_Channel5);	//得到真正接收数据个数(DMA_GetCurrDataCounter返回当前DMA通道x剩余的待传输数据数目)
-						length=gUSART1_BufferSizebac-length;												//设定缓冲区大小减剩余缓冲区大小得到实际接收到的数据个数
+						length=SetDmaSize.nUSART1-length;												    //设定缓冲区大小减剩余缓冲区大小得到实际接收到的数据个数
 						memcpy(RevBuffer,uRx1Addr,length);													//复制指定大小的数据
 						
 						//------重新指向接收缓冲区地址并使能DMA接收			
 						DMA1_Channel5->CMAR=(u32)uRx1Addr;							//重新设置DMA接收地址
-						DMA1_Channel5->CNDTR=gUSART1_BufferSizebac;			//重新设置接收数据个数			
+						DMA1_Channel5->CNDTR=SetDmaSize.nUSART1;			  //重新设置接收数据个数			
 						DMA_Cmd(DMA1_Channel5,ENABLE);  								//开启接收DMA
 						
 						return length;			//返回接收到的数据个数
@@ -1572,12 +1595,12 @@ u16	USART_ReadBufferIDLE(
 						//------计算接收长度及读取数据
 						USART2->DR; 																								//读出数据以完成清除标志			
 						length = DMA1_Channel6->CNDTR;															//DMA_GetCurrDataCounter(DMA1_Channel6);	//得到真正接收数据个数(DMA_GetCurrDataCounter返回当前DMA通道x剩余的待传输数据数目)
-						length=gUSART2_BufferSizebac-length;												//设定缓冲区大小减剩余缓冲区大小得到实际接收到的数据个数
+						length=SetDmaSize.nUSART2-length;												    //设定缓冲区大小减剩余缓冲区大小得到实际接收到的数据个数
 						memcpy(RevBuffer,uRx2Addr,length);													//复制指定大小的数据
 						
 						//------重新指向接收缓冲区地址并使能DMA接收			
 						DMA1_Channel6->CMAR=(u32)uRx2Addr;							//重新设置DMA接收地址
-						DMA1_Channel6->CNDTR=gUSART2_BufferSizebac;			//重新设置接收数据个数
+						DMA1_Channel6->CNDTR=SetDmaSize.nUSART2;			  //重新设置接收数据个数
 						DMA1_Channel6->CCR |=(u32)0x00000001;						//DMA_Cmd(DMA1_Channel6,ENABLE);//DMA接收开启3						
 						return length;			//返回接收到的数据个数
 					}			
@@ -1593,12 +1616,12 @@ u16	USART_ReadBufferIDLE(
 						//------计算接收长度及读取数据
 						USART2->DR; 																								//读出数据以完成清除标志			
 						length = DMA1_Channel3->CNDTR;															//DMA_GetCurrDataCounter(DMA1_Channel3);	//得到真正接收数据个数(DMA_GetCurrDataCounter返回当前DMA通道x剩余的待传输数据数目)
-						length=gUSART3_BufferSizebac-length;												//设定缓冲区大小减剩余缓冲区大小得到实际接收到的数据个数
+						length=SetDmaSize.nUSART3-length;   												//设定缓冲区大小减剩余缓冲区大小得到实际接收到的数据个数
 						memcpy(RevBuffer,uRx3Addr,length);													//复制指定大小的数据
 						
 						//------重新指向接收缓冲区地址并使能DMA接收			
 						DMA1_Channel3->CMAR=(u32)uRx3Addr;							//重新设置DMA接收地址
-						DMA1_Channel3->CNDTR=gUSART3_BufferSizebac;			//重新设置接收数据个数
+						DMA1_Channel3->CNDTR=SetDmaSize.nUSART3;			  //重新设置接收数据个数
 						DMA1_Channel3->CCR |=(u32)0x00000001;						//DMA_Cmd(DMA1_Channel3,ENABLE);//DMA接收开启3						
 						return length;			//返回接收到的数据个数
 					}			
@@ -1614,12 +1637,12 @@ u16	USART_ReadBufferIDLE(
 						//------计算接收长度及读取数据
 						USART2->DR; 																								//读出数据以完成清除标志			
 						length = DMA2_Channel3->CNDTR;															//DMA_GetCurrDataCounter(DMA2_Channel3);	//得到真正接收数据个数(DMA_GetCurrDataCounter返回当前DMA通道x剩余的待传输数据数目)
-						length=gUART4_BufferSizebac-length;												//设定缓冲区大小减剩余缓冲区大小得到实际接收到的数据个数
+						length=SetDmaSize.nUART4-length;				    								//设定缓冲区大小减剩余缓冲区大小得到实际接收到的数据个数
 						memcpy(RevBuffer,uRx4Addr,length);													//复制指定大小的数据
 						
 						//------重新指向接收缓冲区地址并使能DMA接收			
 						DMA2_Channel3->CMAR=(u32)uRx4Addr;							//重新设置DMA接收地址
-						DMA2_Channel3->CNDTR=gUART4_BufferSizebac;			//重新设置接收数据个数
+						DMA2_Channel3->CNDTR=SetDmaSize.nUART4;		    	//重新设置接收数据个数
 						DMA2_Channel3->CCR |=(u32)0x00000001;						//DMA_Cmd(DMA2_Channel3,ENABLE);//DMA接收开启3						
 						return length;			//返回接收到的数据个数
 					}			
@@ -1824,22 +1847,22 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 	{
 		case USART1_BASE:
 				//接收状态检查
-				BufferSize	=	DMA1_Channel5->CNDTR;		//获取接收缓存剩余空间
-				if(BufferSize<gUSART1_BufferSizebac)	//缓存在减小，表示在使用
+				BufferSize	=	DMA1_Channel5->CNDTR;		      //获取DMA接收缓存剩余空间
+				if(BufferSize<SetDmaSize.nUSART1)	          //缓存在减小，表示在使用
 				{
-					if(gUSART1_BufferSizeRema	== BufferSize)
+					if(RemaDmaSize.nUSART1	== BufferSize)
 					{
-						gUSART1_RetryCount++;
-						if(gUSART1_RetryCount>=5)
+						RetryCount.nUSART1++;
+						if(RetryCount.nUSART1>=5)
 						{
-							gUSART1_RetryCount	=	0;
+							RetryCount.nUSART1	=	0;
 							Status	&=	0xFF^USART_ReceSTD;					//设置接收标志
 						}
 					}
 					else
 					{
-						gUSART1_BufferSizeRema	=	BufferSize;
-						Status	|=	USART_ReceSTD;					//设置接收标志
+						RemaDmaSize.nUSART1	=	BufferSize;
+						Status	|=	USART_ReceSTD;					      //设置接收标志
 					}					
 				}
 				//发送状态检查
@@ -1856,21 +1879,21 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 				break;
 		case USART2_BASE:
 				//接收状态检查
-				BufferSize	=	DMA1_Channel6->CNDTR;		//获取接收缓存剩余空间
-				if(BufferSize<gUSART2_BufferSizebac)	//缓存在减小，表示在使用
+				BufferSize	=	DMA1_Channel6->CNDTR;		//获取DMA接收缓存剩余空间
+				if(BufferSize<SetDmaSize.nUSART2)	    //缓存在减小，表示在使用
 				{
-					if(gUSART2_BufferSizeRema	== BufferSize)
+					if(RemaDmaSize.nUSART2	== BufferSize)
 					{
-						gUSART2_RetryCount++;
-						if(gUSART2_RetryCount>=5)
+						RetryCount.nUSART2++;
+						if(RetryCount.nUSART2>=5)
 						{
-							gUSART2_RetryCount	=	0;
+							RetryCount.nUSART2	=	0;
 							Status	&=	0xFF^USART_ReceSTD;					//设置接收标志
 						}
 					}
 					else
 					{
-						gUSART2_BufferSizeRema	=	BufferSize;
+						RemaDmaSize.nUSART2	=	BufferSize;
 						Status	|=	USART_ReceSTD;					//设置接收标志
 					}
 				}
@@ -1888,21 +1911,21 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 				break;
 		case USART3_BASE:
 				//接收状态检查
-				BufferSize	=	DMA1_Channel3->CNDTR;		//获取接收缓存剩余空间
-				if(BufferSize<gUSART3_BufferSizebac)	//缓存在减小，表示在使用
+				BufferSize	=	DMA1_Channel3->CNDTR;		//获取DMA接收缓存剩余空间
+				if(BufferSize<SetDmaSize.nUSART3)	    //缓存在减小，表示在使用
 				{
-					if(gUSART3_BufferSizeRema	== BufferSize)
+					if(RemaDmaSize.nUSART3	== BufferSize)
 					{
-						gUSART3_RetryCount++;
-						if(gUSART3_RetryCount>=5)
+						RetryCount.nUSART3++;
+						if(RetryCount.nUSART3>=5)
 						{
-							gUSART3_RetryCount	=	0;
+							RetryCount.nUSART3	=	0;
 							Status	&=	0xFF^USART_ReceSTD;					//设置接收标志
 						}
 					}
 					else
 					{
-						gUSART3_BufferSizeRema	=	BufferSize;
+						RemaDmaSize.nUSART3	=	BufferSize;
 						Status	|=	USART_ReceSTD;					//设置接收标志
 					}
 				}
@@ -1920,21 +1943,21 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 				break;
 		case UART4_BASE:
 				//接收状态检查
-				BufferSize	=	DMA2_Channel3->CNDTR;		//获取接收缓存剩余空间
-				if(BufferSize<gUART4_BufferSizebac)	//缓存在减小，表示在使用
+				BufferSize	=	DMA2_Channel3->CNDTR;		//获取DMA接收缓存剩余空间
+				if(BufferSize<SetDmaSize.nUART4)	    //缓存在减小，表示在使用
 				{
-					if(gUART4_BufferSizeRema	== BufferSize)
+					if(RemaDmaSize.nUART4	== BufferSize)
 					{
-						gUART4_RetryCount++;
-						if(gUART4_RetryCount>=5)
+						RetryCount.nUART4++;
+						if(RetryCount.nUART4>=5)
 						{
-							gUART4_RetryCount	=	0;
+							RetryCount.nUART4	=	0;
 							Status	&=	0xFF^USART_ReceSTD;					//设置接收标志
 						}
 					}
 					else
 					{
-						gUART4_BufferSizeRema	=	BufferSize;
+						RemaDmaSize.nUART4	=	BufferSize;
 						Status	|=	USART_ReceSTD;					//设置接收标志
 					}
 				}
@@ -3020,7 +3043,7 @@ void	USART_DMA_ConfigurationNRBAC(
 	//2.1)**********USART1
 	if(USARTx==USART1)
 	{
-		gUSART1_BufferSizebac=BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+		SetDmaSize.nUSART1  = BufferSize;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
 		
 		TXD_Pin=GPIO_Pin_9;											//USART1-TX>PA9
 		RXD_Pin=GPIO_Pin_10;										//USART1-RX>PA10
@@ -3037,7 +3060,7 @@ void	USART_DMA_ConfigurationNRBAC(
 	//2.2)**********USART2
 	else if(USARTx==USART2)
 	{
-		gUSART2_BufferSizebac=BufferSize;		//串口2DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+		SetDmaSize.nUSART2=BufferSize;		  //串口2DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
 		
 		TXD_Pin=GPIO_Pin_2;		//USART2-TX>PA2
 		RXD_Pin=GPIO_Pin_3;		//USART2-RX>PA3
@@ -3054,7 +3077,7 @@ void	USART_DMA_ConfigurationNRBAC(
 	//2.3)**********USART3
 	else if(USARTx==USART3)
 	{
-		gUSART3_BufferSizebac=BufferSize;		//串口3DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+		SetDmaSize.nUSART3=BufferSize;
 		
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);				//关闭AFIO时钟,为关闭JTAG功能
 		GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);  //关闭JTAG功能
@@ -3077,7 +3100,7 @@ void	USART_DMA_ConfigurationNRBAC(
 	//2.4)**********USART4
 	else if(USARTx==UART4)
 	{
-		gUART4_BufferSizebac=BufferSize;		//串口4DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
+		SetDmaSize.nUART4=BufferSize;		      //串口4DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
 		
 		TXD_Pin=GPIO_Pin_10;	//USART1-TX>PC10
 		RXD_Pin=GPIO_Pin_11;	//USART1-RX>PC11
