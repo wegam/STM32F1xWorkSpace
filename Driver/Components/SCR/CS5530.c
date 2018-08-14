@@ -79,6 +79,8 @@ void CS5530_WriteOneByte(CS5530Def *pInfo, u8 dat)
 {
 	u8 i;
 	u16 delayTime	=	1000;
+	pInfo->Port.SCLK_PORT->BRR    = pInfo->Port.SCLK_Pin;   //SCLK==0
+	SysTick_DeleyuS(100);				//SysTick延时nuS
 	for(i=0; i<8; i++)
 	{
 		if((dat&0x80) != 0)
@@ -86,11 +88,10 @@ void CS5530_WriteOneByte(CS5530Def *pInfo, u8 dat)
 		else
       pInfo->Port.SDI_PORT->BRR   = pInfo->Port.SDI_Pin;    //SDI==0
 		
-		CS5530_Delay(delayTime);				//SysTick延时nmS
+		SysTick_DeleyuS(200);				//SysTick延时nuS
     pInfo->Port.SCLK_PORT->BSRR   = pInfo->Port.SCLK_Pin;   //SCLK==1
-		CS5530_Delay(delayTime);				//SysTick延时nmS
+		SysTick_DeleyuS(200);				//SysTick延时nuS
     pInfo->Port.SCLK_PORT->BRR    = pInfo->Port.SCLK_Pin;   //SCLK==0
-		CS5530_Delay(delayTime);				//SysTick延时nmS
 		dat <<= 1;
 	}
 }
@@ -131,25 +132,20 @@ unsigned char CS5530_ReadOneByte(CS5530Def *pInfo)
 {
 	uint8_t i;
 	uint8_t reValue=0;
-
-
   pInfo->Port.SDI_PORT->BRR    = pInfo->Port.SDI_Pin;       //SDI==0
+	SysTick_DeleyuS(100);				//SysTick延时nuS
 	for(i=0; i<8; i++)
-	{
-		__nop();
-		__nop();
+	{	
+		SysTick_DeleyuS(100);				//SysTick延时nuS
     pInfo->Port.SCLK_PORT->BSRR   = pInfo->Port.SCLK_Pin;   //SCLK==1
-		__nop();
-		__nop();
-		__nop();
-		__nop();
 		reValue <<= 1;
+		SysTick_DeleyuS(100);				//SysTick延时nuS
 		if(CS5530_SDO_STATE(pInfo))
 			reValue++;
-    pInfo->Port.SCLK_PORT->BRR    = pInfo->Port.SCLK_Pin;   //SCLK==0
-		__nop();
-		__nop();
+		SysTick_DeleyuS(100);				//SysTick延时nuS
+    pInfo->Port.SCLK_PORT->BRR    = pInfo->Port.SCLK_Pin;   //SCLK==0		
 	}
+	SysTick_DeleyuS(100);				//SysTick延时nuS
 
 	return reValue;
 }
@@ -161,18 +157,8 @@ unsigned char CS5530_ReadOneByte(CS5530Def *pInfo)
 *******************************************************************************/
 u32 CS5530_GetADData(CS5530Def *pInfo)
 {
-	u32 reValue=0;
-	
-//	CS5530_CS_LOW(pInfo);
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	//Delay_us(100);
-	if(CS5530_SDO_STATE(pInfo) == 0)
-	{
+	u32 reValue=0;	
+
 //		CS5530_WriteOneByte(pInfo, CS5530_CONTINUOUS_ON);		///*继续连续转换模式*/
 		pInfo->Port.SDI_PORT->BRR    = pInfo->Port.SDI_Pin;       //SDI==0
 		CS5530_ReadOneByte(pInfo);
@@ -180,16 +166,6 @@ u32 CS5530_GetADData(CS5530Def *pInfo)
 						+((uint32_t)CS5530_ReadOneByte(pInfo)<<16)
 						+((uint32_t)CS5530_ReadOneByte(pInfo)<<8)
 						+(uint32_t)CS5530_ReadOneByte(pInfo);
-	}
-	else
-		reValue = 0xFFFFFFFF;
-	__nop();
-	__nop();
-	__nop();
-	__nop();
-	//Delay_us(100);
-//	CS5530_CS_HIGH(pInfo);
-
 	return reValue;
 }
 /*******************************************************************************
@@ -509,11 +485,10 @@ u32	CS5530_ReadData(CS5530Def *pInfo)
 	u32 ADC_Value=0xFFFFFFFF;
 	
 	pInfo->Port.CS_PORT->BRR    = pInfo->Port.CS_Pin;       //CS==0
-	SysTick_DeleymS(1);				//SysTick延时nmS
+	SysTick_DeleyuS(100);				//SysTick延时nuS
 	if(CS5530_SDO_STATE(pInfo) == 0)
 	{			
 		ADC_Value=CS5530_GetADData(pInfo)>>8;		//获取24位原码值---读出4个字节，低8位为空值
-//		SysTick_DeleymS(10);				//SysTick延时nmS
 	}
 	pInfo->Port.CS_PORT->BSRR    = pInfo->Port.CS_Pin;       //CS==1
 	return ADC_Value;
