@@ -83,7 +83,7 @@ static struct
   unsigned short nUSART2;
   unsigned short nUSART3;
   unsigned short nUART4;
-  unsigned short nUART5;	  //----无DMA
+//  unsigned short nUART5;	  //----无DMA
 }SetDmaSize;      //配置时设置的DMA接收缓存大小
 static struct
 {
@@ -91,7 +91,7 @@ static struct
   unsigned short nUSART2;
   unsigned short nUSART3;
   unsigned short nUART4;
-  unsigned short nUART5;	  //----无DMA
+//  unsigned short nUART5;	  //----无DMA
 }RemaDmaSize;     //DMA开启后剩余DMA接收缓存大小，通过与设置的DMA缓存大小来判断数据是否在接收
 static struct
 {
@@ -99,25 +99,25 @@ static struct
   unsigned short nUSART2;
   unsigned short nUSART3;
   unsigned short nUART4;
-  unsigned short nUART5;	  //----无DMA
+//  unsigned short nUART5;	  //----无DMA
 }RetryCount;
 //static unsigned short gUSART1_BufferSizebac=0;		//串口1DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
 //static unsigned short gUSART2_BufferSizebac=0;		//串口2DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
 //static unsigned short gUSART3_BufferSizebac=0;		//串口3DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
 //static unsigned short gUART4_BufferSizebac=0;			//串口4DMA缓冲大小备份，配置时写入实际值，计算接收数据个数里需要使用
-static unsigned short gUART5_BufferSizebac=0;			//----无DMA
+//static unsigned short gUART5_BufferSizebac=0;			//----无DMA
 
 //static unsigned short gUSART1_BufferSizeRema=0;		//串口1DMA缓冲大小剩余
 //static unsigned short gUSART2_BufferSizeRema=0;		//串口2DMA缓冲大小剩余
 //static unsigned short gUSART3_BufferSizeRema=0;		//串口3DMA缓冲大小剩余
 //static unsigned short gUART4_BufferSizeRema=0;		//串口4DMA缓冲大小剩余
-static unsigned short gUART5_BufferSizeRema=0;		//----无DMA
+//static unsigned short gUART5_BufferSizeRema=0;		//----无DMA
 
 //static unsigned short gUSART1_RetryCount=0;		//串口1重试计数
 //static unsigned short gUSART2_RetryCount=0;		//串口2重试计数
 //static unsigned short gUSART3_RetryCount=0;		//串口3重试计数
 //static unsigned short gUART4_RetryCount=0;		//串口4重试计数
-static unsigned short gUART5_RetryCount=0;		//----无DMA
+//static unsigned short gUART5_RetryCount=0;		//----无DMA
 
 //char	*DMAPrintf_Buffer=NULL;			//USART_DMAPrintf动态空间地址
 char	DMAPrintf_Buffer[128]={0x00};			//4K串口printf打印存储空间(动态空间有时可能申请失败)
@@ -1404,7 +1404,7 @@ void	USART_DMA_ConfigurationNRRemap(
 	//2.5)**********USART5
 	else if(USARTx==UART5)
 	{
-		gUART5_BufferSizebac=BufferSize;		//-----串口5无DMA
+//		gUART5_BufferSizebac=BufferSize;		//-----串口5无DMA
 		
 		TXD_Pin=GPIO_Pin_12;	//USART1-TX>PC12
 		RXD_Pin=GPIO_Pin_2;		//USART1-RX>PD2
@@ -1840,41 +1840,55 @@ u16 USART_DMASend(
 *******************************************************************************/
 USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 {
-	USARTStatusDef	Status	=	USART_IDLESTD;
+  unsigned short	BufferSize	=	0;			//剩余缓存大小
+  
+	USARTStatusDef	Status;
 	FlagStatus bitstatus = RESET;
-	unsigned short	BufferSize	=	0;			//剩余缓存大小
+  
+  Status.USART_IDLESTD  = 0;
+	
 	switch(*(u32*)&USARTx)
 	{
 		case USART1_BASE:
 				//接收状态检查
 				BufferSize	=	DMA1_Channel5->CNDTR;		      //获取DMA接收缓存剩余空间
-				if(BufferSize<SetDmaSize.nUSART1)	          //缓存在减小，表示在使用
+				if(BufferSize<SetDmaSize.nUSART1)	          //可用缓存小于预设大小，表示已使用
 				{
-					if(RemaDmaSize.nUSART1	== BufferSize)
+					if(RemaDmaSize.nUSART1	== BufferSize)    //查询可用缓存大小是否继续在变化从而判断是否还在接收中
 					{
 						RetryCount.nUSART1++;
-						if(RetryCount.nUSART1>=5)
+						if(RetryCount.nUSART1>=5)               //连续5次查询未变化表示接收完成
 						{
-							RetryCount.nUSART1	=	0;
-							Status	&=	0xFF^USART_ReceSTD;					//设置接收标志
+							RetryCount.nUSART1	  =	0;
+              Status.USART_IDLESTD  = 0;            //空闲
 						}
 					}
+          //还在接收中
 					else
 					{
-						RemaDmaSize.nUSART1	=	BufferSize;
-						Status	|=	USART_ReceSTD;					      //设置接收标志
+						RemaDmaSize.nUSART1	=	BufferSize;       //更新
+            Status.USART_IDLESTD  = 1;             //非空闲
+            Status.USART_ReceSTD  = 1;              //正在接收中
 					}					
 				}
 				//发送状态检查
-				if((DMA1_Channel4->CNDTR!=0)&&((DMA1_Channel4->CCR&0x00000001)!=0))
+				if((DMA1_Channel4->CNDTR!=0)&&((DMA1_Channel4->CCR&0x00000001)!=0))   //还在发送中
 				{
-					Status	|=	USART_SendSTD;					//设置发送标志
+          Status.USART_IDLESTD  = 1;        //非空闲
+          Status.USART_SendSTD  = 1;        //正在发送中
 				}
 				else
 				{
 					bitstatus	=	USART_GetFlagStatus(USART1,USART_FLAG_TC);		//检测发送数据寄存器是否为空	RESET-非空，SET-空，
 					if(bitstatus	!=	SET)
-						Status	|=	USART_SendSTD;					//设置发送标志
+          {
+						Status.USART_IDLESTD  = 1;        //非空闲
+            Status.USART_SendSTD  = 1;        //正在发送中            
+          }
+          else
+          {
+            Status.USART_IDLESTD  = 0;        //空闲
+          }
 				}
 				break;
 		case USART2_BASE:
@@ -1888,25 +1902,34 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 						if(RetryCount.nUSART2>=5)
 						{
 							RetryCount.nUSART2	=	0;
-							Status	&=	0xFF^USART_ReceSTD;					//设置接收标志
+							Status.USART_IDLESTD  = 0;        //空闲
 						}
 					}
 					else
 					{
 						RemaDmaSize.nUSART2	=	BufferSize;
-						Status	|=	USART_ReceSTD;					//设置接收标志
+						Status.USART_IDLESTD  = 1;        //非空闲
+            Status.USART_ReceSTD  = 1;        //正在接收中
 					}
 				}
 				//发送状态检查
 				if((DMA1_Channel7->CNDTR!=0)&&((DMA1_Channel7->CCR&0x00000001)!=0))
 				{
-					Status	|=	USART_SendSTD;					//设置发送标志
+					Status.USART_IDLESTD  = 1;        //非空闲
+          Status.USART_SendSTD  = 1;        //正在发送中
 				}
 				else
 				{
 					bitstatus	=	USART_GetFlagStatus(USART2,USART_FLAG_TC);		//检测发送数据寄存器是否为空	RESET-非空，SET-空，
 					if(bitstatus	!=	SET)
-						Status	|=	USART_SendSTD;					//设置发送标志
+					{
+						Status.USART_IDLESTD  = 1;        //非空闲
+            Status.USART_SendSTD  = 1;        //正在发送中            
+          }
+          else
+          {
+            Status.USART_IDLESTD  = 0;        //空闲
+          }
 				}
 				break;
 		case USART3_BASE:
@@ -1920,25 +1943,34 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 						if(RetryCount.nUSART3>=5)
 						{
 							RetryCount.nUSART3	=	0;
-							Status	&=	0xFF^USART_ReceSTD;					//设置接收标志
+							Status.USART_IDLESTD  = 0;        //空闲
 						}
 					}
 					else
 					{
 						RemaDmaSize.nUSART3	=	BufferSize;
-						Status	|=	USART_ReceSTD;					//设置接收标志
+						Status.USART_IDLESTD  = 1;        //非空闲
+            Status.USART_ReceSTD  = 1;        //正在接收中
 					}
 				}
 				//发送状态检查
 				if((DMA1_Channel2->CNDTR!=0)&&((DMA1_Channel2->CCR&0x00000001)!=0))
 				{
-					Status	|=	USART_SendSTD;					//设置发送标志
+					Status.USART_IDLESTD  = 1;        //非空闲
+          Status.USART_SendSTD  = 1;        //正在发送中
 				}
 				else
 				{
 					bitstatus	=	USART_GetFlagStatus(USART3,USART_FLAG_TC);		//检测发送数据寄存器是否为空	RESET-非空，SET-空，
 					if(bitstatus	!=	SET)
-						Status	|=	USART_SendSTD;					//设置发送标志
+					{
+						Status.USART_IDLESTD  = 1;        //非空闲
+            Status.USART_SendSTD  = 1;        //正在发送中            
+          }
+          else
+          {
+            Status.USART_IDLESTD  = 0;        //空闲
+          }
 				}
 				break;
 		case UART4_BASE:
@@ -1952,25 +1984,34 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 						if(RetryCount.nUART4>=5)
 						{
 							RetryCount.nUART4	=	0;
-							Status	&=	0xFF^USART_ReceSTD;					//设置接收标志
+							Status.USART_IDLESTD  = 0;        //空闲
 						}
 					}
 					else
 					{
 						RemaDmaSize.nUART4	=	BufferSize;
-						Status	|=	USART_ReceSTD;					//设置接收标志
+						Status.USART_IDLESTD  = 1;        //非空闲
+            Status.USART_ReceSTD  = 1;        //正在接收中
 					}
 				}
 				//发送状态检查
 				if((DMA2_Channel5->CNDTR!=0)&&((DMA2_Channel5->CCR&0x00000001)!=0))
 				{
-					Status	|=	USART_SendSTD;					//设置发送标志
+					Status.USART_IDLESTD  = 1;        //非空闲
+          Status.USART_SendSTD  = 1;        //正在发送中
 				}
 				else
 				{
 					bitstatus	=	USART_GetFlagStatus(UART4,USART_FLAG_TC);		//检测发送数据寄存器是否为空	RESET-非空，SET-空，
 					if(bitstatus	!=	SET)
-						Status	|=	USART_SendSTD;				//设置发送标志
+					{
+						Status.USART_IDLESTD  = 1;        //非空闲
+            Status.USART_SendSTD  = 1;        //正在发送中            
+          }
+          else
+          {
+            Status.USART_IDLESTD  = 0;        //空闲
+          }
 				}
 				break;
 		default:break;
@@ -2049,10 +2090,10 @@ u16	RS485_ReadBufferIDLE(
 )	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer，
 {
 	u16 length=0;
-	USARTStatusDef	Status	=	USART_IDLESTD;
+	USARTStatusDef	Status;
 	Status	=	USART_Status(RS485_Info->USARTx);		//串口状态检查
 	
-	if(Status	==	USART_IDLESTD)		//串口空闲，可以改为接收
+	if(0  ==  Status.USART_IDLESTD)		//bit[0] 0-串口空闲；1-串口非空闲，状态根据以下位定义
 	{
 		RS485_RX_EN(RS485_Info);
 		length=USART_ReadBufferIDLE(RS485_Info->USARTx,RevBuffer);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
@@ -2118,12 +2159,12 @@ u16 RS485_DMASend(
 {
 	//----发送前检查相关串口发送状态，如果下在发送其它数据，则等待（返回0），否则清除相关标志位后开启发送
 	
-	u32	DMA_status=0;			//DMA状态	
-	USARTStatusDef	Status	=	USART_IDLESTD;
+//	u32	DMA_status=0;			//DMA状态	
+	USARTStatusDef	Status;
 	USART_TypeDef* USARTx=RS485_Info->USARTx;
 	
 	Status	=	USART_Status(USARTx);		//串口状态检查
-	if(Status	!=USART_IDLESTD)
+	if(1  ==  Status.USART_IDLESTD)   //bit[0] 0-串口空闲；1-串口非空闲，状态根据以下位定义
 	{
 		return 0;
 	}
@@ -2131,7 +2172,6 @@ u16 RS485_DMASend(
 	RS485_TX_EN(RS485_Info);
 	USART_DMASend	(USARTx,(u8*)tx_buffer,BufferSize);		//串口DMA发送程序
 	return 0;
-
 }
 
 
@@ -3116,7 +3156,7 @@ void	USART_DMA_ConfigurationNRBAC(
 	//2.5)**********USART5
 	else if(USARTx==UART5)
 	{
-		gUART5_BufferSizebac=BufferSize;		//-----串口5无DMA
+//		gUART5_BufferSizebac=BufferSize;		//-----串口5无DMA
 		
 		TXD_Pin=GPIO_Pin_12;	//USART1-TX>PC12
 		RXD_Pin=GPIO_Pin_2;		//USART1-RX>PD2

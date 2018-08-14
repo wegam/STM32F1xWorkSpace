@@ -41,12 +41,12 @@ typedef struct
 	GPIO_TypeDef* 	RS485_CTL_PORT;				//GPIOX
 	unsigned short 	RS485_CTL_Pin;				//GPIO_Pin_x
 }RS485_TypeDef;
-typedef enum
+typedef struct
 {
-	USART_IDLESTD	=	0,		//串口空闲
-	USART_ReceSTD	=	1,		//串口正在接收中
-	USART_SendSTD	=	2,		//串口正在发送中
-	USART_RTSTD		=	3			//串口正在收发中
+	unsigned char USART_IDLESTD	:1;		//bit[0] 0-串口空闲；1-串口非空闲，状态根据以下位定义
+	unsigned char USART_ReceSTD	:1;		//bit[1] 0-空闲；1-串口正在接收中
+	unsigned char USART_SendSTD	:1;		//bit[2] 0-空闲；1-串口正在发送中
+	unsigned char USART_RTSTD	  :1;		//bit[3] 0-空闲；1-串口正在收发中
 }USARTStatusDef;
 //#define RS485_TX_EN			(RS485_TypeDef->RS485_CTL_PORT->BSRR		= R61509V_sPinfo->R61509V_sCS_Pin)
 //#define RS485_RX_EN			(R61509V_sPinfo->R61509V_sCS_PORT->BRR 		= R61509V_sPinfo->R61509V_sCS_Pin)
