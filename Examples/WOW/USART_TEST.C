@@ -48,13 +48,13 @@ void Usart_test_Configuration(void)
 	
 	GPIO_DeInitAll();							//将所有的GPIO关闭----V20170605
 	
-	SysTick_Configuration(10000);	//系统嘀嗒时钟配置72MHz,单位为uS
-	
-//	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
-	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);						//PWM设定-20161127版本	
 	
-	USART_DMA_ConfigurationNR	(USART1,115200,BufferSize);	//USART_DMA配置--查询方式，不开中断
+	USART_DMA_ConfigurationNR	(USART2,115200,BufferSize);	//USART_DMA配置--查询方式，不开中断
+  
+//  IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
+  
+  SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 }
 /*******************************************************************************
 * 函数名		:	
@@ -67,19 +67,59 @@ void Usart_test_Server(void)
 {	
 	u16 Length	=	0;
 	
-	IWDG_Feed();								//独立看门狗喂狗	
-	Length	=	USART_ReadBufferIDLE	(USART1,rxBuffer1);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数
+	IWDG_Feed();								//独立看门狗喂狗
+  USART_Status(USART2);		//串口状态检查
+	Length	=	USART_ReadBufferIDLE	(USART2,rxBuffer1);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数
 	if(Length)
 	{
 		memset(rxBuffer1,0xFF,Length);
 	}
 	tx1_tcont++;
 	if(tx1_tcont>=100)
+  {
 		tx1_tcont=0;
+    ch[0]  = 0;
+//    USART_DMASend			(USART2,ch,16);	//串口DMA发送程序
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    ch[0]  += 1;
+    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//    ch[0]  += 1;
+//    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//    ch[0]  += 1;
+//    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//    ch[0]  += 1;
+//    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",ch[0]);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 
-		ch[0]	=	tx1_tcont;
-		ch[1]	=	tx1_tcont;
-		USART_DMASend			(USART1,ch,10);	//串口DMA发送程序
+
+
+  }
+
+//		ch[0]	=	tx1_tcont;
+//		ch[1]	=	tx1_tcont;
+//    USART_DMAPrintf		(USART2,"%3d自定义printf串口DMA发送程序,后边的省略号就是可变参数\r\n",tx1_tcont);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+////    USART_Status(USART2);		//串口状态检查
+//		USART_DMASend			(USART2,ch,10);	//串口DMA发送程序
+    USART_TxServer(USART2);
+//  }
 
 	
 }

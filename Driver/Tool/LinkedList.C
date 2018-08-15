@@ -32,6 +32,7 @@
 LINK_NODE *CreateNode(char* DataAddr,unsigned long DataLength)
 {
 	LINK_NODE *NewNode; 		//NewNode保存创建的新结点的地址
+  char *Addr;
 	if(DataLength==0	||	DataAddr==NULL)				//数据长度为0,不执行
 	{
 		return	NULL;
@@ -39,20 +40,21 @@ LINK_NODE *CreateNode(char* DataAddr,unsigned long DataLength)
 	//==================为此结点申请动态空间
 	NewNode = (LINK_NODE *) malloc (sizeof(LINK_NODE)); 	//开辟一个新结点(申请动态存储空间)
 
-	if (NewNode == NULL)	//申请失败
+	if (NULL == NewNode)	//申请失败
 	{
 		return NULL;				//返回空地址
 	}
 	else									//申请成功:下一步申请数据空间
 	{
 		//==================为此结点申请数据存储空间----使用动态存储空间方式
-//		NewNode->DataAddr	= (char *) malloc (DataLength);			//申请数据存储动态存储空间
-//		if(NewNode->DataAddr	== NULL)	//数据空间申请失败:释放结点,返回NULL
-//		{
-//			free(NewNode);								//释放建立的新结点
-//			return NULL;									//返回空地址
-//		}
-		
+		Addr	= (char *) malloc (DataLength);			//申请数据存储动态存储空间
+		if(NULL	== Addr)	//数据空间申请失败:释放结点,返回NULL
+		{
+			free(NewNode);								//释放建立的新结点
+			return NULL;									//返回空地址
+		}
+    NewNode->DataAddr = Addr;
+		NewNode->NextNode = NULL;
 		NewNode->DataLen=DataLength;											//此结点存储的数据大小
 		memcpy(NewNode->DataAddr,DataAddr,DataLength);		//复制数据		
 	}
@@ -113,67 +115,10 @@ LINK_NODE *AddNode(LINK_NODE* HeadNODEx,LINK_NODE* NewNODEx)
 		HeadNODEx->NextNode=NewNODEx;							//头结点的下结点连接到新结点
 		NewNODEx->PrevNode=HeadNODEx;							//新结点的上结点连接到头结点
 		NewNODEx->Serial	=	HeadNODEx->Serial+1;
-
+    NewNODEx->NextNode  = NULL;
 		return	NewNODEx;
 	}
 }
-////===============================================================================
-////函数:	DeleteNode
-////描述:	删除本结点
-////输入:	HeadNODEx-头结点,NewNODEx-待插入的结点
-////返回:	头结点
-////===============================================================================
-//LINK_NODE *DeleteNode(LINK_NODE* DelNODEx)
-//{
-//	LINK_NODE* pNODE1;
-//	pNODE1=DelNODEx;
-//	if(DelNODEx	==	NULL)
-//	{
-//		return NULL;
-//	}
-//	if(pNODE1->PrevNode==NULL)	//上一个结点为空
-//	{
-//		if(pNODE1->NextNode==NULL)										//上一个结点为空,下一个结点为空
-//		{
-////			free(pNODE1->DataAddr);											//释放结点内的数据空间
-//			free(pNODE1);																//释放结点
-//			pNODE1=NULL;
-////			DelNODEx=NULL;
-//		}
-//		else											//上一个结点为空,下一个结点非空
-//		{
-//			DelNODEx=pNODE1->NextNode;
-//			DelNODEx->PrevNode=NULL;
-////			free(pNODE1->DataAddr);											//释放结点内的数据空间
-//			free(pNODE1);																//释放结点
-////			pNODE1=NULL;
-//		}
-//	}
-//	else												//上一个结点非空,下一个结点为空
-//	{
-//		if(pNODE1->NextNode==NULL)										//上一个结点非空,下一个结点为空
-//		{
-//			pNODE1->PrevNode->NextNode=	NULL;
-////			free(pNODE1->DataAddr);											//释放结点内的数据空间
-//			free(pNODE1);																//释放结点
-//			free(DelNODEx);															//释放结点
-////			pNODE1=NULL;
-////			DelNODEx=NULL;
-//		}
-//		else											//上一个结点非空,下一个结点非空
-//		{
-//			pNODE1->PrevNode->NextNode=pNODE1->NextNode;
-//			pNODE1->NextNode->PrevNode=pNODE1->PrevNode;
-//			
-////			free(pNODE1->DataAddr);											//释放结点内的数据空间
-//			free(pNODE1);																//释放结点
-//			pNODE1=NULL;
-//			free(DelNODEx);															//释放结点
-//			DelNODEx=NULL;
-//		}
-//	}
-//	return DelNODEx;				//返回下一结点地址
-//}
 //===============================================================================
 //函数:	DeleteNode
 //描述:	删除本结点
@@ -197,13 +142,15 @@ LINK_NODE *DeleteNode(LINK_NODE** DelNODEx)
 	{
 		if(pNODE->NextNode==NULL)										//上一个结点为空,下一个结点为空
 		{
+      free(pNODE->DataAddr);									  //释放结点内数据缓存
 			free(pNODE);															//释放已删除结点
 			*DelNODEx	=	NULL;													//删除地址
 		}
 		else																				//上一个结点为空,下一个结点非空
 		{
 			(*DelNODEx)	=	(*DelNODEx)->NextNode;				//待删除结点地址更新为下一结点地址
-			(*DelNODEx)->PrevNode		=	NULL;	//下一结点的头结点更改为空结点
+			(*DelNODEx)->PrevNode		=	NULL;	            //下一结点的头结点更改为空结点
+      free(pNODE->DataAddr);									  //释放结点内数据缓存
 			free(pNODE);															//释放已删除结点
 		}
 	}
@@ -213,6 +160,7 @@ LINK_NODE *DeleteNode(LINK_NODE** DelNODEx)
 		{
 			(*DelNODEx)->PrevNode->NextNode	=	NULL;		//上结点的尾结点设置为空
 			(*DelNODEx)	=	(*DelNODEx)->PrevNode;			//此结点地址更新为上一结点地址
+      free(pNODE->DataAddr);									  //释放结点内数据缓存
 			free(pNODE);															//释放已删除结点
 		}
 		else											//----------------上一个结点非空,下一个结点非空
@@ -220,6 +168,7 @@ LINK_NODE *DeleteNode(LINK_NODE** DelNODEx)
 			(*DelNODEx)->PrevNode->NextNode=(*DelNODEx)->NextNode;	//上结点尾结点连接到此结点的下结点
 			(*DelNODEx)->NextNode->PrevNode=(*DelNODEx)->PrevNode;	//下结点的头结点连接上结点的尾结点
 			(*DelNODEx)	=	(*DelNODEx)->PrevNode;			//此结点地址更新为上一结点地址
+      free(pNODE->DataAddr);									  //释放结点内数据缓存
 			free(pNODE);															//释放已删除结点
 		}
 	}

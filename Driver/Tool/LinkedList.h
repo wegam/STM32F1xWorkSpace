@@ -5,9 +5,9 @@
 typedef struct _LINK_NODE
 {	
 	unsigned long 	DataLen;			//存储的数据长度
-	unsigned short	Serial;				//存储的序号
-	char 						DataAddr[5];	//数据动态存储空间
-	struct _LINK_NODE* PrevNode;	//上一个节点:仅双向链表时使用
+	unsigned long	  Serial;				//存储的序号  
+	char 						*DataAddr;	//数据动态存储空间
+  struct _LINK_NODE* PrevNode;	//上一个节点:仅双向链表时使用
 	struct _LINK_NODE* NextNode;	//下一个节点	:
 }LINK_NODE;
 

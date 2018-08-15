@@ -25,13 +25,13 @@
 #include "stm32f10x_type.h"
 #include "stm32f10x_usart.h"
 
-//typedef struct _uLink
-//{	
-//	unsigned short 	DataLen;			//存储的数据长度
-//	unsigned short	Serial;				//存储的序号
-//	unsigned char* 	DataAddr;			//数据动态存储空间
-//	struct _uLink* Next;					//下一个节点	:
-//}uLinkDef;
+typedef struct _uLink
+{	
+	unsigned short 	DataLen;			//存储的数据长度
+	unsigned short	Serial;				//存储的序号
+	unsigned char* 	DataAddr;			//数据动态存储空间
+	struct _uLink* Next;					//下一个节点	:
+}uLinkDef;
 
 typedef struct
 {
@@ -94,8 +94,10 @@ void	USART_Send(USART_TypeDef* USARTx,u8* RevBuffer,u16 Lengh);
 unsigned char UART5ReceiveData(unsigned char* RecByte);			//串口5读数据,返回0-无中断，返回1有中断无数据（发送中断），返回2-有中断有接收到数据
 
 
-void  USART_TxServer(USART_TypeDef* USARTx);
-void  USART_RxServer(USART_TypeDef* USARTx);		//串口接收服务程序
+
+void USART_RX_Server(void);		//串口接收服务程序	
+
+
 
 #endif
 

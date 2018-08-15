@@ -73,13 +73,10 @@ unsigned char uTx2Addr[uTxSize]	=	{0};					//´®¿Ú2·¢ËÍ»º³åÇøµØÖ·::½«´ý·¢ËÍÊý¾Ý¿½
 unsigned char uTx3Addr[uTxSize]	=	{0};					//´®¿Ú3·¢ËÍ»º³åÇøµØÖ·::½«´ý·¢ËÍÊý¾Ý¿½±´µ½´Ë»º³å½øÐÐ·¢ËÍ
 unsigned char uTx4Addr[uTxSize]	=	{0};					//´®¿Ú4·¢ËÍ»º³åÇøµØÖ·::½«´ý·¢ËÍÊý¾Ý¿½±´µ½´Ë»º³å½øÐÐ·¢ËÍ
 
-//uLinkDef	uLink1;				//´®¿Ú1Á´±íÍ·
-//uLinkDef	uLink2;				//´®¿Ú2Á´±íÍ·
-//uLinkDef	uLink3;				//´®¿Ú3Á´±íÍ·
-//uLinkDef	uLink4;				//´®¿Ú4Á´±íÍ·
-
-static LINK_NODE *uLinkHead2  = NULL;
-static LINK_NODE *uLinkEnd2  = NULL;
+uLinkDef	uLink1;				//´®¿Ú1Á´±íÍ·
+uLinkDef	uLink2;				//´®¿Ú2Á´±íÍ·
+uLinkDef	uLink3;				//´®¿Ú3Á´±íÍ·
+uLinkDef	uLink4;				//´®¿Ú4Á´±íÍ·
 
 static struct
 {
@@ -1788,27 +1785,6 @@ u16 USART_DMASend(
 						DMA1_Channel7->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel7,ENABLE);//DMA·¢ËÍ¿ªÆô3
 						return BufferSize;
 					}
-//          //===========´®¿ÚÕýÔÚ·¢ËÍÖÐ£ºÐèÒª½«´ý·¢Êý¾Ý¼ÓÈë´ý·¢¶ÓÁÐµÈ´ý·¢ËÍ
-          else
-          {
-            if(NULL ==  uLinkHead2)
-            {
-              uLinkHead2  = CreateNode((char*)tx_buffer,BufferSize);
-            }
-            else
-            {
-              LINK_NODE *NewNode  = CreateNode((char*)tx_buffer,BufferSize);
-              if(NULL ==  uLinkEnd2)
-              {
-                uLinkEnd2 = AddNode(uLinkEnd2,NewNode);											//Ôö¼Ó½áµã
-                uLinkHead2->NextNode  = uLinkEnd2;
-              }
-              else
-              {
-                uLinkEnd2 = AddNode(uLinkEnd2,NewNode);											//Ôö¼Ó½áµã
-              }              
-            }
-          }
 			break;
 			case USART3_BASE:
 					//¼ì²éUSARTÓÐÎÞÅäÖÃ
@@ -2388,66 +2364,8 @@ void	USART_Send(USART_TypeDef* USARTx,u8* TxdBuffer,u16 Lengh)
 		Len++;
 	}
 }
-/*******************************************************************************
-*º¯ÊýÃû			:	USART_ConfigurationIT
-*¹¦ÄÜÃèÊö		:	USART_ÅäÖÃ---³£¹æÖÐ¶Ï·½Ê½
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎÞ
-*ÐÞ¸ÄÊ±¼ä		:	2018/01/06
-*ÐÞ¸ÄËµÃ÷		:	ÎÞ
-*×¢ÊÍ				:	wegam@sina.com
-*******************************************************************************/
-void	USART_TxServer(USART_TypeDef* USARTx)
-{
-	switch(*(u32*)&USARTx)
-	{
-    case  USART2_BASE:
-          if(
-							(DMA1_Channel7->CNDTR==0)										//Í¨µÀ¿ÕÏÐ--ÒÑ·¢ÍêÊý¾Ý
-						||((DMA1_Channel7->CCR&0x00000001)==0)				//Í¨µÀÎ´¿ªÆô
-						)
-					{
-            if(NULL !=  uLinkHead2)
-            {
-              memcpy(uTx2Addr,(u8*)uLinkHead2->DataAddr,uLinkHead2->DataLen);
-              DMA1_Channel7->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel7,DISABLE);//DMA·¢ËÍ¹Ø±Õ£¬Ö»ÄÜÔÚDMA¹Ø±ÕÇé¿öÏÂ²Å¿ÉÒÔÐ´ÈëCNDTR					
-              DMA1->IFCR = DMA1_FLAG_GL7;										//DMA_ClearFlag(DMA1_FLAG_TC7);	//Çå³ý±êÖ¾						
-              DMA1_Channel7->CNDTR 	=uLinkHead2->DataLen;	  //Éè¶¨´ý·¢ËÍ»º³åÇø´óÐ¡
-              DMA1_Channel7->CMAR 	=(u32)uTx2Addr;				  //·¢ËÍ»º³åÇø
-              DMA1_Channel7->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel7,ENABLE);//DMA·¢ËÍ¿ªÆô3
-              
-//              u32  Addr = (u32)uLinkHead2;
-//              DMA1_Channel7->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel7,DISABLE);//DMA·¢ËÍ¹Ø±Õ£¬Ö»ÄÜÔÚDMA¹Ø±ÕÇé¿öÏÂ²Å¿ÉÒÔÐ´ÈëCNDTR					
-//              DMA1->IFCR = DMA1_FLAG_GL7;										//DMA_ClearFlag(DMA1_FLAG_TC7);	//Çå³ý±êÖ¾						
-//              DMA1_Channel7->CNDTR 	=4;	  //Éè¶¨´ý·¢ËÍ»º³åÇø´óÐ¡
-//              DMA1_Channel7->CMAR 	=(u32)&Addr;			  //·¢ËÍ»º³åÇø
-//              DMA1_Channel7->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel7,ENABLE);//DMA·¢ËÍ¿ªÆô3
-              
-              if(NULL ==  uLinkHead2->NextNode)
-              {
-                uLinkEnd2 = NULL;
-              }
-              DeleteNode(&uLinkHead2);
-            }
-					}
-          
-          break;
-    default:break;
-  }
-}
-/*******************************************************************************
-*º¯ÊýÃû		:USART_RX_Server
-*¹¦ÄÜÃèÊö	:´®¿Ú½ÓÊÕ·þÎñº¯Êý
-*ÊäÈë			: 
-*Êä³ö			:ÎÞ
-*·µ»ØÖµ		:ÎÞ
-*Àý³Ì			£º
-*******************************************************************************/
 
-void USART_RxServer(USART_TypeDef* USARTx)		//´®¿Ú½ÓÊÕ·þÎñ³ÌÐò	
-{
 
-}
 
 
 
@@ -3022,7 +2940,76 @@ unsigned char UART5ReceiveData(unsigned char* RecByte)			//´®¿Ú5¶ÁÊý¾Ý,·µ»Ø0-ÎÞÖ
   }
 	return 0;
 }
+/*******************************************************************************
+*º¯ÊýÃû		:USART_RX_Server
+*¹¦ÄÜÃèÊö	:´®¿Ú½ÓÊÕ·þÎñº¯Êý
+*ÊäÈë			: 
+*Êä³ö			:ÎÞ
+*·µ»ØÖµ		:ÎÞ
+*Àý³Ì			£º
+*******************************************************************************/
 
+void USART_RX_Server(void)		//´®¿Ú½ÓÊÕ·þÎñ³ÌÐò	
+{
+//	u16 num=0;
+//	WOW_Server(); 
+//	USART_ClearITPendingBit(USART1,USART_IT_IDLE); 				//Çå³ý¿ÕÏÐ´®¿Ú±êÖ¾Î»
+//	USART_ClearITPendingBit(USART1,USART_IT_TC); 					//´«ÊäÍê³ÉÖÐ¶Ï
+//	USART_ClearITPendingBit(USART1,USART_IT_RXNE); 				//Çå³ý¿ÕÏÐ´®¿Ú±êÖ¾Î»
+	
+//    if(USART_GetITStatus(USART1,USART_IT_IDLE) == SET)
+//    {
+////#ifdef	USART1_DMA
+////		u16 num=0;
+//		USART_ClearITPendingBit(USART1,USART_IT_IDLE); 				//Çå³ý¿ÕÏÐ´®¿Ú±êÖ¾Î»
+////		USART_ClearITPendingBit(USART1,USART_IT_RXNE); 				//Çå³ý¿ÕÏÐ´®¿Ú±êÖ¾Î»
+//		num = USART1->DR; 																		//¶Á³öÊý¾ÝÒÔÍê³ÉÇå³ý±êÖ¾
+//		DMA_Cmd(DMA1_Channel5,DISABLE);    										//¹Ø±Õ½ÓÊÕDMA
+//		num = DMA1_BufferSize -  DMA_GetCurrDataCounter(DMA1_Channel5);  	//µÃµ½ÕæÕý½ÓÊÕÊý¾Ý¸öÊý
+//		DMA1_Channel4->CNDTR =num;														//Éè¶¨´ý·¢ËÍÊý¾Ý¸öÊý
+////		temp =num;   
+////		data_uart1[num] = '\0';
+//		DMA1_Channel5->CNDTR=DMA1_BufferSize;       				//ÖØÐÂÉèÖÃ½ÓÊÕÊý¾Ý¸öÊý
+//			
+//		DMA_Cmd(DMA1_Channel5,ENABLE);  										//¿ªÆô½ÓÊÕDMA
+//		DMA_Cmd(DMA1_Channel4,ENABLE);											//DMA·¢ËÍ¿ªÆô
+////#endif
+//		}
+//			
+//	if(USART_GetITStatus(USART2,USART_IT_IDLE) == SET)
+//    {
+//		USART_ClearITPendingBit(USART2,USART_IT_IDLE); 				//Çå³ý¿ÕÏÐ´®¿Ú±êÖ¾Î»
+//		num = USART2->DR; 																		//¶Á³öÊý¾ÝÒÔÍê³ÉÇå³ý±êÖ¾
+//		DMA_Cmd(DMA1_Channel6,DISABLE);    										//¹Ø±Õ½ÓÊÕDMA
+//		num = DMA1_BufferSize -  DMA_GetCurrDataCounter(DMA1_Channel6);  	//µÃµ½ÕæÕý½ÓÊÕÊý¾Ý¸öÊý
+//		DMA1_Channel7->CNDTR =num;														//Éè¶¨´ý·¢ËÍÊý¾Ý¸öÊý
+//		DMA1_Channel6->CNDTR=DMA1_BufferSize;       				//ÖØÐÂÉèÖÃ½ÓÊÕÊý¾Ý¸öÊý
+//			
+//		DMA_Cmd(DMA1_Channel6,ENABLE);  										//¿ªÆô½ÓÊÕDMA			
+//		DMA_Cmd(DMA1_Channel7,ENABLE);											//DMA·¢ËÍ¿ªÆô
+//		}
+/************************************************************************
+***********************´®¿Ú2ÊÕ·¢****************************************
+
+if(USART_GetITStatus(USART2,USART_IT_IDLE))
+  {
+			USART_ClearITPendingBit(USART2,USART_IT_IDLE); 					//Çå³ý¿ÕÏÐ´®¿Ú±êÖ¾Î»
+			num = USART2->DR; 												//¶Á³öÊý¾ÝÒÔÍê³ÉÇå³ý±êÖ¾
+			DMA_Cmd(DMA1_Channel6,DISABLE);    										//¹Ø±Õ½ÓÊÕDMA
+			num = DMA1_BufferSize -  DMA_GetCurrDataCounter(DMA1_Channel6);	//µÃµ½ÕæÕý½ÓÊÕÊý¾Ý¸öÊý
+			DMA1_Channel7->CNDTR =num;										//Éè¶¨´ý·¢ËÍÊý¾Ý¸öÊý
+			DMA1_Channel6->CNDTR=DMA1_BufferSize;       					//ÖØÐÂÉèÖÃ½ÓÊÕÊý¾Ý¸öÊý				
+			DMA_Cmd(DMA1_Channel6,ENABLE);  								//¿ªÆô½ÓÊÕDMA			
+			DMA_Cmd(DMA1_Channel7,ENABLE);									//DMA·¢ËÍ¿ªÆô
+	}
+	else if(DMA_GetFlagStatus(DMA1_FLAG_GL7))
+	{
+		DMA_ClearFlag(DMA1_FLAG_GL7);
+		DMA_Cmd(DMA1_Channel7,DISABLE);									//DMA·¢ËÍ¿ªÆô
+	}
+*************************************************************************
+************************************************************************/
+}
 
 
 

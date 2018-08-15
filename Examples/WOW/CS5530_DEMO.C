@@ -171,12 +171,12 @@ void TM1616_DIS(void)
 //		}
 		weigth	=	CS5530_ReadData(&CS5530);		//获取稳定的AD值
 //		weigth	=	CS5530.Data.WeighLive;		//获取稳定的AD值
-		if((0xFFFFFFFF	!=	weigth)&&(0	!=	weigth))
-		{
+//		if((0xFFFFFFFF	!=	weigth)&&(0	!=	weigth))
+//		{
 			TM1616_Display(&TM1616_1,weigth/10000);
 			TM1616_Display(&TM1616_2,weigth%10000);
 			USART_DMAPrintf	(USART2,"CH1:%0.8X\r\n",weigth>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		}
+//		}
 	}
 }
 
