@@ -63,15 +63,25 @@
 #define	uRxSize		256				//默认串口DMA接收缓冲大小,如果配置时未输入缓存大小时使用的默认值
 #define	uTxSize		uRxSize		//默认串口DMA发送缓冲大小
 #define	uBaudRate	115200	//默认串口波特率
-unsigned char uRx1Addr[uRxSize]	=	{0};					//串口1接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
-unsigned char uRx2Addr[uRxSize]	=	{0};					//串口2接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
-unsigned char uRx3Addr[uRxSize]	=	{0};					//串口3接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
-unsigned char uRx4Addr[uRxSize]	=	{0};					//串口4接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+//unsigned char uRx1Addr[uRxSize]	=	{0};					//串口1接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+//unsigned char uRx2Addr[uRxSize]	=	{0};					//串口2接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+//unsigned char uRx3Addr[uRxSize]	=	{0};					//串口3接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+//unsigned char uRx4Addr[uRxSize]	=	{0};					//串口4接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
 
-unsigned char uTx1Addr[uTxSize]	=	{0};					//串口1发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+//unsigned char uTx1Addr[uTxSize]	=	{0};					//串口1发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
 unsigned char uTx2Addr[uTxSize]	=	{0};					//串口2发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
-unsigned char uTx3Addr[uTxSize]	=	{0};					//串口3发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
-unsigned char uTx4Addr[uTxSize]	=	{0};					//串口4发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+//unsigned char uTx3Addr[uTxSize]	=	{0};					//串口3发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+//unsigned char uTx4Addr[uTxSize]	=	{0};					//串口4发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+
+unsigned char *uRx1Addr;					//串口1接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+unsigned char *uRx2Addr;					//串口2接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+unsigned char *uRx3Addr;					//串口3接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+unsigned char *uRx4Addr;					//串口4接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+
+unsigned char *uTx1Addr;					//串口1发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+//unsigned char *uTx2Addr;					//串口2发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+unsigned char *uTx3Addr;					//串口3发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+unsigned char *uTx4Addr;					//串口4发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
 
 //uLinkDef	uLink1;				//串口1链表头
 //uLinkDef	uLink2;				//串口2链表头
@@ -180,6 +190,7 @@ void	USART_DMA_ConfigurationNR(
 						SetDmaSize.nUSART2=uRxSize;
 					else
 						SetDmaSize.nUSART2=BufferSize;
+          uRx2Addr  = (unsigned char*)malloc(SetDmaSize.nUSART2);
 					RXDBuffer	=	uRx2Addr;
 					GPIO_TX=GPIOA;
 					GPIO_RX=GPIOA;
@@ -1756,11 +1767,14 @@ u16 USART_DMASend(
 						||((DMA1_Channel4->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
+            
+            free(uTx1Addr);
+            uTx1Addr  = (unsigned char*)malloc(BufferSize);
 						memcpy(uTx1Addr,tx_buffer,BufferSize);
 						DMA1_Channel4->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel4,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
 						DMA1->IFCR = DMA1_FLAG_GL4;										//DMA_ClearFlag(DMA1_FLAG_TC4);	//清除标志						
-						DMA1_Channel4->CNDTR 	=BufferSize;						//设定待发送缓冲区大小
-						DMA1_Channel4->CMAR 	=(u32)uTx1Addr;				//发送缓冲区
+						DMA1_Channel4->CNDTR 	=BufferSize;						    //设定待发送缓冲区大小
+						DMA1_Channel4->CMAR 	=(u32)uTx1Addr;				  //发送缓冲区
 						DMA1_Channel4->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel4,ENABLE);//DMA发送开启3
 						return BufferSize;
 					}
@@ -1780,10 +1794,17 @@ u16 USART_DMASend(
 						||((DMA1_Channel7->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
+//            if(NULL !=  uTx2Addr)
+//              free(uTx2Addr);
+//            uTx2Addr  = malloc(50);
+//            if(NULL ==  uTx2Addr)   //内存申请失败
+//            {
+//              return 0;
+//            }
 						memcpy(uTx2Addr,tx_buffer,BufferSize);
 						DMA1_Channel7->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel7,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
 						DMA1->IFCR = DMA1_FLAG_GL7;										//DMA_ClearFlag(DMA1_FLAG_TC7);	//清除标志						
-						DMA1_Channel7->CNDTR 	=BufferSize;						//设定待发送缓冲区大小
+						DMA1_Channel7->CNDTR 	=BufferSize;						    //设定待发送缓冲区大小
 						DMA1_Channel7->CMAR 	=(u32)uTx2Addr;				  //发送缓冲区
 						DMA1_Channel7->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel7,ENABLE);//DMA发送开启3
 						return BufferSize;
@@ -1821,6 +1842,8 @@ u16 USART_DMASend(
 						||((DMA1_Channel2->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
+            free(uTx3Addr);
+            uTx3Addr  = (unsigned char*)malloc(BufferSize);
 						memcpy(uTx3Addr,tx_buffer,BufferSize);
 						DMA1_Channel2->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel2,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
 						DMA1->IFCR = DMA1_FLAG_GL2;										//DMA_ClearFlag(DMA1_FLAG_TC2);	//清除标志						
@@ -1841,6 +1864,8 @@ u16 USART_DMASend(
 						||((DMA2_Channel5->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
+            free(uTx4Addr);
+            uTx4Addr  = (unsigned char*)malloc(BufferSize);
 						memcpy(uTx4Addr,tx_buffer,BufferSize);
 						DMA2_Channel5->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel2,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
 						DMA2->IFCR = DMA2_FLAG_GL5;										//DMA_ClearFlag(DMA2_FLAG_TC5);	//清除标志						
