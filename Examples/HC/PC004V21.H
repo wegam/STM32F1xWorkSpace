@@ -9,8 +9,12 @@ void PC004V21_PinSet(void);
 
 
 
+void PC002VxxFUN(void);		//智能药盒主控板测试
+void USART2RS485(void);		//USART与RS485互转
+void PD002VXXFUN(void);		//称重控制板测试
 void PD003V11FUN(void);		//智能药盒测试
-
+void PD011V20FUN(void);		//八路电机控制板测试
+void PD014V15FUN(void);		//盒剂控制板测试
 
 void PC004V21_KEYData(void);		//按键发药处理函数
 

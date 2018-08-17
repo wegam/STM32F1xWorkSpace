@@ -46,7 +46,7 @@
 #include "string.h"				//串和内存操作函数头文件
 #include "stm32f10x_dma.h"
 
-
+#define PC001Busize	256
 
 SWITCHID_CONF	SWITCHID;
 u8 SwitchID	=	0;
@@ -65,9 +65,9 @@ RS485_TypeDef BUS485;
 u8 Bus485Flg	=	0;
 u32 Bus485TestTime	=	0;
 u8 Bus485TestData	=	0;
-u8 Bus485Rx[16]={0};
-u8 Bus485Re[16]={0};
-u8 Bus485Tx[16]={0};
+u8 Bus485Rx[PC001Busize]={0};
+u8 Bus485Re[PC001Busize]={0};
+u8 Bus485Tx[PC001Busize]={0};
 
 RS485_TypeDef SL485;
 
@@ -77,6 +77,8 @@ u8 SL485TestData	=	0;
 u8 SL485Rx[16]={0};
 u8 SL485Re[16]={0};
 u8 SL485Tx[16]={0};
+
+u16 BuxRxNum	=	0;
 
 /*******************************************************************************
 * 函数名		:	
@@ -137,12 +139,12 @@ void RS485_Configuration(void)
 	BUS485.USARTx	=	USART3;
 	BUS485.RS485_CTL_PORT	=	GPIOB;
 	BUS485.RS485_CTL_Pin	=	GPIO_Pin_12;
-	RS485_DMA_ConfigurationNR	(&BUS485,19200,9);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&BUS485,19200,PC001Busize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
 	SL485.USARTx	=	USART2;
 	SL485.RS485_CTL_PORT	= GPIOA;
 	SL485.RS485_CTL_Pin		=	GPIO_Pin_1;
-	RS485_DMA_ConfigurationNR	(&SL485,19200,9);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&SL485,19200,PC001Busize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -155,7 +157,7 @@ void RS485_Configuration(void)
 *******************************************************************************/
 void RS485_Server(void)
 {
-	u8	Num	=	0;	
+	u16	Num	=	0;	
 //	Num	=	RS485_ReadBufferIDLE(&SL485,(u32*)SL485Re,(u32*)SL485Rx);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 //	if(SL485TestTime++>2000)
 //	{		
@@ -246,12 +248,14 @@ void RS485_Server(void)
 		}
 	}
 	//============================================
-	Num	=	RS485_ReadBufferIDLE(&BUS485,Bus485Re);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-	if(Num)
+	BuxRxNum	=	RS485_ReadBufferIDLE(&BUS485,Bus485Re);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(BuxRxNum)
 	{
-		Bus485Flg	=	1;
-		Bus485TestData	=	Bus485Re[1]+1;
-		Bus485TestTime	=	0;
+//		Bus485Flg	=	1;
+//		Bus485TestData	=	Bus485Re[1]+1;
+//		Bus485TestTime	=	0;
+		RS485_DMASend	(&BUS485,Bus485Re,BuxRxNum);	//RS485-DMA发送程序
+//		memset(Bus485Re,0x00,16);
 	}
 	if(Bus485Flg)
 	{
@@ -262,7 +266,7 @@ void RS485_Server(void)
 			
 			memset(Bus485Tx,Bus485TestData,9);
 			Bus485Tx[0]	=	SwitchID;
-			RS485_DMASend	(&BUS485,Bus485Tx,9);	//RS485-DMA发送程序
+//			RS485_DMASend	(&BUS485,Bus485Tx,9);	//RS485-DMA发送程序
 		}
 	}
 	//============================================
