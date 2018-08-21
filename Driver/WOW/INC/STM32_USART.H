@@ -67,8 +67,10 @@ void	USART_DMA_ConfigurationNRRemap	(USART_TypeDef* USARTx,u32 USART_BaudRate,u3
 u16	USART_ReadBufferIDLE	(USART_TypeDef* USARTx,u8 *RevBuffer);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数
 
 //*****************串口发送
-u16	USART_DMAPrintf		(USART_TypeDef* USARTx,const char *format,...);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-u16	USART_DMASend			(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);		//串口DMA发送程序
+u16	USART_DMAPrintf		  (USART_TypeDef* USARTx,const char *format,...);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+u16	USART_DMAPrintfList (USART_TypeDef* USARTx,const char *format,...);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+u16	USART_DMASend			  (USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+u16	USART_DMASendList   (USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
 USARTStatusDef	USART_Status(USART_TypeDef* USARTx);		//串口状态检查
 
 
@@ -96,6 +98,7 @@ unsigned char UART5ReceiveData(unsigned char* RecByte);			//串口5读数据,返回0-无
 
 void  USART_TxServer(USART_TypeDef* USARTx);
 void  USART_RxServer(USART_TypeDef* USARTx);		//串口接收服务程序
+void USART_Server(void);		//串口服务程序	
 
 #endif
 

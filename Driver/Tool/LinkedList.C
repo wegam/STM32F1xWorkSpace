@@ -248,13 +248,13 @@ unsigned long GetListLength(LINK_NODE* HeadNODEx)
 }
 //===============================================================================
 //函数:	FIFO_IN--入列:FIFO存储数据---First in, First out
-//描述:	存储数据，将数据存入到尾结点，并更新尾结点地址
+//描述:	存储数据，将数据存入到尾结点，并更新尾结点地址，返回存储结果
 //输入:	EndNode-尾结点
 //输入:	DataAddr-待存储的数据地址
 //输入:	DataLenth-待存储的数据长度
 //返回:	入列结果0--失败,SaveLength--已经保存的数据大小
 //===============================================================================
-LINK_NODE*  FIFO_IN(LINK_NODE	**EndNode,char* SaveAddr,unsigned long SaveLength)
+unsigned short  FIFO_IN(LINK_NODE	**EndNode,char* SaveAddr,unsigned short SaveLength)
 {
 	//==================临时变量
 	LINK_NODE *NewNode = NULL; 											//新建临时结点
@@ -264,7 +264,7 @@ LINK_NODE*  FIFO_IN(LINK_NODE	**EndNode,char* SaveAddr,unsigned long SaveLength)
 	//==================判断申请结点结果			
 	if(NewNode==NULL)		//申请失败
 	{
-		return *EndNode;	  //退出,返回0
+		return 0;	        //退出,返回0
 	}
   //==================空链表
   if(NULL ==  TempNode)
@@ -272,10 +272,11 @@ LINK_NODE*  FIFO_IN(LINK_NODE	**EndNode,char* SaveAddr,unsigned long SaveLength)
     NewNode->NextNode = NULL;
     NewNode->PrevNode = NULL;
     *EndNode = NewNode;
-    return  NewNode;
+    return  SaveLength;
   }
   else
   {
+    //===================查找尾结点并且在尾结点添加新结点
     LINK_NODE*  TempNode  = *EndNode;
     unsigned char i=0;
     for(i=0;i<0xFF;i++)
@@ -293,18 +294,19 @@ LINK_NODE*  FIFO_IN(LINK_NODE	**EndNode,char* SaveAddr,unsigned long SaveLength)
   }
 	//==================判断此链表是否为空链表(头结点是否为空)
 	
-	return	*EndNode;
+	return	SaveLength;
 }
 
 //===============================================================================
 //函数:	FIFO_OUT--出列:FIFO输出数据---First in, First out
-//描述:	读出数据--从HeadNode读取,读取完,HeadNode指向下一个地址后释放已读取完的结点
-//输入:	DataAddr--数据地址
+//描述:	读出数据存储到ReadAddr--从HeadNode读取,读取完,HeadNode指向下一个地址后释放已读取完的结点，返回节点内数据长度
+//输入:	ReadAddr--存储节点读取的数据地址
 //返回:	DataLenth---存储的数据大小
 //===============================================================================
-LINK_NODE* FIFO_OUT(LINK_NODE	**HeadNode,char* ReadAddr)
+unsigned short FIFO_OUT(LINK_NODE	**HeadNode,char* ReadAddr)
 {
   LINK_NODE *TempNode = *HeadNode; 							  //临时结点
+  unsigned short DataLen = 0;			//存储的数据长度
 	//==================空结点
 	if(TempNode==NULL)							//链表头结点为空---空链表
 	{
@@ -313,12 +315,35 @@ LINK_NODE* FIFO_OUT(LINK_NODE	**HeadNode,char* ReadAddr)
 	//==================非空结点
 	else		
 	{
+    //===================查找头结点并且复制头结点内存数据，然后重新修改头结点地址，释放原头结点内存
+    unsigned char i = 0;
+    for(i=0;i<0xFF;i++)
+    {
+      if(NULL ==  TempNode->PrevNode) //此结点上结点为空表示此为头结点
+      {
+        break;
+      }
+      TempNode  = TempNode->PrevNode;
+    }
 		//==================复制数据
-		memcpy(ReadAddr,TempNode->DataAddr,TempNode->DataLen);	          //复制结点内数据到链表缓存
-    //==================数据已读出，删除些结点，更新头结点地址
-//    HeadNode  = DeleteNode(HeadNode);																  //删除结点
+    DataLen = TempNode->DataLen;
+    if(DataLen)
+    {
+      if(NULL !=  ReadAddr)
+      {
+        free(ReadAddr);        
+      }
+      ReadAddr  = (char*)malloc((unsigned int)DataLen);
+      if(NULL ==  ReadAddr)   //动态内存申请失败
+      {
+        return 0;
+      }
+      memcpy(ReadAddr,TempNode->DataAddr,TempNode->DataLen);	          //复制结点内数据到链表缓存
+    }
+    //===================重新更新链表头地址，释放链表空间，如果是最后一个链表，删除链表
     if(NULL !=  TempNode->NextNode)                           //链表还有结点
     {
+      TempNode ->NextNode->PrevNode = NULL;
       *HeadNode  = TempNode  ->NextNode;
       free(TempNode->DataAddr);                               //释放结点内数据缓存
       free(TempNode);                                         //释放已删除结点
@@ -329,7 +354,7 @@ LINK_NODE* FIFO_OUT(LINK_NODE	**HeadNode,char* ReadAddr)
       free(TempNode);                                         //释放已删除结点
       *HeadNode  = NULL;
     }
-		return *HeadNode;					//返回数据宽度
+		return DataLen;					//返回数据宽度
 	}
 }
 //===============================================================================

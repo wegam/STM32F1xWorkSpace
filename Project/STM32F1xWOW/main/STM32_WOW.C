@@ -1,20 +1,8 @@
 #include "STM32_WOW.H"
 
+#include "STM32_USART.H"
+#include "STM32_WDG.H"
 
-//#include "STM32F10x_BitBand.H"
-//#include "stm32f10x_map.h"
-//#include "STM32_WDG.H"
-//#include "STM32_SYSTICK.H"
-//#include "STM32_SYS.H"
-
-
-
-//#ifndef	Usart_Test
-//#define	Usart_Test
-//	#include "USART_TEST.H"
-//#endif
-//#define R2A15908SP
-//#define Usart_Test
 
 
 
@@ -807,11 +795,22 @@ void WOW_Server(void)
 	SWDTEST_Server();
 #endif
 
-
-
-
 //IWDG_Feed();								//独立看门狗喂狗
 
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void MainServer(void)
+{
+  IWDG_Feed();			  //独立看门狗喂狗
+  USART_Server();     //串口服务程序
 }
 
 

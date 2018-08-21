@@ -58,12 +58,7 @@ int main(void)
 
   while (1)
   {
-		DMAF++;
-		if(DMAF>0xFFFFFF)
-		{
-			DMAF=0;
-		}
-//		TEST_STOPMODE();
+    MainServer();
   }
 }
 

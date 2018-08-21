@@ -455,6 +455,7 @@
 
 void WOW_Configuration(void);		//配置函数
 void WOW_Server(void);					//服务函数
+void MainServer(void);          //
 
 
 #endif

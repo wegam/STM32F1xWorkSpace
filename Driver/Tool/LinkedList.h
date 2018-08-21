@@ -4,8 +4,8 @@
 
 typedef struct _LINK_NODE
 {	
-	unsigned long 	DataLen;			//存储的数据长度
-	unsigned long	  Serial;				//存储的序号  
+	unsigned short 	DataLen;			//存储的数据长度
+	unsigned short  Serial;				//存储的序号  
 	char 						*DataAddr;	//数据动态存储空间
   struct _LINK_NODE* PrevNode;	//上一个节点:仅双向链表时使用
 	struct _LINK_NODE* NextNode;	//下一个节点	:
@@ -41,8 +41,8 @@ LINK_NODE *FindData(LINK_NODE	*HeadNODE,char* DataAddr,unsigned long DataLength)
 
 unsigned long GetListLength(LINK_NODE* HeadNODEx);																		//获取链表长度
 
-LINK_NODE* FIFO_IN  (LINK_NODE	**EndNode,char* SaveAddr,unsigned long SaveLength);	//FIFO存储数据---First in, First out
-LINK_NODE* FIFO_OUT	(LINK_NODE	**DATAx,char* ReadAddr);														//FIFO输出数据---First in, First out
+unsigned short FIFO_IN  (LINK_NODE	**EndNode,char* SaveAddr,unsigned short SaveLength);	//FIFO存储数据---First in, First out
+unsigned short FIFO_OUT	(LINK_NODE	**DATAx,char* ReadAddr);										    //FIFO输出数据---First in, First out
 LINK_NODE* FIFO_DEL	(LINK_NODE	*DelNode);	//FIFO删除相应数据的结点
 
 unsigned long LIFO_IN		(LINK_NODE	*LISTx,char* SaveAddr,unsigned long SaveLength);	//LIFO存储数据---Last in, First out
