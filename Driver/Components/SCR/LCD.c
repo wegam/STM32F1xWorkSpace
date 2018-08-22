@@ -27,34 +27,13 @@ LCDDef 			*LCDSYS	=	NULL;	//ÄÚ²¿Çı¶¯Ê¹ÓÃ£¬²»¿ÉÉ¾³ı
 *******************************************************************************/
 void LCD_Initialize(LCDDef *pInfo)
 {
-	LCDSYS	=	pInfo;		//Ö¸ÕëÖ¸Ïò
+  LCDPortDef  *Port;
+	LCDSYS	  =	pInfo;		//Ö¸ÕëÖ¸Ïò
+  
+  Port	=	&(pInfo->Port);
 	
-	//¼ì²é±³¾°É«Óë»­±ÊÉ«ÊÇ·ñÏàÍ¬
-	if(pInfo->Data.PColor	==	pInfo->Data.BColor)
-	{
-		pInfo->Data.PColor	=	pInfo->Data.BColor^0xFF;
-	}
-	//GPIOÅäÖÃ
-	LCD_PortInitialize(&pInfo->Port);			//LCD¶Ë¿ÚÅäÖÃ
-	//LCD³õÊ¼»¯¼°ÉÏµçÅäÖÃ
-	LCDSYS->Display.PowerOn();						//LCDÉÏµç/³õÊ¼»¯ÅäÖÃ
-	//ÒÔ±³¾°É«Çå³ıÆÁÄ»
-	LCD_Clean(pInfo->Data.BColor);				//°´±³¾°É«Çå³ıÆÁÄ»º¯Êı
 	
-	SPI_Initialize(&pInfo->GT32L32.SPI);				//ÆÕÍ¨SPIÍ¨Ñ¶·½Ê½ÅäÖÃ	
-}
-/*******************************************************************************
-* º¯ÊıÃû			:	function
-* ¹¦ÄÜÃèÊö		:	º¯Êı¹¦ÄÜËµÃ÷ 
-* ÊäÈë			: void
-* ·µ»ØÖµ			: void
-*******************************************************************************/
-static void LCD_PortInitialize(LCDPortDef *pPort)
-{
-	LCDPortDef		*Port;	
-	
-	Port	=	pPort;
-	
+	//==========================GPIOÅäÖÃ
 	GPIO_Configuration_OPP50	(Port->sBL_PORT,				Port->sBL_Pin);					//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sRD_PORT,				Port->sRD_Pin);					//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sREST_PORT,			Port->sREST_Pin);				//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È2MHz----V20170605
@@ -62,8 +41,20 @@ static void LCD_PortInitialize(LCDPortDef *pPort)
 	GPIO_Configuration_OPP50	(Port->sWR_PORT,				Port->sWR_Pin);					//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sCS_PORT,				Port->sCS_Pin);					//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sTE_PORT,				Port->sTE_Pin);					//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È2MHz----V20170605
-	GPIO_Configuration_OPP50	(Port->sDATABUS_PORT,		Port->sDATABUS_Pin);		//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È2MHz----V20170605	
+	GPIO_Configuration_OPP50	(Port->sDATABUS_PORT,		Port->sDATABUS_Pin);		//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È2MHz----V20170605
+  //==========================¼ì²é±³¾°É«Óë»­±ÊÉ«ÊÇ·ñÏàÍ¬
+	if(pInfo->Data.PColor	==	pInfo->Data.BColor)
+	{
+		pInfo->Data.PColor	=	pInfo->Data.BColor^0xFF;
+	}
+	//==========================LCD³õÊ¼»¯¼°ÉÏµçÅäÖÃ
+	LCDSYS->Display.PowerOn();						//LCDÉÏµç/³õÊ¼»¯ÅäÖÃ
+	//==========================ÒÔ±³¾°É«Çå³ıÆÁÄ»
+	LCD_Clean(pInfo->Data.BColor);				//°´±³¾°É«Çå³ıÆÁÄ»º¯Êı
+	//==========================×Ö¿âÅäÖÃ
+	GT32L32_Initialize(&pInfo->GT32L32.SPI);				//ÆÕÍ¨SPIÍ¨Ñ¶·½Ê½ÅäÖÃ	
 }
+
 /**************************************************************************************************
 * [Function] R61509V_DispOff:  ¹Ø±ÕR61509VÏÔÊ¾( ºÚÆÁ?)
 * [No param]
@@ -394,33 +385,6 @@ void LCD_DrawLine(
 			uCol+=incy; 
 		} 
 	}
-
-//	u16	Num	=	0,i=0;
-////	CoordinateTransform(&x1,&y1,&x2,&y2);
-//	if(HSX>HEX)
-//	{
-//		Num	+=	HSX-HEX;
-//	}
-//	else
-//	{
-//		Num	+=	HEX-HSX;
-//	}
-//	if(HSY>HEY)
-//	{
-//		Num	+=	HSY-HEY;
-//	}
-//	else
-//	{
-//		Num	+=	HEY-HSY;
-//	}
-//	
-//	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);//ÉèÖÃ´°µØÖ·
-//	LCD_WriteDataStart();
-//	for(i=0;i<Num;i++)
-//	{
-//		LCD_WriteData(Color); 	//±Ê»­ÑÕÉ«
-//	}
-//	LCD_WriteDataEnd();
 }
 /**************************************************************************************************
 * [Function] LCD_DrawCircle:  º¯Êı¹¦ÄÜ¡¢×¢ÒâÊÂÏîµÈµÄÃèÊö
@@ -574,105 +538,44 @@ void LCD_SetBackground(  u16 BackColor )
 	LCD_Clean(BackColor);	//Çå³ıÆÁÄ»º¯Êı
 }
 /*******************************************************************************
-* º¯ÊıÃû			:	function
-* ¹¦ÄÜÃèÊö		:	º¯Êı¹¦ÄÜËµÃ÷ 
-* ÊäÈë			: void
+* º¯ÊıÃû			:	LCD_ShowAntenna
+* ¹¦ÄÜÃèÊö		:	ÏÔÊ¾12x12ÌìÏß 
+* ÊäÈë			: Num 01234´ø±íÌìÏßĞÅºÅÇ¿¶È¡£
 * ·µ»ØÖµ			: void
 *******************************************************************************/
-void LCD_ShowChar(
-										u16 x,			//x				:Æğµãx×ø±ê
+void LCD_ShowAntenna(
+                    u16 x,			//x				:Æğµãx×ø±ê
 										u16 y,			//y				:Æğµãy×ø±ê
-										u8 font,		//font		:×ÖÌå´óĞ¡
-										u8 num,			//num			:×Ö½ÚÊı
-										u8 *Buffer	//Buffer	:ÏÔÊ¾µÄÄÚÈİ»º´æ
-)		//¸ßÍ¨×Ö¿â²âÊÔ³ÌĞò
+                    u8 Num)
 {
-	u8 temp;
-	u8 i=0,j=0;
-	unsigned short x1=0,x2=0,y1=0,y2=0;
-	u16 colortemp=LCDSYS->Data.PColor;
-//	CoordinateTransform(&x1,&y1,&x2,&y2);
-	x1	=	x;
-	y1	=	y;
-	
-	if(font==12)
-	{
-		if(x>LCDSYS->Data.MaxV-12||y>LCDSYS->Data.MaxH-12)
-			return;
-		
-		x2	=	x+12-1;
-		y2	=	y+12-1;
-	}
-	if(font==16)
-	{
-		if(x>LCDSYS->Data.MaxV-16||y>LCDSYS->Data.MaxH-16)
-			return;
-		if(32==num)
-		{
-			x2	=	x+16-1;
-			y2	=	y+16-1;
-		}
-		else
-		{
-			x2	=	x+8-1;
-			y2	=	y+16-1;
-		}
-	}
-	if(font==24)
-	{
-		if(x>LCDSYS->Data.MaxV-24||y>LCDSYS->Data.MaxH-24)
-			return;
-		if(72==num)
-		{
-			x2	=	x+24-1;
-			y2	=	y+24-1;
-		}
-		else
-		{
-			x2	=	x+16-1;
-			y2	=	y+24-1;
-		}
-	}
-	else if(font==32)
-	{
-		if(x>LCDSYS->Data.MaxV-32||y>LCDSYS->Data.MaxH-32)
-			return;
-		if(num==128)
-		{
-			x2	=	x+16-1;
-			y2	=	y+32-1;
-		}
-		else
-		{
-			x2	=	x+16-1;
-			y2	=	y+32-1;
-		}
-	}
-	else
-	{
-//		return ;
-	}
-	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//ÉèÖÃÏÔÊ¾ÇøÓò
-	i=0;
-	for(i=0;i<num;i++)
-	{ 
-		u16 LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//»­±ÊÉ«	
-		temp=Buffer[i];		 					//µ÷ÓÃ1608×ÖÌå--¶şÎ¬Êı×éĞÎÊ½--×Ö¿âÊ¹ÓÃÊ±È¡Ïû
-		for(j=0;j<8;j++)
-		{
-			if((temp&0x80)==0X80)
-			{
-				LCD_PEN_COLOR=LCDSYS->Data.PColor;
-			}
-			else
-				LCD_PEN_COLOR=LCDSYS->Data.BColor;
-			LCD_WriteDataStart();
-			LCD_WriteData(LCD_PEN_COLOR);
-			LCD_WriteDataEnd();
-			temp=temp<<1;
-		}
-		LCDSYS->Data.PColor=colortemp;	
-	}	
+  unsigned char GetBufferLength	=	0;
+  unsigned char CodeBuffer[32]={0};
+  if(Num>4)
+  {
+    Num=4;
+  }
+  GetBufferLength = GT32L32_GetAntennaCode(Num,CodeBuffer);
+	LCD_ShowChar(x,y,12,GetBufferLength,CodeBuffer);
+}
+/*******************************************************************************
+* º¯ÊıÃû			:	LCD_ShowBattery
+* ¹¦ÄÜÃèÊö		:	ÏÔÊ¾12x12µç³Ø 
+* ÊäÈë			: Num 01234´ø±íµç³ØµçÁ¿¡£
+* ·µ»ØÖµ			: void
+*******************************************************************************/
+void LCD_ShowBattery(
+                    u16 x,			//x				:Æğµãx×ø±ê
+										u16 y,			//y				:Æğµãy×ø±ê
+                    u8 Num)
+{
+  unsigned char GetBufferLength	=	0;
+  unsigned char CodeBuffer[32]={0};
+  if(Num>3)
+  {
+    Num=3;
+  }
+  GetBufferLength = GT32L32_GetBatteryCode(Num,CodeBuffer);
+	LCD_ShowChar(x,y,12,GetBufferLength,CodeBuffer);
 }
 /*******************************************************************************
 * º¯ÊıÃû			:	function
@@ -680,7 +583,7 @@ void LCD_ShowChar(
 * ÊäÈë			: void
 * ·µ»ØÖµ			: void
 *******************************************************************************/
-void LCD_ShowWord(
+static void LCD_ShowChar(
 										u16 x,			//x				:Æğµãx×ø±ê
 										u16 y,			//y				:Æğµãy×ø±ê
 										u8 font,		//font		:×ÖÌå´óĞ¡
@@ -708,46 +611,137 @@ void LCD_ShowWord(
 	{
 		if(x>LCDSYS->Data.MaxV-16||y>LCDSYS->Data.MaxH-16)
 			return;
-		if(32==num)
-		{
-			x2	=	x+16-1;
-			y2	=	y+16-1;
-		}
-		else
-		{
 			x2	=	x+8-1;
 			y2	=	y+16-1;
-		}
 	}
 	if(font==24)
 	{
 		if(x>LCDSYS->Data.MaxV-24||y>LCDSYS->Data.MaxH-24)
 			return;
-		if(72==num)
-		{
-			x2	=	x+24-1;
-			y2	=	y+24-1;
-		}
-		else
-		{
 			x2	=	x+12-1;
 			y2	=	y+24-1;
-		}
 	}
 	else if(font==32)
 	{
 		if(x>LCDSYS->Data.MaxV-32||y>LCDSYS->Data.MaxH-32)
 			return;
-		if(num==128)
-		{
-			x2	=	x+32-1;
-			y2	=	y+32-1;
-		}
-		else
-		{
 			x2	=	x+16-1;
 			y2	=	y+32-1;
+	}
+	else
+	{
+//		return ;
+	}
+	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//ÉèÖÃÏÔÊ¾ÇøÓò
+	i=0;
+	for(i=0;i<num;i++)
+	{ 
+		u16 LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//»­±ÊÉ«	
+		temp=Buffer[i];		 					//µ÷ÓÃ1608×ÖÌå--¶şÎ¬Êı×éĞÎÊ½--×Ö¿âÊ¹ÓÃÊ±È¡Ïû
+		for(j=0;j<8;j++)
+		{
+			if((temp&0x80)==0X80)
+			{
+				LCD_PEN_COLOR=LCDSYS->Data.PColor;
+			}
+			else
+				LCD_PEN_COLOR=LCDSYS->Data.BColor;
+			LCD_WriteDataStart();
+			LCD_WriteData(LCD_PEN_COLOR);
+			LCD_WriteDataEnd();
+			temp=temp<<1;
 		}
+    //=======================Î´Âú8Î»µÄ²¹³ä¶¨Èë
+    if(24==font)
+    {
+      temp=Buffer[i+1];		 					//µ÷ÓÃ1608×ÖÌå--¶şÎ¬Êı×éĞÎÊ½--×Ö¿âÊ¹ÓÃÊ±È¡Ïû
+      for(j=0;j<4;j++)
+      {
+        if((temp&0x80)==0X80)
+        {
+          LCD_PEN_COLOR=LCDSYS->Data.PColor;
+        }
+        else
+          LCD_PEN_COLOR=LCDSYS->Data.BColor;
+        LCD_WriteDataStart();
+        LCD_WriteData(LCD_PEN_COLOR);
+        LCD_WriteDataEnd();
+        temp=temp<<1;
+      }
+      i++;
+    }
+    else if(12==font)
+    {
+      temp=Buffer[i+1];		 					//µ÷ÓÃ1608×ÖÌå--¶şÎ¬Êı×éĞÎÊ½--×Ö¿âÊ¹ÓÃÊ±È¡Ïû
+      for(j=0;j<4;j++)
+      {
+        if((temp&0x80)==0X80)
+        {
+          LCD_PEN_COLOR=LCDSYS->Data.PColor;
+        }
+        else
+          LCD_PEN_COLOR=LCDSYS->Data.BColor;
+        LCD_WriteDataStart();
+        LCD_WriteData(LCD_PEN_COLOR);
+        LCD_WriteDataEnd();
+        temp=temp<<1;
+      }
+      i++;
+    }
+		LCDSYS->Data.PColor=colortemp;	
+	}	
+}
+/*******************************************************************************
+* º¯ÊıÃû			:	function
+* ¹¦ÄÜÃèÊö		:	º¯Êı¹¦ÄÜËµÃ÷ 
+* ÊäÈë			: void
+* ·µ»ØÖµ			: void
+*******************************************************************************/
+static void LCD_ShowWord(
+										u16 x,			//x				:Æğµãx×ø±ê
+										u16 y,			//y				:Æğµãy×ø±ê
+										u8 font,		//font		:×ÖÌå´óĞ¡
+										u8 num,			//num			:×Ö½ÚÊı
+										u8 *Buffer	//Buffer	:ÏÔÊ¾µÄÄÚÈİ»º´æ
+)		//¸ßÍ¨×Ö¿â²âÊÔ³ÌĞò
+{
+	u8 temp;
+	u8 i=0,j=0;
+	unsigned short x1=0,x2=0,y1=0,y2=0;
+	u16 colortemp=LCDSYS->Data.PColor;
+	x1	=	x;
+	y1	=	y;
+	
+	if(font==12)
+	{
+		if(x>LCDSYS->Data.MaxV-12||y>LCDSYS->Data.MaxH-12)
+			return;
+		
+		x2	=	x+12-1;
+		y2	=	y+12-1;
+	}
+	if(font==16)
+	{
+		if(x>LCDSYS->Data.MaxV-16||y>LCDSYS->Data.MaxH-16)
+			return;
+			x2	=	x+16-1;
+			y2	=	y+16-1;
+
+	}
+	if(font==24)
+	{
+		if(x>LCDSYS->Data.MaxV-24||y>LCDSYS->Data.MaxH-24)
+			return;
+
+			x2	=	x+24-1;
+			y2	=	y+24-1;
+	}
+	else if(font==32)
+	{
+		if(x>LCDSYS->Data.MaxV-32||y>LCDSYS->Data.MaxH-32)
+			return;
+			x2	=	x+32-1;
+			y2	=	y+32-1;
 	}
 	else
 	{
@@ -774,109 +768,6 @@ void LCD_ShowWord(
 		}
 		LCDSYS->Data.PColor=colortemp;	
 	}	
-}
-/*******************************************************************************
-*º¯ÊıÃû		:	LCD_ShowChar
-*¹¦ÄÜÃèÊö	:	ÔÚÖ¸¶¨Î»ÖÃÏÔÊ¾Ò»¸ö×Ö·û
-*ÊäÈë			: x,y		:Æğµã×ø±ê
-						num		:ÒªÏÔÊ¾µÄ×Ö·û:" "--->"~"
-						mode	:µş¼Ó·½Ê½(1)»¹ÊÇ·Çµş¼Ó·½Ê½(0)
-						num		:ÒªÏÔÊ¾µÄ×Ö·û:" "--->"~"
-*Êä³ö			:	ÎŞ
-*·µ»ØÖµ		:	ÎŞ
-*Àı³Ì			:
-*******************************************************************************/
-void LCD_ShowCharT(u16 x,u16 y,u8 num,u8 mode)
-{
-////	LCD_BACK_COLOR	//±³¾°É«
-////	LCD_POINT_COLOR	//»­±ÊÉ«
-//	u8 temp;
-//	u8 pos,t;
-//	u16 x0=x;
-//	u16 colortemp=LCD_POINT_COLOR; 
-//	if(x>LCD_V-16||y>LCD_H-16)
-//		return;	    
-//	//ÉèÖÃ´°¿Ú		   
-//	num=num-' ';//µÃµ½Æ«ÒÆºóµÄÖµ
-////	num=41;//µÃµ½Æ«ÒÆºóµÄÖµ
-//	
-//	
-////	LCD_SetWindowAddress(x,y,x+8-1,y+16-1);      //ÉèÖÃ¹â±êÎ»ÖÃ 
-//	if(!mode) //·Çµş¼Ó·½Ê½
-//	{
-//		for(pos=0;pos<16;pos++)
-//		{ 
-//			temp=code_asc2_1608[(u16)num*16+pos];		 		//µ÷ÓÃ1608×ÖÌå
-////			temp=code_num_1608[(u16)num*16+pos];		 //µ÷ÓÃ1608×ÖÌå
-//			for(t=0;t<8;t++)
-//			{                 
-//				if((temp&0x01)==0x01)
-//					LCD_POINT_COLOR=colortemp;
-//				else
-//					LCD_POINT_COLOR=LCD_BACK_COLOR;
-
-//				LCD_DrawDot(x,y,LCD_POINT_COLOR);//»­Ò»¸öµã 
-//				
-//				temp=temp>>1; 
-//				x++;
-//			}
-//			x=x0;
-//			y++;
-//		}	
-//	}
-//	else//µş¼Ó·½Ê½
-//	{
-//		for(pos=0;pos<16;pos++)
-//		{
-//			temp=code_asc2_1608[(u16)num*16+pos];		 //µ÷ÓÃ1608×ÖÌå
-//			for(t=0;t<8;t++)
-//			{                 
-//				if(temp&0x01)
-//					LCD_DrawDot(x+t,y+pos,LCD_POINT_COLOR);//»­Ò»¸öµã     
-//				temp>>=1; 
-//			}
-//		}
-//	}
-//	LCD_POINT_COLOR=colortemp;	    	   	 	  
-}
-/*******************************************************************************
-*º¯ÊıÃû			:	R61509V_Clean
-*¹¦ÄÜÃèÊö		:	ÏÔÊ¾ºº×Ö³ÌĞò
-*ÊäÈë				: 
-*·µ»ØÖµ			:	ÎŞ
-*******************************************************************************/
-void LCD_ShowChinese(unsigned char zimo[720],unsigned int backcolor)  //Ğ´Èë×Ö·û
-{
-	unsigned char j,flag=0;
-	unsigned char *point;
-	unsigned int i,x1=0x00,x2=0x17,y1=0x00,y2=0x17;
-	unsigned int colors[10]=
-	{
-		0xf800,0x07e0,0x001f,0xffe0,0x0000,0x07ff,0xf81f,0xb81f,0x7f7,0xfec0
-	};
-	point=&zimo[0];
-	LCD_WriteDataStart();
-	for(i=1;i<=720;i++,point++)
-	{  
-		for(j=0;j<=7;j++)
-		{
-			if((*point<<j)&0x80)
-			{
-				LCD_WriteData(colors[flag]);
-			}
-			else
-			{
-				LCD_WriteData(backcolor);
-			}
-		}   
-		if(i%72==0)
-		{
-			x1=x1+24;x2=x2+24;y1=y1+24;y2=y2+24;
-			flag=flag+1;
-			LCDSYS->Display.WriteAddress(x1,y1,x2,y2);
-		}   
-	}
-	LCD_WriteDataEnd();
 }
 /*******************************************************************************
 *º¯ÊıÃû		:	LCD_ShowString
@@ -900,6 +791,7 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 	unsigned short	MaxV,MaxH;	//±ß½çÖµ
 	unsigned short	i=0;				//ÏÔÊ¾
 	char	DataBuffer[256]={0};			//¼ÇÂ¼formatÄÚÂë
+  unsigned char CodeBuffer[130]={0};
 	//1)**********»ñÈ¡Êı¾İ¿í¶È
 	u16 InputDataSize=strlen((const char*)format);		//»ñÈ¡Êı¾İ¿í¶È	
 	
@@ -939,7 +831,8 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 		//=====================Ë«×Ö½Ú--ºº×Ö
 		if(dst>0x80)
 		{
-			u16 word=dst<<8;			
+			u16 word=dst<<8;
+      
 			dst=DataBuffer[i+1];
 			word=word|dst;			
 			//ÏÔÊ¾³¬ÏŞÅĞ¶Ï
@@ -995,9 +888,9 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 			{
 
 			}
-			GetBufferLength	=	GT32L32_ReadBuffer(&LCDSYS->GT32L32,font,word);		//´Ó×Ö¿âÖĞ¶ÁÊı¾İ²¢·µ»ØÊı¾İ³¤¶È
+			GetBufferLength	=	GT32L32_ReadCode(font,word,CodeBuffer);		//´Ó×Ö¿âÖĞ¶ÁÊı¾İ²¢·µ»ØÊı¾İ³¤¶È
 			//Ğ´ÈëÆÁÄ»
-			LCD_ShowWord(x,y,font,GetBufferLength,LCDSYS->GT32L32.Data.Buffer);
+			LCD_ShowWord(x,y,font,GetBufferLength,CodeBuffer);
 			//ÏÔÊ¾µØÖ·Ôö¼Ó	
 			if(font==12)
 			{
@@ -1069,9 +962,9 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 					y=x=0;
 				}
 			}
-			GetBufferLength	=	GT32L32_ReadBuffer(&LCDSYS->GT32L32,font,(u16)dst);		//´Ó×Ö¿âÖĞ¶ÁÊı¾İ²¢·µ»ØÊı¾İ³¤¶È
+			GetBufferLength	=	GT32L32_ReadCode(font,(u16)dst,CodeBuffer);		//´Ó×Ö¿âÖĞ¶ÁÊı¾İ²¢·µ»ØÊı¾İ³¤¶È
 //			//Ğ´ÈëÆÁÄ»
-			LCD_ShowChar(x,y,font,LCDSYS->GT32L32.Data.BufferSize,LCDSYS->GT32L32.Data.Buffer);			
+			LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer);
 			//ÏÔÊ¾µØÖ·Ôö¼Ó
 			if(font==12)
 			{

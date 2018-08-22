@@ -173,6 +173,23 @@ void PL010V15_Server(void)
 void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 {
 #if 1
+  LCD_Printf(0,30,16,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+	LCD_Printf(0,30+16,24,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+	LCD_Printf(0,52,30+16+24,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+  LCD_ShowAntenna(220,0,0);   //显示12x12天线
+  LCD_ShowAntenna(240,0,1);   //显示12x12天线
+  LCD_ShowAntenna(260,0,2);   //显示12x12天线
+  LCD_ShowAntenna(280,0,3);   //显示12x12天线
+  LCD_ShowAntenna(300,0,4);   //显示12x12天线
+  
+  LCD_ShowBattery(320,0,0);   //显示12x12电池
+  LCD_ShowBattery(340,0,1);   //显示12x12电池
+  LCD_ShowBattery(360,0,2);   //显示12x12电池
+  LCD_ShowBattery(380,0,3);   //显示12x12电池
+ 
+  return;
+#endif
+#if 0
 	CS5530_Process(&CS5530);
 	if((CS5530.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530.Data.WeighLive	!=CS5530_ADC_Value))
 	{

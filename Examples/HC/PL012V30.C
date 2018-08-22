@@ -87,16 +87,19 @@ void PL012V30_Server(void)
 {	
 	IWDG_Feed();								//独立看门狗喂狗
 //	LCD_Clean(LCD565_YELLOW);	//清除屏幕函数
-//	LCD_Printf(0,0,32,"后边的省略号就是可变参数喂狗");		//后边的省略号就是可变参数
-//	LCD_Printf(0,0,12,"係边");		//后边的省略号就是可变参数
-	LCD_Printf(0,12,16,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-	LCD_Printf(0,28,24,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-	LCD_Printf(0,52,32,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-
-	
-//	LCD_Printf(0,12,16,"AB");		//后边的省略号就是可变参数
-//	LCD_Printf(0,28,24,"ABCDabcd");		//后边的省略号就是可变参数
-//	LCD_Printf(0,52,32,"ABCDabcd");		//后边的省略号就是可变参数
+	LCD_Printf(0,30,16,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+	LCD_Printf(0,30+16,24,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+	LCD_Printf(0,52,30+16+24,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+  LCD_ShowAntenna(220,0,0);   //显示12x12天线
+  LCD_ShowAntenna(240,0,1);   //显示12x12天线
+  LCD_ShowAntenna(260,0,2);   //显示12x12天线
+  LCD_ShowAntenna(280,0,3);   //显示12x12天线
+  LCD_ShowAntenna(300,0,4);   //显示12x12天线
+  
+  LCD_ShowBattery(320,0,0);   //显示12x12电池
+  LCD_ShowBattery(340,0,1);   //显示12x12电池
+  LCD_ShowBattery(360,0,2);   //显示12x12电池
+  LCD_ShowBattery(380,0,3);   //显示12x12电池
 }
 /*******************************************************************************
 * 函数名			:	function
