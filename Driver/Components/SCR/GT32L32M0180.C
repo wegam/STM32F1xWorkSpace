@@ -44,6 +44,7 @@ u32 GT32L32_GetAddress(u8 font, u8 c1, u8 c2, u8 c3, u8 c4);//获取地址
 u32 GT32L32_GetBufferLen(u8 font, u8 c1, u8 c2, u8 c3, u8 c4);//获取长度
 //u16  GT32L32_ReadBuffer(GT32L32_Info_TypeDef *GT32L32_Info,u8 font,u16 word,unsigned char *Buffer);		//从字库中读数据函数
 
+u32 GT32L32_GetGB18030(u8 c1, u8 c2, u8 c3, u8 c4);		//12x12点阵GB18030汉字&字符地址计算
 u32 GT32L32_GetGB18030_12(u8 c1, u8 c2, u8 c3, u8 c4);		//12x12点阵GB18030汉字&字符地址计算
 u32 GT32L32_GetGB18030_16(u8 c1, u8 c2, u8 c3, u8 c4);		//16x16点阵GB18030汉字&字符地址计算
 u32 GT32L32_GetGB18030_24(u8 c1, u8 c2, u8 c3, u8 c4);		//24x24点阵GB18030汉字&字符地址计算
@@ -336,19 +337,23 @@ u32 GT32L32_GetAddress(u8 font, u8 c1, u8 c2, u8 c3, u8 c4)
 		//字体大小判断
 		if(font==12)				//(u32)0x113D0E,			//12x12点阵GB18030汉字/
 		{
-			Address=GT32L32_GetGB18030_12(c1,	c2,	c3,	c4);
+			Address=GT32L32_GetGB18030(c1,	c2,	0,	0)*24+0x113D0E+192*24;
+//			Address=GT32L32_GetGB18030_12(c1,	c2,	c3,	c4);
 		}
 		else if(font==16)		//(u32)0x194FDE,			//16x16点阵GB18030汉字
 		{
-			Address=GT32L32_GetGB18030_16(c1,	c2,	c3,	c4);
+			Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*32+0x194FDE+192*32;
+//			Address=GT32L32_GetGB18030_16(c1,	c2,	c3,	c4);
 		}
 		else if(font==24)		//(u32)0x2743DE,			//24x24点阵GB18030汉字
 		{
-			Address=GT32L32_GetGB18030_24(c1,	c2,	c3,	c4);
+			Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*72+0x2743DE+192*72;
+//			Address=GT32L32_GetGB18030_24(c1,	c2,	c3,	c4);
 		}
 		else if(font==32)		//(u32)0x47AE10,			//32x32点阵GB18030汉字
 		{
-			Address=GT32L32_GetGB18030_32(c1,	c2,	c3,	c4);
+			Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*128+0x47AE10;
+//			Address=GT32L32_GetGB18030_32(c1,	c2,	c3,	c4);
 		}
 	}
 	else							//单字节，ASCII码表为（0x00~0x7F)
@@ -372,13 +377,13 @@ u32 GT32L32_GetAddress(u8 font, u8 c1, u8 c2, u8 c3, u8 c4)
 				case 0x100D80:	Address=(c1-0x20)*16+BaseAddr;		//(u32)0x100D80,			//8x16点阵ASCII标准字符
 												len=16;//GT32L32_ReadBuffer((ASCIICode-0x20)*16+BaseAdd,16,DZ_Data); //8X16
 							break ;  
-				case 0x101580:	Address=(c1-0x20)*16+BaseAddr;		//(u32)0x101580,			//8x16点阵ASCII粗体字符
+				case 16:				Address=(c1-0x20)*16+0x101580;		//(u32)0x101580,			//8x16点阵ASCII粗体字符
 												len=16;//GT32L32_ReadBuffer((ASCIICode-0x20)*16+BaseAdd,16,DZ_Data); // 8X16 Fat 
 							break ;
-				case 0x101B80:	Address=(c1-0x20)*48+BaseAddr;		//(u32)0x101B80,			//12x24点阵ASCII标准字符
+				case 24:				Address=(c1-0x20)*48+0x101B80;		//(u32)0x101B80,			//12x24点阵ASCII标准字符
 												len=48;//GT32L32_ReadBuffer((ASCIICode-0x20)*48+BaseAdd,48,DZ_Data); //12X24
 							break ;  
-				case 35: 				Address=(c1-0x20)*64+0x102D80;		//(u32)0x102D80,			//16x32点阵ASCII标准字符
+				case 32: 				Address=(c1-0x20)*64+0x102D80;		//(u32)0x102D80,			//16x32点阵ASCII标准字符
 												len=64;//GT32L32_ReadBuffer((ASCIICode-0x20)*64+BaseAdd,64,DZ_Data); //16X32
 							break ;
 				case 0x104580: 	Address=(c1-0x20)*64+BaseAddr;		//(u32)0x104580,			//16x32点阵ASCII粗体字符
@@ -399,13 +404,13 @@ u32 GT32L32_GetAddress(u8 font, u8 c1, u8 c2, u8 c3, u8 c4)
 				case 121: 	Address=(c1-0x20)*26+0x10C080+2;		//(u32)0x10C080,			//12点阵不等宽ASCII白正（Times New Roman）字符
 												len=24;//GT32L32_ReadBuffer((ASCIICode-0x20)*26+BaseAdd+2,24,DZ_Data); //12X12 T 
 							break ;
-				case 16: 	Address=(c1-0x20)*34+0x10CA50+2;		//(u32)0x10CA50,			//16点阵不等宽ASCII白正（Times New Roman）字符
+				case 56: 	Address=(c1-0x20)*34+0x10CA50+2;		//(u32)0x10CA50,			//16点阵不等宽ASCII白正（Times New Roman）字符
 												len=32;//GT32L32_ReadBuffer((ASCIICode-0x20)*34+BaseAdd+2,32,DZ_Data); //16X16 T
 							break ;
-				case 24: 	Address=(c1-0x20)*74+0x10D740+2;		//(u32)0x10D740,			//24点阵不等宽ASCII白正（Times New Roman）字符
+				case 54: 	Address=(c1-0x20)*74+0x10D740+2;		//(u32)0x10D740,			//24点阵不等宽ASCII白正（Times New Roman）字符
 												len=72;//GT32L32_ReadBuffer((ASCIICode-0x20)*74+BaseAdd+2,72,DZ_Data); //24X24 T 
 							break ;
-				case 32: 	Address=(c1-0x20)*130+0x10F340+2;		//(u32)0x10F340,			//32点阵不等宽ASCII白正（Times New Roman）字符
+				case 36: 	Address=(c1-0x20)*130+0x10F340+2;		//(u32)0x10F340,			//32点阵不等宽ASCII白正（Times New Roman）字符
 												len=128;//GT32L32_ReadBuffer((ASCIICode-0x20)*130+BaseAdd+2,128,DZ_Data); //32X32 T 
 							break ;  
 				default: 
@@ -440,19 +445,19 @@ u32 GT32L32_GetBufferLen(u8 font, u8 c1, u8 c2, u8 c3, u8 c4)
 		//字体大小判断
 		if(font==12)
 		{
-			lengh=24;		//2(列）x12（行）
+			lengh=24;		//12/8/1(列）x12（行）
 		}
 		else if(font==16)
 		{
-			lengh=32;		//2(列）x16（行）
+			lengh=32;		//16/8/1(列）x16（行）
 		}
 		else if(font==24)
 		{
-			lengh=72;		//3(列）x24（行）
+			lengh=72;		//24/8/1(列）x24（行）
 		}
 		else if(font==32)
 		{
-			lengh=128;	//4(列）x32（行）
+			lengh=128;	//32/8/1(列）x32（行）
 		}
 	}
 	else
@@ -460,22 +465,135 @@ u32 GT32L32_GetBufferLen(u8 font, u8 c1, u8 c2, u8 c3, u8 c4)
 		//字体大小判断
 		if(font==12)
 		{
-			lengh=24;		//2(列）x12（行）
+			lengh=12;		//12/8/2(列）x12（行）
 		}
 		else if(font==16)
 		{
-			lengh=32;		//2(列）x16（行）
+			lengh=16;		//16/8/2(列）x16（行）
 		}
 		else if(font==24)
 		{
-			lengh=72;		//3(列）x24（行）
+			lengh=48;		//24/8/2(列）x24（行）
 		}
 		else if(font==32)
 		{
-			lengh=128;	//4(列）x32（行）
+			lengh=64;	//32/8/2(列）x32（行）
 		}
 	}
 	return lengh;	 
+}
+/*************************************************************************************************** 
+32x32点阵GB18030汉字&字符
+函数：u32 GB18030_32_GetData (u8 c1, u8 c2, u8 c3, u8 c4)  
+功能：计算汉字点阵在芯片中的地址 
+参数：c1,c2,c3,c4：4字节汉字内码通过参数c1,c2,c3,c4传入，双字节内码通过参数c1,c2传 入，c3=0,c4=0 
+返回：汉字点阵的字节地址(byte address)。如果用户是按 word mode 读取点阵数据，
+则其地 址(word address)为字节地址除以2，即：word address = byte address / 2 . 
+例如：BaseAdd: 说明汉字点阵数据在字库芯片中的起始地址，即BaseAdd＝0x47AE10; “啊”字的内码为0xb0a1,
+则byte address = gt(0xb0,0xa1,0x00,0x00) *128+BaseAdd word address = byte address / 2 
+“.”字的内码为0x8139ee39,则byte address = gt(0x81, 0x39,0xee,0x39) *128+ BaseAdd word address = byte address / 2 
+****************************************************************************************************/
+u32 GT32L32_GetGB18030(u8 c1, u8 c2, u8 c3, u8 c4) 
+{ 
+	u32 Address=0;						//Address：对应字符点阵在芯片中的字节地址。
+	u32  BaseAdd=0x47AE10;		//32x32点阵字库起始地址：BaseAdd＝0x47AE10，
+	if(c2==0x7f) 
+	{
+		return (BaseAdd);
+	}
+	//====================Section 1
+	if((c1>=0xA1 && c1 <= 0xAB) && c2>=0xA1) 			//Section 1
+	{
+		Address= (c1 - 0xA1) * 94 + (c2 - 0xA1);
+	}
+	//====================Section 5	
+	else if((c1>=0xa8 && c1 <= 0xa9) && c2<0xa1) 	//Section 5
+	{ 
+		if(c2>0x7f)
+			c2--; 
+		Address=(c1-0xa8)*96 + (c2-0x40)+846; 
+	}
+	//====================Section 2
+	if((c1>=0xb0 && c1 <= 0xf7) && c2>=0xa1) 			//Section 2
+	{
+		Address= (c1 - 0xB0) * 94 + (c2 - 0xA1)	+	1038-192;
+	}
+	//====================Section 3
+	else if((c1<0xa1 && c1>=0x81) && c2>=0x40 ) 	//Section 3
+	{ 
+		if(c2>0x7f) 
+			c2--;
+		Address=(c1-0x81)*190 + (c2-0x40) + 1038 +	6768-192;
+	}
+	//====================Section 4
+	else if(c1>=0xaa && c2<0xa1) 								//Section 4
+	{ 
+		if(c2>0x7f) 
+			c2--; 
+		Address=(c1-0xaa)*96 + (c2-0x40) + 1038 +	12848-192; 
+	}
+	else if(c1==0x81 && c2>=0x39) 							//四字节区1 
+	{ 
+		Address =1038 + 21008+(c3-0xEE)*10+c4-0x39; 
+	} 
+	else if(c1==0x82)														//四字节区2 
+	{ 
+		Address =1038 + 21008+161+(c2-0x30)*1260+(c3-0x81)*10+c4-0x30; 
+	} 
+	return	Address;  
+}
+/*************************************************************************************************** 
+32x32点阵GB18030汉字&字符
+函数：u32 GB18030_32_GetData (u8 c1, u8 c2, u8 c3, u8 c4)  
+功能：计算汉字点阵在芯片中的地址 
+参数：c1,c2,c3,c4：4字节汉字内码通过参数c1,c2,c3,c4传入，双字节内码通过参数c1,c2传 入，c3=0,c4=0 
+返回：汉字点阵的字节地址(byte address)。如果用户是按 word mode 读取点阵数据，
+则其地 址(word address)为字节地址除以2，即：word address = byte address / 2 . 
+例如：BaseAdd: 说明汉字点阵数据在字库芯片中的起始地址，即BaseAdd＝0x47AE10; “啊”字的内码为0xb0a1,
+则byte address = gt(0xb0,0xa1,0x00,0x00) *128+BaseAdd word address = byte address / 2 
+“.”字的内码为0x8139ee39,则byte address = gt(0x81, 0x39,0xee,0x39) *128+ BaseAdd word address = byte address / 2 
+****************************************************************************************************/
+u32 GT32L32_GetGB18030BAC(u8 c1, u8 c2, u8 c3, u8 c4) 
+{ 
+	u32 Address=0;						//Address：对应字符点阵在芯片中的字节地址。
+	u32  BaseAdd=0x47AE10;		//32x32点阵字库起始地址：BaseAdd＝0x47AE10，
+	if(c2==0x7f) 
+	{
+		return (BaseAdd);
+	}
+	//====================Section 1
+	if(c1>=0xA1 && c1 <= 0xa9 && c2>=0xa1) 			//Section 1
+		Address= (c1 - 0xA1) * 94 + (c2 - 0xA1); 
+	else if(c1>=0xa8 && c1 <= 0xa9 && c2<0xa1) 	//Section 5
+	{ 
+		if(c2>0x7f)
+			c2--; 
+		Address=(c1-0xa8)*96 + (c2-0x40)+846-192; 
+	} 
+	if(c1>=0xb0 && c1 <= 0xf7 && c2>=0xa1) 			//Section 2
+		Address= (c1 - 0xB0) * 94 + (c2 - 0xA1)	+	1038-192; 
+//		Address= (c1 - 0xB0) * 94 + (c2 - 0xA1);
+	else if(c1<0xa1 && c1>=0x81 && c2>=0x40 ) 	//Section 3
+	{ 
+		if(c2>0x7f) 
+			c2--;
+		Address=(c1-0x81)*190 + (c2-0x40) + 1038 +	6768;
+	} 
+	else if(c1>=0xaa && c2<0xa1) 								//Section 4
+	{ 
+		if(c2>0x7f) 
+			c2--; 
+		Address=(c1-0xaa)*96 + (c2-0x40) + 1038 +	12848; 
+	}
+	else if(c1==0x81 && c2>=0x39) 							//四字节区1 
+	{ 
+		Address =1038 + 21008+(c3-0xEE)*10+c4-0x39; 
+	} 
+	else if(c1==0x82)														//四字节区2 
+	{ 
+		Address =1038 + 21008+161+(c2-0x30)*1260+(c3-0x81)*10+c4-0x30; 
+	} 
+	return	Address;  
 }
 /*************************************************************************************************** 
 12x12点阵GB18030汉字&字符
@@ -670,17 +788,17 @@ u32 GT32L32_GetGB18030_32(u8 c1, u8 c2, u8 c3, u8 c4)
 			c2--;
 		Address=(c1-0x81)*190 + (c2-0x40) + 1038 +	6768;
 	} 
-	else if(c1>=0xaa && c2<0xa1) 			//Section 4
+	else if(c1>=0xaa && c2<0xa1) 								//Section 4
 	{ 
 		if(c2>0x7f) 
 			c2--; 
 		Address=(c1-0xaa)*96 + (c2-0x40) + 1038 +	12848; 
 	}
-	else if(c1==0x81 && c2>=0x39) 		//四字节区1 
+	else if(c1==0x81 && c2>=0x39) 							//四字节区1 
 	{ 
 		Address =1038 + 21008+(c3-0xEE)*10+c4-0x39; 
 	} 
-	else if(c1==0x82)									//四字节区2 
+	else if(c1==0x82)														//四字节区2 
 	{ 
 		Address =1038 + 21008+161+(c2-0x30)*1260+(c3-0x81)*10+c4-0x30; 
 	} 
@@ -1141,7 +1259,7 @@ void GT32L32_ChipErase(GT32L32Def *pInfo)
 }
 /*******************************************************************************
 * 函数名			:	GT32L32_ReadBuffer
-* 功能描述		:	从字库中读数据函数
+* 功能描述		:	从字库中读数据并返回数据长度
 * 输入			: void
 * 返回值			: void
 * 修改时间		: 无

@@ -74,6 +74,7 @@ void PL012V30_Configuration(void)
 //	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--指示灯
 //	PWM_OUT(TIM3,PWM_OUTChannel3,500,200);		//PWM设定-20161127版本--背光
 //	memset(TxdBuffe,0xA5,128);
+//	LCD_Printf(0,0,32,"后边的省略号就是可变参数喂狗");		//后边的省略号就是可变参数
 }
 /*******************************************************************************
 * 函数名		:	
@@ -86,6 +87,16 @@ void PL012V30_Server(void)
 {	
 	IWDG_Feed();								//独立看门狗喂狗
 //	LCD_Clean(LCD565_YELLOW);	//清除屏幕函数
+//	LCD_Printf(0,0,32,"后边的省略号就是可变参数喂狗");		//后边的省略号就是可变参数
+//	LCD_Printf(0,0,12,"係边");		//后边的省略号就是可变参数
+	LCD_Printf(0,12,16,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+	LCD_Printf(0,28,24,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+	LCD_Printf(0,52,32,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+
+	
+//	LCD_Printf(0,12,16,"AB");		//后边的省略号就是可变参数
+//	LCD_Printf(0,28,24,"ABCDabcd");		//后边的省略号就是可变参数
+//	LCD_Printf(0,52,32,"ABCDabcd");		//后边的省略号就是可变参数
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -100,9 +111,26 @@ void LCD_Configuration(void)
 {
 	SPIDef				*SPIx;
 	
+	//==================字库配置
 	SPIx		=	&(sLCD.GT32L32.SPI);
 	
+	SPIx->Port.SPIx=SPI1;
 	
+	SPIx->Port.CS_PORT		=	GPIOA;
+	SPIx->Port.CS_Pin			=	GPIO_Pin_4;
+	
+	SPIx->Port.CLK_PORT		=	GPIOA;
+	SPIx->Port.CLK_Pin		=	GPIO_Pin_5;
+	
+	SPIx->Port.MISO_PORT	=	GPIOA;
+	SPIx->Port.MISO_Pin		=	GPIO_Pin_6;
+	
+	SPIx->Port.MOSI_PORT	=	GPIOA;
+	SPIx->Port.MOSI_Pin		=	GPIO_Pin_7;
+	
+	SPIx->Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
+	
+	//==================LCD配置
 	sLCD.Port.sBL_PORT	=	GPIOA;
 	sLCD.Port.sBL_Pin		=	GPIO_Pin_3;
 	
@@ -125,29 +153,14 @@ void LCD_Configuration(void)
 	sLCD.Port.sWR_Pin			=	GPIO_Pin_15;
 	
 	sLCD.Port.sDATABUS_PORT	=	GPIOB;
-	sLCD.Port.sDATABUS_Pin	=	GPIO_Pin_All;
-	
-	SPIx->Port.SPIx=SPI1;
-	
-	SPIx->Port.CS_PORT		=	GPIOA;
-	SPIx->Port.CS_Pin			=	GPIO_Pin_4;
-	
-	SPIx->Port.CLK_PORT		=	GPIOA;
-	SPIx->Port.CLK_Pin		=	GPIO_Pin_5;
-	
-	SPIx->Port.MISO_PORT	=	GPIOA;
-	SPIx->Port.MISO_Pin		=	GPIO_Pin_6;
-	
-	SPIx->Port.MOSI_PORT	=	GPIOA;
-	SPIx->Port.MOSI_Pin		=	GPIO_Pin_7;
-	
-	SPIx->Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
+	sLCD.Port.sDATABUS_Pin	=	GPIO_Pin_All;	
 	
 	sLCD.Flag.Rotate			=	Draw_Rotate_90D;
 	
 	sLCD.Data.BColor			=	LCD565_RED;
 	sLCD.Data.PColor			=	LCD565_YELLOW;
 	
+	//==================初始化
 	R61509V_Initialize(&sLCD);
 	
 }

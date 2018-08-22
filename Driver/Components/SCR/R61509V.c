@@ -9,7 +9,7 @@
 #include "R61509V.h"
 
 
-LCDDef	*pR61509V	=	0;		//ƒ⁄≤ø«˝∂Ø π”√£¨≤ªø……æ≥˝
+LCDDef	*pR61509V	=	NULL;		//ƒ⁄≤ø«˝∂Ø π”√£¨≤ªø……æ≥˝
 
 /*******************************************************************************
 * ∫Ø ˝√˚			:	function
@@ -25,7 +25,7 @@ void R61509V_Initialize(LCDDef *pInfo)
 	pR61509V->Data.MaxH	=	R61509V_H;					//◊Ó¥ÛÀÆ∆ΩøÌ∂»
 	pR61509V->Data.MaxV	=	R61509V_V;					//◊Ó¥Û¥π÷±∏ﬂ∂»	
 	pR61509V->Data.BColor	=	LCD565_GBLUE;			//±≥æ∞…´
-	pR61509V->Data.PColor	=	LCD565_BLUE;			//ª≠± …´
+	pR61509V->Data.PColor	=	LCD565_RED;				//ª≠± …´
 	
 	
 	pR61509V->Display.WriteAddress		=	R61509V_SetWindowAddress;
@@ -33,7 +33,7 @@ void R61509V_Initialize(LCDDef *pInfo)
 	pR61509V->Display.DispOff					=	R61509V_PowerOff;
 	
 	LCD_Initialize(pR61509V);
-	
+//	pR61509V	=	NULL;	
 }
 /*******************************************************************************
 *∫Ø ˝√˚			:	R61509V_SetWindowAddress
@@ -41,7 +41,7 @@ void R61509V_Initialize(LCDDef *pInfo)
 * ‰»Î				: 
 *∑µªÿ÷µ			:	Œﬁ
 *******************************************************************************/
-void R61509V_SetWindowAddress(			//…Ë÷√¥∞ø⁄µÿ÷∑
+static void R61509V_SetWindowAddress(			//…Ë÷√¥∞ø⁄µÿ÷∑
 															unsigned short x1,		//ÀÆ∆Ω∆ ºµ„
 															unsigned short y1,		//ÀÆ∆Ω÷’÷πµ„
 															unsigned short x2,		//¥π÷±∆ ºµ„
@@ -117,7 +117,7 @@ void R61509V_SetWindowAddress(			//…Ë÷√¥∞ø⁄µÿ÷∑
 * ‰»Î				: 
 *∑µªÿ÷µ			:	Œﬁ
 *******************************************************************************/
-void R61509V_PowerOn(void)			//∞¥’’÷˜øÿ–æ∆¨R61509Vµƒpower supply on sequence Ω¯––≈‰÷√
+static void R61509V_PowerOn(void)			//∞¥’’÷˜øÿ–æ∆¨R61509Vµƒpower supply on sequence Ω¯––≈‰÷√
 {
 	u32 dtime=2000;
 	
@@ -198,7 +198,7 @@ void R61509V_PowerOn(void)			//∞¥’’÷˜øÿ–æ∆¨R61509Vµƒpower supply on sequence Ω¯–
 * [Function] R61509V_PowerOff:  πÿ±’R61509V µÁ‘¥
 * [No param]
 **************************************************************************************************/
-void R61509V_PowerOff( void )
+static void R61509V_PowerOff( void )
 {
 	LCD_WriteCommand( R61509V_R009_DC3, 0 );
 	LCD_BL_OFF;
@@ -207,7 +207,7 @@ void R61509V_PowerOff( void )
 * [Function] R61509V_DispOff:  πÿ±’R61509Vœ‘ æ( ∫⁄∆¡?)
 * [No param]
 **************************************************************************************************/
-void R61509V_DispOff( void )
+static void R61509V_DispOff( void )
 {
 	LCD_WriteCommand( R61509V_R007_DC1, 0x0000 );
 }

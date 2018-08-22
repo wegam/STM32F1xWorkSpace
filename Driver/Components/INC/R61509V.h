@@ -87,10 +87,10 @@
 void R61509V_Initialize(LCDDef *pInfo);
 
 
-void R61509V_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
-void R61509V_PowerOn(void);					//按照主控芯片R61509V的power supply on sequence 进行配置
-void R61509V_PowerOff( void );		//关闭R61509V 电源
-void R61509V_DispOff( void );			//关闭R61509V显示( 黑屏?)
+static void R61509V_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
+static void R61509V_PowerOn(void);					//按照主控芯片R61509V的power supply on sequence 进行配置
+static void R61509V_PowerOff( void );		//关闭R61509V 电源
+static void R61509V_DispOff( void );			//关闭R61509V显示( 黑屏?)
 
 
 #endif	//_BSP_R61509VR61509V_H_2016_

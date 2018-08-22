@@ -132,7 +132,7 @@ u8 GT32L32_ReadStatus(GT32L32Def *pInfo);																					//读取芯片状态
 
 void GT32L32_ChipErase(GT32L32Def *pInfo);																					//探除用户区数据
 
-u16  GT32L32_ReadBuffer(GT32L32Def *pInfo,u8 font,u16 word);		//从字库中读数据函数
+u16  GT32L32_ReadBuffer(GT32L32Def *pInfo,u8 font,u16 word);		//从字库中读数据并返回数据长度
 
 
 //u8  GT32L32_ReadWriteByte(u8 Data);		//读写一个字节
