@@ -49,11 +49,13 @@ u8 RxdBuffer3[RxBufferSize]={0};
 u8 TxdBuffer3[RxBufferSize]={0};
 
 u16	SYSTime=0;							//循环计时变量
+u16	RS485BTime=0;							//循环计时变量
+u8 RS485NUM	=	0;
 u16	DelayTime=0;
 u8 testFlg=0;
 u16	SensorData	=	0;
 u16	SensorDataBac	=	0;
-RS485_TypeDef RS485_1,RS485_4;
+RS485_TypeDef RS485A,RS485B;
 
 /*******************************************************************************
 * 函数名		:	
@@ -117,16 +119,16 @@ void PD011V20_UsartConfiguration(void)
 	GPIO_Configuration_OPP50	(GPIOD,	GPIO_Pin_4);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
 	PD4=0;
 	
-	RS485_1.USARTx=USART2;
-	RS485_1.RS485_CTL_PORT=GPIOA;
-	RS485_1.RS485_CTL_Pin=GPIO_Pin_1;
+	RS485B.USARTx=USART2;
+	RS485B.RS485_CTL_PORT=GPIOA;
+	RS485B.RS485_CTL_Pin=GPIO_Pin_1;
 	
-	RS485_4.USARTx=UART4;
-	RS485_4.RS485_CTL_PORT=GPIOA;
-	RS485_4.RS485_CTL_Pin=GPIO_Pin_15;	
+	RS485A.USARTx=UART4;
+	RS485A.RS485_CTL_PORT=GPIOA;
+	RS485A.RS485_CTL_Pin=GPIO_Pin_15;	
 	
-	RS485_DMA_ConfigurationNR	(&RS485_1,19200,RxBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	RS485_DMA_ConfigurationNR	(&RS485_4,19200,RxBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485B,19200,RxBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485A,19200,RxBufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
 	USART_DMA_ConfigurationNR	(USART1,115200,RxBufferSize);	//USART_DMA配置--查询方式，不开中断
 	USART_DMA_ConfigurationNR	(USART3,9600,RxBufferSize);	//USART_DMA配置--查询方式，不开中断
@@ -190,23 +192,23 @@ void PD011V20_GpioConfiguration(void)
 void PD011V20_UsartServer(void)		//串口
 {
 	u8 RxNum=0;
-	if(SYSTime==0)
+	if(RS485BTime++>=30)
 	{
-//		TxdBuffer1[0]++;
-//		if(TxdBuffer1[0]>=255)
-//			TxdBuffer1[0]=0;
-//		RS485_DMASend(&RS485_1,TxdBuffer1,RxBufferSize);	//RS485-DMA发送程序
+		RS485BTime	=	0;
+		RS485NUM++;
+		RS485_DMAPrintf(&RS485B,"RS485B发送测试数据%0.3d",RS485NUM);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		RS485_DMAPrintf(&RS485A,"RS485A发送测试数据%0.3d",RS485NUM);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 	}
-	RxNum=RS485_ReadBufferIDLE(&RS485_1,RevBuffer2);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum=RS485_ReadBufferIDLE(&RS485B,RevBuffer2);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
-		RS485_DMAPrintf(&RS485_1,"RS485B收到数据\r\n");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		RS485_DMAPrintf(&RS485B,"RS485B收到数据\r\n");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 		USART_DMAPrintf(USART1,"RS485B收到数据\r\n");						//RS485-DMA发送程序
 	}
-	RxNum=RS485_ReadBufferIDLE(&RS485_4,RevBuffer4);					//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	RxNum=RS485_ReadBufferIDLE(&RS485A,RevBuffer4);					//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
-		RS485_DMAPrintf(&RS485_4,"RS485A收到数据\r\n");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		RS485_DMAPrintf(&RS485A,"RS485A收到数据\r\n");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 		USART_DMAPrintf(USART1,"RS485A收到数据\r\n");						//RS485-DMA发送程序
 	}
 	if(SensorData	!=	SensorDataBac)

@@ -12,7 +12,7 @@ void LCD_Configuration(void);
 	
 //void SwitchID_Configuration(void);
 //void R61509V_Configuration(void);
-//void RS485_Configuration(void);
+void RS485_Configuration(void);
 
 
 ////void LCD_PowerUp(void);
@@ -21,7 +21,7 @@ void LCD_Configuration(void);
 
 
 //void SwitchID_Server(void);
-//void RS485_Server(void);
+void RS485_Server(void);
 
 ////unsigned int PL010V13_PrintfString(unsigned short x,unsigned short y,unsigned char font,const char *format,...);				//后边的省略号就是可变参数
 //void PL010Delay(unsigned long time);

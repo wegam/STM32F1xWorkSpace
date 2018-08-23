@@ -35,7 +35,11 @@
 
 
 LCDDef	sLCD;
+RS485_TypeDef RS485;
+unsigned char RxdBuffe[128]={0};
+unsigned short time	=	0;
 
+char tep[1]={'A'};
 
 //SWITCHID_CONF	SWITCHID;
 //u8 SwitchID=0;	//拔码开关地址
@@ -61,7 +65,7 @@ void PL012V30_Configuration(void)
 //	
 //	CS5530_Configuration();
 //	
-//	RS485_Configuration();
+	RS485_Configuration();
 //	
 //	LCD_PowerUp();
 //	
@@ -70,7 +74,7 @@ void PL012V30_Configuration(void)
 
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 
-	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
+//	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 //	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--指示灯
 //	PWM_OUT(TIM3,PWM_OUTChannel3,500,200);		//PWM设定-20161127版本--背光
 //	memset(TxdBuffe,0xA5,128);
@@ -85,21 +89,28 @@ void PL012V30_Configuration(void)
 *******************************************************************************/
 void PL012V30_Server(void)
 {	
+	u16 Num=0;
 	IWDG_Feed();								//独立看门狗喂狗
-//	LCD_Clean(LCD565_YELLOW);	//清除屏幕函数
-	LCD_Printf(0,30,16,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-	LCD_Printf(0,30+16,24,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-	LCD_Printf(0,52,30+16+24,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-  LCD_ShowAntenna(220,0,0);   //显示12x12天线
-  LCD_ShowAntenna(240,0,1);   //显示12x12天线
-  LCD_ShowAntenna(260,0,2);   //显示12x12天线
-  LCD_ShowAntenna(280,0,3);   //显示12x12天线
-  LCD_ShowAntenna(300,0,4);   //显示12x12天线
+	if(time++>100)
+	{
+		time	=	0;
+//		LCD_Clean(LCD565_BLACK);	//清除屏幕函数
+	}
+	RS485_Server();	
+//	LCD_Printf(0,30,16,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+//	LCD_Printf(0,46,24,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+//	LCD_Printf(0,70,32,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+//	LCD_Show(0,70,32,strlen(tep),tep);
+  LCD_ShowAntenna(220,0,0,0);   //显示12x12天线
+  LCD_ShowAntenna(240,0,1,0);   //显示12x12天线
+  LCD_ShowAntenna(260,0,2,0);   //显示12x12天线
+  LCD_ShowAntenna(280,0,3,0);   //显示12x12天线
+  LCD_ShowAntenna(300,0,4,200);   //显示12x12天线
   
-  LCD_ShowBattery(320,0,0);   //显示12x12电池
-  LCD_ShowBattery(340,0,1);   //显示12x12电池
-  LCD_ShowBattery(360,0,2);   //显示12x12电池
-  LCD_ShowBattery(380,0,3);   //显示12x12电池
+  LCD_ShowBattery(320,0,0,0);   //显示12x12电池
+  LCD_ShowBattery(340,0,1,0);   //显示12x12电池
+  LCD_ShowBattery(360,0,2,0);   //显示12x12电池
+  LCD_ShowBattery(380,0,3,0);   //显示12x12电池
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -160,61 +171,59 @@ void LCD_Configuration(void)
 	
 	sLCD.Flag.Rotate			=	Draw_Rotate_90D;
 	
-	sLCD.Data.BColor			=	LCD565_RED;
-	sLCD.Data.PColor			=	LCD565_YELLOW;
+	sLCD.Data.BColor			=	LCD565_BLACK;
+	sLCD.Data.PColor			=	LCD565_RED;
 	
 	//==================初始化
 	R61509V_Initialize(&sLCD);
 	
 }
-///*******************************************************************************
-//*函数名			:	function
-//*功能描述		:	function
-//*输入				: 
-//*返回值			:	无
-//*修改时间		:	无
-//*修改说明		:	无
-//*注释				:	wegam@sina.com
-//*******************************************************************************/
-//void RS485_Server(void)
-//{
-//#if 0
-//	RxNum=RS485_ReadBufferIDLE(&RS485,(u32*)RevBuffe,(u32*)RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-//	if(RxNum	==	100)
-//	{
-//		RS485Time	=	0;
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void RS485_Server(void)
+{
+	unsigned short RxNum	=	0;
+#if 1
+	RxNum=RS485_ReadBufferIDLE(&RS485,RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(RxNum)
+	{
+//		RxNum	=	200;
+//		memset(RxdBuffe,0x00,200);
+//		LCD_Show(0,100,32,RxNum,RxdBuffe);
+		LCD_Show(0,100,32,RxNum,RxdBuffe);
 //		PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
-//	}
-//	if(RS485Time++>=1000)
-//	{
-//		RS485Time	=	0;
-//		RS485_DMASend(&RS485,(u32*)TxdBuffe,100);	//RS485-DMA发送程序
-//		PWM_OUT(TIM3,PWM_OUTChannel3,500,1);		//PWM设定-20161127版本--背光
-//	}
-//#else
-//	RxNum=RS485_ReadBufferIDLE(&RS485,(u32*)RevBuffe,(u32*)RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-//	if(RxNum)
-//	{
-//		RS485Time	=	0;
-//		RS485FLG	=	1;
-//		RSRLen	=	RxNum;
-//		RS485_DMASend(&RS485,(u32*)RevBuffe,100);	//RS485-DMA发送程序
-//		PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
-//	}
-//	if(RS485FLG	==	1)
-//	{
-//		if(RS485Time++>=500)
-//		{
-//			RS485Time	=	0;
-//			RS485_DMASend(&RS485,(u32*)RevBuffe,RSRLen);	//RS485-DMA发送程序
-//			RSRLen	=	0;
-//			RS485FLG	=	0;
-//			PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
-//		}
-//	}
-//	
-//#endif
-//}
+	}
+#else
+	RxNum=RS485_ReadBufferIDLE(&RS485,(u32*)RevBuffe,(u32*)RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(RxNum)
+	{
+		RS485Time	=	0;
+		RS485FLG	=	1;
+		RSRLen	=	RxNum;
+		RS485_DMASend(&RS485,(u32*)RevBuffe,100);	//RS485-DMA发送程序
+		PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
+	}
+	if(RS485FLG	==	1)
+	{
+		if(RS485Time++>=500)
+		{
+			RS485Time	=	0;
+			RS485_DMASend(&RS485,(u32*)RevBuffe,RSRLen);	//RS485-DMA发送程序
+			RSRLen	=	0;
+			RS485FLG	=	0;
+			PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
+		}
+	}
+	
+#endif
+}
 
 ///*******************************************************************************
 //* 函数名			:	function
@@ -438,23 +447,23 @@ void LCD_Configuration(void)
 //	
 //	CS5530_Initialize(&CS5530);
 //}
-///*******************************************************************************
-//* 函数名			:	function
-//* 功能描述		:	函数功能说明 
-//* 输入			: void
-//* 返回值			: void
-//* 修改时间		: 无
-//* 修改内容		: 无
-//* 其它			: wegam@sina.com
-//*******************************************************************************/
-//void RS485_Configuration(void)
-//{
-//	RS485.USARTx=USART2;
-//	RS485.RS485_CTL_PORT=GPIOA;
-//	RS485.RS485_CTL_Pin=GPIO_Pin_1;
-//	
-//	RS485_DMA_ConfigurationNR	(&RS485,19200,(u32*)RxdBuffe,256);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-//}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void RS485_Configuration(void)
+{
+	RS485.USARTx=USART1;
+	RS485.RS485_CTL_PORT=GPIOA;
+	RS485.RS485_CTL_Pin=GPIO_Pin_11;
+	
+	RS485_DMA_ConfigurationNR	(&RS485,19200,256);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+}
 ///*******************************************************************************
 //* 函数名		:	
 //* 功能描述	:	 

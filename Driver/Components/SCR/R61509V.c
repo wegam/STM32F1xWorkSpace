@@ -24,8 +24,8 @@ void R61509V_Initialize(LCDDef *pInfo)
 	
 	pR61509V->Data.MaxH	=	R61509V_H;					//最大水平宽度
 	pR61509V->Data.MaxV	=	R61509V_V;					//最大垂直高度	
-	pR61509V->Data.BColor	=	LCD565_GBLUE;			//背景色
-	pR61509V->Data.PColor	=	LCD565_RED;				//画笔色
+//	pR61509V->Data.BColor	=	LCD565_GBLUE;			//背景色
+//	pR61509V->Data.PColor	=	LCD565_RED;				//画笔色
 	
 	
 	pR61509V->Display.WriteAddress		=	R61509V_SetWindowAddress;

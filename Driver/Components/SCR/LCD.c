@@ -19,6 +19,9 @@
 #include "stdio.h"				//´®ºÍÄÚ´æ²Ù×÷º¯ÊıÍ·ÎÄ¼ş
 
 LCDDef 			*LCDSYS	=	NULL;	//ÄÚ²¿Çı¶¯Ê¹ÓÃ£¬²»¿ÉÉ¾³ı
+unsigned short PenColor		=	0;		//»­±ÊÑÕÉ«
+unsigned short BackColor	=	0;		//±³¾°ÑÕÉ«
+unsigned short VAsize	=	0;		//ÊäÈë´óĞ¡
 /*******************************************************************************
 *º¯ÊıÃû			:	LCD_Initialize
 *¹¦ÄÜÃèÊö		:	LCD³õÊ¼»¯£º
@@ -322,7 +325,6 @@ void LCD_DrawDot(
 	LCD_WriteData(Color); 	//±Ê»­ÑÕÉ«
 	LCD_WriteDataEnd();
 }
-
 /*******************************************************************************
 *º¯ÊıÃû		:	LCD_DrawLine
 *¹¦ÄÜÃèÊö	:	»­Ïß
@@ -546,16 +548,31 @@ void LCD_SetBackground(  u16 BackColor )
 void LCD_ShowAntenna(
                     u16 x,			//x				:Æğµãx×ø±ê
 										u16 y,			//y				:Æğµãy×ø±ê
-                    u8 Num)
-{
+                    u8 Num,
+										...)
+{	
   unsigned char GetBufferLength	=	0;
   unsigned char CodeBuffer[32]={0};
+	unsigned short InputDataSize=	0;		//ÊäÈë¿É±ä²ÎÊı´óĞ¡
+//	unsigned short PenColor		=	0;		//»­±ÊÑÕÉ«
+//	unsigned short BackColor	=	0;		//±³¾°ÑÕÉ«
+//	VAsize=strlen((const char*)Num);		//»ñÈ¡Êı¾İ¿í¶È	
+	//================va_list  ÉùÃ÷Ò»¸öÖ¸Õë±äÁ¿£¬¸ú×Ùµ±Ç°²ÎÊıµÄÖ¸Õë
+//	va_list args;
+//	//================va_start ³õÊ¼»¯Õâ¸öÖ¸ÕëµÄÎ»ÖÃ£¬×î¿ªÊ¼Ö¸ÏòµÚÒ»¸ö²ÎÊıµÄ½áÎ²µÄÎ»ÖÃ
+//	VAsize=strlen((const char*)Num);		//»ñÈ¡Êı¾İ¿í¶È
+//	va_start(args, Num);
+//	//================va_arg ÔòÒÆ¶¯Ö¸Õë£¬Ö¸ÏòÒ»¸öĞÂ²ÎÊıµÄÎ»ÖÃ£¬²¢·µ»Øµ±Ç°Öµ
+//	PenColor 	= va_arg(args,unsigned short);	//»­±ÊÑÕÉ«
+//	BackColor = va_arg(args,unsigned short);	//±³¾°ÑÕÉ«
+//	va_end(args);
   if(Num>4)
   {
     Num=4;
   }
   GetBufferLength = GT32L32_GetAntennaCode(Num,CodeBuffer);
-	LCD_ShowChar(x,y,12,GetBufferLength,CodeBuffer);
+	LCD_ShowChar(x,y,12,GetBufferLength,CodeBuffer,PenColor);
+	LCD_ShowChar(x,y,12,GetBufferLength,CodeBuffer,BackColor);
 }
 /*******************************************************************************
 * º¯ÊıÃû			:	LCD_ShowBattery
@@ -566,7 +583,8 @@ void LCD_ShowAntenna(
 void LCD_ShowBattery(
                     u16 x,			//x				:Æğµãx×ø±ê
 										u16 y,			//y				:Æğµãy×ø±ê
-                    u8 Num)
+                    u8 Num,
+										u16 color)
 {
   unsigned char GetBufferLength	=	0;
   unsigned char CodeBuffer[32]={0};
@@ -575,7 +593,7 @@ void LCD_ShowBattery(
     Num=3;
   }
   GetBufferLength = GT32L32_GetBatteryCode(Num,CodeBuffer);
-	LCD_ShowChar(x,y,12,GetBufferLength,CodeBuffer);
+	LCD_ShowChar(x,y,12,GetBufferLength,CodeBuffer,color);
 }
 /*******************************************************************************
 * º¯ÊıÃû			:	function
@@ -583,12 +601,13 @@ void LCD_ShowBattery(
 * ÊäÈë			: void
 * ·µ»ØÖµ			: void
 *******************************************************************************/
-static void LCD_ShowChar(
+void LCD_ShowChar(
 										u16 x,			//x				:Æğµãx×ø±ê
 										u16 y,			//y				:Æğµãy×ø±ê
 										u8 font,		//font		:×ÖÌå´óĞ¡
 										u8 num,			//num			:×Ö½ÚÊı
-										u8 *Buffer	//Buffer	:ÏÔÊ¾µÄÄÚÈİ»º´æ
+										u8 *Buffer,	//Buffer	:ÏÔÊ¾µÄÄÚÈİ»º´æ
+										u16 color
 )		//¸ßÍ¨×Ö¿â²âÊÔ³ÌĞò
 {
 	u8 temp;
@@ -654,7 +673,7 @@ static void LCD_ShowChar(
     //=======================Î´Âú8Î»µÄ²¹³ä¶¨Èë
     if(24==font)
     {
-      temp=Buffer[i+1];		 					//µ÷ÓÃ1608×ÖÌå--¶şÎ¬Êı×éĞÎÊ½--×Ö¿âÊ¹ÓÃÊ±È¡Ïû
+      temp=Buffer[i+1];		 					
       for(j=0;j<4;j++)
       {
         if((temp&0x80)==0X80)
@@ -672,7 +691,7 @@ static void LCD_ShowChar(
     }
     else if(12==font)
     {
-      temp=Buffer[i+1];		 					//µ÷ÓÃ1608×ÖÌå--¶şÎ¬Êı×éĞÎÊ½--×Ö¿âÊ¹ÓÃÊ±È¡Ïû
+      temp=Buffer[i+1];		 					
       for(j=0;j<4;j++)
       {
         if((temp&0x80)==0X80)
@@ -697,12 +716,13 @@ static void LCD_ShowChar(
 * ÊäÈë			: void
 * ·µ»ØÖµ			: void
 *******************************************************************************/
-static void LCD_ShowWord(
+void LCD_ShowWord(
 										u16 x,			//x				:Æğµãx×ø±ê
 										u16 y,			//y				:Æğµãy×ø±ê
 										u8 font,		//font		:×ÖÌå´óĞ¡
 										u8 num,			//num			:×Ö½ÚÊı
-										u8 *Buffer	//Buffer	:ÏÔÊ¾µÄÄÚÈİ»º´æ
+										u8 *Buffer,	//Buffer	:ÏÔÊ¾µÄÄÚÈİ»º´æ
+										u16 color
 )		//¸ßÍ¨×Ö¿â²âÊÔ³ÌĞò
 {
 	u8 temp;
@@ -752,7 +772,7 @@ static void LCD_ShowWord(
 	for(i=0;i<num;i++)
 	{ 
 		u16 LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//»­±ÊÉ«	
-		temp=Buffer[i];		 					//µ÷ÓÃ1608×ÖÌå--¶şÎ¬Êı×éĞÎÊ½--×Ö¿âÊ¹ÓÃÊ±È¡Ïû
+		temp=Buffer[i];		 				
 		for(j=0;j<8;j++)
 		{
 			if((temp&0x80)==0X80)
@@ -770,41 +790,22 @@ static void LCD_ShowWord(
 	}	
 }
 /*******************************************************************************
-*º¯ÊıÃû		:	LCD_ShowString
-*¹¦ÄÜÃèÊö	:	ÏÔÊ¾×Ö·û´®¸ßÍ¨×Ö¿â
-*ÊäÈë			: x,y:Æğµã×ø±ê
-						*p:×Ö·û´®ÆğÊ¼µØÖ·
-						ÓÃ16×ÖÌå
-*Êä³ö			:	ÎŞ
-*·µ»ØÖµ		:	ÎŞ
-*Àı³Ì			:
+* º¯ÊıÃû			:	function
+* ¹¦ÄÜÃèÊö		:	º¯Êı¹¦ÄÜËµÃ÷ 
+* ÊäÈë			: void
+* ·µ»ØÖµ			: void
 *******************************************************************************/
-unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊı
-{ 
-		
-//		va_list ap; 										//VA_LIST ÊÇÔÚCÓïÑÔÖĞ½â¾ö±ä²ÎÎÊÌâµÄÒ»×éºê£¬ËùÔÚÍ·ÎÄ¼ş£º#include <stdarg.h>,ÓÃÓÚ»ñÈ¡²»È·¶¨¸öÊıµÄ²ÎÊı
-//		static char string[ 256 ];			//¶¨ÒåÊı×é£¬
-//  	va_start( ap, format );
-//		vsprintf( string , format, ap );    
-//		va_end( ap );
-	
+void LCD_Show(
+							u16 x,			//x				:Æğµãx×ø±ê
+							u16 y,			//y				:Æğµãy×ø±ê
+							u8 font,		//font		:×ÖÌå´óĞ¡
+							u8 num,			//num			:×Ö½ÚÊı
+							u8 *Buffer	//Buffer	:ÏÔÊ¾µÄÄÚÈİ»º´æ
+)		//¸ßÍ¨×Ö¿â²âÊÔ³ÌĞò
+{
 	unsigned short	MaxV,MaxH;	//±ß½çÖµ
-	unsigned short	i=0;				//ÏÔÊ¾
-	char	DataBuffer[256]={0};			//¼ÇÂ¼formatÄÚÂë
-  unsigned char CodeBuffer[130]={0};
-	//1)**********»ñÈ¡Êı¾İ¿í¶È
-	u16 InputDataSize=strlen((const char*)format);		//»ñÈ¡Êı¾İ¿í¶È	
-	
-	//3)**********argsÎª¶¨ÒåµÄÒ»¸öÖ¸Ïò¿É±ä²ÎÊıµÄ±äÁ¿£¬va_listÒÔ¼°ÏÂ±ßÒªÓÃµ½µÄva_start,va_end¶¼ÊÇÊÇÔÚ¶¨Òå£¬¿É±ä²ÎÊıº¯ÊıÖĞ±ØĞëÒªÓÃµ½ºê£¬ ÔÚstdarg.hÍ·ÎÄ¼şÖĞ¶¨Òå
-	va_list args; 
-	//5)**********³õÊ¼»¯argsµÄº¯Êı£¬Ê¹ÆäÖ¸Ïò¿É±ä²ÎÊıµÄµÚÒ»¸ö²ÎÊı£¬formatÊÇ¿É±ä²ÎÊıµÄÇ°Ò»¸ö²ÎÊı
-	va_start(args, format);
-	//6)**********Õı³£Çé¿öÏÂ·µ»ØÉú³É×Ö´®µÄ³¤¶È(³ıÈ¥\0),´íÎóÇé¿ö·µ»Ø¸ºÖµ
-	vsnprintf(DataBuffer, InputDataSize+1,format, args);
-
-	//7)**********½áÊø¿É±ä²ÎÊıµÄ»ñÈ¡
-	va_end(args);                                      		
-
+	unsigned char i=0;
+	unsigned char CodeBuffer[130]={0};
 	switch(LCDSYS->Flag.Rotate)
 	{
 		case Draw_Rotate_90D:
@@ -823,17 +824,17 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 			MaxV	=	LCDSYS->Data.MaxV;
 			MaxH	=	LCDSYS->Data.MaxH;
 			break;
-	}	
-	for(i=0;i<InputDataSize;i++)
-	{ 
+	}
+	for(i=0;i<num;i++)
+	{
 		unsigned char GetBufferLength	=	0;
-		unsigned char dst=DataBuffer[i];
+		unsigned char dst=Buffer[i];
 		//=====================Ë«×Ö½Ú--ºº×Ö
 		if(dst>0x80)
 		{
 			u16 word=dst<<8;
       
-			dst=DataBuffer[i+1];
+			dst=Buffer[i+1];
 			word=word|dst;			
 			//ÏÔÊ¾³¬ÏŞÅĞ¶Ï
 			if(font==12)
@@ -890,7 +891,7 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 			}
 			GetBufferLength	=	GT32L32_ReadCode(font,word,CodeBuffer);		//´Ó×Ö¿âÖĞ¶ÁÊı¾İ²¢·µ»ØÊı¾İ³¤¶È
 			//Ğ´ÈëÆÁÄ»
-			LCD_ShowWord(x,y,font,GetBufferLength,CodeBuffer);
+			LCD_ShowWord(x,y,font,GetBufferLength,CodeBuffer,0);
 			//ÏÔÊ¾µØÖ·Ôö¼Ó	
 			if(font==12)
 			{
@@ -909,6 +910,7 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 				x+=32;
 			}
 			i++;		//Ë«×Ö½Ú£¬¼õÁ½´Î
+			
 		}
 		//=====================µ¥×Ö½Ú--ASCII×Ö·û¼¯
 		else
@@ -964,7 +966,7 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 			}
 			GetBufferLength	=	GT32L32_ReadCode(font,(u16)dst,CodeBuffer);		//´Ó×Ö¿âÖĞ¶ÁÊı¾İ²¢·µ»ØÊı¾İ³¤¶È
 //			//Ğ´ÈëÆÁÄ»
-			LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer);
+			LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer,0);
 			//ÏÔÊ¾µØÖ·Ôö¼Ó
 			if(font==12)
 			{
@@ -984,16 +986,46 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,const char *format,...)				//ºó±ßµÄÊ
 			}			
 		}
 	}
+}
+/*******************************************************************************
+*º¯ÊıÃû		:	LCD_ShowString
+*¹¦ÄÜÃèÊö	:	ÏÔÊ¾×Ö·û´®¸ßÍ¨×Ö¿â
+*ÊäÈë			: x,y:Æğµã×ø±ê
+						*p:×Ö·û´®ÆğÊ¼µØÖ·
+						ÓÃ16×ÖÌå
+*Êä³ö			:	ÎŞ
+*·µ»ØÖµ		:	ÎŞ
+*Àı³Ì			:
+*******************************************************************************/
+unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...)				//ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊı
+{ 
+		
+//		va_list ap; 										//VA_LIST ÊÇÔÚCÓïÑÔÖĞ½â¾ö±ä²ÎÎÊÌâµÄÒ»×éºê£¬ËùÔÚÍ·ÎÄ¼ş£º#include <stdarg.h>,ÓÃÓÚ»ñÈ¡²»È·¶¨¸öÊıµÄ²ÎÊı
+//		static char string[ 256 ];			//¶¨ÒåÊı×é£¬
+//  	va_start( ap, format );
+//		vsprintf( string , format, ap );    
+//		va_end( ap );
+	
+	unsigned short	MaxV,MaxH;	//±ß½çÖµ
+	unsigned short	i=0;				//ÏÔÊ¾
+	char	DataBuffer[256]={0};			//¼ÇÂ¼formatÄÚÂë
+  unsigned char CodeBuffer[130]={0};
+	//1)**********»ñÈ¡Êı¾İ¿í¶È
+	u16 InputDataSize=strlen((const char*)format);		//»ñÈ¡Êı¾İ¿í¶È	
+	
+	//3)**********argsÎª¶¨ÒåµÄÒ»¸öÖ¸Ïò¿É±ä²ÎÊıµÄ±äÁ¿£¬va_listÒÔ¼°ÏÂ±ßÒªÓÃµ½µÄva_start,va_end¶¼ÊÇÊÇÔÚ¶¨Òå£¬¿É±ä²ÎÊıº¯ÊıÖĞ±ØĞëÒªÓÃµ½ºê£¬ ÔÚstdarg.hÍ·ÎÄ¼şÖĞ¶¨Òå
+	va_list args; 
+	//5)**********³õÊ¼»¯argsµÄº¯Êı£¬Ê¹ÆäÖ¸Ïò¿É±ä²ÎÊıµÄµÚÒ»¸ö²ÎÊı£¬formatÊÇ¿É±ä²ÎÊıµÄÇ°Ò»¸ö²ÎÊı
+	va_start(args, format);
+	//6)**********Õı³£Çé¿öÏÂ·µ»ØÉú³É×Ö´®µÄ³¤¶È(³ıÈ¥\0),´íÎóÇé¿ö·µ»Ø¸ºÖµ
+	vsnprintf(DataBuffer, InputDataSize+1,format, args);
+
+	//7)**********½áÊø¿É±ä²ÎÊıµÄ»ñÈ¡
+	va_end(args);                                      		
+
+	LCD_Show(x,y,font,InputDataSize,(unsigned char*)DataBuffer);
 	return InputDataSize;
 }
-
-
-
-
-
-
-
-
 /**************************************************************************************************
 * [Function] LCD_DrawPixelEx:  º¯Êı¹¦ÄÜ¡¢×¢ÒâÊÂÏîµÈµÄÃèÊö
 * [param01]u16 x: description

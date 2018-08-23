@@ -140,7 +140,7 @@ static struct
 //static unsigned short gUART5_RetryCount=0;		//----ÎŞDMA
 
 //char	*DMAPrintf_Buffer=NULL;			//USART_DMAPrintf¶¯Ì¬¿Õ¼äµØÖ·
-char	DMAPrintf_Buffer[128]={0x00};			//4K´®¿Úprintf´òÓ¡´æ´¢¿Õ¼ä(¶¯Ì¬¿Õ¼äÓĞÊ±¿ÉÄÜÉêÇëÊ§°Ü)
+//char	DMAPrintf_Buffer[128]={0x00};			//4K´®¿Úprintf´òÓ¡´æ´¢¿Õ¼ä(¶¯Ì¬¿Õ¼äÓĞÊ±¿ÉÄÜÉêÇëÊ§°Ü)
 
 //--------ÄÚ²¿Ê¹ÓÃº¯Êı¶¨Òå
 //*****************RS485ÊÕ·¢¿ØÖÆ
@@ -182,10 +182,10 @@ void	USART_DMA_ConfigurationNR(
 					if(BufferSize	==	0)	//Èç¹ûÎ´Éè¶¨»º´æ´óĞ¡£¬Ê¹ÓÃÄ¬ÈÏÖµ
 						SetDmaSize.nUSART1=uRxSize;
 					else
-						SetDmaSize.nUSART1=BufferSize;
-					RXDBuffer	=	uRx1Addr;
+						SetDmaSize.nUSART1=BufferSize;					
           free(uRx1Addr);
           uRx1Addr  = (unsigned char*)malloc(SetDmaSize.nUSART1);
+					RXDBuffer	=	uRx1Addr;
 					GPIO_TX=GPIOA;
 					GPIO_RX=GPIOA;
 					TXD_Pin=GPIO_Pin_9;											//USART1-TX>PA9
@@ -1714,6 +1714,7 @@ u16 USART_DMAPrintf(USART_TypeDef* USARTx,const char *format,...)		//ºó±ßµÄÊ¡ÂÔº
 //	u32 num=strlen((const char*)format);		//»ñÈ¡Êı¾İ¿í¶È
 	//2)**********¶¨Òå»º³åÇø´óĞ¡±äÁ¿
 	unsigned int BufferSize=0;
+	unsigned char DMAPrintf_Buffer[256]={0};
 	//3)**********argsÎª¶¨ÒåµÄÒ»¸öÖ¸Ïò¿É±ä²ÎÊıµÄ±äÁ¿£¬va_listÒÔ¼°ÏÂ±ßÒªÓÃµ½µÄva_start,va_end¶¼ÊÇÊÇÔÚ¶¨Òå£¬¿É±ä²ÎÊıº¯ÊıÖĞ±ØĞëÒªÓÃµ½ºê£¬ ÔÚstdarg.hÍ·ÎÄ¼şÖĞ¶¨Òå
 	va_list args;  
 //	free(DMAPrintf_Buffer);						//ÊÍ·Å¶¯Ì¬¿Õ¼ä
@@ -1783,6 +1784,7 @@ u16 USART_DMAPrintfList(USART_TypeDef* USARTx,const char *format,...)		//ºó±ßµÄÊ
 //	u32 num=strlen((const char*)format);		//»ñÈ¡Êı¾İ¿í¶È
 	//2)**********¶¨Òå»º³åÇø´óĞ¡±äÁ¿
 	unsigned int BufferSize=0;
+	unsigned char DMAPrintf_Buffer[256]={0};
 	//3)**********argsÎª¶¨ÒåµÄÒ»¸öÖ¸Ïò¿É±ä²ÎÊıµÄ±äÁ¿£¬va_listÒÔ¼°ÏÂ±ßÒªÓÃµ½µÄva_start,va_end¶¼ÊÇÊÇÔÚ¶¨Òå£¬¿É±ä²ÎÊıº¯ÊıÖĞ±ØĞëÒªÓÃµ½ºê£¬ ÔÚstdarg.hÍ·ÎÄ¼şÖĞ¶¨Òå
 	va_list args;  
 //	free(DMAPrintf_Buffer);						//ÊÍ·Å¶¯Ì¬¿Õ¼ä
@@ -2484,6 +2486,7 @@ u16	RS485_DMAPrintf(RS485_TypeDef *RS485_Info,const char *format,...)						//×Ô¶
 	u32 num=strlen((const char*)format);		//»ñÈ¡Êı¾İ¿í¶È
 	//2)**********¶¨Òå»º³åÇø´óĞ¡±äÁ¿
 	unsigned int BufferSize;
+	unsigned char DMAPrintf_Buffer[256]={0};
 	//3)**********argsÎª¶¨ÒåµÄÒ»¸öÖ¸Ïò¿É±ä²ÎÊıµÄ±äÁ¿£¬va_listÒÔ¼°ÏÂ±ßÒªÓÃµ½µÄva_start,va_end¶¼ÊÇÊÇÔÚ¶¨Òå£¬¿É±ä²ÎÊıº¯ÊıÖĞ±ØĞëÒªÓÃµ½ºê£¬ ÔÚstdarg.hÍ·ÎÄ¼şÖĞ¶¨Òå
 	va_list args;  
 	free(DMAPrintf_Buffer);						//ÊÍ·Å¶¯Ì¬¿Õ¼ä
