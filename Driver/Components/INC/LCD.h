@@ -242,7 +242,8 @@ extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 void LCD_Initialize(LCDDef *pInfo);
 void LCD_ShowAntenna(u16 x,u16 y,u8 Num,...);   //显示12x12天线
 void LCD_ShowBattery(u16 x,u16 y,u8 Num,u16 color);   //显示12x12电池
-void LCD_Show(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);	  								//显示
+void LCD_Show(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);	
+void LCD_ShowHex(u16 x,u16 y,u8 font,u8 num,u8 bitnum,u8 *Buffer);//显示
 unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...);		//后边的省略号就是可变参数
 
 

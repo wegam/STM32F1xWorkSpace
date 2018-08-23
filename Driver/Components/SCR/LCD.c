@@ -571,8 +571,7 @@ void LCD_ShowAntenna(
     Num=4;
   }
   GetBufferLength = GT32L32_GetAntennaCode(Num,CodeBuffer);
-	LCD_ShowChar(x,y,12,GetBufferLength,CodeBuffer,PenColor);
-	LCD_ShowChar(x,y,12,GetBufferLength,CodeBuffer,BackColor);
+	LCD_ShowWord(x,y,12,GetBufferLength,CodeBuffer,PenColor);
 }
 /*******************************************************************************
 * 函数名			:	LCD_ShowBattery
@@ -587,13 +586,13 @@ void LCD_ShowBattery(
 										u16 color)
 {
   unsigned char GetBufferLength	=	0;
-  unsigned char CodeBuffer[32]={0};
+  unsigned char CodeBuffer[64]={0};
   if(Num>3)
   {
     Num=3;
   }
   GetBufferLength = GT32L32_GetBatteryCode(Num,CodeBuffer);
-	LCD_ShowChar(x,y,12,GetBufferLength,CodeBuffer,color);
+	LCD_ShowWord(x,y,12,GetBufferLength,CodeBuffer,color);
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -617,40 +616,10 @@ void LCD_ShowChar(
 //	CoordinateTransform(&x1,&y1,&x2,&y2);
 	x1	=	x;
 	y1	=	y;
-	
-	if(font==12)
-	{
-		if(x>LCDSYS->Data.MaxV-12||y>LCDSYS->Data.MaxH-12)
+  if(x>LCDSYS->Data.MaxV-font||y>LCDSYS->Data.MaxH-font)
 			return;
-		
-		x2	=	x+12-1;
-		y2	=	y+12-1;
-	}
-	if(font==16)
-	{
-		if(x>LCDSYS->Data.MaxV-16||y>LCDSYS->Data.MaxH-16)
-			return;
-			x2	=	x+8-1;
-			y2	=	y+16-1;
-	}
-	if(font==24)
-	{
-		if(x>LCDSYS->Data.MaxV-24||y>LCDSYS->Data.MaxH-24)
-			return;
-			x2	=	x+12-1;
-			y2	=	y+24-1;
-	}
-	else if(font==32)
-	{
-		if(x>LCDSYS->Data.MaxV-32||y>LCDSYS->Data.MaxH-32)
-			return;
-			x2	=	x+16-1;
-			y2	=	y+32-1;
-	}
-	else
-	{
-//		return ;
-	}
+    x2	=	x+font/2-1;
+    y2	=	y+font-1;
 	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
 	i=0;
 	for(i=0;i<num;i++)
@@ -671,25 +640,7 @@ void LCD_ShowChar(
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
-    if(24==font)
-    {
-      temp=Buffer[i+1];		 					
-      for(j=0;j<4;j++)
-      {
-        if((temp&0x80)==0X80)
-        {
-          LCD_PEN_COLOR=LCDSYS->Data.PColor;
-        }
-        else
-          LCD_PEN_COLOR=LCDSYS->Data.BColor;
-        LCD_WriteDataStart();
-        LCD_WriteData(LCD_PEN_COLOR);
-        LCD_WriteDataEnd();
-        temp=temp<<1;
-      }
-      i++;
-    }
-    else if(12==font)
+    if((24==font)||(12==font))
     {
       temp=Buffer[i+1];		 					
       for(j=0;j<4;j++)
@@ -731,44 +682,13 @@ void LCD_ShowWord(
 	u16 colortemp=LCDSYS->Data.PColor;
 	x1	=	x;
 	y1	=	y;
-	
-	if(font==12)
-	{
-		if(x>LCDSYS->Data.MaxV-12||y>LCDSYS->Data.MaxH-12)
-			return;
-		
-		x2	=	x+12-1;
-		y2	=	y+12-1;
-	}
-	if(font==16)
-	{
-		if(x>LCDSYS->Data.MaxV-16||y>LCDSYS->Data.MaxH-16)
-			return;
-			x2	=	x+16-1;
-			y2	=	y+16-1;
-
-	}
-	if(font==24)
-	{
-		if(x>LCDSYS->Data.MaxV-24||y>LCDSYS->Data.MaxH-24)
-			return;
-
-			x2	=	x+24-1;
-			y2	=	y+24-1;
-	}
-	else if(font==32)
-	{
-		if(x>LCDSYS->Data.MaxV-32||y>LCDSYS->Data.MaxH-32)
-			return;
-			x2	=	x+32-1;
-			y2	=	y+32-1;
-	}
-	else
-	{
-//		return ;
-	}
+  
+  if(x>LCDSYS->Data.MaxV-font||y>LCDSYS->Data.MaxH-font)
+    return;
+  x2	=	x+font-1;
+  y2	=	y+font-1;
 	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
-	i=0;
+
 	for(i=0;i<num;i++)
 	{ 
 		u16 LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色	
@@ -786,9 +706,29 @@ void LCD_ShowWord(
 			LCD_WriteDataEnd();
 			temp=temp<<1;
 		}
+    //=======================未满8位的补充定入
+    if((12==font))
+    {
+      temp=Buffer[i+1];		 					
+      for(j=0;j<4;j++)
+      {
+        if((temp&0x80)==0X80)
+        {
+          LCD_PEN_COLOR=LCDSYS->Data.PColor;
+        }
+        else
+          LCD_PEN_COLOR=LCDSYS->Data.BColor;
+        LCD_WriteDataStart();
+        LCD_WriteData(LCD_PEN_COLOR);
+        LCD_WriteDataEnd();
+        temp=temp<<1;
+      }
+      i++;
+    }
 		LCDSYS->Data.PColor=colortemp;	
 	}	
 }
+
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
@@ -829,162 +769,138 @@ void LCD_Show(
 	{
 		unsigned char GetBufferLength	=	0;
 		unsigned char dst=Buffer[i];
-		//=====================双字节--汉字
+		//A=====================双字节--汉字
 		if(dst>0x80)
 		{
 			u16 word=dst<<8;
       
 			dst=Buffer[i+1];
 			word=word|dst;			
-			//显示超限判断
-			if(font==12)
-			{
-				if(x>MaxH-12)
-				{
-					x=0;
-					y+=12;
-				}
-				if(y>MaxV-12)
-				{
-					y=x=0;
-				}
-			}
-			else if(font==16)
-			{
-				if(x>MaxH-16)
-				{
-					x=0;
-					y+=16;
-				}
-				if(y>MaxV-16)
-				{
-					y=x=0;
-				}
-			}
-			else if(font==24)
-			{
-				if(x>MaxH-24)
-				{
-					x=0;
-					y+=24;
-				}
-				if(y>MaxV-24)
-				{
-					y=x=0;
-				}
-			}
-			else if(font==32)
-			{
-				if(x>MaxH-32)
-				{
-					x=0;
-					y+=32;
-				}
-				if(y>MaxV-32)
-				{
-					y=x=0;
-				}
-			}
-			else
-			{
-
-			}
+			//A1=====================显示超限换行
+      if(x>MaxH-font)
+      {
+        x=0;
+        y+=font;
+      }
+      //A2=====================显示到屏尾，从原点开始
+      if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+      //A3=====================读取点阵数据
 			GetBufferLength	=	GT32L32_ReadCode(font,word,CodeBuffer);		//从字库中读数据并返回数据长度
-			//写入屏幕
+			//A4=====================写入屏幕
 			LCD_ShowWord(x,y,font,GetBufferLength,CodeBuffer,0);
-			//显示地址增加	
-			if(font==12)
-			{
-				x+=12;
-			}
-			else if(font==16)
-			{
-				x+=16;
-			}
-			else if(font==24)
-			{
-				x+=24;
-			}
-			else if(font==32)
-			{
-				x+=32;
-			}
+			//A5=====================水平显示地址增加
+      x+=font;
 			i++;		//双字节，减两次
 			
 		}
-		//=====================单字节--ASCII字符集
+		//B=====================单字节--ASCII字符集
 		else
 		{			
-			//显示超限判断
-			if(font==12)
-			{
-				if(x>MaxH-12)
-				{
-					x=0;
-					y+=12;
-				}
-				if(y>MaxV-12)
-				{
-					y=x=0;
-				}
-			}
-			if(font==16)
-			{
-				if(x>MaxH-8)
-				{
-					x=0;
-					y+=16;
-				}
-				if(y>MaxV-16)
-				{
-					y=x=0;
-				}
-			}
-			if(font==24)
-			{
-				if(x>MaxH-24)
-				{
-					x=0;
-					y+=24;
-				}
-				if(y>MaxV-24)
-				{
-					y=x=0;
-				}
-			}
-			if(font==32)
-			{
-				if(x>MaxH-32)
-				{
-					x=0;
-					y+=32;
-				}
-				if(y>MaxV-32)
-				{
-					y=x=0;
-				}
-			}
+			//B1=====================显示超限换行
+      if(x>MaxH-font/2)
+      {
+        x=0;
+        y+=12;
+      }
+      //B2=====================显示到屏尾，从原点开始
+      if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+      //B3=====================读取点阵数据
 			GetBufferLength	=	GT32L32_ReadCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
-//			//写入屏幕
+			//B4=====================写入屏幕
 			LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer,0);
-			//显示地址增加
-			if(font==12)
-			{
-				x+=6;
-			}
-			else if(font==16)
-			{
-				x+=8;
-			}
-			else if(font==24)
-			{
-				x+=12;
-			}
-			else if(font==32)
-			{
-				x+=16;
-			}			
+			//B5=====================水平显示地址增加
+      x+=font/2;						
 		}
+	}
+}
+/*******************************************************************************
+* 函数名			:	LCD_ShowHex
+* 功能描述		:	十六进制显示 
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void LCD_ShowHex(
+							u16 x,			//x				:起点x坐标
+							u16 y,			//y				:起点y坐标
+							u8 font,		//font		:字体大小
+							u8 num,			//num			:数据个数
+              u8 bitnum,  //num			:位数
+							u8 *Buffer	//Buffer	:显示的内容缓存
+)		//高通字库测试程序
+{
+	unsigned short	MaxV,MaxH;	//边界值
+	unsigned char i=0;
+  unsigned char Cril  = 0;
+	unsigned char CodeBuffer[130]={0};
+  char	DataBuffer[256]={0};			//记录format内码
+  
+  
+	switch(LCDSYS->Flag.Rotate)
+	{
+		case Draw_Rotate_90D:
+			MaxV	=	LCDSYS->Data.MaxH;
+			MaxH	=	LCDSYS->Data.MaxV;
+			break;
+		case Draw_Rotate_180D:
+			MaxV	=	LCDSYS->Data.MaxV;
+			MaxH	=	LCDSYS->Data.MaxH;
+			break;
+		case Draw_Rotate_270D:
+			MaxV	=	LCDSYS->Data.MaxH;
+			MaxH	=	LCDSYS->Data.MaxV;
+			break;
+		default:
+			MaxV	=	LCDSYS->Data.MaxV;
+			MaxH	=	LCDSYS->Data.MaxH;
+			break;
+	}
+	for(i=0;i<num;i++)
+	{
+    unsigned char GetBufferLength	=	0;
+    for(Cril=bitnum/4;Cril>0;Cril--)
+    {
+      //=============================8位显示方式      
+      unsigned char dst=(((u32)Buffer[i]>>(Cril-1)*4)&0x0F);
+      //1=====================转换为ASSIC码
+      if((0<=dst)&&(9>=dst))
+      {
+        dst+=0x30;
+      }
+      else if((10<=dst)&&(15>=dst))
+      {
+        dst+=0x37;
+      }
+      //1=====================显示超限换行
+      if(x>MaxH-font/2)
+      {
+        x=0;
+        y+=font;
+      }
+      //2=====================显示到屏尾，从原点开始
+      if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+      //3=====================读取点阵数据
+      GetBufferLength	=	GT32L32_ReadCode(font,dst,CodeBuffer);		//从字库中读数据并返回数据长度
+      //4=====================写入屏幕
+      LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer,0);
+      //5=====================显示地址增加
+      x+=font/2;
+    }
+    //========================插入空格
+    //3=====================读取点阵数据
+    GetBufferLength	=	GT32L32_ReadCode(font,' ',CodeBuffer);		//从字库中读数据并返回数据长度
+    //4=====================写入屏幕
+    LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer,0);
+    //5=====================显示地址增加
+    x+=font/2;
 	}
 }
 /*******************************************************************************
@@ -1022,7 +938,10 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...)			
 
 	//7)**********结束可变参数的获取
 	va_end(args);                                      		
-
+  if((12!=font)&&(16!=font)&&(24!=font)&&(32!=font))
+  {
+    font  = 24;
+  }
 	LCD_Show(x,y,font,InputDataSize,(unsigned char*)DataBuffer);
 	return InputDataSize;
 }

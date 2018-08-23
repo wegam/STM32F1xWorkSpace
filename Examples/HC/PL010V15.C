@@ -105,6 +105,10 @@ u16	HY	=	0;
 unsigned short	Color	=	0;
 u8 ADCc	=	0;
 u32 READ_GAIN	=	0;
+u8 Battery  = 0;
+u16 BatteryTime = 0;
+u8 Antenna  = 0;
+u16 AntennaTime = 0;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -130,21 +134,19 @@ void PL010V15_Configuration(void)
 	
 	LCD_Configuration();	
 	
-	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
+//	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(2000);			//独立看门狗配置---参数单位ms	
 
 //	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--运行指示灯
 	
 //	PWM_OUT(TIM2,PWM_OUTChannel4,500,200);		//PWM设定-20161127版本--背光
-//	LCD_Clean(LCD565_RED);			//清除屏幕函数--
-//	LCD_Printf(100,100,32,"时钟");					//后边的省略号就是可变参数
-//	LCD_Printf(100,130,32,"%02d:",hour);		//后边的省略号就是可变参数
-//	LCD_Printf(148,130,32,"%02d:",min);			//后边的省略号就是可变参数
-//	LCD_Printf(196,130,32,"%02d",second);		//后边的省略号就是可变参数
-//	R61509V_DrawCircle(200,120, 100, 1, R61509V_YELLOW );		//画一个圆形框
-	
-//	Display.Init	=	PL010V15_Configuration;
+
+  LCD_Printf(0,30,16,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+	LCD_Printf(0,30+16,24,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+	LCD_Printf(0,52,30+16+24,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+  
+  SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 }
 /*******************************************************************************
 * 函数名		:	
@@ -172,20 +174,32 @@ void PL010V15_Server(void)
 *******************************************************************************/
 void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 {
+  u8 aaf[8]={0x01,0x23,0x45,0x67,0x89,0xAB,0xCD,0xEF};
 #if 1
-  LCD_Printf(0,30,16,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-	LCD_Printf(0,30+16,24,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-	LCD_Printf(0,52,30+16+24,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-  LCD_ShowAntenna(220,0,0);   //显示12x12天线
-  LCD_ShowAntenna(240,0,1);   //显示12x12天线
-  LCD_ShowAntenna(260,0,2);   //显示12x12天线
-  LCD_ShowAntenna(280,0,3);   //显示12x12天线
-  LCD_ShowAntenna(300,0,4);   //显示12x12天线
-  
-  LCD_ShowBattery(320,0,0);   //显示12x12电池
-  LCD_ShowBattery(340,0,1);   //显示12x12电池
-  LCD_ShowBattery(360,0,2);   //显示12x12电池
-  LCD_ShowBattery(380,0,3);   //显示12x12电池
+  LCD_Printf(0,30,16,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+	LCD_Printf(0,46,24,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+	LCD_Printf(0,70,32,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+  if(AntennaTime++>50)
+  {
+    AntennaTime=0;
+    if(Antenna++>4)
+    {
+      Antenna = 0;
+    }
+    LCD_ShowAntenna(300,0,Antenna);   //显示12x12天线
+  }
+  if(BatteryTime++>50)
+  {
+    BatteryTime=0;
+    if(Battery++>3)
+    {
+      Battery=0;      
+    }
+    LCD_ShowBattery(320,0,Battery,0);   //显示12x12电池
+  }
+//  LCD_Printf(0,160,24,0,"%0.2X %0.2X ",aaf[0],aaf[1]);		//后边的省略号就是可变参数
+//  LCD_Printf(0,190,24,0,"A8 E6");		//后边的省略号就是可变参数
+  LCD_ShowHex(0,160,16,8,8,(u8*)aaf);
  
   return;
 #endif
@@ -223,7 +237,7 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 	if(CS5530_ADC_Value	!=	CS5530.Data.Origin)
 	{
 		CS5530_ADC_Value	=	CS5530.Data.Origin;
-		LCD_Printf(0		,128,32	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(0		,128,32,0	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
 	}
 //	if(CS5530_Time++>=50)		//1秒钟
 //	{		
@@ -580,7 +594,7 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 		Rev_ADC<<=8;
 		Rev_ADC	+=	RevBuffe[5];
 		
-		LCD_Printf(0		,128	,16	,"接收到通道%0.2d称重值：%0.8d",Rev_ID,Rev_ADC);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(0		,128	,16	,0,"接收到通道%0.2d称重值：%0.8d",Rev_ID,Rev_ADC);				//待发药槽位，后边的省略号就是可变参数
 		
 	}
 	if(Rs485_Time	++>5)
@@ -641,7 +655,7 @@ void SwitchID_Server(void)	//拔码开关处理--动态更新拨码地址
 	if(SwitchID	!=	ID_Temp)
 	{
 		SwitchID	=	ID_Temp;
-		LCD_Printf(0		,0,32	,"地址：%0.2d",SwitchID);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(0		,0,32	,0,"地址：%0.2d",SwitchID);				//待发药槽位，后边的省略号就是可变参数
 	}
 }
 /*******************************************************************************
