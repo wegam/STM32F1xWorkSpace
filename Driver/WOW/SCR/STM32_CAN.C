@@ -766,14 +766,20 @@ u8 CAN_RX_DATA(CanRxMsg *RxMessage)
 	}
 	else
 	{
-		if(CAN->RF0R!=0)	//FMP0[1:0]: FIFO 0 报文数目 (FIFO 0 message pending) FIFO 0报文数目这2位反映了当前接收FIFO 0中存放的报文数目。
+		//========================检查收件箱0是否有数据
+		if(0	!=	(CAN->RF0R&0x03))	//FMP0[1:0]: FIFO 0 报文数目 (FIFO 0 message pending) FIFO 0报文数目这2位反映了当前接收FIFO 0中存放的报文数目。
 		{
 			CAN_Receive(CAN_FIFO0, RxMessage);
 			return 1;
 		}
-//		if(RxMessage->DLC!=0)
-			return 0;
+		//========================检查收件箱1是否有数据
+		else if(0	!=	(CAN->RF1R&0x03))	//FMP0[1:0]: FIFO 0 报文数目 (FIFO 0 message pending) FIFO 0报文数目这2位反映了当前接收FIFO 0中存放的报文数目。
+		{
+			CAN_Receive(CAN_FIFO1, RxMessage);
+			return 1;
+		}
 	}
+	return 0;
 }
 
 

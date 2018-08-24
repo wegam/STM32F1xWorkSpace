@@ -98,7 +98,7 @@ unsigned char UART5ReceiveData(unsigned char* RecByte);			//串口5读数据,返回0-无
 
 void  USART_TxServer(USART_TypeDef* USARTx);
 void  USART_RxServer(USART_TypeDef* USARTx);		//串口接收服务程序
-void USART_Server(void);		//串口服务程序	
+void	USART_Process(void);		//串口服务程序	
 
 #endif
 

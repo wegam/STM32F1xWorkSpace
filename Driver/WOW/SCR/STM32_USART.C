@@ -2870,7 +2870,7 @@ void USART_RxServer(USART_TypeDef* USARTx)		//串口接收服务程序
 *例程			：
 *******************************************************************************/
 
-void USART_Server(void)		//串口服务程序	
+void USART_Process(void)		//串口服务程序	
 {
   USART_TxServer(USART1);
   USART_TxServer(USART2);

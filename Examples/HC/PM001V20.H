@@ -6,8 +6,11 @@
 void PM001V20_Configuration(void);
 void PM001V20_Server(void);
 void PM001V20_SysLed(void);			//系统运行指示灯
-void PM001V20_USART1(void);
-void PM001V20_USART1_Server(void);
+void USART_Configuration(void);
+void Driver_Configuration(void);
+void USART_Server(void);
+void Driver_Server(void);
+void CAN_Server(void);
 
 
 #endif

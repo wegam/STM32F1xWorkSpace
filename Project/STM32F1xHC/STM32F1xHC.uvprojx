@@ -55647,8 +55647,8 @@
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
           <SimDllArguments> -REMAP</SimDllArguments>
-          <SimDlgDll>DCM.DLL</SimDlgDll>
-          <SimDlgDllArguments>-pCM3</SimDlgDllArguments>
+          <SimDlgDll>DARMSTM.DLL</SimDlgDll>
+          <SimDlgDllArguments>-pSTM32F103VC</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
           <TargetDllArguments></TargetDllArguments>
           <TargetDlgDll>TCM.DLL</TargetDlgDll>
@@ -55687,7 +55687,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>1</TargetSelection>
+          <TargetSelection>6</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -55701,7 +55701,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>BIN\UL2CM3.DLL</Driver>
+            <Driver>Segger\JL2CM3.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -55910,7 +55910,7 @@
               <MiscControls></MiscControls>
               <Define>PM001V20</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC</IncludePath>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main;..\..\Driver\Tool;..\..\Driver\Protocol</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
