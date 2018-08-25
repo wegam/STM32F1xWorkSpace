@@ -189,82 +189,6 @@ enum SSD1963REG
 	SSD1963_RF0_SPDI	=	0XF0,		//set_pixel_data_interface:Set the pixel data format of the parallel host processor interface
 	SSD1963_RF1_GPDI	=	0XF1,		//get_pixel_data_interface:Get the current pixel data format settings
 };
-//****************************管脚定义End**************************
-
-//****************************控制定义Start************************
-//--------------背光  //高电平---开背光
-//#define LCD_BACKLIGHT(n)	{if(0)	GPIO_ResetBits(LCD_BACKLIGHT_PORT,	LCD_BACKLIGHT_PIN);	else	GPIO_SetBits(LCD_BACKLIGHT_PORT,	LCD_BACKLIGHT_PIN);}
-
-//--------------读控制 //低电平 8080模式，读选通信号
-//#define LCD_RD(n)	{if(0)	GPIO_ResetBits(LCD_RD_PORT,	LCD_RD_PIN);	else	GPIO_SetBits(LCD_RD_PORT,	LCD_RD_PIN);}
-
-//--------------复位  //低电平有效
-//#define LCD_REST(n)	{if(0)	GPIO_ResetBits(LCD_REST_PORT,	LCD_REST_PIN);	else	GPIO_SetBits(LCD_REST_PORT,	LCD_REST_PIN);}
-//#define LCD_REST(0)	GPIO_ResetBits(LCD_REST_PORT,	LCD_REST_PIN)
-//#define LCD_REST(1)	GPIO_SetBits(LCD_REST_PORT,	LCD_REST_PIN)
-
-//--------------数据/命令切换   //数据--高电平//命令--低电平
-//#define LCD_RS(n)	{if(0)	GPIO_ResetBits(LCD_RS_PORT,	LCD_RS_PIN);	else	GPIO_SetBits(LCD_RS_PORT,	LCD_RS_PIN);}  		 //数据/命令切换
-
-//--------------写控制  	//0--写开启，1--写关闭
-//#define LCD_WR(n)	{if(0)	GPIO_ResetBits(LCD_WR_PORT,	LCD_WR_PIN);	else	GPIO_SetBits(LCD_WR_PORT,	LCD_WR_PIN);}
-
-//--------------片选，//芯片使能--低电平有效
-//#define LCD_CS(n)	{if(0)	GPIO_ResetBits(LCD_CS_PORT,	LCD_CS_PIN);	else	GPIO_SetBits(LCD_CS_PORT,	LCD_CS_PIN);}
-
-////****************************控制定义End**************************
-//typedef struct	_SSD1963_Pin
-//{
-//	//____________背光控制定义	//1:开背光;0:关背光
-//	GPIO_TypeDef* 	SSD1963_sBACKLIGHT_PORT;			//GPIOX
-//	unsigned short 	SSD1963_sBACKLIGHT_Pin;				//GPIO_Pin_x
-//	
-//	//____________RD控制定义1:取消片选;0:片选
-//	GPIO_TypeDef* 	SSD1963_sRD_PORT;							//GPIOX
-//	unsigned short 	SSD1963_sRD_Pin;							//GPIO_Pin_x
-//	
-//	//____________REST控制定义 1:运行;0:复位
-//	GPIO_TypeDef* 	SSD1963_sREST_PORT;						//GPIOX
-//	unsigned short 	SSD1963_sREST_Pin;						//GPIO_Pin_x
-//	
-//	//____________写数据/命令(D/C)控制定义 1:传数据;0:传命令
-//	GPIO_TypeDef* 	SSD1963_sDC_PORT;							//GPIOX
-//	unsigned short 	SSD1963_sDC_Pin;							//GPIO_Pin_x
-//	
-//	//____________读写数据（W/R）控制定义 1:读数据;0:写数据
-//	GPIO_TypeDef* 	SSD1963_sWR_PORT;							//GPIOX
-//	unsigned short 	SSD1963_sWR_Pin;							//GPIO_Pin_x
-//	
-//	//____________使能控制定义 1:失能;0:片选
-//	GPIO_TypeDef* 	SSD1963_sCS_PORT;							//GPIOX
-//	unsigned short 	SSD1963_sCS_Pin;							//GPIO_Pin_x
-//	
-//	//____________数据接口
-//	GPIO_TypeDef* 	SSD1963_sDATABUS_PORT;				//GPIOX
-//	unsigned short 	SSD1963_sDATABUS_Pin;					//GPIO_Pin_x
-
-//}SSD1963_Pindef;
-
-//extern SSD1963_Pindef *SSD1963_sPinfo;
-
-
-//#define SSD1963_BACKLIGHT_ON						GPIO_SetBits	(SSD1963_sPinfo->SSD1963_sBACKLIGHT_PORT, SSD1963_sPinfo->SSD1963_sBACKLIGHT_Pin)			//开背光
-//#define SSD1963_BACKLIGHT_OFF						GPIO_ResetBits(SSD1963_sPinfo->SSD1963_sBACKLIGHT_PORT, SSD1963_sPinfo->SSD1963_sBACKLIGHT_Pin)			//关背光
-////____________RD控制定义
-//#define SSD1963_RD_H										GPIO_SetBits	(SSD1963_sPinfo->SSD1963_sRD_PORT, 				SSD1963_sPinfo->SSD1963_sRD_Pin)						//取消片选
-//#define SSD1963_RD_L										GPIO_ResetBits(SSD1963_sPinfo->SSD1963_sRD_PORT, 				SSD1963_sPinfo->SSD1963_sRD_Pin)						//使能片选
-////____________REST控制定义
-//#define SSD1963_REST										GPIO_ResetBits(SSD1963_sPinfo->SSD1963_sREST_PORT, 			SSD1963_sPinfo->SSD1963_sREST_Pin)					//低电平
-//#define SSD1963_SET											GPIO_SetBits	(SSD1963_sPinfo->SSD1963_sREST_PORT, 			SSD1963_sPinfo->SSD1963_sREST_Pin)					//高电平
-////____________写数据/命令(D/C)控制定义
-//#define SSD1963_DC_Command							GPIO_ResetBits(SSD1963_sPinfo->SSD1963_sDC_PORT, 				SSD1963_sPinfo->SSD1963_sDC_Pin)						//低电平
-//#define SSD1963_DC_Data									GPIO_SetBits	(SSD1963_sPinfo->SSD1963_sDC_PORT, 				SSD1963_sPinfo->SSD1963_sDC_Pin)						//高电平
-////____________读写数据（W/R）控制定义
-//#define SSD1963_WR_Write								GPIO_ResetBits(SSD1963_sPinfo->SSD1963_sWR_PORT, 				SSD1963_sPinfo->SSD1963_sWR_Pin)						//低电平
-//#define SSD1963_WR_Read									GPIO_SetBits	(SSD1963_sPinfo->SSD1963_sWR_PORT, 				SSD1963_sPinfo->SSD1963_sWR_Pin)						//高电平
-////____________使能控制定义
-//#define SSD1963_CS_Disable							GPIO_SetBits	(SSD1963_sPinfo->SSD1963_sCS_PORT, 				SSD1963_sPinfo->SSD1963_sCS_Pin)						//高电平
-//#define SSD1963_CS_Enable								GPIO_ResetBits(SSD1963_sPinfo->SSD1963_sCS_PORT, 				SSD1963_sPinfo->SSD1963_sCS_Pin)						//低电平
 
 
 			
@@ -272,21 +196,24 @@ enum SSD1963REG
 
 
 void SSD1963_Initialize(LCDDef *pInfo);
-
+void SSD1963_BackLightOn(void);
+void SSD1963_BackLightOff(void);
+void SSD1963_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);
+void SSD1963_PowerOn(void);
 //void SSD1963_Delay(u16 xms);
 
 //void SSD1963_PinConf(SSD1963_Pindef *Pinfo);
 
 //void SSD1963_Configuration(void);		//管脚初始化
 
-void LCD_REST(void);					//复位
+
 
 //void SSD1963_Writ_Bus(unsigned short BUS_DATA);   //并行数据写入函数
 //void SSD1963_WR_DATA8(char VH,char VL); //发送数据-8位参数
 //void SSD1963_WR_DATA8(char VH,char VL); //发送数据-8位参数
 	
 //void SSD1963_Init(void); 
-void SSD1963_PowerOn(void);
+
 
 
 
@@ -297,41 +224,41 @@ void SSD1963_PowerOn(void);
 
 
 //void SSD1963_Clear(u16 Color);
-void SSD1963_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);
+
 //void LCD_WR_DATA8(char VH,char VL); //发送数据-8位参数
 //void SSD1963_WR_DATA(unsigned short data);				//写数据
 //void SSD1963_WR_COMMAND(unsigned short Command);			//写命令
 
 
 //void SSD1963_ShowString(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);		//显示字符串
-void SSD1963_ShowChar(unsigned short x,unsigned short y,unsigned char num,unsigned char mode);								//显示一个字符
+//void SSD1963_ShowChar(unsigned short x,unsigned short y,unsigned char num,unsigned char mode);								//显示一个字符
 
 
 
-void SSD1963_DrawPoint(unsigned short x,unsigned short y);//画点
-void SSD1963_DrawPoint_big(unsigned short x,unsigned short y);//画一个大点
-u16  SSD1963_ReadPoint(unsigned short x,unsigned short y); //读点
-void SSD1963_DrawCircle(unsigned short x0,unsigned short y0,unsigned char r);
-void SSD1963_DrawLine(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);						//画直线
-void SSD1963_DrawRectangle(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);				//画矩形框	   
-void SSD1963_Fill(unsigned short xsta,unsigned short ysta,unsigned short xend,unsigned short yend,unsigned short color);	//填充--清屏
+//void SSD1963_DrawPoint(unsigned short x,unsigned short y);//画点
+//void SSD1963_DrawPoint_big(unsigned short x,unsigned short y);//画一个大点
+//u16  SSD1963_ReadPoint(unsigned short x,unsigned short y); //读点
+//void SSD1963_DrawCircle(unsigned short x0,unsigned short y0,unsigned char r);
+//void SSD1963_DrawLine(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);						//画直线
+//void SSD1963_DrawRectangle(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);				//画矩形框	   
+//void SSD1963_Fill(unsigned short xsta,unsigned short ysta,unsigned short xend,unsigned short yend,unsigned short color);	//填充--清屏
 //void SSD1963_ShowCharGT(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);		//高通字库测试程序-----备删除/SSD1963_ShowString
 
 
-void SSD1963_ShowNum(unsigned short x,unsigned short y,unsigned long num,unsigned char len);									//显示数字
-void SSD1963_ShowEn(unsigned short x,unsigned short y,unsigned long num);													//显示单字节字符
-void SSD1963_Show2Num(unsigned short x,unsigned short y,unsigned short num,unsigned char len);//显示2个数字串，包含数字
+//void SSD1963_ShowNum(unsigned short x,unsigned short y,unsigned long num,unsigned char len);									//显示数字
+//void SSD1963_ShowEn(unsigned short x,unsigned short y,unsigned long num);													//显示单字节字符
+//void SSD1963_Show2Num(unsigned short x,unsigned short y,unsigned short num,unsigned char len);//显示2个数字串，包含数字
 
-unsigned int SSD1963_PrintfStringbac(unsigned short x,unsigned short y,const char *format,...);			//后边的省略号就是可变参数
 
-void SSD1963_ShowStringbac(unsigned short x,unsigned short y,const unsigned char *p);		 //显示一个字符串,16字体
+
+//void SSD1963_ShowStringbac(unsigned short x,unsigned short y,const unsigned char *p);		 //显示一个字符串,16字体
  
-void showhanzi(unsigned short x,unsigned short y,unsigned char index);
-void RGB888ToRGB565(unsigned char Color_R,unsigned char Color_G,unsigned char Color_B,unsigned short *RGB565);			//RGB888转RGB565颜色(分别取高位)
+
+//void RGB888ToRGB565(unsigned char Color_R,unsigned char Color_G,unsigned char Color_B,unsigned short *RGB565);			//RGB888转RGB565颜色(分别取高位)
 
 
-void SSD1963_Configuration(void);
-void SSD1963_Server(void);
+//void SSD1963_Configuration(void);
+//void SSD1963_Server(void);
 
 
 #endif

@@ -12,13 +12,17 @@
 #include "STM32_DAC.H"
 
 
+
 #define ADC_TEST_BUFFERSIZE 128
 
 u8 ADC_TEST_BUFFER[ADC_TEST_BUFFERSIZE]={0};
+u16 ADC_DATA[8]={0};
 u8 nump=0;
 u16 tema;
 u16 tempr=30;
 u16 ADCD=30;
+u16 ADCD2=30;
+u16 ADCD3=30;
 u16 DACD=30;
 u16	SYSTIME	=	0;
 float Temperature=0.0;
@@ -35,14 +39,28 @@ void ADC1_Init(void);
 *******************************************************************************/
 void ADC_TEST_Configuration(void)
 {
+  u8 num  = 0;
+  u8 i  = 0;
 	SYS_Configuration();			//系统配置---打开系统时钟 STM32_SYS.H
 //	TIM_Configuration(TIM3,7200,10000);		//定时时间设定
 //	PWM_OUT(TIM2,PWM_OUTChannel1,1,500);	//PWM设定-20161127版本	占空比1/1000
-	USART_DMA_ConfigurationNR(USART1,115200,(u32*)ADC_TEST_BUFFER,ADC_TEST_BUFFERSIZE);	//USART_DMA配置	
+//	USART_DMA_ConfigurationNR(USART1,115200,ADC_TEST_BUFFERSIZE);	//USART_DMA配置	
 	
-	ADC1_DiscConfigurationNR((u32*)&ADCD,1,ADC_Channel_9,1,1,ADC_SampleTime_1Cycles5);				//ADC1规则通道组配置
-	ADC_TempSensorVrefintCmd(ENABLE);												//使能温度传感器和内部参考电压通道
-	
+//	ADC1_DiscConfigurationNR((u32*)&ADCD,1,ADC_Channel_9,1,1,ADC_SampleTime_1Cycles5);				//ADC1规则通道组配置
+//  ADC1_DiscConfigurationNR((u32*)&ADCD2,1,ADC_Channel_9,2,2,ADC_SampleTime_1Cycles5);				//ADC1规则通道组配置
+//  ADC1_DiscConfigurationNR((u32*)&ADCD3,2,ADC_Channel_9,3,3,ADC_SampleTime_1Cycles5);				//ADC1规则通道组配置
+//	ADC_TempSensorVrefintCmd(ENABLE);												//使能温度传感器和内部参考电压通道
+//  ADC1_DiscConfigurationDMANR(1,ADC_Channel_0,ADC_SampleTime_239Cycles5);
+//  ADC1_DiscConfigurationDMANR(2,ADC_Channel_1,ADC_SampleTime_239Cycles5);
+
+  for(i=0;i<15;i++)
+  {
+    ADC1_DiscConfigurationDMANR(num+1,num,ADC_SampleTime_239Cycles5);
+    num+=1;
+  }
+//  ADC1_DiscConfigurationDMANR(3,ADC_Channel_2,ADC_SampleTime_239Cycles5);
+//  ADC1_DiscConfigurationDMANR(4,ADC_Channel_3,ADC_SampleTime_239Cycles5);
+//	tema  = sizeof(ADCDISC);
 //	ADC_TempSensorVrefintCmd(ENABLE);
 //	ADC1_Cmd(ENABLE);					//开启ADC1转换
 //	DAC_Configuration();
@@ -53,12 +71,13 @@ void ADC_TEST_Configuration(void)
 	
 //		ADC1_Init();
 //	GPIO_Configuration(GPIOE,GPIO_Pin_All,GPIO_Mode_Out_PP,GPIO_Speed_50MHz);
-
+//  ADC_Configuration();
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 	
-	USART_DMA_ConfigurationNR(USART2,115200,(u32*)ADC_TEST_BUFFER,ADC_TEST_BUFFERSIZE);	//USART_DMA配置
-	
+//	USART_DMA_ConfigurationNR(USART2,115200,ADC_TEST_BUFFERSIZE);	//USART_DMA配置
+
+  
 }
 /*******************************************************************************
 * 函数名		:	
@@ -70,11 +89,12 @@ void ADC_TEST_Configuration(void)
 void ADC_TEST_Server(void)
 {
 	SYSTIME	++;
+//  ADC1_DiscGetData(ADC_DATA);
 	if(SYSTIME	>=	1000)
 	{
 		SYSTIME	=	0;
-		tempr	=	ADC_GetConversionValue(ADC1);
-		Temperature	=	Get_ADC_Temperature(tempr);
+//		tempr	=	ADC_GetConversionValue(ADC1);
+//		Temperature	=	Get_ADC_Temperature(tempr);
 		USART_DMAPrintf(USART1,"AD值：%04d;\t电压值%6.3fV;\t温度%6.3f℃\n",tempr,(float)tempr*3.3/4096.0,Temperature);
 		
 	}

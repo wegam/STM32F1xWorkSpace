@@ -21,8 +21,16 @@
 #include "stm32f10x_adc.h"
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_dma.h"
+typedef struct _ADCList
+{
+  unsigned char   Rank;             //转换顺序
+  unsigned char   ADC_Channel_x;    //通道号
+  unsigned char   ADC_SampleTime;   //采样时间周期
+  struct _ADCList  *Next;           //下一结点
+}ADCList;
 
-
+unsigned char ADC1_DiscConfigurationDMANR(unsigned char Rank,unsigned char ADC_Channel_x,unsigned char ADC_SampleTime);				//ADC1规则通道组配置--普通方式
+unsigned char ADC1_DiscGetData(unsigned short* DataBuffer);
 void ADC1_DiscConfigurationNR(u32 *ADC_DATA,u32 DMA_BufferSize,u8 ADC_Channel_x,u8 ADC_NbrOfChannel, u8 Rank, u8 ADC_SampleTime);				//ADC1规则通道组配置--普通方式
 void ADC1_DiscConfigurationDMA(u32 *ADC_DATA,u32 DMA_BufferSize,u8 ADC_Channel_x,u8 ADC_NbrOfChannel, u8 Rank, u8 ADC_SampleTime);			//ADC1规则通道组配置--DMA方式
 

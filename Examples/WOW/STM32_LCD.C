@@ -12,11 +12,12 @@
 #include "STM32_GPIO.H"
 #include "STM32_SYS.H"
 #include "STM32_SYSTICK.H"
+#include "STM32_ADC.H"
 //#include "STM32_WDG.H"
 //#include "STM32_PWM.H"
 //#include "STM32_PWM.H"
 //#include "STM32_GPIO.H"
-//#include "STM32_USART.H"
+#include "STM32_USART.H"
 //#include "STM32_DMA.H"
 
 
@@ -50,7 +51,8 @@ u16	mm=0;
 u8	ss=0;
 u8	hh=0;
 
-
+u16 time=0;
+u32 ADCDATA = 0;
 //void GT32L32_PinSet(void);
 	
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
@@ -74,17 +76,21 @@ void STM32_LCD_Configuration(void)
 	
 //	SSD1963_PinConf(&SSD1963_Pinfo);
 //	GT32L32_Configuration();
-
-	LCD_Printf(200,230,32,"时钟");					//后边的省略号就是可变参数
-	LCD_Printf(300,230,32,"%02d:",hour);		//后边的省略号就是可变参数
-	LCD_Printf(348,230,32,"%02d:",min);			//后边的省略号就是可变参数
-	LCD_Printf(396,230,32,"%02d",second);		//后边的省略号就是可变参数
-
+  USART_DMA_ConfigurationNR	(USART1,115200,128);	//USART_DMA配置--查询方式，不开中断
+  
+  ADC_TempSensorConfiguration(&ADCDATA);								//STM32内部温度传感器配置
+  LCD_ShowBattery(780,2,2,0);   //显示12x12电池
+  LCD_ShowAntenna(760,2,3,0);   //显示12x12天线
+	LCD_Printf(200,230,32,0,"时钟");					//后边的省略号就是可变参数
+	LCD_Printf(300,230,32,0,"%02d:",hour);		//后边的省略号就是可变参数
+	LCD_Printf(348,230,32,0,"%02d:",min);			//后边的省略号就是可变参数
+	LCD_Printf(396,230,32,0,"%02d",second);		//后边的省略号就是可变参数
+  
 //		SSD1963_DrawCircle(400,240,100);
 //	SSD1963_DrawRectangle(100,100,400,200);
 //	SSD1963_DrawLine(700,10,700,470);
-
-	SysTick_Configuration(990);											//系统嘀嗒时钟配置72MHz,单位为uS
+  
+	SysTick_Configuration(1000);											//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
 	
@@ -110,11 +116,35 @@ void STM32_LCD_Configuration(void)
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 void STM32_LCD_Server(void)
 {
+
 	LCD_Server();			//显示服务相关
+  if(time++>500)
+  {
+    float te  = 0.1;
+    time  = 0;
+    te  = Get_ADC_Temperature(ADCDATA);
+    LCD_Printf (0,350,32,0,"%-0.2f",te);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  }
 //	u16 delat=1000;
 //	IWDG_Feed();								//独立看门狗喂狗
-//	
-	millisecond++;
+
+	
+
+//	LCD_Printf(500,230,32,"%04d",millisecond);		//后边的省略号就是可变参数
+//	TM1618_DIS();
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void LCD_Server(void)			//显示服务相关
+{
+  millisecond++;
 	if(millisecond>999)
 	{
 //		SSD1963_DrawRectangle(100,100,110,110);
@@ -132,28 +162,14 @@ void STM32_LCD_Server(void)
 				{
 					hour=0;
 				}
-				LCD_Printf(300,230,32,"%02d:",hour);		//后边的省略号就是可变参数
+				LCD_Printf(300,230,32,0,"%02d:",hour);		//后边的省略号就是可变参数
 				
 			}
-			LCD_Printf(348,230,32,"%02d:",min);		//后边的省略号就是可变参数
+			LCD_Printf(348,230,32,0,"%02d:",min);		//后边的省略号就是可变参数
 		}
-		LCD_Printf(396,230,32,"%02d",second);		//后边的省略号就是可变参数
-//		while(delat--);
-	}
-//	LCD_Printf(500,230,32,"%04d",millisecond);		//后边的省略号就是可变参数
-//	TM1618_DIS();
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-void LCD_Server(void)			//显示服务相关
-{
+		LCD_Printf(396,230,32,0,"%02d",second);		//后边的省略号就是可变参数
+  }
+    
 #if 0		//画圆
 	unsigned short i	=	0;
 	for(i=1;i<100;i++)
@@ -293,17 +309,17 @@ void LCD_Server(void)			//显示服务相关
 	LCD_DrawLine(350,0,350,230,LCD565_YELLOW);
 	SysTick_DeleymS(1000);				//SysTick延时nmS
 	LCD_Clean(LCD565_RED);			//清除屏幕函数--蓝白
-//	//清除直线
-//	HX	=	10;HY	=	10;
-//	for(HX	=	10;HX<230;HX++)
-//	{
-//		for(HY	=	10;HY<=380;)
-//		{
-//			LCD_DrawDot(HX,HY,R61509V_RED);
-//			HY	+=	5;
-//			SysTick_DeleymS(100);				//SysTick延时nmS
-//		}
-//	}
+	//清除直线
+	HX	=	10;HY	=	10;
+	for(HX	=	10;HX<230;HX++)
+	{
+		for(HY	=	10;HY<=380;)
+		{
+			LCD_DrawDot(HX,HY,R61509V_RED);
+			HY	+=	5;
+			SysTick_DeleymS(100);				//SysTick延时nmS
+		}
+	}
 
 //	LCD_Clean(R61509V_RED);			//清除屏幕函数--蓝白
 #endif
@@ -318,13 +334,13 @@ void LCD_Server(void)			//显示服务相关
 		HY	+=	5;
 	}
 	SysTick_DeleymS(1000);				//SysTick延时nmS
-//	HX	=	10;HY	=	10;
-//	for(HX	=	10;HX<=790;)
-//	{
-//		LCD_DrawLine(HX,10,HX,470,LCD565_YELLOW);
-//		HX	+=	5;
-////		SysTick_DeleymS(100);				//SysTick延时nmS
-//	}
+	HX	=	10;HY	=	10;
+	for(HX	=	10;HX<=790;)
+	{
+		LCD_DrawLine(HX,10,HX,470,LCD565_YELLOW);
+		HX	+=	5;
+//		SysTick_DeleymS(100);				//SysTick延时nmS
+	}
 //	SysTick_DeleymS(1000);				//SysTick延时nmS
 	//清除
 	HX	=	10;HY	=	10;
@@ -400,7 +416,7 @@ void LCD_Configuration(void)
 	sLCD.Port.sDATABUS_PORT		=	GPIOE;
 	sLCD.Port.sDATABUS_Pin		=	GPIO_Pin_All;	
 	
-	sLCD.Flag.Rotate	=	Draw_Rotate_0D;		//使用旋转角度
+	sLCD.Flag.Rotate	=	Draw_Rotate_180D;		//使用旋转角度
 	
 	SPI->Port.SPIx		=	SPI1;
 	SPI->Port.CS_PORT	=	GPIOB;

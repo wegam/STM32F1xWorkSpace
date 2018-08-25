@@ -47,30 +47,35 @@ void SSD1963_Initialize(LCDDef *pInfo)
 	pSSD1963->Display.WriteAddress		=	SSD1963_SetWindowAddress;
 	pSSD1963->Display.PowerOn					=	SSD1963_PowerOn;
 	pSSD1963->Display.DispOff					=	SSD1963_PowerOn;		//临时引用函数地址
+  pSSD1963->Display.BackLightOn     = SSD1963_BackLightOn;
+  pSSD1963->Display.BackLightOff    = SSD1963_BackLightOff;
 	
 	LCD_Initialize(pSSD1963);
 }
-
 /*******************************************************************************
-*函数名		:	LCD_REST
-*功能描述	:	管脚初始化
+*函数名		:	SSD1963_BackLightOn
+*功能描述	:	开背光
 *输入			: 
 *输出			:	无
 *返回值		:	无
 *例程			:
 *******************************************************************************/
-void LCD_REST(void)
+void SSD1963_BackLightOn(void)
 {
-	u16 time=500;
-	u16	temp=time;
-	
-	LCD_RST_LOW;				//
-	while(temp--);	
-	LCD_RST_HIGH;
-	temp=time;
-	while(temp--);
+	 pSSD1963->Port.sBL_PORT->BSRR  = pSSD1963->Port.sBL_Pin;
 }
-
+/*******************************************************************************
+*函数名		:	SSD1963_BackLightOff
+*功能描述	:	关背光
+*输入			: 
+*输出			:	无
+*返回值		:	无
+*例程			:
+*******************************************************************************/
+void SSD1963_BackLightOff(void)
+{
+  pSSD1963->Port.sBL_PORT->BRR  = pSSD1963->Port.sBL_Pin;
+}
 /*******************************************************************************
 *函数名		:	Address_set
 *功能描述	:	STM32内部温度传感器配置
@@ -110,7 +115,7 @@ else if (Rotate	==Draw_Rotate_90D)
 	
 	LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
 	LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;
-	Model	=	0Xa0;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
+	Model	=	0XA0;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
 }
 else if (Rotate	==Draw_Rotate_180D)	
 {
@@ -122,7 +127,7 @@ else if (Rotate	==Draw_Rotate_180D)
 	LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
 	LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;
 	
-	Model	=	0X80;
+	Model	=	0XC0;
 }
 else //(Rotate	==Draw_Rotate_270D)
 {
@@ -257,65 +262,38 @@ void SSD1963_PowerOn(void)
 	while(temp--);			//等待晶振启动
 	LCD_Clean(LCDSYS->Data.BColor);	//以背景色清屏
 	
-	LCD_BL_ON;		//开背光
+	SSD1963_BackLightOn();    //开背光
+  
+  for(time=0xFFFF;time>0;time--)
+  {
+  }
 }
 
-/*******************************************************************************
-*函数名		:	showhanzi
-*功能描述	:	在指定位置显示一个汉字(32*33大小)
-*输入			: dcolor:内容颜色
-						gbcolor:背静颜色
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void showhanzi(unsigned short x,unsigned short y,unsigned char index)	
-{  
-	unsigned char i,j;
-	unsigned char *temp=&hanzidata;    
-	SSD1963_SetWindowAddress(x,y,x+31,y+31); //设置区域      
-	temp+=index*128;	
-	for(j=0;j<128;j++)
-	{
-		for(i=0;i<8;i++)
-		{ 		     
-			if((*temp&(1<<i))!=0)
-			{
-				LCD_WriteData(LCDSYS->Data.PColor);
-			} 
-			else
-			{
-				LCD_WriteData(LCDSYS->Data.BColor);
-			}   
-		}
-		temp++;
-	}
-}
-/*******************************************************************************
-*函数名		:	LCD_DrawPoint
-*功能描述	:	画点
-*输入			: POINT_COLOR:此点的颜色
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void SSD1963_DrawPoint(u16 x,u16 y)
-{
-	SSD1963_SetWindowAddress(x,y,x,y);//设置光标位置 
-	LCD_WriteData(LCDSYS->Data.PColor); 	    
-}
-/*******************************************************************************
-*函数名		:	LCD_DrawPoint_big
-*功能描述	:	画一个大点
-*输入			: POINT_COLOR:此点的颜色
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void SSD1963_DrawPoint_big(u16 x,u16 y)
-{
-	SSD1963_Fill(x-1,y-1,x+1,y+1,LCDSYS->Data.PColor);
-}
+///*******************************************************************************
+//*函数名		:	LCD_DrawPoint
+//*功能描述	:	画点
+//*输入			: POINT_COLOR:此点的颜色
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//void SSD1963_DrawPoint(u16 x,u16 y)
+//{
+//	SSD1963_SetWindowAddress(x,y,x,y);//设置光标位置 
+//	LCD_WriteData(LCDSYS->Data.PColor); 	    
+//}
+///*******************************************************************************
+//*函数名		:	LCD_DrawPoint_big
+//*功能描述	:	画一个大点
+//*输入			: POINT_COLOR:此点的颜色
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//void SSD1963_DrawPoint_big(u16 x,u16 y)
+//{
+//	SSD1963_Fill(x-1,y-1,x+1,y+1,LCDSYS->Data.PColor);
+//}
 /*******************************************************************************
 *函数名		:	LCD_Fill
 *功能描述	:	在指定区域内填充指定颜色
@@ -324,325 +302,325 @@ void SSD1963_DrawPoint_big(u16 x,u16 y)
 *返回值		:	无
 *例程			:
 *******************************************************************************/
-void SSD1963_Fill(
-							u16 xsta,u16 ysta,
-							u16 xend,u16 yend,u16 color
-)
-{          
-	u16 i,j; 
-	SSD1963_SetWindowAddress(xsta,ysta,xend,yend);      //设置光标位置 
-	for(i=ysta;i<=yend;i++)
-	{													   	 	
-		for(j=xsta;j<=xend;j++)
-			LCD_WriteData(color);//设置光标位置 	    
-	} 					  	    
-}
-/*******************************************************************************
-*函数名		:	LCD_DrawLine
-*功能描述	:	画线
-*输入			: x1,y1:起点坐标
-						x2,y2:终点坐标
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void SSD1963_DrawLine(
-									u16 x1, u16 y1, 	//x1,y1:起点坐标
-									u16 x2, u16 y2		//x2,y2:终点坐标
-)
-{
-	u16 t; 
-	int xerr=0,yerr=0,delta_x,delta_y,distance; 
-	int incx,incy,uRow,uCol; 
+//void SSD1963_Fill(
+//							u16 xsta,u16 ysta,
+//							u16 xend,u16 yend,u16 color
+//)
+//{          
+//	u16 i,j; 
+//	SSD1963_SetWindowAddress(xsta,ysta,xend,yend);      //设置光标位置 
+//	for(i=ysta;i<=yend;i++)
+//	{													   	 	
+//		for(j=xsta;j<=xend;j++)
+//			LCD_WriteData(color);//设置光标位置 	    
+//	} 					  	    
+//}
+///*******************************************************************************
+//*函数名		:	LCD_DrawLine
+//*功能描述	:	画线
+//*输入			: x1,y1:起点坐标
+//						x2,y2:终点坐标
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//void SSD1963_DrawLine(
+//									u16 x1, u16 y1, 	//x1,y1:起点坐标
+//									u16 x2, u16 y2		//x2,y2:终点坐标
+//)
+//{
+//	u16 t; 
+//	int xerr=0,yerr=0,delta_x,delta_y,distance; 
+//	int incx,incy,uRow,uCol; 
 
-	delta_x=x2-x1; //计算坐标增量 
-	delta_y=y2-y1;
-	
-	uRow=x1; 
-	uCol=y1; 
-	
-	if(delta_x>0)
-		incx=1; //设置单步方向 
-	else if(delta_x==0)
-		incx=0;//垂直线 
-	else
-	{
-		incx=-1;
-		delta_x=-delta_x;
-	}
-	
-	if(delta_y>0)
-		incy=1; 
-	else if(delta_y==0)
-		incy=0;//水平线 
-	else
-	{
-			incy=-1;
-			delta_y=-delta_y;
-	} 
-		
-	if( delta_x>delta_y)
-		distance=delta_x; //选取基本增量坐标轴 
-	else
-		distance=delta_y; 
-	
-	for(t=0;t<=distance+1;t++ )//画线输出 
-	{  
-		SSD1963_DrawPoint(uRow,uCol);//画点 
-		xerr+=delta_x ; 
-		yerr+=delta_y ; 
-		if(xerr>distance) 
-		{ 
-			xerr-=distance; 
-			uRow+=incx; 
-		} 
-		if(yerr>distance) 
-		{ 
-			yerr-=distance; 
-			uCol+=incy; 
-		} 
-	}  
-}
-/*******************************************************************************
-*函数名		:	LCD_DrawRectangle
-*功能描述	:	画矩形
-*输入			: 
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void SSD1963_DrawRectangle(
-												u16 x1, 		//x1
-												u16 y1, 		//y1
-												u16 x2, 		//x2
-												u16 y2			//y2
-)
-{
-	SSD1963_DrawLine(x1,y1,x2,y1);		
-	SSD1963_DrawLine(x1,y1,x1,y2);
-	SSD1963_DrawLine(x1,y2,x2,y2);
-	SSD1963_DrawLine(x2,y1,x2,y2);
-}
-/*******************************************************************************
-*函数名		:	Draw_Circle
-*功能描述	:	在指定位置画一个指定大小的圆
-*输入			: (x,y):中心点
-						r    :半径
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void SSD1963_DrawCircle(
-												u16 x0,		//(x,y):中心点
-												u16 y0,		//(x,y):中心点
-												u8 r			//r    :半径
-)
-{
-	int a,b;
-	int di;
-	a=0;b=r;	  
-	di=3-(r<<1);             //判断下个点位置的标志
-	while(a<=b)
-	{
-		SSD1963_DrawPoint(x0-b,y0-a);             //3           
-		SSD1963_DrawPoint(x0+b,y0-a);             //0           
-		SSD1963_DrawPoint(x0-a,y0+b);             //1       
-		SSD1963_DrawPoint(x0-b,y0-a);             //7           
-		SSD1963_DrawPoint(x0-a,y0-b);             //2             
-		SSD1963_DrawPoint(x0+b,y0+a);             //4               
-		SSD1963_DrawPoint(x0+a,y0-b);             //5
-		SSD1963_DrawPoint(x0+a,y0+b);             //6 
-		SSD1963_DrawPoint(x0-b,y0+a);             
-		a++;
-		//使用Bresenham算法画圆     
-		if(di<0)di +=4*a+6;	  
-		else
-		{
-			di+=10+4*(a-b);   
-			b--;
-		} 
-		SSD1963_DrawPoint(x0+a,y0+b);
-	}
-}
+//	delta_x=x2-x1; //计算坐标增量 
+//	delta_y=y2-y1;
+//	
+//	uRow=x1; 
+//	uCol=y1; 
+//	
+//	if(delta_x>0)
+//		incx=1; //设置单步方向 
+//	else if(delta_x==0)
+//		incx=0;//垂直线 
+//	else
+//	{
+//		incx=-1;
+//		delta_x=-delta_x;
+//	}
+//	
+//	if(delta_y>0)
+//		incy=1; 
+//	else if(delta_y==0)
+//		incy=0;//水平线 
+//	else
+//	{
+//			incy=-1;
+//			delta_y=-delta_y;
+//	} 
+//		
+//	if( delta_x>delta_y)
+//		distance=delta_x; //选取基本增量坐标轴 
+//	else
+//		distance=delta_y; 
+//	
+//	for(t=0;t<=distance+1;t++ )//画线输出 
+//	{  
+//		SSD1963_DrawPoint(uRow,uCol);//画点 
+//		xerr+=delta_x ; 
+//		yerr+=delta_y ; 
+//		if(xerr>distance) 
+//		{ 
+//			xerr-=distance; 
+//			uRow+=incx; 
+//		} 
+//		if(yerr>distance) 
+//		{ 
+//			yerr-=distance; 
+//			uCol+=incy; 
+//		} 
+//	}  
+//}
+///*******************************************************************************
+//*函数名		:	LCD_DrawRectangle
+//*功能描述	:	画矩形
+//*输入			: 
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//void SSD1963_DrawRectangle(
+//												u16 x1, 		//x1
+//												u16 y1, 		//y1
+//												u16 x2, 		//x2
+//												u16 y2			//y2
+//)
+//{
+//	SSD1963_DrawLine(x1,y1,x2,y1);		
+//	SSD1963_DrawLine(x1,y1,x1,y2);
+//	SSD1963_DrawLine(x1,y2,x2,y2);
+//	SSD1963_DrawLine(x2,y1,x2,y2);
+//}
+///*******************************************************************************
+//*函数名		:	Draw_Circle
+//*功能描述	:	在指定位置画一个指定大小的圆
+//*输入			: (x,y):中心点
+//						r    :半径
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//void SSD1963_DrawCircle(
+//												u16 x0,		//(x,y):中心点
+//												u16 y0,		//(x,y):中心点
+//												u8 r			//r    :半径
+//)
+//{
+//	int a,b;
+//	int di;
+//	a=0;b=r;	  
+//	di=3-(r<<1);             //判断下个点位置的标志
+//	while(a<=b)
+//	{
+//		SSD1963_DrawPoint(x0-b,y0-a);             //3           
+//		SSD1963_DrawPoint(x0+b,y0-a);             //0           
+//		SSD1963_DrawPoint(x0-a,y0+b);             //1       
+//		SSD1963_DrawPoint(x0-b,y0-a);             //7           
+//		SSD1963_DrawPoint(x0-a,y0-b);             //2             
+//		SSD1963_DrawPoint(x0+b,y0+a);             //4               
+//		SSD1963_DrawPoint(x0+a,y0-b);             //5
+//		SSD1963_DrawPoint(x0+a,y0+b);             //6 
+//		SSD1963_DrawPoint(x0-b,y0+a);             
+//		a++;
+//		//使用Bresenham算法画圆     
+//		if(di<0)di +=4*a+6;	  
+//		else
+//		{
+//			di+=10+4*(a-b);   
+//			b--;
+//		} 
+//		SSD1963_DrawPoint(x0+a,y0+b);
+//	}
+//}
 
-/*******************************************************************************
-*函数名		:	LCD_ShowChar
-*功能描述	:	在指定位置显示一个字符
-*输入			: x,y		:起点坐标
-						num		:要显示的字符:" "--->"~"
-						mode	:叠加方式(1)还是非叠加方式(0)
-						num		:要显示的字符:" "--->"~"
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void SSD1963_ShowChar(u16 x,u16 y,u8 num,u8 mode)
-{
-	u8 temp;
-	u8 pos,t;
-	u16 x0=x;
-	u16 colortemp=LCDSYS->Data.PColor;      
-	if(x>SSD1963_H-16||y>SSD1963_V-16)return;	    
-	//设置窗口		   
-	num=num-' ';//得到偏移后的值
-//	num=41;//得到偏移后的值
-	SSD1963_SetWindowAddress(x,y,x+8-1,y+16-1);      //设置光标位置 
-	if(!mode) //非叠加方式
-	{
-		for(pos=0;pos<16;pos++)
-		{ 
-			temp=code_asc2_1608[(u16)num*16+pos];		 	//调用1608字体
-//			temp=code_num_1608[(u16)num*16+pos];		 //调用1608字体
-			for(t=0;t<8;t++)
-			{                 
-				if(temp&0x01)
-					colortemp=LCDSYS->Data.PColor;
-				else
-					colortemp=LCDSYS->Data.BColor;
-				LCD_WriteData(colortemp);	
-				temp>>=1; 
-				x++;
-			}
-			x=x0;
-			y++;
-		}	
-	}else//叠加方式
-	{
-		for(pos=0;pos<16;pos++)
-		{
-			temp=code_asc2_1608[(u16)num*16+pos];		 //调用1608字体
-			for(t=0;t<8;t++)
-			{                 
-				if(temp&0x01)
-					SSD1963_DrawPoint(x+t,y+pos);				//画一个点     
-				temp>>=1; 
-			}
-		}
-	}
-}
+///*******************************************************************************
+//*函数名		:	LCD_ShowChar
+//*功能描述	:	在指定位置显示一个字符
+//*输入			: x,y		:起点坐标
+//						num		:要显示的字符:" "--->"~"
+//						mode	:叠加方式(1)还是非叠加方式(0)
+//						num		:要显示的字符:" "--->"~"
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//void SSD1963_ShowChar(u16 x,u16 y,u8 num,u8 mode)
+//{
+//	u8 temp;
+//	u8 pos,t;
+//	u16 x0=x;
+//	u16 colortemp=LCDSYS->Data.PColor;      
+//	if(x>SSD1963_H-16||y>SSD1963_V-16)return;	    
+//	//设置窗口		   
+//	num=num-' ';//得到偏移后的值
+////	num=41;//得到偏移后的值
+//	SSD1963_SetWindowAddress(x,y,x+8-1,y+16-1);      //设置光标位置 
+//	if(!mode) //非叠加方式
+//	{
+//		for(pos=0;pos<16;pos++)
+//		{ 
+//			temp=code_asc2_1608[(u16)num*16+pos];		 	//调用1608字体
+////			temp=code_num_1608[(u16)num*16+pos];		 //调用1608字体
+//			for(t=0;t<8;t++)
+//			{                 
+//				if(temp&0x01)
+//					colortemp=LCDSYS->Data.PColor;
+//				else
+//					colortemp=LCDSYS->Data.BColor;
+//				LCD_WriteData(colortemp);	
+//				temp>>=1; 
+//				x++;
+//			}
+//			x=x0;
+//			y++;
+//		}	
+//	}else//叠加方式
+//	{
+//		for(pos=0;pos<16;pos++)
+//		{
+//			temp=code_asc2_1608[(u16)num*16+pos];		 //调用1608字体
+//			for(t=0;t<8;t++)
+//			{                 
+//				if(temp&0x01)
+//					SSD1963_DrawPoint(x+t,y+pos);				//画一个点     
+//				temp>>=1; 
+//			}
+//		}
+//	}
+//}
 //#endif
-/*******************************************************************************
-*函数名		:	mypow
-*功能描述	:	m^n函数
-*输入			: 
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-u32 mypow(u8 m,u8 n)
-{
-	u32 result=1;	 
-	while(n--)
-		result*=m;    
-	return result;
-}
-/*******************************************************************************
-*函数名		:	LCD_ShowNum
-*功能描述	:	显示数字
-*输入			: x,y		:起点坐标
-						len 	:数字的位数
-						color	:颜色
-						num		:数值(0~4294967295);
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void SSD1963_ShowNum(u16 x,u16 y,u32 num,u8 len)
-{         	
-	u8 t,temp;
-	u8 enshow=0;
-	num=(u32)num;
-	for(t=0;t<len;t++)
-	{
-		temp=(num/mypow(10,len-t-1))%10;
-		if(enshow==0&&t<(len-1))
-		{
-			if(temp==0)
-			{
-				SSD1963_ShowChar(x+8*t,y,' ',0);
-				continue;
-			}else enshow=1; 
-		 	 
-		}
-	 	SSD1963_ShowChar(x+8*t,y,temp+48,0); 
-	}
-}
-/*******************************************************************************
-*函数名		:	LCD_ShowEn
-*功能描述	:	显示数字
-*输入			: x,y		:起点坐标
-						len 	:数字的位数
-						color	:颜色
-						num		:数值(0~4294967295);
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void SSD1963_ShowEn(u16 x,u16 y,u32 num)
-{         	
-	u8 t=0,len=0;
-	u32 num2=num;
-	u8 enshow=0;
-	while(num2)
-	{
-		num2=num2/10;
-		len++;		
-	}
-	for(t=len;t>0;t--)
-	{
-		num2=mypow(10,t-1);
-		if(num>9)
-		{
-			enshow=num/num2;
-			num=num%num2;
-		}
-		else
-			enshow=(char)num;
-	 	SSD1963_ShowChar(x+8*(len-t),y,enshow+48,0); 
-	}
-}
-/*******************************************************************************
-*函数名		:	LCD_Show2Num
-*功能描述	:	显示2个数字
-*输入			: x,y:起点坐标
-						num:数值(0~99);
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void SSD1963_Show2Num(u16 x,u16 y,u16 num,u8 len)
-{         	
-	u8 t,temp;						   
-	for(t=0;t<len;t++)
-	{
-		temp=(num/mypow(10,len-t-1))%10;
-	 	SSD1963_ShowChar(x+8*t,y,temp+'0',0); 
-	}
-}
+///*******************************************************************************
+//*函数名		:	mypow
+//*功能描述	:	m^n函数
+//*输入			: 
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//u32 mypow(u8 m,u8 n)
+//{
+//	u32 result=1;	 
+//	while(n--)
+//		result*=m;    
+//	return result;
+//}
+///*******************************************************************************
+//*函数名		:	LCD_ShowNum
+//*功能描述	:	显示数字
+//*输入			: x,y		:起点坐标
+//						len 	:数字的位数
+//						color	:颜色
+//						num		:数值(0~4294967295);
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//void SSD1963_ShowNum(u16 x,u16 y,u32 num,u8 len)
+//{         	
+//	u8 t,temp;
+//	u8 enshow=0;
+//	num=(u32)num;
+//	for(t=0;t<len;t++)
+//	{
+//		temp=(num/mypow(10,len-t-1))%10;
+//		if(enshow==0&&t<(len-1))
+//		{
+//			if(temp==0)
+//			{
+//				SSD1963_ShowChar(x+8*t,y,' ',0);
+//				continue;
+//			}else enshow=1; 
+//		 	 
+//		}
+//	 	SSD1963_ShowChar(x+8*t,y,temp+48,0); 
+//	}
+//}
+///*******************************************************************************
+//*函数名		:	LCD_ShowEn
+//*功能描述	:	显示数字
+//*输入			: x,y		:起点坐标
+//						len 	:数字的位数
+//						color	:颜色
+//						num		:数值(0~4294967295);
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//void SSD1963_ShowEn(u16 x,u16 y,u32 num)
+//{         	
+//	u8 t=0,len=0;
+//	u32 num2=num;
+//	u8 enshow=0;
+//	while(num2)
+//	{
+//		num2=num2/10;
+//		len++;		
+//	}
+//	for(t=len;t>0;t--)
+//	{
+//		num2=mypow(10,t-1);
+//		if(num>9)
+//		{
+//			enshow=num/num2;
+//			num=num%num2;
+//		}
+//		else
+//			enshow=(char)num;
+//	 	SSD1963_ShowChar(x+8*(len-t),y,enshow+48,0); 
+//	}
+//}
+///*******************************************************************************
+//*函数名		:	LCD_Show2Num
+//*功能描述	:	显示2个数字
+//*输入			: x,y:起点坐标
+//						num:数值(0~99);
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//void SSD1963_Show2Num(u16 x,u16 y,u16 num,u8 len)
+//{         	
+//	u8 t,temp;						   
+//	for(t=0;t<len;t++)
+//	{
+//		temp=(num/mypow(10,len-t-1))%10;
+//	 	SSD1963_ShowChar(x+8*t,y,temp+'0',0); 
+//	}
+//}
 
-/*******************************************************************************
-*函数名		:	RGB888ToRGB565
-*功能描述	:	RGB888转RGB565颜色(分别取高位)
-*输入			: x,y:起点坐标
-						*p:字符串起始地址
-						用16字体
-*输出			:	无
-*返回值		:	无
-*例程			:
-*******************************************************************************/
-void RGB888ToRGB565(
-										unsigned char Color_R,		//RED	
-										unsigned char Color_G,		//GREEN
-										unsigned char Color_B,		//BLUE
-										u16 *RGB565
-)				//RGB888转RGB565颜色(分别取高位)
-{  
-	u16 temp=0;
-	temp|=(u16)(Color_R&0XF8)<<8;
-	temp|=(u16)(Color_G&0XFC)<<3;
-	temp|=(u16)(Color_B>>3);
-	*RGB565=temp;
-}
+///*******************************************************************************
+//*函数名		:	RGB888ToRGB565
+//*功能描述	:	RGB888转RGB565颜色(分别取高位)
+//*输入			: x,y:起点坐标
+//						*p:字符串起始地址
+//						用16字体
+//*输出			:	无
+//*返回值		:	无
+//*例程			:
+//*******************************************************************************/
+//void RGB888ToRGB565(
+//										unsigned char Color_R,		//RED	
+//										unsigned char Color_G,		//GREEN
+//										unsigned char Color_B,		//BLUE
+//										u16 *RGB565
+//)				//RGB888转RGB565颜色(分别取高位)
+//{  
+//	u16 temp=0;
+//	temp|=(u16)(Color_R&0XF8)<<8;
+//	temp|=(u16)(Color_G&0XFC)<<3;
+//	temp|=(u16)(Color_B>>3);
+//	*RGB565=temp;
+//}
 
 
 

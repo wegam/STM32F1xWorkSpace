@@ -28,6 +28,7 @@
 #include "STM32_WDG.H"
 #include "STM32_PWM.H"
 #include "STM32_USART.H"
+#include "STM32_ADC.H"
 
 
 #include "SWITCHID.H"
@@ -109,6 +110,8 @@ u8 Battery  = 0;
 u16 BatteryTime = 0;
 u8 Antenna  = 0;
 u16 AntennaTime = 0;
+u32 TempData   =  0;
+u16 TempTime  = 0;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -132,7 +135,9 @@ void PL010V15_Configuration(void)
 	
 	SysTick_DeleymS(500);				//SysTick延时nmS
 	
-	LCD_Configuration();	
+	LCD_Configuration();
+  
+  ADC_TempSensorConfiguration(&TempData);
 	
 //	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
@@ -157,12 +162,35 @@ void PL010V15_Configuration(void)
 *******************************************************************************/
 void PL010V15_Server(void)
 {	
+  
 	IWDG_Feed();				//独立看门狗喂狗
 //	RS485_Server();		//通讯管理---负责信息的接收与发送
 //	LCD_Server();				//显示服务相关
 	CS5530_Server();	//称重服务，AD值处理，获取稳定值
 //	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
+  Temperature_Server();
+  
 }
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void Temperature_Server(void)
+{
+  if(TempTime++>100)
+  {
+    float data  = 0.0;
+    TempTime=0;
+    data  = Get_ADC_Temperature(TempData);												//获取内部温度传感器温度
+    LCD_Printf(0,134,32,0,"%0.3f",data);		//后边的省略号就是可变参数
+  }
+}
+
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明
@@ -176,9 +204,7 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 {
   u8 aaf[8]={0x01,0x23,0x45,0x67,0x89,0xAB,0xCD,0xEF};
 #if 1
-  LCD_Printf(0,30,16,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-	LCD_Printf(0,46,24,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
-	LCD_Printf(0,70,32,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+  
   if(AntennaTime++>50)
   {
     AntennaTime=0;
@@ -187,6 +213,7 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
       Antenna = 0;
     }
     LCD_ShowAntenna(300,0,Antenna);   //显示12x12天线
+    return;
   }
   if(BatteryTime++>50)
   {
@@ -196,7 +223,14 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
       Battery=0;      
     }
     LCD_ShowBattery(320,0,Battery,0);   //显示12x12电池
+    
+    LCD_Printf(0,30,16,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+    LCD_Printf(0,46,24,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+    LCD_Printf(0,70,32,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
+    
+    return;
   }
+  
 //  LCD_Printf(0,160,24,0,"%0.2X %0.2X ",aaf[0],aaf[1]);		//后边的省略号就是可变参数
 //  LCD_Printf(0,190,24,0,"A8 E6");		//后边的省略号就是可变参数
   LCD_ShowHex(0,160,16,8,8,(u8*)aaf);
@@ -738,6 +772,7 @@ void LCD_Configuration(void)
 	
 	sLCD.Flag.Rotate	=	Draw_Rotate_90D;	//使用旋转角度	
 	
+  //==============================字库
 	SPIx->Port.SPIx=SPI1;
 	
 	SPIx->Port.CS_PORT=GPIOA;
@@ -754,6 +789,8 @@ void LCD_Configuration(void)
 	
 	SPIx->Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
 	
+  sLCD.Data.BColor  = LCD565_BLACK;
+  sLCD.Data.PColor  = LCD565_WHITE;
 	R61509V_Initialize(&sLCD);
 }
 /*******************************************************************************

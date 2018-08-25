@@ -810,7 +810,7 @@ void WOW_Server(void)
 void MainServer(void)
 {
   IWDG_Feed();			  //独立看门狗喂狗
-  USART_Server();     //串口服务程序
+  USART_Process();     //串口服务程序
 }
 
 

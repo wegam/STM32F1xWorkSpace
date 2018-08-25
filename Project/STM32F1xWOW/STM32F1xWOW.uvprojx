@@ -5293,7 +5293,7 @@
               <MiscControls></MiscControls>
               <Define>ADC_TEST</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Library\Startup\STM32F10x;..\..\Library\C;..\..\Library\ARM\Include;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Driver\Protocol;..\..\Driver\Tool;..\..\Examples\DEMO\include;..\..\Examples\WOW</IncludePath>
+              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Library\Startup\STM32F10x;..\..\Library\C;..\..\Library\ARM\Include;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Driver\Protocol;..\..\Driver\Tool;..\..\Examples\DEMO\include;..\..\Examples\WOW;.\main</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

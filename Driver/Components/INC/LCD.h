@@ -90,6 +90,8 @@ typedef struct _DisplayDriver
 	void ( *PowerOn )(void);
 	void ( *PowerOff )(void);
 	void ( *DispOff )(void);
+  void ( *BackLightOn )(void);
+  void ( *BackLightOff )(void);
 
 }DisplayDriverDef;
 typedef struct	_LCD
@@ -120,7 +122,7 @@ extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 #define LCD_TE_LOW					(pLcdPort->sTE_PORT->BRR 		= pLcdPort->sTE_Pin)
 #define LCD_DATABUS_PORT		(pLcdPort->sDATABUS_PORT)
 
-#if 1
+#if 0
 	#define LCD_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,2000,500)	//(R61509V_BL_PORT->BSRR = R61509V_BL_PIN)
 	#define LCD_BL_OFF	PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,5,0)		//(R61509V_BL_PORT->BRR = R61509V_BL_PIN)
 #else
@@ -256,7 +258,7 @@ void LCD_WriteDataEnd( void );
 void LCD_WriteData(u16 Data);
 u16 LCD_ReadData( void );
 void LCD_WriteCommand(unsigned short index,unsigned short Command);	//写完整控制命令
-void LCD_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
+
 void LCD_Clean(u16 COLOR);	//清除屏幕函数
 void LCD_DrawDot(unsigned short HSX,unsigned short HSY,unsigned short color);		//画点
 void LCD_DrawLine(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);						//AB 两个坐标画一条直线

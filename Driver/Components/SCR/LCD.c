@@ -183,77 +183,7 @@ void LCD_WriteCommand(												//写完整控制命令
 	LCD_WriteDataEnd();
 }
 
-/*******************************************************************************
-*函数名			:	R61509V_SetWindowAddress
-*功能描述		:	设置窗口地址
-*输入				: 
-*返回值			:	无
-*******************************************************************************/
-void LCD_SetWindowAddress(			//设置窗口地址
-															unsigned short x1,		//水平起始点
-															unsigned short y1,		//水平终止点
-															unsigned short x2,		//垂直起始点
-															unsigned short y2			//垂直终止点
-															)
-{	
-	unsigned short MaxH,MaxV;
-	unsigned short Model	=	0x5030;
-
-	eRotate	Rotate	=	LCDSYS->Flag.Rotate;	
-	MaxH	=	LCDSYS->Data.MaxH;
-	MaxV	=	LCDSYS->Data.MaxV;
-
-	switch(Rotate)
-	{
-		case 	Draw_Rotate_0D:
-					LCDSYS->Data.HSX	=	x1;
-					LCDSYS->Data.HEX	=	x2;
-					LCDSYS->Data.VSY	=	y1;
-					LCDSYS->Data.VEY	=	y2;
-					LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
-					LCDSYS->Data.VYA	=	LCDSYS->Data.VSY;
-					Model	=	0x5030;
-				break;
-		case 	Draw_Rotate_90D:
-					LCDSYS->Data.HSX	=	y1;
-					LCDSYS->Data.HEX	=	y2;	
-					LCDSYS->Data.VSY	=	MaxV	-	x2	-	1;
-					LCDSYS->Data.VEY	=	MaxV	-	x1	-	1;	
-					LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
-					LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;
-					Model	=	0X5018;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
-				break;
-		case 	Draw_Rotate_180D:
-					LCDSYS->Data.HSX	=	MaxH	-	x2	-	1;
-					LCDSYS->Data.HEX	=	MaxH	-	x1	-	1;
-					LCDSYS->Data.VSY	=	MaxV	-	y2	-	1;
-					LCDSYS->Data.VEY	=	MaxV	-	y1	-	1;	
-					LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
-					LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;	
-					Model	=	0X5000;
-				break;
-		default:
-					LCDSYS->Data.HSX	=	MaxH	-	y2	-	1;
-					LCDSYS->Data.HEX	=	MaxH	-	y1	-	1;
-					LCDSYS->Data.VSY	=	x1;
-					LCDSYS->Data.VEY	=	x2;	
-					LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
-					LCDSYS->Data.VYA	=	LCDSYS->Data.VSY;
-					Model	=	0X5028;
-				break;
-	}
-	LCD_WriteCommand(LCD_R210_HSA,LCDSYS->Data.HSX);		//Window Horizontal RAM Address Start(R210h)		//水平
-	LCD_WriteCommand(LCD_R211_HEA,LCDSYS->Data.HEX);		//Window Horizontal RAM Address End(R211h)			//水平
-	LCD_WriteCommand(LCD_R212_VSA,LCDSYS->Data.VSY);		//Window Vertical RAM Address Start (R212h)			//垂直
-	LCD_WriteCommand(LCD_R213_VEA,LCDSYS->Data.VEY);		//Window Vertical RAM Address End (R213h)				//垂直	
-	LCD_WriteCommand(LCD_R200_HA,LCDSYS->Data.HXA);			//RAM Address Set (Horizontal Address) (R200h)
-	LCD_WriteCommand(LCD_R201_VA,LCDSYS->Data.VYA);			//RAM Address Set (Vertical Address) (R201h)
-	LCD_WriteCommand(LCD_R003_EM,Model);						//RAM Address Set (Vertical Address) (R201h)
-	//R61509V_WriteIndex16(R61509V_R202_GDRW);								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
-	LCD_WriteIndexStart();		
-	LCD_WriteData(LCD_R202_GDRW);
-	LCD_WriteIndexEnd();
-}
+//
 /*******************************************************************************
 *函数名			:	LCD_Clean
 *功能描述		:	清屏程序：清除屏幕函数---用背景色填充屏幕
@@ -683,7 +613,7 @@ void LCD_ShowWord(
 	x1	=	x;
 	y1	=	y;
   
-  if(x>LCDSYS->Data.MaxV-font||y>LCDSYS->Data.MaxH-font)
+  if(x>LCDSYS->Data.MaxH-font||y>LCDSYS->Data.MaxV-font)
     return;
   x2	=	x+font-1;
   y2	=	y+font-1;

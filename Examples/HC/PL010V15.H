@@ -29,7 +29,7 @@ void LCD_PowerUp(void);
 void LCD_Display(void);
 
 void PL010Delay(unsigned long time);
-
+void Temperature_Server(void);
 
 #endif
 
