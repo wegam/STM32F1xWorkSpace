@@ -31,15 +31,12 @@ typedef struct _ADCList
 
 unsigned char ADC1_DiscConfigurationDMANR(unsigned char Rank,unsigned char ADC_Channel_x,unsigned char ADC_SampleTime);				//ADC1规则通道组配置--普通方式
 unsigned char ADC1_DiscGetData(unsigned short* DataBuffer);
-void ADC1_DiscConfigurationNR(u32 *ADC_DATA,u32 DMA_BufferSize,u8 ADC_Channel_x,u8 ADC_NbrOfChannel, u8 Rank, u8 ADC_SampleTime);				//ADC1规则通道组配置--普通方式
-void ADC1_DiscConfigurationDMA(u32 *ADC_DATA,u32 DMA_BufferSize,u8 ADC_Channel_x,u8 ADC_NbrOfChannel, u8 Rank, u8 ADC_SampleTime);			//ADC1规则通道组配置--DMA方式
 
 
-void ADC1_DiscConfiguration(u32 *ADC_DATA,u32 DMA_BufferSize,u8 ADC_Channel_x,u8 ADC_NbrOfChannel, u8 Rank, u8 ADC_SampleTime);					//ADC1规则通道组配置
 
 void ADC_TempSensorConfiguration(u32 *ADC_DATA);								//STM32内部温度传感器配置
 float Get_ADC_Temperature(u32 ADC_DATA);												//获取内部温度传感器温度
-void ADC_PinConf(u8 ADC_Channel_x);															//根据所选的通道，打开相应GPIO时钟，配置相应GPIO为模拟输入，依据STM32F107VC引脚分布
+
 void ADC1_InitStructure(u8 ADC_NbrOfChannel);										//ADC初始化
 void ADC1_DMAConfiguration(u32 *ADC_DATA,u32 DMA_BufferSize);		//ADC1 DMA配置
 void ADC1_Cmd(FunctionalState NewState);												//开启ADC1转换

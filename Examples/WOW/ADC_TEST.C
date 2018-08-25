@@ -52,8 +52,9 @@ void ADC_TEST_Configuration(void)
 //	ADC_TempSensorVrefintCmd(ENABLE);												//使能温度传感器和内部参考电压通道
 //  ADC1_DiscConfigurationDMANR(1,ADC_Channel_0,ADC_SampleTime_239Cycles5);
 //  ADC1_DiscConfigurationDMANR(2,ADC_Channel_1,ADC_SampleTime_239Cycles5);
-
-  for(i=0;i<15;i++)
+//  ADC1_DiscConfigurationDMANR(ADC_Channel_17,1,ADC_SampleTime_239Cycles5);
+//  ADC1_DiscConfigurationDMANR(ADC_Channel_16,1,ADC_SampleTime_239Cycles5);
+  for(i=0;i<=ADC_Channel_17;i++)
   {
     ADC1_DiscConfigurationDMANR(num+1,num,ADC_SampleTime_239Cycles5);
     num+=1;

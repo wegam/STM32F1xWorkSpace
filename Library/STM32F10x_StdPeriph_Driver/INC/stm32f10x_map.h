@@ -854,51 +854,51 @@ typedef struct
 #endif /*_DMA */
 
 #ifdef _DMA1_Channel1
-  #define DMA1_Channel1       ((DMA_Channel_TypeDef *) DMA1_Channel1_BASE)
+  #define DMA1_Channel1       ((DMA_Channel_TypeDef *) DMA1_Channel1_BASE)      //ADC1,TIM2_CH3,TIM4_CH1
 #endif /*_DMA1_Channel1 */
 
 #ifdef _DMA1_Channel2
-  #define DMA1_Channel2       ((DMA_Channel_TypeDef *) DMA1_Channel2_BASE)
+  #define DMA1_Channel2       ((DMA_Channel_TypeDef *) DMA1_Channel2_BASE)      //USART3_TX,TIM1_CH1,TIM2_UP,TIM3_CH3,SPI1_RX
 #endif /*_DMA1_Channel2 */
 
 #ifdef _DMA1_Channel3
-  #define DMA1_Channel3       ((DMA_Channel_TypeDef *) DMA1_Channel3_BASE)
+  #define DMA1_Channel3       ((DMA_Channel_TypeDef *) DMA1_Channel3_BASE)      //USART3_RX,TIM1_CH2,TIM3_CH4,TIM3_UP,SPI1_TX
 #endif /*_DMA1_Channel3 */
 
 #ifdef _DMA1_Channel4
-  #define DMA1_Channel4       ((DMA_Channel_TypeDef *) DMA1_Channel4_BASE)
+  #define DMA1_Channel4       ((DMA_Channel_TypeDef *) DMA1_Channel4_BASE)      //USART1_TX,TIM1_CH4,TIM1_TRIG,TIM1_COM,TIM4_CH2,SPI/I2S2_RX,I2C2_TX,
 #endif /*_DMA1_Channel4 */
 
 #ifdef _DMA1_Channel5
-  #define DMA1_Channel5       ((DMA_Channel_TypeDef *) DMA1_Channel5_BASE)
+  #define DMA1_Channel5       ((DMA_Channel_TypeDef *) DMA1_Channel5_BASE)      //USART1_RX,TIM1_UP,SPI/I2S2_TX,TIM2_CH1,TIM4_CH3,I2C2_RX
 #endif /*_DMA1_Channel5 */
 
 #ifdef _DMA1_Channel6
-  #define DMA1_Channel6       ((DMA_Channel_TypeDef *) DMA1_Channel6_BASE)
+  #define DMA1_Channel6       ((DMA_Channel_TypeDef *) DMA1_Channel6_BASE)      //USART2_RX,TIM1_CH3,TIM3_CH1,TIM3_TRIG,I2C1_TX
 #endif /*_DMA1_Channel6 */
 
 #ifdef _DMA1_Channel7
-  #define DMA1_Channel7       ((DMA_Channel_TypeDef *) DMA1_Channel7_BASE)
+  #define DMA1_Channel7       ((DMA_Channel_TypeDef *) DMA1_Channel7_BASE)      //USART2_TX,TIM2_CH2,TIM2_CH4,TIM4_UP,I2C1_RX
 #endif /*_DMA1_Channel7 */
 
 #ifdef _DMA2_Channel1
-  #define DMA2_Channel1       ((DMA_Channel_TypeDef *) DMA2_Channel1_BASE)
+  #define DMA2_Channel1       ((DMA_Channel_TypeDef *) DMA2_Channel1_BASE)      //TIM5_CH4,TIM5_TRIG,TIM8_CH3,TIM8_UP,SPI/I2S3_RX,
 #endif /*_DMA2_Channel1 */
 
 #ifdef _DMA2_Channel2
-  #define DMA2_Channel2       ((DMA_Channel_TypeDef *) DMA2_Channel2_BASE)
+  #define DMA2_Channel2       ((DMA_Channel_TypeDef *) DMA2_Channel2_BASE)      //TIM8_CH4,TIM8_TRIG,TIM8_COM,TIM5_CH3,TIM5_UP,SPI/I2S3_TX
 #endif /*_DMA2_Channel2 */
 
 #ifdef _DMA2_Channel3
-  #define DMA2_Channel3       ((DMA_Channel_TypeDef *) DMA2_Channel3_BASE)
+  #define DMA2_Channel3       ((DMA_Channel_TypeDef *) DMA2_Channel3_BASE)      //TIM8_CH1,UART4_RX,TIM6_UP/DAC_Channel1
 #endif /*_DMA2_Channel3 */
 
 #ifdef _DMA2_Channel4
-  #define DMA2_Channel4       ((DMA_Channel_TypeDef *) DMA2_Channel4_BASE)
+  #define DMA2_Channel4       ((DMA_Channel_TypeDef *) DMA2_Channel4_BASE)      //TIM5_CH2,SDIO,TIM7_UP/DAC_Channel2
 #endif /*_DMA2_Channel4 */
 
 #ifdef _DMA2_Channel5
-  #define DMA2_Channel5       ((DMA_Channel_TypeDef *) DMA2_Channel5_BASE)
+  #define DMA2_Channel5       ((DMA_Channel_TypeDef *) DMA2_Channel5_BASE)      //ADC3,TIM8_CH2,TIM5_CH1,UART4_TX
 #endif /*_DMA2_Channel5 */
 
 #ifdef _RCC

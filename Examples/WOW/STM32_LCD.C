@@ -13,7 +13,7 @@
 #include "STM32_SYS.H"
 #include "STM32_SYSTICK.H"
 #include "STM32_ADC.H"
-//#include "STM32_WDG.H"
+#include "STM32_WDG.H"
 //#include "STM32_PWM.H"
 //#include "STM32_PWM.H"
 //#include "STM32_GPIO.H"
@@ -22,7 +22,7 @@
 
 
 #include "TM1618.H"
-//#include "SSD1963.H"
+
 //#include "STM32_SDCard.H"
 //#include "GT32L32M0180.H"
 
@@ -103,9 +103,10 @@ void STM32_LCD_Configuration(void)
 //	SSD1963_Clear(0x0000);	//以背景色清屏
 	
 //	SSD1963_DrawLine(30, 50,500, 50);						//画直线
-
-
-	
+  for(mm=0;mm<800;mm++)
+  {
+    LCD_DrawLine(mm,0,mm,480,mm);						//AB 两个坐标画一条直线
+  }	
 }
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
@@ -116,8 +117,17 @@ void STM32_LCD_Configuration(void)
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 void STM32_LCD_Server(void)
 {
-
-	LCD_Server();			//显示服务相关
+  for(mm=0;mm<800;mm++)
+  {
+    for(us=0;us<480;us++)
+    {
+      if(dspdata++>=0xFFFF)
+        dspdata=0;
+      LCD_DrawDot(mm,us,dspdata);
+//      LCD_DrawLine(mm,us,mm,us,dspdata);						//AB 两个坐标画一条直线
+    }
+  }
+//	LCD_Server();			//显示服务相关
   if(time++>500)
   {
     float te  = 0.1;

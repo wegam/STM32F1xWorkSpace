@@ -323,12 +323,6 @@ void CAN_Configuration_IT(u32 CAN_BaudRate)					//CAN配置---中断方式
 		 
 	/* Enable CAN FIFO 0 overrun interrupt */
 //	CAN_ITConfig(CAN_IT_FOV0, ENABLE);	
-	
-	
-	
-	
-	
-	
 }
 /*******************************************************************************
 * 函数名			:	CAN_FilterInitConfiguration
@@ -340,7 +334,7 @@ void CAN_Configuration_IT(u32 CAN_BaudRate)					//CAN配置---中断方式
 void CAN_FilterInitConfiguration_StdData(
 																	u8 CAN_GROUP,			//过滤器组---bxCAN为应用程序提供了14个位宽可变的、可配置的过滤器组(13~0)，以便只接收那些软件需要的报文
 																	u16 CAN_ID,				//
-																	u16 MaskId				//位匹配，如果是相应位为1表示必须与CAN_ID匹配
+																	u16 MaskId				//位匹配，如果是相应位为1表示必须与CAN_ID对应位匹配
 )		//CAN滤波器配置
 {
 	//说明：

@@ -106,24 +106,24 @@ typedef struct
                                   ((ALIGN) == ADC_DataAlign_Left))
 
 /* ADC channels --------------------------------------------------------------*/
-#define ADC_Channel_0                               ((u8)0x00)							//ADC_Channel_0
-#define ADC_Channel_1                               ((u8)0x01)
-#define ADC_Channel_2                               ((u8)0x02)
-#define ADC_Channel_3                               ((u8)0x03)
-#define ADC_Channel_4                               ((u8)0x04)
-#define ADC_Channel_5                               ((u8)0x05)
-#define ADC_Channel_6                               ((u8)0x06)
-#define ADC_Channel_7                               ((u8)0x07)
-#define ADC_Channel_8                               ((u8)0x08)
-#define ADC_Channel_9                               ((u8)0x09)
-#define ADC_Channel_10                              ((u8)0x0A)
-#define ADC_Channel_11                              ((u8)0x0B)
-#define ADC_Channel_12                              ((u8)0x0C)
-#define ADC_Channel_13                              ((u8)0x0D)
-#define ADC_Channel_14                              ((u8)0x0E)
-#define ADC_Channel_15                              ((u8)0x0F)
-#define ADC_Channel_16                              ((u8)0x10)
-#define ADC_Channel_17                              ((u8)0x11)
+#define ADC_Channel_0                               ((u8)0x00)  //PA0
+#define ADC_Channel_1                               ((u8)0x01)  //PA1
+#define ADC_Channel_2                               ((u8)0x02)  //PA2
+#define ADC_Channel_3                               ((u8)0x03)  //PA3
+#define ADC_Channel_4                               ((u8)0x04)  //PA4
+#define ADC_Channel_5                               ((u8)0x05)  //PA5
+#define ADC_Channel_6                               ((u8)0x06)  //PA6
+#define ADC_Channel_7                               ((u8)0x07)  //PA7
+#define ADC_Channel_8                               ((u8)0x08)  //PB0
+#define ADC_Channel_9                               ((u8)0x09)  //PB1
+#define ADC_Channel_10                              ((u8)0x0A)  //PC0
+#define ADC_Channel_11                              ((u8)0x0B)  //PC1
+#define ADC_Channel_12                              ((u8)0x0C)  //PC2
+#define ADC_Channel_13                              ((u8)0x0D)  //PC3
+#define ADC_Channel_14                              ((u8)0x0E)  //PC4
+#define ADC_Channel_15                              ((u8)0x0F)  //PC5
+#define ADC_Channel_16                              ((u8)0x10)  //内部温度传感器
+#define ADC_Channel_17                              ((u8)0x11)  //内部参考电压
 
 #define IS_ADC_CHANNEL(CHANNEL) (((CHANNEL) == ADC_Channel_0) || ((CHANNEL) == ADC_Channel_1) || \
                                  ((CHANNEL) == ADC_Channel_2) || ((CHANNEL) == ADC_Channel_3) || \

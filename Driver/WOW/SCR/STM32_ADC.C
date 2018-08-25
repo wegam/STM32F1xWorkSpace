@@ -64,14 +64,8 @@ CH17 内部参考电压
 ###############################################################################*/
 
 
-
-
-#define N 50 //每通道采50 次
-#define M 12 //为12 个通道
-vu16 AD_Value[N][M]; //用来存放ADC 转换结果，也是DMA 的目标地址
-vu16 After_filter[M]; //用来存放求平均值之后的结果
 ADCList  *ADCDisc  = NULL;
-unsigned short ADCBuffer[16]   = {0};
+unsigned short ADCBuffer[18]   = {0};   //18通道，包括内部温度和内部基准
 unsigned char ChannelCount  = 0;
 
 /*******************************************************************************
@@ -127,7 +121,7 @@ unsigned char ADC1_DiscConfigurationDMANR(
   else
   {    
     ADCDiscTemp = ADCDisc;
-    for(i=1;i<16;i++)
+    for(i=1;i<=ADC_Channel_17;i++)
     {
       if(NULL ==  ADCDiscTemp->Next)
       {
@@ -244,254 +238,7 @@ unsigned char ADC1_DiscGetData(unsigned short* DataBuffer)
     return 0;
   }
 }
-/*******************************************************************************
-* 函数名		:	
-* 功能描述	:	ADC1规则通道组配置--普通方式
-* 输入		:	ADC_Channel_x->通道号:ADC_Channel_0~ADC_Channel_15
-						ADC_mode->
-						ADC_NbrOfChannel->顺序进行规则转换的ADC通道的数目
-* 输出		:
-* 返回 		:
-*******************************************************************************/
-void ADC1_DiscConfigurationNR(u32	*ADC_DATA,					//数据寄存器
-															u32	DMA_BufferSize,			//
-															u8	ADC_Channel_x,			//通道号
-															u8	ADC_NbrOfChannel, 	//规则转换的总通道数（1~16）
-															u8	Rank,								//规则转换的顺序号
-															u8	ADC_SampleTime			//采样时间周期
-															)												//ADC1规则通道组配置
-{	
-	ADC_InitTypeDef 	ADC_InitStructure; 						//ADC结构体
-	GPIO_InitTypeDef 	GPIO_InitStructure;						//GPIO结构体
-	GPIO_TypeDef* GPIOx=0;
-	u16 GPIO_Pin_x=0;
-	//由时钟控制器提供的ADCCLK时钟和PCLK2(APB2时钟)同步。
-	//RCC控制器为ADC时钟提供一个专用的可编程预分频器。
-	//1)==============================================打开ADC时钟，并设置分频因子	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1,ENABLE);	//使能ADC时钟
-	RCC_ADCCLKConfig(RCC_PCLK2_Div6);										//6分频12MHz
-	//2)==============================================根据所选的通道，打开相应GPIO时钟，配置相应GPIO为模拟输入（依据STM32F107VC引脚分布)
-	//2.1)--------------------------------------------打开相应时钟
-	if(ADC_Channel_x<=ADC_Channel_7)
-	{
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);		//使能GPIOA时钟
-	}
-	else if(ADC_Channel_x>ADC_Channel_7&&ADC_Channel_x<=ADC_Channel_9)
-	{
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);		//使能GPIOB时钟
-	}
-	else if(ADC_Channel_x>ADC_Channel_9&&ADC_Channel_x<=ADC_Channel_15)
-	{
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE);		//使能GPIOC时钟
-	}
-	else
-	{
-	}
-	//2.2)--------------------------------------------选择相应GPIO
-	switch (ADC_Channel_x)
-	{
-		case	ADC_Channel_0:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_0;	break;
-		case	ADC_Channel_1:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_1;	break;
-		case	ADC_Channel_2:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_2;	break;
-		case	ADC_Channel_3:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_3;	break;
-		case	ADC_Channel_4:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_4;	break;
-		case	ADC_Channel_5:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_5;	break;
-		case	ADC_Channel_6:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_6;	break;
-		case	ADC_Channel_7:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_7;	break;
-		case	ADC_Channel_8:	GPIOx=GPIOB;	GPIO_Pin_x=GPIO_Pin_0;	break;
-		case	ADC_Channel_9:	GPIOx=GPIOB;	GPIO_Pin_x=GPIO_Pin_1;	break;
-		case	ADC_Channel_10:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_0;	break;
-		case	ADC_Channel_11:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_1;	break;
-		case	ADC_Channel_12:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_2;	break;
-		case	ADC_Channel_13:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_3;	break;
-		case	ADC_Channel_14:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_4;	break;
-		case	ADC_Channel_15:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_5;	break;
-		
-		default :break;					
-	}
-	//2.3)--------------------------------------------配置GPIO
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_x;					  //GPIO_Pin_x
-	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AIN;		    //模拟输入
-	GPIO_Init(GPIOx,&GPIO_InitStructure);									//GPIO初始化
-	
-	//3)==============================================设置ADC的工作模式
-	ADC_InitStructure.ADC_Mode 								= ADC_Mode_Independent; 			//ADC工作模式:ADC1和ADC2工作在独立模式
-	ADC_InitStructure.ADC_ScanConvMode 				=	ENABLE; 										//模数转换工作在扫描模式
-	ADC_InitStructure.ADC_ContinuousConvMode 	= ENABLE; 										//模数转换工作在连续转换模式
-	ADC_InitStructure.ADC_ExternalTrigConv 		= ADC_ExternalTrigConv_None; 	//转换由软件而不是外部触发启动--外部触发转换关闭
-	ADC_InitStructure.ADC_DataAlign 					= ADC_DataAlign_Right; 				//ADC数据右对齐(左边补充0）
-	ADC_InitStructure.ADC_NbrOfChannel 				= ADC_NbrOfChannel; 					//顺序进行规则转换的ADC通道的数目
-	ADC_Init(ADC1, &ADC_InitStructure); 																		//根据ADC_InitStruct中指定的参数初始化外设ADCx的寄存器
-	
-	//4)==============================================设置ADC的规则系列相关信息---通道选择
-	//ADC1,ADC 通道x,规则采样顺序值为y,采样时间为239.5 周期
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_x, Rank,ADC_SampleTime);	
-	
-	//5)==============================================设置ADC的规则系列相关信息---通道选择
-//	ADC1_DMAConfiguration(ADC_DATA,DMA_BufferSize); 		//ADC1 DMA配置	
-	
-	
-	//6)==========开启ADC转换并校准	
-	ADC1_Cmd(ENABLE);																		//开启ADC1转换
-}
-/*******************************************************************************
-* 函数名		:	
-* 功能描述	:	ADC1规则通道组配置--普通方式
-* 输入		:	ADC_Channel_x->通道号:ADC_Channel_0~ADC_Channel_15
-						ADC_mode->
-						ADC_NbrOfChannel->顺序进行规则转换的ADC通道的数目
-* 输出		:
-* 返回 		:	
-*******************************************************************************/
-void ADC1_DiscConfigurationNRBAC(u32	*ADC_DATA,					//数据寄存器
-															u32	DMA_BufferSize,			//
-															u8	ADC_Channel_x,			//
-															u8	ADC_NbrOfChannel, 	//
-															u8	Rank,								//
-															u8	ADC_SampleTime			//
-															)				//ADC1规则通道组配置
-{
-	
-	//由时钟控制器提供的ADCCLK时钟和PCLK2(APB2时钟)同步。
-	//RCC控制器为ADC时钟提供一个专用的可编程预分频器。
-	//1)==========打开ADC时钟，并设置分频因子	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1,ENABLE);//使能ADC时钟
-	//2)==========根据所选的通道，打开相应GPIO时钟，配置相应GPIO为模拟输入
-	ADC_PinConf(ADC_Channel_x);				//ADC管脚配置 依据STM32F107VC引脚分布	
-	//5)==========设置ADC的规则系列相关信息---通道选择
-	ADC1_DMAConfiguration(ADC_DATA,DMA_BufferSize); 		//ADC1 DMA配置	
-	//3)==========设置ADC的工作模式
-	ADC1_InitStructure(ADC_NbrOfChannel);				//ADC初始化	
-	//4)==========设置ADC的规则系列相关信息---通道选择
-	//ADC1,ADC 通道x,规则采样顺序值为y,采样时间为239.5 周期
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_x, Rank,ADC_SampleTime);	
-	//6)==========开启ADC转换并校准	
-	ADC1_Cmd(ENABLE);					//开启ADC1转换
-}
-/*******************************************************************************
-* 函数名		:	
-* 功能描述	:	ADC1规则通道组配置--DMA方式
-* 输入		:	ADC_Channel_x->通道号:ADC_Channel_0~ADC_Channel_15
-						ADC_mode->
-						ADC_NbrOfChannel->顺序进行规则转换的ADC通道的数目
-* 输出		:
-* 返回 		:
-*******************************************************************************/
-void ADC1_DiscConfigurationDMA(u32	*ADC_DATA,					//数据寄存器
-															u32	DMA_BufferSize,			//
-															u8	ADC_Channel_x,			//通道号
-															u8	ADC_NbrOfChannel, 	//规则转换的总通道数（1~16）
-															u8	Rank,								//规则转换的顺序号
-															u8	ADC_SampleTime			//采样时间周期
-															)												//ADC1规则通道组配置
-{	
-	ADC_InitTypeDef 	ADC_InitStructure; 						//ADC结构体
-	GPIO_InitTypeDef 	GPIO_InitStructure;						//GPIO结构体
-	GPIO_TypeDef* GPIOx=0;
-	u16 GPIO_Pin_x=0;
-	//由时钟控制器提供的ADCCLK时钟和PCLK2(APB2时钟)同步。
-	//RCC控制器为ADC时钟提供一个专用的可编程预分频器。
-	//1)==============================================打开ADC时钟，并设置分频因子	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1,ENABLE);	//使能ADC时钟
-	RCC_ADCCLKConfig(RCC_PCLK2_Div6);										//6分频12MHz
-	//2)==============================================根据所选的通道，打开相应GPIO时钟，配置相应GPIO为模拟输入（依据STM32F107VC引脚分布)
-	//2.1)--------------------------------------------打开相应时钟
-	if(ADC_Channel_x<=ADC_Channel_7)
-	{
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);		//使能GPIOA时钟
-	}
-	else if(ADC_Channel_x>ADC_Channel_7&&ADC_Channel_x<=ADC_Channel_9)
-	{
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);		//使能GPIOB时钟
-	}
-	else if(ADC_Channel_x>ADC_Channel_9&&ADC_Channel_x<=ADC_Channel_15)
-	{
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE);		//使能GPIOC时钟
-	}
-	else
-	{
-	}
-	//2.2)--------------------------------------------选择相应GPIO
-	switch (ADC_Channel_x)
-	{
-		case	ADC_Channel_0:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_0;	break;
-		case	ADC_Channel_1:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_1;	break;
-		case	ADC_Channel_2:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_2;	break;
-		case	ADC_Channel_3:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_3;	break;
-		case	ADC_Channel_4:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_4;	break;
-		case	ADC_Channel_5:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_5;	break;
-		case	ADC_Channel_6:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_6;	break;
-		case	ADC_Channel_7:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_7;	break;
-		case	ADC_Channel_8:	GPIOx=GPIOB;	GPIO_Pin_x=GPIO_Pin_0;	break;
-		case	ADC_Channel_9:	GPIOx=GPIOB;	GPIO_Pin_x=GPIO_Pin_1;	break;
-		case	ADC_Channel_10:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_0;	break;
-		case	ADC_Channel_11:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_1;	break;
-		case	ADC_Channel_12:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_2;	break;
-		case	ADC_Channel_13:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_3;	break;
-		case	ADC_Channel_14:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_4;	break;
-		case	ADC_Channel_15:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_5;	break;
-		
-		default :break;					
-	}
-	//2.3)--------------------------------------------配置GPIO
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_x;							//GPIO_Pin_x
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;					//模拟输入
-	GPIO_Init(GPIOx,&GPIO_InitStructure);									//GPIO初始化
-	
-	//3)==============================================设置ADC的工作模式
-	ADC_InitStructure.ADC_Mode 								= ADC_Mode_Independent; 			//ADC工作模式:ADC1和ADC2工作在独立模式
-	ADC_InitStructure.ADC_ScanConvMode 				=	ENABLE; 										//模数转换工作在扫描模式
-	ADC_InitStructure.ADC_ContinuousConvMode 	= ENABLE; 										//模数转换工作在连续转换模式
-	ADC_InitStructure.ADC_ExternalTrigConv 		= ADC_ExternalTrigConv_None; 	//转换由软件而不是外部触发启动--外部触发转换关闭
-	ADC_InitStructure.ADC_DataAlign 					= ADC_DataAlign_Right; 				//ADC数据右对齐(左边补充0）
-	ADC_InitStructure.ADC_NbrOfChannel 				= ADC_NbrOfChannel; 					//顺序进行规则转换的ADC通道的数目
-	ADC_Init(ADC1, &ADC_InitStructure); 																		//根据ADC_InitStruct中指定的参数初始化外设ADCx的寄存器
-	
-	//4)==============================================设置ADC的规则系列相关信息---通道选择
-	//ADC1,ADC 通道x,规则采样顺序值为y,采样时间为239.5 周期
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_x, Rank,ADC_SampleTime);	
-	
-	//5)==============================================设置ADC的规则系列相关信息---通道选择
-	ADC1_DMAConfiguration(ADC_DATA,DMA_BufferSize); 		//ADC1 DMA配置	
-	
-	
-	//6)==========开启ADC转换并校准	
-	ADC1_Cmd(ENABLE);																		//开启ADC1转换
-}
 
-/*******************************************************************************
-* 函数名		:	
-* 功能描述	:	ADC1规则通道组配置--DMA方式 
-* 输入		:	ADC_Channel_x->通道号:ADC_Channel_0~ADC_Channel_15
-						ADC_mode->
-						ADC_NbrOfChannel->顺序进行规则转换的ADC通道的数目
-* 输出		:
-* 返回 		:
-*******************************************************************************/
-void ADC1_DiscConfiguration(u32 *ADC_DATA,u32 DMA_BufferSize,u8 ADC_Channel_x,u8 ADC_NbrOfChannel, u8 Rank, u8 ADC_SampleTime)				//ADC1规则通道组配置
-{
-	//1)**********打开ADC时钟，并设置分频因子	
-	//由时钟控制器提供的ADCCLK时钟和PCLK2(APB2时钟)同步。
-	//RCC控制器为ADC时钟提供一个专用的可编程预分频器。
-//	if((RCC->APB2ENR&RCC_APB2Periph_ADC1)!=RCC_APB2Periph_ADC1)
-//	{
-//		RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1,ENABLE);//使能GPIOA和复用时钟
-//		RCC_ADCCLKConfig(RCC_PCLK2_Div6);	//72M/6=12,ADC最大时间不能超过14M
-//	}	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1,ENABLE);//使能ADC时钟
-	//2)**********打开相应GPIO时钟，配置GPIO	
-	ADC_PinConf(ADC_Channel_x);				//ADC管脚配置 依据STM32F107VC引脚分布	
-	//5)**********设置ADC的规则系列相关信息---通道选择
-	ADC1_DMAConfiguration(ADC_DATA,DMA_BufferSize); 		//ADC1 DMA配置	
-	//3)**********设置ADC的工作模式
-	ADC1_InitStructure(ADC_NbrOfChannel);				//ADC初始化	
-	//4)**********设置ADC的规则系列相关信息---通道选择
-	//ADC1,ADC 通道x,规则采样顺序值为y,采样时间为239.5 周期
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_x, Rank,ADC_SampleTime);
-	
-	//6)**********开启ADC转换并校准	
-	ADC1_Cmd(ENABLE);					//开启ADC1转换
-}
 /*******************************************************************************
 *函数名		:	ADC_TempSensorConfiguration
 *功能描述	:	STM32内部温度传感器配置
@@ -550,66 +297,7 @@ float Get_ADC_Temperature(u32 ADC_DATA)
 	return (float)Result;
 
 }
-/*******************************************************************************
-* 函数名		:	ADC_PinConf
-* 功能描述	:	根据所选的通道，打开相应GPIO时钟，配置相应GPIO为模拟输入 
-* 输入		:	ADC_Channel_x--ADC通道
-* 输出		:
-* 返回 		:
-*******************************************************************************/
-void	ADC_PinConf(u8 ADC_Channel_x)							//ADC管脚配置 依据STM32F107VC引脚分布
-{
-	GPIO_InitTypeDef GPIO_InitStructure;					//GPIO结构体
-	GPIO_TypeDef* GPIOx=0;
-	u16 GPIO_Pin_x=0;
-//	ErrorStatus status = ERROR;
-	/*****************************ADC管脚****************************************
-	*	CH0	CH1	CH2	CH3	CH4	CH5	CH6	CH7	CH8	CH9	CH10	CH11	CH12	CH13	CH14	CH15	CH16	CH17
-	*	PA0	PA1	PA2	PA3	PA4	PA5	PA6	PA7	PB0	PB1	PC0		PC1		PC2		PC3		PC4		PC5		温度	参考电压		
-	*****************************************************************************/
-	//1)**********打开相应GPIO时钟	
-	if(ADC_Channel_x<=ADC_Channel_7)
-	{
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);		//使能GPIOA时钟
-	}
-	else if(ADC_Channel_x>ADC_Channel_7&&ADC_Channel_x<=ADC_Channel_9)
-	{
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);		//使能GPIOB时钟
-	}
-	else if(ADC_Channel_x>ADC_Channel_9&&ADC_Channel_x<=ADC_Channel_15)
-	{
-		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE);		//使能GPIOC时钟
-	}
-	else
-	{
-	}
-	//2)**********选择相应GPIO
-	switch (ADC_Channel_x)
-	{
-		case	ADC_Channel_0:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_0;	break;
-		case	ADC_Channel_1:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_1;	break;
-		case	ADC_Channel_2:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_2;	break;
-		case	ADC_Channel_3:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_3;	break;
-		case	ADC_Channel_4:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_4;	break;
-		case	ADC_Channel_5:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_5;	break;
-		case	ADC_Channel_6:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_6;	break;
-		case	ADC_Channel_7:	GPIOx=GPIOA;	GPIO_Pin_x=GPIO_Pin_7;	break;
-		case	ADC_Channel_8:	GPIOx=GPIOB;	GPIO_Pin_x=GPIO_Pin_0;	break;
-		case	ADC_Channel_9:	GPIOx=GPIOB;	GPIO_Pin_x=GPIO_Pin_1;	break;
-		case	ADC_Channel_10:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_0;	break;
-		case	ADC_Channel_11:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_1;	break;
-		case	ADC_Channel_12:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_2;	break;
-		case	ADC_Channel_13:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_3;	break;
-		case	ADC_Channel_14:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_4;	break;
-		case	ADC_Channel_15:	GPIOx=GPIOC;	GPIO_Pin_x=GPIO_Pin_5;	break;
-		
-		default :break;					
-	}
-	//3)**********配置GPIO
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_x;							//GPIO_Pin_x
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;					//模拟输入
-	GPIO_Init(GPIOx,&GPIO_InitStructure);									//GPIO初始化
-}
+
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -620,25 +308,13 @@ void	ADC_PinConf(u8 ADC_Channel_x)							//ADC管脚配置 依据STM32F107VC引脚分布
 void ADC1_InitStructure(u8 ADC_NbrOfChannel)				//ADC初始化
 {
 	ADC_InitTypeDef ADC_InitStructure; 						//ADC结构体
-//	ADC_DeInit(ADC1); 																												//将外设 ADC1 的全部寄存器重设为缺省值
 	ADC_InitStructure.ADC_Mode = ADC_Mode_Independent; 													//ADC工作模式:ADC1和ADC2工作在独立模式
 	ADC_InitStructure.ADC_ScanConvMode =ENABLE; 																//模数转换工作在扫描模式
 	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE; 													//模数转换工作在连续转换模式
 	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None; 				//转换由软件而不是外部触发启动--外部触发转换关闭
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right; 											//ADC数据右对齐(左边补充0）
 	ADC_InitStructure.ADC_NbrOfChannel = ADC_NbrOfChannel; 											//顺序进行规则转换的ADC通道的数目
-//	ADC_InitStructure.ADC_NbrOfChannel = ADC_InitStructure.ADC_NbrOfChannel++;	//顺序进行规则转换的ADC通道的数目
 	ADC_Init(ADC1, &ADC_InitStructure); 																				//根据ADC_InitStruct中指定的参数初始化外设ADCx的寄存器
-	
-//	RCC_ADCCLKConfig(RCC_PCLK2_Div8);//PCLK2/8=9Mhz
-//	ADC_RegularChannelConfig(ADC1,ADC_Channel_1,1,ADC_SampleTime_1Cycles5);
-//	ADC_DMACmd(ADC1,ENABLE);
-//	ADC_Cmd(ADC1,ENABLE);
-//	ADC_ResetCalibration(ADC1);
-//	while(ADC_GetResetCalibrationStatus(ADC1));
-//	ADC_StartCalibration(ADC1);
-//	while(ADC_GetCalibrationStatus(ADC1));
-//	ADC_SoftwareStartConvCmd(ADC1,ENABLE);
 }
 
 /*******************************************************************************
@@ -693,7 +369,7 @@ void ADC1_Cmd(FunctionalState NewState)		//开启ADC1转换
   }
   else
   {
-//    ADC_SoftwareStartConvCmd(ADC1,DISABLE);
+    ADC_SoftwareStartConvCmd(ADC1,DISABLE);
     ADC_DMACmd(ADC1, DISABLE); 	//开启ADC的DMA支持（要实现DMA功能，还需独立配置DMA通道等参数）ADC_DMACmd(ADC1, ENABLE);
 		ADC_Cmd(ADC1, DISABLE); 		//使能指定的ADC1	
   }

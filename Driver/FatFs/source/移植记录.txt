@@ -1,0 +1,8 @@
+版本：R0.13b (April 07, 2018)
+说明：diskio为接口文件
+
+一：20180825：将如下1，2，3修改完编译可通过
+1,添加文件路径
+2，diskio.C文件中添加__weak修饰占位函数
+3，ffconf.h 中 #define FF_FS_NORTC 0修改为#define FF_FS_NORTC 1
+二：20180825
