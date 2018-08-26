@@ -85,9 +85,9 @@
 //#define SD_TYPE_V2HC    0X06
 
 // SD指令表 	   
-#define CMD0    0       //卡复位
-#define CMD1    1
-#define CMD8    8       //命令8 ，SEND_IF_COND
+#define CMD0    0       //复位SD卡
+#define CMD1    1       //读OCR寄存器
+#define CMD8    8       //命令8 ，检查SD类型及电压支持
 #define CMD9    9       //命令9 ，读CSD数据
 #define CMD10   10      //命令10，读CID数据
 #define CMD12   12      //命令12，停止数据传输

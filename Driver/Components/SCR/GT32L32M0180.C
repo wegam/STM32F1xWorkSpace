@@ -16,7 +16,7 @@
 
 #include "GT32L32M0180.H"
 
-#include "STM32_SPI.H"
+//#include "STM32_SPI.H"
 
 #define STM32_GT32L32M0180_Code_Edit
 

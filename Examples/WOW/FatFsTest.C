@@ -1,6 +1,6 @@
-#ifdef STM32_LCD
+#ifdef FatFsTest
 
-#include "STM32_LCD.H"
+#include "FatFsTest.H"
 
 //#include "string.h"				//串和内存操作函数头文件
 //#include "stm32f10x_dma.h"
@@ -54,7 +54,11 @@ u8	hh=0;
 u16 time=0;
 u32 ADCDATA = 0;
 //void GT32L32_PinSet(void);
-	
+FATFS fs[2]; /* 逻辑驱动器的工作区(文件系统对象) */	
+FIL fsrc, fdst; /* 文件对象 */
+BYTE buffer[4096]; /* 文件拷贝缓冲区 */
+FRESULT res; /* FatFs 函数公共结果代码 */
+UINT br, bw; /* 文件读/写字节计数 */
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
 //->功能描述	:	 
@@ -62,15 +66,36 @@ u32 ADCDATA = 0;
 //->输出		:
 //->返回 		:
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
-void STM32_LCD_Configuration(void)
+void FatFsTest_Configuration(void)
 {	
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	
 	GPIO_DeInitAll();							//将所有的GPIO关闭----V20170605	
 	
-	LCD_Configuration();
-	TM1618_PinSet();
+  LCD_Configuration();
+//  TM1618_PinSet();
+  USART_DMA_ConfigurationNR	(USART1,115200,128);	//USART_DMA配置--查询方式，不开中断
+  
+  LCD_Printf (0,0,16,0,"为逻辑驱动器注册工作区......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  /* 为逻辑驱动器注册工作区 */
+  res = f_mount(&fs[0],"",1);
+  LCD_Printf (0,16,16,0,"%2d",res);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  res = f_mount(&fs[1],"",1);
+  LCD_Printf (0,32,16,0,"输出结果%0.2X",res);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  res = f_open(&fsrc, "1:srcfile.dat", FA_OPEN_EXISTING | FA_READ);
+  LCD_Printf (0,48,16,0,"%0.5X",res);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+	
 
-//	GT32L32_Configuration();
+
   USART_DMA_ConfigurationNR	(USART1,115200,128);	//USART_DMA配置--查询方式，不开中断
 //  
   ADC_TempSensorConfiguration(&ADCDATA);								//STM32内部温度传感器配置
@@ -91,17 +116,17 @@ void STM32_LCD_Configuration(void)
 //->输出		:
 //->返回 		:
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
-void STM32_LCD_Server(void)
+void FatFsTest_Server(void)
 {
-  for(mm=0;mm<800;mm++)
-  {
-    for(us=0;us<480;us++)
-    {
-      if(dspdata++>=0xFFFF)
-        dspdata=0;
-      LCD_DrawDot(mm,us,dspdata);
-    }
-  }
+//  for(mm=0;mm<800;mm++)
+//  {
+//    for(us=0;us<480;us++)
+//    {
+//      if(dspdata++>=0xFFFF)
+//        dspdata=0;
+//      LCD_DrawDot(mm,us,dspdata);
+//    }
+//  }
 ////	LCD_Server();			//显示服务相关
 //  if(time++>500)
 //  {
@@ -397,6 +422,8 @@ void LCD_Configuration(void)
 	sLCD.Port.sDATABUS_Pin		=	GPIO_Pin_All;	
 	
 	sLCD.Flag.Rotate	=	Draw_Rotate_180D;		//使用旋转角度
+  sLCD.Data.BColor  = LCD565_BLACK;
+  sLCD.Data.PColor  = LCD565_WHITE;
 	
 	SPI->Port.SPIx		=	SPI1;
 	SPI->Port.CS_PORT	=	GPIOB;

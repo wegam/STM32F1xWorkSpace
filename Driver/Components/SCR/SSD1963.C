@@ -40,8 +40,8 @@ void SSD1963_Initialize(LCDDef *pInfo)
 	
 	pSSD1963->Data.MaxH	=	SSD1963_H;					//最大水平宽度
 	pSSD1963->Data.MaxV	=	SSD1963_V;					//最大垂直高度	
-	pSSD1963->Data.BColor	=	LCD565_RED;				//背景色
-	pSSD1963->Data.PColor	=	LCD565_YELLOW;		//画笔色
+//	pSSD1963->Data.BColor	=	LCD565_RED;				//背景色
+//	pSSD1963->Data.PColor	=	LCD565_YELLOW;		//画笔色
 	
 	
 	pSSD1963->Display.WriteAddress		=	SSD1963_SetWindowAddress;

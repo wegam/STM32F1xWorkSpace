@@ -137,14 +137,14 @@ void SPI_InitializeSPI(SPIDef *pInfo)
 	//3)**********SPI配置选项
 	//3.1)----------SPI波特率检查
 	if(
-			(SPI_BaudRatePrescaler_2		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
-		||(SPI_BaudRatePrescaler_4		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
-		||(SPI_BaudRatePrescaler_8		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
-		||(SPI_BaudRatePrescaler_16		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
-		||(SPI_BaudRatePrescaler_32		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
-		||(SPI_BaudRatePrescaler_64		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
-		||(SPI_BaudRatePrescaler_128	!=	pInfo->Port.SPI_BaudRatePrescaler_x)
-		||(SPI_BaudRatePrescaler_256	!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+			(SPI_BaudRatePrescaler_2  !=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		&(SPI_BaudRatePrescaler_4		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		&(SPI_BaudRatePrescaler_8		!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		&(SPI_BaudRatePrescaler_16  !=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		&(SPI_BaudRatePrescaler_32  !=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		&(SPI_BaudRatePrescaler_64  !=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		&(SPI_BaudRatePrescaler_128	!=	pInfo->Port.SPI_BaudRatePrescaler_x)
+		&(SPI_BaudRatePrescaler_256	!=	pInfo->Port.SPI_BaudRatePrescaler_x)
 		)
 	{
 		//未设置波特率使用最高

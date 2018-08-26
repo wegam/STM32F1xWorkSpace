@@ -224,23 +224,23 @@ typedef struct {
 /* File function return code (FRESULT) */
 
 typedef enum {
-	FR_OK = 0,				/* (0) Succeeded */
-	FR_DISK_ERR,			/* (1) A hard error occurred in the low level disk I/O layer */
-	FR_INT_ERR,				/* (2) Assertion failed */
-	FR_NOT_READY,			/* (3) The physical drive cannot work */
-	FR_NO_FILE,				/* (4) Could not find the file */
-	FR_NO_PATH,				/* (5) Could not find the path */
-	FR_INVALID_NAME,		/* (6) The path name format is invalid */
-	FR_DENIED,				/* (7) Access denied due to prohibited access or directory full */
-	FR_EXIST,				/* (8) Access denied due to prohibited access */
+	FR_OK = 0,				    /* (0) Succeeded */   //函数成功，该文件对象有效。
+	FR_DISK_ERR,			    /* (1) A hard error occurred in the low level disk I/O layer */ //由于底层磁盘I/O接口函数中的一个错误，而导致该函数失败
+	FR_INT_ERR,				    /* (2) Assertion failed */    //由于一个错误的FAT结构或一个内部错误，而导致该函数失败
+	FR_NOT_READY,			    /* (3) The physical drive cannot work */    //由于驱动器中没有存储介质或任何其他原因，而导致磁盘驱动器无法工作
+	FR_NO_FILE,				    /* (4) Could not find the file */   //找不到该文件
+	FR_NO_PATH,				    /* (5) Could not find the path */   //找不到该路径
+	FR_INVALID_NAME,		  /* (6) The path name format is invalid */ //文件名无效
+	FR_DENIED,				    /* (7) Access denied due to prohibited access or directory full */  //由于下列原因，所需的访问被拒绝
+	FR_EXIST,				      /* (8) Access denied due to prohibited access */  //该文件已存在
 	FR_INVALID_OBJECT,		/* (9) The file/directory object is invalid */
-	FR_WRITE_PROTECTED,		/* (10) The physical drive is write protected */
-	FR_INVALID_DRIVE,		/* (11) The logical drive number is invalid */
-	FR_NOT_ENABLED,			/* (12) The volume has no work area */
-	FR_NO_FILESYSTEM,		/* (13) There is no valid FAT volume */
-	FR_MKFS_ABORTED,		/* (14) The f_mkfs() aborted due to any problem */
-	FR_TIMEOUT,				/* (15) Could not get a grant to access the volume within defined period */
-	FR_LOCKED,				/* (16) The operation is rejected according to the file sharing policy */
+	FR_WRITE_PROTECTED,		/* (10) The physical drive is write protected */  //在存储介质被写保护的情况下，以写模式打开或创建文件对象
+	FR_INVALID_DRIVE,		  /* (11) The logical drive number is invalid */  //驱动器号无效
+	FR_NOT_ENABLED,			  /* (12) The volume has no work area */    //逻辑驱动器没有工作区
+	FR_NO_FILESYSTEM,		  /* (13) There is no valid FAT volume */   //磁盘上没有有效地FAT卷
+	FR_MKFS_ABORTED,		  /* (14) The f_mkfs() aborted due to any problem */
+	FR_TIMEOUT,				    /* (15) Could not get a grant to access the volume within defined period */
+	FR_LOCKED,				    /* (16) The operation is rejected according to the file sharing policy */
 	FR_NOT_ENOUGH_CORE,		/* (17) LFN working buffer could not be allocated */
 	FR_TOO_MANY_OPEN_FILES,	/* (18) Number of open files > FF_FS_LOCK */
 	FR_INVALID_PARAMETER	/* (19) Given parameter is invalid */
@@ -251,40 +251,40 @@ typedef enum {
 /*--------------------------------------------------------------*/
 /* FatFs module application interface                           */
 
-FRESULT f_open (FIL* fp, const TCHAR* path, BYTE mode);				    /* Open or create a file */
-FRESULT f_close (FIL* fp);											                  /* Close an open file object */
-FRESULT f_read (FIL* fp, void* buff, UINT btr, UINT* br);			    /* Read data from the file */
-FRESULT f_write (FIL* fp, const void* buff, UINT btw, UINT* bw);	/* Write data to the file */
-FRESULT f_lseek (FIL* fp, FSIZE_t ofs);								            /* Move file pointer of the file object */
-FRESULT f_truncate (FIL* fp);										                  /* Truncate the file */
-FRESULT f_sync (FIL* fp);											                    /* Flush cached data of the writing file */
-FRESULT f_opendir (DIR* dp, const TCHAR* path);						        /* Open a directory */
+FRESULT f_open (FIL* fp, const TCHAR* path, BYTE mode);				    /* Open or create a file */       //打开/创建一个文件
+FRESULT f_close (FIL* fp);											                  /* Close an open file object */   //关闭一个文件
+FRESULT f_read (FIL* fp, void* buff, UINT btr, UINT* br);			    /* Read data from the file */     //读文件/
+FRESULT f_write (FIL* fp, const void* buff, UINT btw, UINT* bw);	/* Write data to the file */      //写文件
+FRESULT f_lseek (FIL* fp, FSIZE_t ofs);								            /* Move file pointer of the file object */  //移动文件读/写指针
+FRESULT f_truncate (FIL* fp);										                  /* Truncate the file */                     //截断文件
+FRESULT f_sync (FIL* fp);											                    /* Flush cached data of the writing file */ //冲洗缓冲数据
+FRESULT f_opendir (DIR* dp, const TCHAR* path);						        /* Open a directory */                      //打开一个目录
 FRESULT f_closedir (DIR* dp);										                  /* Close an open directory */
-FRESULT f_readdir (DIR* dp, FILINFO* fno);							          /* Read a directory item */
+FRESULT f_readdir (DIR* dp, FILINFO* fno);							          /* Read a directory item */                 //读取目录条目
 FRESULT f_findfirst (DIR* dp, FILINFO* fno, const TCHAR* path, const TCHAR* pattern);	/* Find first file */
-FRESULT f_findnext (DIR* dp, FILINFO* fno);							/* Find next file */
-FRESULT f_mkdir (const TCHAR* path);								    /* Create a sub directory */
-FRESULT f_unlink (const TCHAR* path);								    /* Delete an existing file or directory */
-FRESULT f_rename (const TCHAR* path_old, const TCHAR* path_new);	/* Rename/Move a file or directory */
-FRESULT f_stat (const TCHAR* path, FILINFO* fno);					        /* Get file status */
-FRESULT f_chmod (const TCHAR* path, BYTE attr, BYTE mask);			  /* Change attribute of a file/dir */
-FRESULT f_utime (const TCHAR* path, const FILINFO* fno);			    /* Change timestamp of a file/dir */
-FRESULT f_chdir (const TCHAR* path);								              /* Change current directory */
+FRESULT f_findnext (DIR* dp, FILINFO* fno);							          /* Find next file */
+FRESULT f_mkdir (const TCHAR* path);								              /* Create a sub directory */    //创建一个目录
+FRESULT f_unlink (const TCHAR* path);								              /* Delete an existing file or directory */  //移除一个对象
+FRESULT f_rename (const TCHAR* path_old, const TCHAR* path_new);	/* Rename/Move a file or directory */   //重命名一个对象
+FRESULT f_stat (const TCHAR* path, FILINFO* fno);					        /* Get file status */ //获取文件状态
+FRESULT f_chmod (const TCHAR* path, BYTE attr, BYTE mask);			  /* Change attribute of a file/dir */    //修改一个文件或目录的属性。
+FRESULT f_utime (const TCHAR* path, const FILINFO* fno);			    /* Change timestamp of a file/dir */    //修改一个文件或目录的时间戳。
+FRESULT f_chdir (const TCHAR* path);								              /* Change current directory */          //改变一个驱动器的当前目录。
 FRESULT f_chdrive (const TCHAR* path);								            /* Change current drive */
 FRESULT f_getcwd (TCHAR* buff, UINT len);							            /* Get current directory */
-FRESULT f_getfree (const TCHAR* path, DWORD* nclst, FATFS** fatfs);	/* Get number of free clusters on the drive */
+FRESULT f_getfree (const TCHAR* path, DWORD* nclst, FATFS** fatfs);	/* Get number of free clusters on the drive */  //获取空闲簇的数目
 FRESULT f_getlabel (const TCHAR* path, TCHAR* label, DWORD* vsn);	  /* Get volume label */
 FRESULT f_setlabel (const TCHAR* label);							              /* Set volume label */
-FRESULT f_forward (FIL* fp, UINT(*func)(const BYTE*,UINT), UINT btf, UINT* bf);	/* Forward data to the stream */
+FRESULT f_forward (FIL* fp, UINT(*func)(const BYTE*,UINT), UINT btf, UINT* bf);	/* Forward data to the stream */  //读取文件数据并将其转发到数据流设备。
 FRESULT f_expand (FIL* fp, FSIZE_t szf, BYTE opt);					  /* Allocate a contiguous block to the file */
-FRESULT f_mount (FATFS* fs, const TCHAR* path, BYTE opt);			/* Mount/Unmount a logical drive */
-FRESULT f_mkfs (const TCHAR* path, BYTE opt, DWORD au, void* work, UINT len);	  /* Create a FAT volume */
+FRESULT f_mount (FATFS* fs, const TCHAR* path, BYTE opt);			/* Mount/Unmount a logical drive */     //在FatFs模块上注册/注销一个工作区(文件系统对象)
+FRESULT f_mkfs (const TCHAR* path, BYTE opt, DWORD au, void* work, UINT len);	  /* Create a FAT volume */   //在驱动器上创建一个文件系统
 FRESULT f_fdisk (BYTE pdrv, const DWORD* szt, void* work);			                /* Divide a physical drive into some partitions */
 FRESULT f_setcp (WORD cp);								      /* Set current code page */
-int f_putc (TCHAR c, FIL* fp);							    /* Put a character to the file */
-int f_puts (const TCHAR* str, FIL* cp);				  /* Put a string to the file */
+int f_putc (TCHAR c, FIL* fp);							    /* Put a character to the file */     //向文件中写入一个字符
+int f_puts (const TCHAR* str, FIL* cp);				  /* Put a string to the file */        //向文件中写入一个字符串
 int f_printf (FIL* fp, const TCHAR* str, ...);  /* Put a formatted string to the file */
-TCHAR* f_gets (TCHAR* buff, int len, FIL* fp);  /* Get a string from the file */
+TCHAR* f_gets (TCHAR* buff, int len, FIL* fp);  /* Get a string from the file */    //从文件中读取一个字符串
 
 #define f_eof(fp) ((int)((fp)->fptr == (fp)->obj.objsize))
 #define f_error(fp) ((fp)->err)

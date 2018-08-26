@@ -235,8 +235,10 @@ void OLED_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned 
  unsigned int j=0;
  unsigned char x,y;
   
-  if(y1%8==0) y=y1/8;      
-  else y=y1/8+1;
+  if(y1%8==0)
+    y=y1/8;      
+  else
+    y=y1/8+1;
 	for(y=y0;y<y1;y++)
 	{
 		OLED_Set_Pos(x0,y);

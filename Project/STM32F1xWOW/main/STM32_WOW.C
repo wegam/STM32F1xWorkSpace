@@ -401,7 +401,15 @@ void WOW_Configuration(void)
 #endif
 
 
+//*********************************FatFsTest*********************************//
+#ifdef FatFsTest
+	FatFsTest_Configuration();
+#endif
 
+//*********************************MmcSDTest*********************************//
+#ifdef MmcSDTest
+	MmcSDTest_Configuration();
+#endif
 
 }
 
@@ -795,6 +803,14 @@ void WOW_Server(void)
 	SWDTEST_Server();
 #endif
 
+//*********************************FatFsTest*********************************//
+#ifdef FatFsTest
+	FatFsTest_Server();
+#endif
+//*********************************MmcSDTest*********************************//
+#ifdef MmcSDTest
+	MmcSDTest_Server();
+#endif
 //IWDG_Feed();								//∂¿¡¢ø¥√≈π∑Œππ∑
 
 }

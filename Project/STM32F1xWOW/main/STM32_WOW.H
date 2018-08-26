@@ -184,6 +184,15 @@
 	#include "SWDTEST.H"
 #endif
 
+//*********************************FatFsTest*********************************//
+#ifdef FatFsTest
+	#include "FatFsTest.H"
+#endif
+//*********************************MmcSDTest*********************************//
+#ifdef MmcSDTest
+	#include "MmcSDTest.H"
+#endif
+
 
 
 

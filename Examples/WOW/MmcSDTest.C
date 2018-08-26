@@ -1,6 +1,6 @@
-#ifdef STM32_LCD
+#ifdef MmcSDTest
 
-#include "STM32_LCD.H"
+#include "MmcSDTest.H"
 
 //#include "string.h"				//串和内存操作函数头文件
 //#include "stm32f10x_dma.h"
@@ -22,6 +22,7 @@
 
 
 #include "TM1618.H"
+#include "MMC_SD.h"
 
 //#include "STM32_SDCard.H"
 //#include "GT32L32M0180.H"
@@ -34,6 +35,7 @@
 
 
 LCDDef	sLCD;
+SPIDef	sSCport;
 
 //GT32L32_Info_TypeDef 	GT32L32_Init;
 //GT32L32Def			GT32L32;
@@ -51,10 +53,16 @@ u16	mm=0;
 u8	ss=0;
 u8	hh=0;
 
+u8 bsr  = 0x08;
+
 u16 time=0;
 u32 ADCDATA = 0;
 //void GT32L32_PinSet(void);
-	
+FATFS fs[2]; /* 逻辑驱动器的工作区(文件系统对象) */	
+FIL fsrc, fdst; /* 文件对象 */
+BYTE buffer[4096]; /* 文件拷贝缓冲区 */
+FRESULT res; /* FatFs 函数公共结果代码 */
+UINT br, bw; /* 文件读/写字节计数 */
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
 //->功能描述	:	 
@@ -62,15 +70,38 @@ u32 ADCDATA = 0;
 //->输出		:
 //->返回 		:
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
-void STM32_LCD_Configuration(void)
+void MmcSDTest_Configuration(void)
 {	
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	
 	GPIO_DeInitAll();							//将所有的GPIO关闭----V20170605	
 	
-	LCD_Configuration();
-	TM1618_PinSet();
+  LCD_Configuration();
+//  TM1618_PinSet();
+  USART_DMA_ConfigurationNR	(USART1,115200,128);	//USART_DMA配置--查询方式，不开中断
+  
+  LCD_Printf (0,0,16,0,"为逻辑驱动器注册工作区......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//  /* 为逻辑驱动器注册工作区 */
+//  res = f_mount(&fs[0],"",1);
+//  LCD_Printf (0,16,16,0,"%2d",res);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  res = f_mount(&fs[1],"",1);
+//  LCD_Printf (0,32,16,0,"输出结果%0.2X",res);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//  res = f_open(&fsrc, "1:srcfile.dat", FA_OPEN_EXISTING | FA_READ);
+//  LCD_Printf (0,48,16,0,"%0.5X",res);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//  
+//  bsr = ~bsr;
+//  bsr = 0xFF&bsr;
+//  ADCDATA &= (0xFFFFFFFF^(~(u32)bsr)); 
+  
+  SD_Configuration();
+  
+  
+  
+  
+  
+  
+	
 
-//	GT32L32_Configuration();
+
   USART_DMA_ConfigurationNR	(USART1,115200,128);	//USART_DMA配置--查询方式，不开中断
 //  
   ADC_TempSensorConfiguration(&ADCDATA);								//STM32内部温度传感器配置
@@ -91,17 +122,17 @@ void STM32_LCD_Configuration(void)
 //->输出		:
 //->返回 		:
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
-void STM32_LCD_Server(void)
+void MmcSDTest_Server(void)
 {
-  for(mm=0;mm<800;mm++)
-  {
-    for(us=0;us<480;us++)
-    {
-      if(dspdata++>=0xFFFF)
-        dspdata=0;
-      LCD_DrawDot(mm,us,dspdata);
-    }
-  }
+//  for(mm=0;mm<800;mm++)
+//  {
+//    for(us=0;us<480;us++)
+//    {
+//      if(dspdata++>=0xFFFF)
+//        dspdata=0;
+//      LCD_DrawDot(mm,us,dspdata);
+//    }
+//  }
 ////	LCD_Server();			//显示服务相关
 //  if(time++>500)
 //  {
@@ -113,6 +144,58 @@ void STM32_LCD_Server(void)
 
 //	TM1618_DIS();
 }
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void SD_Configuration(void)
+{
+  u8 Flag = 0;
+  u32 sd_size;
+  LCD_Printf (0,48,16,0,"SD卡初始化......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数 
+  sSCport.Port.SPIx = SPI1;
+  sSCport.Port.CS_PORT  = GPIOC;
+  sSCport.Port.CS_Pin   = GPIO_Pin_6;
+  sSCport.Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_256;
+  
+  //========================初始化SD卡
+  Flag  = SD_Initialize(&sSCport);
+  if(Flag)
+  {
+    Flag  = 100;
+    LCD_Printf (0,64,16,0,"SD卡错误或者无卡");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  }
+  else
+  {
+    Flag  = 10;
+    LCD_Printf (0,64,16,0,"SD卡初始化状态:正常");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    LCD_Printf (0,80,16,0,"获取SD卡容量大小......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    //========================得到扇区数
+    sd_size=SD_GetSectorCount();  //获取SD卡的总扇区数（扇区数）--每扇区的字节数必为512，因为如果不是512，则初始化不能通过
+    //------------------------获取到数据
+    if(sd_size)
+    {
+      unsigned char num = 0;
+      num = LCD_Printf (0,96,16,0,"SD卡容量大小%d.....",sd_size);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      num+= LCD_Printf (num*8,96,16,0,"Kbyte:");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      num+= LCD_Printf (num*8,96,16,0,"%d..",sd_size/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      num+= LCD_Printf (num*8,96,16,0,"MB:");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      num+= LCD_Printf (num*8,96,16,0,"%3f",(double)(sd_size/1024)/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      num+= LCD_Printf (num*8,96,16,0,"GB:");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    }
+    else
+    {
+      LCD_Printf (0,96,16,0,"SD卡容量错误");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    }
+  }
+  
+}
+
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
@@ -397,11 +480,13 @@ void LCD_Configuration(void)
 	sLCD.Port.sDATABUS_Pin		=	GPIO_Pin_All;	
 	
 	sLCD.Flag.Rotate	=	Draw_Rotate_180D;		//使用旋转角度
+  sLCD.Data.BColor  = LCD565_BLACK;
+  sLCD.Data.PColor  = LCD565_WHITE;
 	
 	SPI->Port.SPIx		=	SPI1;
 	SPI->Port.CS_PORT	=	GPIOB;
 	SPI->Port.CS_Pin	=	GPIO_Pin_14;
-	SPI->Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
+	SPI->Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_128;
 	
 	SSD1963_Initialize(&sLCD);
 }
