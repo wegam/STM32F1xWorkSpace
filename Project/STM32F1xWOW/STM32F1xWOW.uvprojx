@@ -1141,6 +1141,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -2414,6 +2419,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -3691,6 +3701,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -4964,6 +4979,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -6241,6 +6261,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -7514,6 +7539,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -8791,6 +8821,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -10064,6 +10099,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -11341,6 +11381,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -12614,6 +12659,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -13891,6 +13941,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -15164,6 +15219,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -16441,6 +16501,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -17714,6 +17779,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -18991,6 +19061,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -20264,6 +20339,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -21541,6 +21621,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -22814,6 +22899,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -24091,6 +24181,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -25364,6 +25459,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -26641,6 +26741,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -27914,6 +28019,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -29191,6 +29301,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -30464,6 +30579,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -31741,6 +31861,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -33014,6 +33139,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -34291,6 +34421,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -35564,6 +35699,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -36841,6 +36981,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -38114,6 +38259,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -39391,6 +39541,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -40664,6 +40819,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>
@@ -41941,6 +42101,11 @@
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
             </File>
             <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
+            </File>
+            <File>
               <FileName>移植记录.txt</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Driver\FatFs\source\移植记录.txt</FilePath>
@@ -43214,6 +43379,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\FatFs\source\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>FatFsAPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\FatFs\source\FatFsAPI.c</FilePath>
             </File>
             <File>
               <FileName>移植记录.txt</FileName>

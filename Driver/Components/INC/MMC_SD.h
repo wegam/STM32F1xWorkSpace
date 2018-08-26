@@ -75,8 +75,8 @@ u8 SD_Initialize(SPIDef *SpiPort);							//初始化
 
 
 
-u8 SD_ReadDisk(u8*buf,u32 sector,u8 cnt);		//读块
-u8 SD_WriteDisk(u8*buf,u32 sector,u8 cnt);  //写块
+unsigned char SD_ReadDisk(u8*buf,u32 sector,u8 cnt);		//读SD卡扇区数据
+unsigned char SD_WriteDisk(u8*buf,u32 sector,u8 cnt);   //往SD卡写数据
 u32 SD_GetSectorCount(void);   					    //获取SD卡的总扇区数（扇区数）--每扇区的字节数必为512，因为如果不是512，则初始化不能通过
 unsigned char SD_GetCID(u8 *cid_data);      //获取SD卡的CID信息，包括制造商信息
 unsigned char SD_GetCSD(u8 *csd_data);      //获取SD卡的CSD信息，包括容量和速度信息
@@ -93,7 +93,7 @@ unsigned char SD_GetResponse(u8 Response);          //等待SD卡回应
 unsigned char SD_RecvData(u8*buf,u16 len);          //从sd卡读取一个数据包的内容
 unsigned char SD_SendBlock(u8*buf,u8 cmd);          //向sd卡写入一个数据包的内容 512字节
 unsigned char SD_SendCmd(u8 cmd, u32 arg, u8 crc);  //发送命令
-unsigned char SD_GetCID(u8 *cid_data);    //获取SD卡的CID信息，包括制造商信息
+
 
 
 

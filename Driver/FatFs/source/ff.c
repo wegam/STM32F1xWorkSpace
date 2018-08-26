@@ -37,7 +37,7 @@
 /* Character code support macros */
 #define IsUpper(c)		((c) >= 'A' && (c) <= 'Z')
 #define IsLower(c)		((c) >= 'a' && (c) <= 'z')
-#define IsDigit(c)		((c) >= '0' && (c) <= '9')
+#define IsDigit(c)		((c) >= '0' && (c) <= '9')    //判断是否为数字
 #define IsSurrogate(c)	((c) >= 0xD800 && (c) <= 0xDFFF)
 #define IsSurrogateH(c)	((c) >= 0xD800 && (c) <= 0xDBFF)
 #define IsSurrogateL(c)	((c) >= 0xDC00 && (c) <= 0xDFFF)
@@ -3529,24 +3529,30 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 	const TCHAR *tp, *tt;
 	TCHAR tc;
 	int i, vol = -1;
+  
 #if FF_STR_VOLUME_ID		/* Find string volume ID */
 	const char *sp;
 	char c;
 #endif
 
 	tt = tp = *path;
-	if (!tp) 
+	if (!tp)      //路径名无效
     return vol;	/* Invalid path name? */
-	do tc = *tt++; while ((UINT)tc >= (FF_USE_LFN ? ' ' : '!') && tc != ':');	/* Find a colon in the path */
+  //==============================在路径中查找冒号(冒号前为驱动器编号)
+	do
+    tc = *tt++; 
+  while ((UINT)tc >= (FF_USE_LFN ? ' ' : '!') && tc != ':');	/* Find a colon in the path */
 
-	if (tc == ':') 
+	if (tc == ':')    //查找到冒号
   {	/* DOS/Windows style volume ID? */
-		i = FF_VOLUMES;
-		if (IsDigit(*tp) && tp + 2 == tt) 
+		i = FF_VOLUMES;   //#define FF_VOLUMES		1 //驱动器数量
+    //-----------------------------检查是路径结构是否为数字+冒号并且获取驱动器编号
+		if (IsDigit(*tp) && tp + 2 == tt)         
     {	/* Is there a numeric volume ID + colon? */
-			i = (int)*tp - '0';	/* Get the LD number */
+			i = (int)*tp - '0';	/* Get the LD number */   //获取驱动器编号
 		}
-#if FF_STR_VOLUME_ID == 1	/* Arbitrary string is enabled */
+    //-----------------------------如果启用了任意字符串
+#if FF_STR_VOLUME_ID == 1	/* Arbitrary string is enabled */   //启用任意字符串
 		else 
     {
 			i = 0;
@@ -3556,14 +3562,17 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 				do 
         {	/* Compare the volume ID with path name */
 					c = *sp++; tc = *tp++;
-					if (IsLower(c)) c -= 0x20;
-					if (IsLower(tc)) tc -= 0x20;
+					if (IsLower(c))
+            c -= 0x20;
+					if (IsLower(tc))
+            tc -= 0x20;
 				}while (c && (TCHAR)c == tc);
 			}while ((c || tp != tt) && ++i < FF_VOLUMES);	/* Repeat for each id until pattern match */
 		}
 #endif
-		if (i < FF_VOLUMES)
-    {	/* If a volume ID is found, get the drive number and strip it */
+    //==============================如果找到卷ID，获取驱动器号并将其删除。
+		if (i < FF_VOLUMES)   //#define FF_VOLUMES		1 //驱动器数量 /* If a volume ID is found, get the drive number and strip it */
+    {	
 			vol = i;		/* Drive number */
 			*path = tt;		/* Snip the drive prefix off */
 		}
@@ -3609,7 +3618,8 @@ static BYTE check_fs (	/* 0:FAT, 1:exFAT, 2:Valid BS but not FAT, 3:Not a BS, 4:
 )
 {
 	fs->wflag = 0; fs->winsect = 0xFFFFFFFF;		/* Invaidate window */
-	if (move_window(fs, sect) != FR_OK) return 4;	/* Load boot record */
+	if (move_window(fs, sect) != FR_OK)
+    return 4;	/* Load boot record */
 
 	if (ld_word(fs->win + BS_55AA) != 0xAA55) return 3;	/* Check boot record signature (always here regardless of the sector size) */
 
@@ -3940,7 +3950,7 @@ static FRESULT validate (	/* Returns FR_OK or FR_INVALID_OBJECT */
 *函数名			:	f_mount
 *功能描述		:	在FatFs模块上注册/注销一个工作区(文件系统对象)
 *输入				: f_mount(&fs, "1:", 1); f_mount(&fs, "1:/", 1);
-*返回值			:	无
+*返回值			:	0:正确
 *修改时间		:	无
 *修改说明		:	无
 *应用举例		: f_mout(&fs,"0:",0);   // 挂载
@@ -3959,8 +3969,8 @@ FRESULT f_mount (
 	const TCHAR *rp = path;
 
 
-	/* Get logical drive number */
-	vol = get_ldnumber(&rp);
+	//==========================获取逻辑驱动器号
+	vol = get_ldnumber(&rp);  /* Get logical drive number */
 	if (vol < 0) 
     return FR_INVALID_DRIVE;
 	cfs = FatFs[vol];					/* Pointer to fs object */
@@ -3979,17 +3989,17 @@ FRESULT f_mount (
 
 	if (fs)
   {
-		fs->fs_type = 0;				/* Clear new fs object */
+		fs->fs_type = 0;				  /* Clear new fs object */
 #if FF_FS_REENTRANT						/* Create sync object for the new volume */
 		if (!ff_cre_syncobj((BYTE)vol, &fs->sobj))
       return FR_INT_ERR;
 #endif
 	}
 	FatFs[vol] = fs;					/* Register new fs object */
-
+  //==========================模式选项0：不要挂载（延迟安装），1：立即安装
 	if (opt == 0) 
     return FR_OK;			/* Do not mount now, it will be mounted later */
-
+  //==========================立即安装
 	res = find_volume(&path, &fs, 0);	/* Force mounted the volume */
 	LEAVE_FF(fs, res);
 }
@@ -5217,45 +5227,72 @@ FRESULT f_getfree (
 
 	/* Get logical drive */
 	res = find_volume(&path, &fs, 0);
-	if (res == FR_OK) {
+	if (res == FR_OK)
+  {
 		*fatfs = fs;				/* Return ptr to the fs object */
-		/* If free_clst is valid, return it without full FAT scan */
-		if (fs->free_clst <= fs->n_fatent - 2) {
+		//========================/* If free_clst is valid, return it without full FAT scan */
+		if (fs->free_clst <= fs->n_fatent - 2)
+    {
 			*nclst = fs->free_clst;
-		} else {
-			/* Scan FAT to obtain number of free clusters */
+		}
+    else
+   {
+			//========================/* Scan FAT to obtain number of free clusters */
 			nfree = 0;
-			if (fs->fs_type == FS_FAT12) {	/* FAT12: Scan bit field FAT entries */
+			if (fs->fs_type == FS_FAT12)  /* FAT12: Scan bit field FAT entries */
+      {	
 				clst = 2; obj.fs = fs;
-				do {
+				do
+        {
 					stat = get_fat(&obj, clst);
-					if (stat == 0xFFFFFFFF) { res = FR_DISK_ERR; break; }
-					if (stat == 1) { res = FR_INT_ERR; break; }
-					if (stat == 0) nfree++;
-				} while (++clst < fs->n_fatent);
-			} else {
+					if (stat == 0xFFFFFFFF)
+          {
+            res = FR_DISK_ERR;
+            break;
+          }
+					if (stat == 1)
+          {
+            res = FR_INT_ERR;
+            break;
+          }
+					if (stat == 0)
+            nfree++;
+				}while (++clst < fs->n_fatent);
+			}
+      else
+      {
 #if FF_FS_EXFAT
-				if (fs->fs_type == FS_EXFAT) {	/* exFAT: Scan allocation bitmap */
+        //========================/* exFAT: Scan allocation bitmap */
+				if (fs->fs_type == FS_EXFAT)  
+        {	
 					BYTE bm;
 					UINT b;
 
 					clst = fs->n_fatent - 2;	/* Number of clusters */
-					sect = fs->database;		/* Assuming bitmap starts at cluster 2 */
-					i = 0;						/* Offset in the sector */
-					do {	/* Counts numbuer of bits with zero in the bitmap */
-						if (i == 0) {
+					sect = fs->database;		  /* Assuming bitmap starts at cluster 2 */
+					i = 0;						        /* Offset in the sector */
+          //========================/* Counts numbuer of bits with zero in the bitmap */
+					do
+          {	
+						if (i == 0)
+            {
 							res = move_window(fs, sect++);
-							if (res != FR_OK) break;
+							if (res != FR_OK)
+                break;
 						}
-						for (b = 8, bm = fs->win[i]; b && clst; b--, clst--) {
-							if (!(bm & 1)) nfree++;
+						for (b = 8, bm = fs->win[i]; b && clst; b--, clst--)
+            {
+							if (!(bm & 1))
+                nfree++;
 							bm >>= 1;
 						}
 						i = (i + 1) % SS(fs);
 					} while (clst);
-				} else
+				}
+        else
 #endif
-				{	/* FAT16/32: Scan WORD/DWORD FAT entries */
+        //========================/* FAT16/32: Scan WORD/DWORD FAT entries */
+				{	
 					clst = fs->n_fatent;	/* Number of entries */
 					sect = fs->fatbase;		/* Top of the FAT */
 					i = 0;					/* Offset in the sector */
@@ -5264,23 +5301,26 @@ FRESULT f_getfree (
 							res = move_window(fs, sect++);
 							if (res != FR_OK) break;
 						}
-						if (fs->fs_type == FS_FAT16) {
+						if (fs->fs_type == FS_FAT16)
+            {
 							if (ld_word(fs->win + i) == 0) nfree++;
 							i += 2;
-						} else {
-							if ((ld_dword(fs->win + i) & 0x0FFFFFFF) == 0) nfree++;
+						}
+            else
+            {
+							if ((ld_dword(fs->win + i) & 0x0FFFFFFF) == 0)
+                nfree++;
 							i += 4;
 						}
 						i %= SS(fs);
 					} while (--clst);
 				}
 			}
-			*nclst = nfree;			/* Return the free clusters */
+			*nclst = nfree;			    /* Return the free clusters */
 			fs->free_clst = nfree;	/* Now free_clst is valid */
-			fs->fsi_flag |= 1;		/* FAT32: FSInfo is to be updated */
+			fs->fsi_flag |= 1;		  /* FAT32: FSInfo is to be updated */
 		}
 	}
-
 	LEAVE_FF(fs, res);
 }
 

@@ -232,7 +232,7 @@ unsigned char SD_GetCSD(u8 *csd_data)
 *功能描述		:	获取SD卡的总扇区数（扇区数）--每扇区的字节数必为512，因为如果不是512，则初始化不能通过
 *输入				: cid_data(存放CID的内存地址，至少16Byte）
 *返回值			:	0: 取容量出错
-              其他:SD卡的容量(扇区数/512字节)	
+              其他:SD卡的容量-单位KByte(扇区数/512字节)	
 *修改时间		:	无
 *修改说明		:	无
 *注释				:	wegam@sina.com
@@ -346,15 +346,22 @@ u8 SD_Initialize(SPIDef *SpiPort)
     return r1; 	   
 	return 0xaa;//其他错误
 }
-//读SD卡
-//buf:数据缓存区
-//sector:扇区
-//cnt:扇区数
-//返回值:0,ok;其他,失败.
-u8 SD_ReadDisk(u8*buf,u32 sector,u8 cnt)
+/*******************************************************************************
+*函数名			:	SD_ReadDisk
+*功能描述		:	读SD卡扇区
+*输入				: buf:数据缓存区
+              sector:扇区
+              cnt:扇区数
+*返回值			:	0,ok;其他,失败
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned char SD_ReadDisk(u8*buf,u32 sector,u8 cnt)
 {
 	u8 r1;
-	if(SD_Type!=SD_TYPE_V2HC)sector <<= 9;//转换为字节地址
+	if(SD_Type!=SD_TYPE_V2HC)
+    sector <<= 9;//转换为字节地址
 	if(cnt==1)
 	{
 		r1=SD_SendCmd(CMD17,sector,0X01);//读命令
@@ -362,7 +369,8 @@ u8 SD_ReadDisk(u8*buf,u32 sector,u8 cnt)
 		{
 			r1=SD_RecvData(buf,512);//接收512个字节	   
 		}
-	}else
+	}
+  else
 	{
 		r1=SD_SendCmd(CMD18,sector,0X01);//连续读命令
 		do
@@ -375,12 +383,18 @@ u8 SD_ReadDisk(u8*buf,u32 sector,u8 cnt)
 	SD_DisSelect();//取消片选
 	return r1;//
 }
-//写SD卡
-//buf:数据缓存区
-//sector:起始扇区
-//cnt:扇区数
-//返回值:0,ok;其他,失败.
-u8 SD_WriteDisk(u8*buf,u32 sector,u8 cnt)
+/*******************************************************************************
+*函数名			:	SD_WriteDisk
+*功能描述		:	往SD卡写数据
+*输入				: buf:数据缓存区
+              sector:起始扇区
+              cnt:扇区数
+*返回值			:	0,ok;其他,失败
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned char SD_WriteDisk(u8*buf,u32 sector,u8 cnt)
 {
 	u8 r1;
 	if(SD_Type!=SD_TYPE_V2HC)sector *= 512;//转换为字节地址

@@ -857,14 +857,13 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...)			
 	char	DataBuffer[256]={0};			//记录format内码
   unsigned char CodeBuffer[130]={0};
 	//1)**********获取数据宽度
-	u16 InputDataSize=strlen((const char*)format);		//获取数据宽度	
-	
+  u16 InputDataSize=0;		//获取数据宽度	
 	//3)**********args为定义的一个指向可变参数的变量，va_list以及下边要用到的va_start,va_end都是是在定义，可变参数函数中必须要用到宏， 在stdarg.h头文件中定义
 	va_list args; 
 	//5)**********初始化args的函数，使其指向可变参数的第一个参数，format是可变参数的前一个参数
 	va_start(args, format);
 	//6)**********正常情况下返回生成字串的长度(除去\0),错误情况返回负值
-	vsnprintf(DataBuffer, InputDataSize+1,format, args);
+	InputDataSize = vsnprintf(DataBuffer, InputDataSize,format, args);
 
 	//7)**********结束可变参数的获取
 	va_end(args);                                      		

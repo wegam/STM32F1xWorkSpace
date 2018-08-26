@@ -7,7 +7,8 @@
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
 
-#include "diskio.h"		/* FatFs lower layer API */
+#include "diskio.h"		  /* FatFs lower layer API */
+#include "FatFsAPI.h"	  /* 自定义API接口*/
 
 /* Definitions of physical drive number for each drive */
 #define DEV_RAM		0	/* Example: Map Ramdisk to physical drive 0 */
@@ -20,10 +21,10 @@
 /*-----------------------------------------------------------------------*/
 //====================添加__weak占位函数START20180825
 //-------------------disk_status
-__weak int RAM_disk_status(void)
-{
-  return 0;
-}
+//__weak int RAM_disk_status(void)
+//{
+//  return 0;
+//}
 __weak int MMC_disk_status(void)
 {
   return 0;
@@ -33,10 +34,10 @@ __weak int USB_disk_status(void)
   return 0;
 }
 //-------------------disk_initialize
-__weak int RAM_disk_initialize(void)
-{
-  return 0;
-}
+//__weak int RAM_disk_initialize(void)
+//{
+//  return 0;
+//}
 __weak int MMC_disk_initialize(void)
 {
   return 0;
@@ -46,10 +47,10 @@ __weak int USB_disk_initialize(void)
   return 0;
 }
 //-------------------disk_read
-__weak int RAM_disk_read(BYTE *buff,DWORD sector,UINT count)
-{
-  return 0;
-}
+//__weak int RAM_disk_read(BYTE *buff,DWORD sector,UINT count)
+//{
+//  return 0;
+//}
 __weak int MMC_disk_read(BYTE *buff,DWORD sector,UINT count)
 {
   return 0;
@@ -59,10 +60,10 @@ __weak int USB_disk_read(BYTE *buff,DWORD sector,UINT count)
   return 0;
 }
 //-------------------disk_write
-__weak int RAM_disk_write(const BYTE *buff,DWORD sector,UINT count)
-{
-  return 0;
-}
+//__weak int RAM_disk_write(const BYTE *buff,DWORD sector,UINT count)
+//{
+//  return 0;
+//}
 __weak int MMC_disk_write(const BYTE *buff,DWORD sector,UINT count)
 {
   return 0;
@@ -81,10 +82,10 @@ DSTATUS disk_status (
 
 	switch (pdrv) {
 	case DEV_RAM :
-		result = RAM_disk_status();
-
+//		result = RAM_disk_status();
+    
 		// translate the reslut code here
-
+    result = SD_disk_status();
 		return stat;
 
 	case DEV_MMC :
@@ -117,11 +118,14 @@ DSTATUS disk_initialize (
 	DSTATUS stat;
 	int result;
 
-	switch (pdrv) {
+	switch (pdrv)
+  {
 	case DEV_RAM :
-		result = RAM_disk_initialize();
+//		result = RAM_disk_initialize();
+    
 
-		// translate the reslut code here
+    // translate the reslut code here
+    result = SD_disk_initialize();
 
 		return stat;
 
@@ -160,11 +164,11 @@ DRESULT disk_read (
 
 	switch (pdrv) {
 	case DEV_RAM :
-		// translate the arguments here
-
-		result = RAM_disk_read(buff, sector, count);
+    // translate the reslut code here
+//		result = RAM_disk_read(buff, sector, count);
 
 		// translate the reslut code here
+    result = SD_disk_read(buff, sector, count);
 
 		return res;
 
@@ -210,10 +214,10 @@ DRESULT disk_write (
 	case DEV_RAM :
 		// translate the arguments here
 
-		result = RAM_disk_write(buff, sector, count);
+//		result = RAM_disk_write(buff, sector, count);
 
 		// translate the reslut code here
-
+    result = SD_disk_write(buff, sector, count);
 		return res;
 
 	case DEV_MMC :
