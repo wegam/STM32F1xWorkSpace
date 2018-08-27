@@ -4966,7 +4966,8 @@ FRESULT f_opendir (
 	DEF_NAMBUF
 
 
-	if (!dp) return FR_INVALID_OBJECT;
+	if (!dp)
+    return FR_INVALID_OBJECT;
 
 	/* Get logical drive */
 	res = find_volume(&path, &fs, 0);

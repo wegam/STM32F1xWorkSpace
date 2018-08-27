@@ -96,18 +96,18 @@ typedef DWORD FSIZE_t;
 
 typedef struct {
 	BYTE	fs_type;		/* Filesystem type (0:N/A) */
-	BYTE	pdrv;			/* Physical drive number */
-	BYTE	n_fats;			/* Number of FATs (1 or 2) */
-	BYTE	wflag;			/* win[] flag (b0:dirty) */
+	BYTE	pdrv;			  /* Physical drive number */     //驱动器号
+	BYTE	n_fats;			/* Number of FATs (1 or 2) */   //文件分配表的数目
+	BYTE	wflag;			/* win[] flag (b0:dirty) */     //文件是否改动的标志，为1时要回写。
 	BYTE	fsi_flag;		/* FSINFO flags (b7:disabled, b0:dirty) */
-	WORD	id;				/* Volume mount ID */
-	WORD	n_rootdir;		/* Number of root directory entries (FAT12/16) */
-	WORD	csize;			/* Cluster size [sectors] */
+	WORD	id;				  /* Volume mount ID */           //文件系统加载ID
+	WORD	n_rootdir;  /* Number of root directory entries (FAT12/16) */ //根目录区目录项的数目
+	WORD	csize;			/* Cluster size [sectors] */    //每个簇的扇区数目
 #if FF_MAX_SS != FF_MIN_SS
 	WORD	ssize;			/* Sector size (512, 1024, 2048 or 4096) */
 #endif
 #if FF_USE_LFN
-	WCHAR*	lfnbuf;			/* LFN working buffer */
+	WCHAR*	lfnbuf;	  /* LFN working buffer */
 #endif
 #if FF_FS_EXFAT
 	BYTE*	dirbuf;			/* Directory entry block scratchpad buffer for exFAT */
@@ -116,11 +116,11 @@ typedef struct {
 	FF_SYNC_t	sobj;		/* Identifier of sync object */
 #endif
 #if !FF_FS_READONLY
-	DWORD	last_clst;		/* Last allocated cluster */
-	DWORD	free_clst;		/* Number of free clusters */
+	DWORD	last_clst;  /* Last allocated cluster */
+	DWORD	free_clst;  /* Number of free clusters */
 #endif
 #if FF_FS_RPATH
-	DWORD	cdir;			/* Current directory start cluster (0:root) */
+	DWORD	cdir;			  /* Current directory start cluster (0:root) */  //使用相对路径，则要存储文件系统当前目录
 #if FF_FS_EXFAT
 	DWORD	cdc_scl;		/* Containing directory start cluster (invalid when cdir is 0) */
 	DWORD	cdc_size;		/* b31-b8:Size of containing directory, b7-b0: Chain status */
@@ -189,10 +189,10 @@ typedef struct {
 
 typedef struct {
 	FFOBJID	obj;			/* Object identifier */
-	DWORD	dptr;			/* Current read/write offset */
+	DWORD	dptr;			  /* Current read/write offset */
 	DWORD	clust;			/* Current cluster */
-	DWORD	sect;			/* Current sector (0:Read operation has terminated) */
-	BYTE*	dir;			/* Pointer to the directory item in the win[] */
+	DWORD	sect;			  /* Current sector (0:Read operation has terminated) */
+	BYTE*	dir;			  /* Pointer to the directory item in the win[] */
 	BYTE	fn[12];			/* SFN (in/out) {body[8],ext[3],status[1]} */
 #if FF_USE_LFN
 	DWORD	blk_ofs;		/* Offset of current entry block being processed (0xFFFFFFFF:Invalid) */

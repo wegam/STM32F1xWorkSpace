@@ -32,7 +32,8 @@ int SD_disk_read(BYTE *buff,DWORD sector,UINT count);
 int SD_disk_write(const BYTE *buff,DWORD sector,UINT count);
 
 
-unsigned char SD_disk_getcapacity(unsigned char *drv,unsigned long *total,unsigned long *free);
+unsigned char SD_disk_getcapacity(unsigned char *drv,unsigned long *total,unsigned long *free);   //获取磁盘的总容量和剩余容量
+bool FilSearch(FATFS *fs,DIR *dir,TCHAR *path,u8 *name,char (*p)[13]);  //在指定路径下查找指定扩展名的文件，并记录在(*p)[13]数组中，注意最大记录条数
 
 
 #endif
