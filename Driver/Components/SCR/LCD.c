@@ -479,7 +479,7 @@ void LCD_ShowAntenna(
                     u16 x,			//x				:起点x坐标
 										u16 y,			//y				:起点y坐标
                     u8 Num,
-										...)
+										u16 color)
 {	
   unsigned char GetBufferLength	=	0;
   unsigned char CodeBuffer[32]={0};
@@ -501,6 +501,7 @@ void LCD_ShowAntenna(
     Num=4;
   }
   GetBufferLength = GT32L32_GetAntennaCode(Num,CodeBuffer);
+//	LCD_Show(x,y,12,GetBufferLength,CodeBuffer);
 	LCD_ShowWord(x,y,12,GetBufferLength,CodeBuffer,PenColor);
 }
 /*******************************************************************************
@@ -513,7 +514,7 @@ void LCD_ShowBattery(
                     u16 x,			//x				:起点x坐标
 										u16 y,			//y				:起点y坐标
                     u8 Num,
-										u16 color)
+										u16 PenColor)
 {
   unsigned char GetBufferLength	=	0;
   unsigned char CodeBuffer[64]={0};
@@ -522,7 +523,7 @@ void LCD_ShowBattery(
     Num=3;
   }
   GetBufferLength = GT32L32_GetBatteryCode(Num,CodeBuffer);
-	LCD_ShowWord(x,y,12,GetBufferLength,CodeBuffer,color);
+	LCD_ShowWord(x,y,12,GetBufferLength,CodeBuffer,PenColor);
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -546,8 +547,8 @@ void LCD_ShowChar(
 //	CoordinateTransform(&x1,&y1,&x2,&y2);
 	x1	=	x;
 	y1	=	y;
-  if(x>LCDSYS->Data.MaxV-font||y>LCDSYS->Data.MaxH-font)
-			return;
+//  if(x>LCDSYS->Data.MaxV-font||y>LCDSYS->Data.MaxH-font)
+//			return;
     x2	=	x+font/2-1;
     y2	=	y+font-1;
 	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
@@ -613,8 +614,8 @@ void LCD_ShowWord(
 	x1	=	x;
 	y1	=	y;
   
-  if(x>LCDSYS->Data.MaxH-font||y>LCDSYS->Data.MaxV-font)
-    return;
+//  if(x>LCDSYS->Data.MaxH-font||y>LCDSYS->Data.MaxV-font)
+//    return;
   x2	=	x+font-1;
   y2	=	y+font-1;
 	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
@@ -826,11 +827,16 @@ void LCD_ShowHex(
     }
     //========================插入空格
     //3=====================读取点阵数据
-    GetBufferLength	=	GT32L32_ReadCode(font,' ',CodeBuffer);		//从字库中读数据并返回数据长度
+//    GetBufferLength	=	GT32L32_ReadCode(font,' ',CodeBuffer);		//从字库中读数据并返回数据长度
     //4=====================写入屏幕
-    LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer,0);
+//    LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer,0);
     //5=====================显示地址增加
     x+=font/2;
+		if(x>MaxH-font)
+		{
+			y+=font;
+			x=0;
+		}
 	}
 }
 /*******************************************************************************

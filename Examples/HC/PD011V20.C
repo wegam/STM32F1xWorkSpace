@@ -192,12 +192,16 @@ void PD011V20_GpioConfiguration(void)
 void PD011V20_UsartServer(void)		//串口
 {
 	u8 RxNum=0;
-	if(RS485BTime++>=30)
+	if(RS485BTime++>=500)
 	{
 		RS485BTime	=	0;
 		RS485NUM++;
 		RS485_DMAPrintf(&RS485B,"RS485B发送测试数据%0.3d",RS485NUM);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		RS485_DMAPrintf(&RS485A,"RS485A发送测试数据%0.3d",RS485NUM);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//		RS485_DMAPrintf(&RS485A,"RS485A发送测试数据%0.3d",RS485NUM);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//		RS485_DMASend(&RS485A,&RS485NUM,1);
+		memset(TxdBuffer4,RS485NUM,16);
+		RS485_DMASend(&RS485A,TxdBuffer4,16);
+		
 	}
 	RxNum=RS485_ReadBufferIDLE(&RS485B,RevBuffer2);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)

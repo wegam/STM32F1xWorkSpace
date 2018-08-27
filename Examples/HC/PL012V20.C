@@ -13,9 +13,9 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
-#ifdef PL012V11				//拆零柜LCD板
+#ifdef PL012V20				//拆零柜LCD板
 
-#include "PL012V11.H"
+#include "PL012V20.H"
 
 //#include "R61509V.h"
 #include "ILI9326.h"
@@ -78,7 +78,8 @@ SWITCHID_CONF	SWITCHID;
 u8 SwitchID=0;	//拔码开关地址
 
 
-
+u16 ATTime	=	0;
+u8 ATNum	=	0;
 
 
 
@@ -90,7 +91,7 @@ u8 SwitchID=0;	//拔码开关地址
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL012V11_Configuration(void)
+void PL012V20_Configuration(void)
 {
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
 	
@@ -109,7 +110,7 @@ void PL012V11_Configuration(void)
 	
 	RS485_Configuration();
 	
-	LCD_Printf(0		,0	,32	,0,"序号：");				//待发药槽位，后边的省略号就是可变参数
+//	LCD_Printf(0		,0	,32	,0,"序号：");				//待发药槽位，后边的省略号就是可变参数
 	
 	SwitchID_Configuration();
 	
@@ -118,7 +119,7 @@ void PL012V11_Configuration(void)
 	
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--指示灯
-	PWM_OUT(TIM3,PWM_OUTChannel3,500,200);		//PWM设定-20161127版本--背光
+	PWM_OUT(TIM3,PWM_OUTChannel3,500,500);		//PWM设定-20161127版本--背光
 	memset(TxdBuffe,0xA5,128);
 }
 /*******************************************************************************
@@ -128,23 +129,24 @@ void PL012V11_Configuration(void)
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL012V11_Server(void)
+void PL012V20_Server(void)
 {	
 	IWDG_Feed();								//独立看门狗喂狗
-	LCD_Display();
-	return;
+//	LCD_Display();
+//	return;
 	
-//	RS485_Server();
-	if(DelayTime++>=500)
-	{
-		DelayTime	=	0;
-	}
-	if(LCDTime++>=1000)
-	{
-		LCDTime	=	0;
-//		R61509V_Clean(R61509V_BRED); 					//清除屏幕函数
-		LCD_Display();
-	}
+	RS485_Server();
+	return;
+//	if(DelayTime++>=500)
+//	{
+//		DelayTime	=	0;
+//	}
+//	if(LCDTime++>=1000)
+//	{
+//		LCDTime	=	0;
+////		R61509V_Clean(R61509V_BRED); 					//清除屏幕函数
+//		LCD_Display();
+//	}
 //	SwitchID_Server();
 	 
 //	if(LCDTime==500)
@@ -183,6 +185,29 @@ void PL012V11_Server(void)
 *******************************************************************************/
 void RS485_Server(void)
 {
+#if 1
+//	if(ATTime++>1000)
+//	{
+//		ATTime=0;
+//		if(ATNum++>4)
+//			ATNum=0;
+//		LCD_Clean(LCD565_BLACK); 					//清除屏幕函数
+//	}
+//	LCD_ShowAntenna(300,0,ATNum,200);   //显示12x12天线
+	RxNum=RS485_ReadBufferIDLE(&RS485,RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(RxNum)
+	{
+		LCD_ShowAntenna(300,0,4,200);   //显示12x12天线
+//		RxNum	=	200;
+//		memset(RxdBuffe,0x00,200);
+//		LCD_Show(0,100,32,RxNum,RxdBuffe);
+		LCD_Fill(0,16,399,40,sLCD.Data.BColor);
+		LCD_ShowHex(0,16,32,RxNum,8,RxdBuffe);                //显示十六进制数据
+		LCD_Show(0,100,32,RxNum,RxdBuffe);
+//		PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
+	}
+	return;
+#endif
 #if 0
 	RxNum=RS485_ReadBufferIDLE(&RS485,RevBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum	==	100)
@@ -421,7 +446,7 @@ void ILI9326_Configuration(void)
 	sLCD.GT32L32.SPI.Port.SPIx			=	SPI1;
 	sLCD.GT32L32.SPI.Port.CS_PORT		=	GPIOA;
 	sLCD.GT32L32.SPI.Port.CS_Pin		=	GPIO_Pin_4;
-	sLCD.GT32L32.SPI.Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_64;
+	sLCD.GT32L32.SPI.Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_8;
 
 	ILI9326_Initialize(&sLCD);
 }

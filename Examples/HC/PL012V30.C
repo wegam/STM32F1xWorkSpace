@@ -197,6 +197,10 @@ void RS485_Server(void)
 //		RxNum	=	200;
 //		memset(RxdBuffe,0x00,200);
 //		LCD_Show(0,100,32,RxNum,RxdBuffe);
+//		LCD_Clean(LCD565_BLACK);	//清除屏幕函数
+//		LCD_Fill(0,16,399,31,LCD565_GBLUE);
+		LCD_Fill(0,16,399,32,sLCD.Data.BColor);
+		LCD_ShowHex(0,16,16,RxNum,8,RxdBuffe);                //显示十六进制数据
 		LCD_Show(0,100,32,RxNum,RxdBuffe);
 //		PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
 	}

@@ -95,18 +95,19 @@ static void R61509V_SetWindowAddress(			//设置窗口地址
 					Model	=	0X5028;
 			break;
 	}
+	//======================================区域设置
 	LCD_WriteCommand(R61509V_R210_HSA,pR61509V->Data.HSX);		//Window Horizontal RAM Address Start(R210h)		//水平
 	LCD_WriteCommand(R61509V_R211_HEA,pR61509V->Data.HEX);		//Window Horizontal RAM Address End(R211h)			//水平
 	LCD_WriteCommand(R61509V_R212_VSA,pR61509V->Data.VSY);		//Window Vertical RAM Address Start (R212h)			//垂直
 	LCD_WriteCommand(R61509V_R213_VEA,pR61509V->Data.VEY);		//Window Vertical RAM Address End (R213h)				//垂直
-	
+	//======================================设置起始点
 	LCD_WriteCommand(R61509V_R200_HA,pR61509V->Data.HXA);			//RAM Address Set (Horizontal Address) (R200h)
 	LCD_WriteCommand(R61509V_R201_VA,pR61509V->Data.VYA);			//RAM Address Set (Vertical Address) (R201h)
-
+	//======================================设置写入模式
 	LCD_WriteCommand(R61509V_R003_EM,Model);						//RAM Address Set (Vertical Address) (R201h)
-//	R61509V_WriteIndex16(R61509V_R202_GDRW);								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
+	//======================================启动写入
 	LCD_WriteIndexStart();	
-	LCD_WriteData(R61509V_R202_GDRW);
+	LCD_WriteData(R61509V_R202_GDRW);		//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
 	LCD_WriteIndexEnd();
 }
 

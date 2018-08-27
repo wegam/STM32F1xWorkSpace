@@ -1,10 +1,10 @@
-#ifndef __PL012V11_H
-#define __PL012V11_H
+#ifndef __PL012V20_H
+#define __PL012V20_H
 
 
 
-void PL012V11_Configuration(void);
-void PL012V11_Server(void);
+void PL012V20_Configuration(void);
+void PL012V20_Server(void);
 
 
 void SwitchID_Configuration(void);

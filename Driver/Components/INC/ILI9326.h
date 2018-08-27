@@ -12,67 +12,28 @@
 #include "stm32f10x_type.h"
 #include "stm32f10x_gpio.h"
 
-#define ILI9326_W 400
-#define	ILI9326_H 240
+#include "LCD.H"
+
+#define	ILI9326_H 240		//水平方向点数，从左到右+
+#define ILI9326_V 400		//垂直方向点数，从上到下+
+
 
 //****************************控制定义End**************************
 
 
-typedef struct	_sPort//硬件接口结构体
-{
-	//____________背光控制定义	//1:开背光;0:关背光
-	GPIO_TypeDef* 	sBL_PORT;			//GPIOX
-	unsigned short 	sBL_Pin;				//GPIO_Pin_x
-
-	//____________RD控制定义1:取消片选;0:片选
-	GPIO_TypeDef* 	sRD_PORT;							//GPIOX
-	unsigned short 	sRD_Pin;							//GPIO_Pin_x
-
-	//____________REST控制定义 1:运行;0:复位
-	GPIO_TypeDef* 	sREST_PORT;						//GPIOX
-	unsigned short 	sREST_Pin;						//GPIO_Pin_x
-
-	//____________寄存器选择信号 1:选择索引或者状态寄存器;0:控制寄存器
-	GPIO_TypeDef* 	sRS_PORT;							//GPIOX
-	unsigned short 	sRS_Pin;							//GPIO_Pin_x
-
-	//____________读写数据（W/R）控制定义 1:读数据;0:写数据
-	GPIO_TypeDef* 	sWR_PORT;							//GPIOX
-	unsigned short 	sWR_Pin;							//GPIO_Pin_x
-
-	//____________使能控制定义 1:失能;0:片选
-	GPIO_TypeDef* 	sCS_PORT;							//GPIOX
-	unsigned short 	sCS_Pin;							//GPIO_Pin_x
-
-	//____________TE
-	GPIO_TypeDef* 	sTE_PORT;							//GPIOX
-	unsigned short 	sTE_Pin;							//GPIO_Pin_x
-
-	//____________数据接口
-	GPIO_TypeDef* 	sDATABUS_PORT;				//GPIOX
-	unsigned short 	sDATABUS_Pin;					//GPIO_Pin_x
-}sPortDef;
-typedef struct	_sLCD
-{
-	sPortDef sPort;			//硬件端口
-
-}sLCD_def;
-
-extern sLCD_def *sLCDs;
-
-#define ILI9326_CS_HIGH					(sLCDs->sPort.sCS_PORT->BSRR		= sLCDs->sPort.sCS_Pin)
-#define ILI9326_CS_LOW					(sLCDs->sPort.sCS_PORT->BRR 		= sLCDs->sPort.sCS_Pin)
-#define ILI9326_RS_HIGH					(sLCDs->sPort.sRS_PORT->BSRR 	= sLCDs->sPort.sRS_Pin)
-#define ILI9326_RS_LOW					(sLCDs->sPort.sRS_PORT->BRR 		= sLCDs->sPort.sRS_Pin)
-#define ILI9326_WR_HIGH					(sLCDs->sPort.sWR_PORT->BSRR 	= sLCDs->sPort.sWR_Pin)
-#define ILI9326_WR_LOW					(sLCDs->sPort.sWR_PORT->BRR 		= sLCDs->sPort.sWR_Pin)
-#define ILI9326_RD_HIGH					(sLCDs->sPort.sRD_PORT->BSRR 	= sLCDs->sPort.sRD_Pin)
-#define ILI9326_RD_LOW					(sLCDs->sPort.sRD_PORT->BRR 		= sLCDs->sPort.sRD_Pin)
-#define ILI9326_RST_HIGH				(sLCDs->sPort.sREST_PORT->BSRR = sLCDs->sPort.sREST_Pin)
-#define ILI9326_RST_LOW					(sLCDs->sPort.sREST_PORT->BRR 	= sLCDs->sPort.sREST_Pin)
-#define ILI9326_TE_HIGH					(sLCDs->sPort.sTE_PORT->BSRR 	= sLCDs->sPort.sTE_Pin)
-#define ILI9326_TE_LOW					(sLCDs->sPort.sTE_PORT->BRR 		= sLCDs->sPort.sTE_Pin)
-#define ILI9326_DATABUS_PORT		(sLCDs->sPort.sDATABUS_PORT)
+//#define ILI9326_CS_HIGH					(sLCDs->sPort.sCS_PORT->BSRR		= sLCDs->sPort.sCS_Pin)
+//#define ILI9326_CS_LOW					(sLCDs->sPort.sCS_PORT->BRR 		= sLCDs->sPort.sCS_Pin)
+//#define ILI9326_RS_HIGH					(sLCDs->sPort.sRS_PORT->BSRR 	= sLCDs->sPort.sRS_Pin)
+//#define ILI9326_RS_LOW					(sLCDs->sPort.sRS_PORT->BRR 		= sLCDs->sPort.sRS_Pin)
+//#define ILI9326_WR_HIGH					(sLCDs->sPort.sWR_PORT->BSRR 	= sLCDs->sPort.sWR_Pin)
+//#define ILI9326_WR_LOW					(sLCDs->sPort.sWR_PORT->BRR 		= sLCDs->sPort.sWR_Pin)
+//#define ILI9326_RD_HIGH					(sLCDs->sPort.sRD_PORT->BSRR 	= sLCDs->sPort.sRD_Pin)
+//#define ILI9326_RD_LOW					(sLCDs->sPort.sRD_PORT->BRR 		= sLCDs->sPort.sRD_Pin)
+//#define ILI9326_RST_HIGH				(sLCDs->sPort.sREST_PORT->BSRR = sLCDs->sPort.sREST_Pin)
+//#define ILI9326_RST_LOW					(sLCDs->sPort.sREST_PORT->BRR 	= sLCDs->sPort.sREST_Pin)
+//#define ILI9326_TE_HIGH					(sLCDs->sPort.sTE_PORT->BSRR 	= sLCDs->sPort.sTE_Pin)
+//#define ILI9326_TE_LOW					(sLCDs->sPort.sTE_PORT->BRR 		= sLCDs->sPort.sTE_Pin)
+//#define ILI9326_DATABUS_PORT		(sLCDs->sPort.sDATABUS_PORT)
 
 //BAC
 //#define ILI9326_CS_HIGH		(LCD_CS_PORT->BSRR = LCD_CS_PIN)
@@ -156,19 +117,96 @@ extern sLCD_def *sLCDs;
 
 
 
-#if 1
-	#define ILI9326_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,200)	//(LCD_BL_PORT->BSRR = LCD_BL_PIN)
-	#define ILI9326_BL_OFF	PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,2000,0)		//(LCD_BL_PORT->BRR = LCD_BL_PIN)
-#else
-	#define ILI9326_BL_ON		(LCD_BL_PORT->BSRR = LCD_BL_PIN)
-	#define ILI9326_BL_OFF	(LCD_BL_PORT->BRR = LCD_BL_PIN)
+//#if 1
+//	#define ILI9326_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,1000,200)	//(LCD_BL_PORT->BSRR = LCD_BL_PIN)
+//	#define ILI9326_BL_OFF	PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,2000,0)		//(LCD_BL_PORT->BRR = LCD_BL_PIN)
+//#else
+//	#define ILI9326_BL_ON		(LCD_BL_PORT->BSRR = LCD_BL_PIN)
+//	#define ILI9326_BL_OFF	(LCD_BL_PORT->BRR = LCD_BL_PIN)
 
-#endif
+//#endif
 
+
+///*功能位 */
+//#define LCD_DC1_IMAGE_ENABLE_BIT	0x1000
+//#define LCD_DC1_PARTIAL_ENABLE_BIT	0x0100
 
 /*功能位 */
-#define LCD_DC1_IMAGE_ENABLE_BIT	0x1000
-#define LCD_DC1_PARTIAL_ENABLE_BIT	0x0100
+#define LCD_DC1_IMAGE_ENABLE_BIT	0x1073
+#define LCD_DC1_PARTIAL_ENABLE_BIT	0x0173
+
+#define LCD_REG_ID	( (u16) 0x0000) /*Device ID Read*/
+//#define LCD_REG_DOC	( (u16) 0x0001) /*[8]SS,[10]SM */
+#define LCD_REG_DWC	( (u16) 0x0002) /*[8]BC */
+#define LCD_REG_EM	( (u16) 0x0003) /*[0:1]EPF[3]AM,[5:4]ID,[7]ORG,[9]HWM [12]BGR,[14]DFM,[15]TRI */
+#define LCD_REG_OS	( (u16) 0x0006) /*[0:1]DTHL,[2:3]DTHU,[4:6]ADST,[7:9]AVST [15]EGMODE*/
+
+#define LCD_REG_DC1	( (u16) 0x0007) /*[0:1]D,[4]DTE,[5]GON,[6]VON,[8]BASEE,[12:13]PTDE */
+#define LCD_REG_DC2	( (u16) 0x0008) /*[0:3]BP,[8:11]FP */
+#define LCD_REG_DC3	( (u16) 0x0009) /*[0:5]PTG,[8:10]PTS ,[11]PTV*/
+#define LCD_REG_ECC	( (u16) 0x000B) /*[0]COL [4]VEM*/
+#define LCD_REG_EDIC1	( (u16) 0x000C) /*[0:1]RIM,[4:5]DM,[8]RM,[12:14]ENC */
+#define LCD_REG_EDIC2	( (u16) 0x000F) /*[0]DPL,[1]EPL,[3]HSPL,[4]VSPL */
+#define LCD_REG_PIC1	( (u16) 0x0010) /*[0:5]RTNI,[8:9]DIV */
+#define LCD_REG_PIC2	( (u16) 0x0011) /*[0:2]STDI,[10:8]NOWI */
+#define LCD_REG_PIC3	( (u16) 0x0012) /*[10:8]VEQWI */
+
+#define LCD_REG_PIC4	( (u16) 0x0020) /*[0:5] RTNE,[8:9] DIVE*/
+#define LCD_REG_PIC5	( (u16) 0x0021) /*[3:0]STDE,[11:8]NOWE */
+#define LCD_REG_PIC6	( (u16) 0x0022) /*[11:9]VEQWE */
+
+#define LCD_REG_FMC	( (u16) 0x0090) /*[8:0]FMP,[14:12]FMI,[15]FMKM */
+#define LCD_REG_PC1	( (u16) 0x0100) /*[0]DSTB,[1]SLP,[4:6]AP,[7]APE,[10:8]BT,[12] SAP*/
+#define LCD_REG_PC2	( (u16) 0x0101) /*[2:0]VC,[6:4]DCO,[10:8]DC1 */
+#define LCD_REG_PC3	( (u16) 0x0102) /*[0:3]VRH,[4]PON,[5]PSON,[7]VREG1R,[8]VCMR */
+#define LCD_REG_PC4	( (u16) 0x0103) /*[12:8]VDV ,[13]VCOMG */
+#define LCD_REG_PC5	( (u16) 0x0107) /*[0:3]DCT ,[4:5]DCM */
+
+#define LCD_REG_HA	( (u16) 0x0200) /*[7:0] */
+#define LCD_REG_VA	( (u16) 0x0201) /*[8:0] */
+//#define LCD_CMD_GDRW	( (u16) 0x0202)
+#define LCD_CMD_FRCC	( (u16) 0x020B) /*[0:3] FRS*/
+
+
+//#define LCD_REG_HSA	( (u16) 0x0210) /*[7:0] */
+//#define LCD_REG_HEA	( (u16) 0x0211) /*[7:0] */
+//#define LCD_REG_VSA	( (u16) 0x0212) /*[8:0] */
+//#define LCD_REG_VEA	( (u16) 0x0213) /*[8:0] */
+#define LCD_REG_UIC	( (u16) 0x0280) /*[0:3]UID */
+#define LCD_REG_VHV	( (u16) 0x0281) /*[0:5]VCM */
+#define LCD_REG_OVPC	( (u16) 0x0290) /*[0:5]OTP,[11]VCM_PGM_EN [15]UID_PGM_en */
+#define LCD_REG_OVPE	( (u16) 0x0291) /*[1]VCM_EN,[8-13]VCM [14-15]PGM_CNT */
+#define LCD_REG_OPIK	( (u16) 0x0295) 
+
+#define LCD_REG_GC1	( (u16) 0x0300)/*[0:2]KP0[8:10]kp1*/
+#define LCD_REG_GC2	( (u16) 0x0301)/*[0:2]KP2[8:10]kp3*/
+#define LCD_REG_GC3	( (u16) 0x0302)/*[0:2]KP4[8:10]kp5*/
+#define LCD_REG_GC4	( (u16) 0x0305)/*[0:2]RP0[8:10]RP1*/
+#define LCD_REG_GC5	( (u16) 0x0306)/*[0:3]VRP0[8:12]VRP1*/
+#define LCD_REG_GC6	( (u16) 0x0307)/*[0:2]KN0[8:10]KN1*/
+#define LCD_REG_GC7	( (u16) 0x0308)/*[0:2]KN2[8:10]KN3*/
+#define LCD_REG_GC8	( (u16) 0x0309)/*[0:2]KN4[8:10]KN5*/
+#define LCD_REG_GC9	( (u16) 0x030C)/*[0:3]RN0[8:12]RN1*/
+#define LCD_REG_GC10	( (u16) 0x030D)/*[0:3]VKN0[8:12]VKN1*/
+
+//#define LCD_REG_BIDC1	( (u16) 0x0400) /*[0:5]SCN,[8:13]NL,  [15]GS*/
+//#define LCD_REG_BIDC2	( (u16) 0x0401) /*[2]NDL,[1]VLE,[0]REV */
+//#define LCD_REG_BIDC3	( (u16) 0x0404) /*[0:8]VL */
+
+#define LCD_REG_PTDP	( (u16) 0x0500) /*[8:0] */
+#define LCD_REG_PTSA	( (u16) 0x0501) /*[8:0] */
+#define LCD_REG_PTEA	( (u16) 0x0502) /*[8:0] */
+#define LCD_REG_PIDP	( (u16) 0x0503) /*[0:7]PTD,[8] PTS*/
+#define LCD_REG_PIRS	( (u16) 0x0504) /*[0:8] PTS*/
+#define LCD_REG_PIRE	( (u16) 0x0505) /*[0:8]PTE*/
+
+#define LCD_REG_RESET   ( (u16) 0x0600) /*[0]SRST */
+#define LCD_REG_IFEC    ( (u16) 0x0606) /*[0]TCREV0,[8]TCREV1 */
+
+#define LCD_REG_SIT1    ( (u16) 0x0702) /*Set internal timing */
+#define LCD_REG_SIT2    ( (u16) 0x0705) /*Set internal timing */
+#define LCD_REG_SIT3    ( (u16) 0x070B) /*Set internal timing */
+
 
 #define ILI9326_R000_IR			( (u16) 0x0000) 	//Index (IR)/*[10:0]REG ID */
 #define ILI9326_R000_DCR		( (u16) 0x0000) 	//Device code read (R000h)/*[15:0]	B509H Read */			//Device code read
@@ -199,10 +237,17 @@ extern sLCD_def *sLCDs;
 #define ILI9326_R201_VA			( (u16) 0x0201) 	//RAM Address Set (Vertical Address) (R201h)	/*[8:0] */
 #define ILI9326_R202_GDRW		( (u16) 0x0202)		//GRAM Data Write (R202h)/GRAM Data Read (R202h)
 #define ILI9326_R280_NVM		( (u16) 0x0280) 	//NVM Data Read / NVM Data Write (R280h)	/*[7:0]UID,[14:8]VCM */
+
+#define ILI9326_R281_VHV		( (u16) 0x0281) /*[0:5]VCM */
+#define ILI9326_R290_OVPC		( (u16) 0x0290) /*[0:5]OTP,[11]VCM_PGM_EN [15]UID_PGM_en */
+#define ILI9326_R291_OVPE		( (u16) 0x0291) /*[1]VCM_EN,[8-13]VCM [14-15]PGM_CNT */
+#define ILI9326_R295_OPIK		( (u16) 0x0295) 
+
 #define ILI9326_R210_HSA		( (u16) 0x0210) 	//Window Horizontal RAM Address Start (R210h)		/*[7:0] */
 #define ILI9326_R211_HEA		( (u16) 0x0211) 	//Window Horizontal RAM Address End(R211h)	/*[7:0] */
 #define ILI9326_R212_VSA		( (u16) 0x0212)		//Window Vertical RAM Address Start (R212h) /*[8:0] */
 #define ILI9326_R213_VEA		( (u16) 0x0213) 	//Window Vertical RAM Address End (R213h)	/*[8:0] */
+
 #define ILI9326_R300_YC1		( (u16) 0x0300)		//γ Control 1(R300)	
 #define ILI9326_R301_YC2		( (u16) 0x0301)		//γ Control 2(R301)	
 #define ILI9326_R302_YC3		( (u16) 0x0302)		//γ Control 3(R302)	
@@ -219,10 +264,16 @@ extern sLCD_def *sLCDs;
 #define ILI9326_R500_PTDP		( (u16) 0x0500) 	//Display Position (R500h)	/*[8:0] */
 #define ILI9326_R501_PTSA		( (u16) 0x0501) 	//RAM Address 1 (Start Line Address) (R501h)	/*[8:0] */
 #define ILI9326_R502_PTEA		( (u16) 0x0502) 	//RAM Address 1 (End Line Address) (R502h)	/*[8:0] */
+#define ILI9326_R503_PIDP		( (u16) 0x0503) /*[0:7]PTD,[8] PTS*/
+#define ILI9326_R504_PIRS		( (u16) 0x0504) /*[0:8] PTS*/
+#define ILI9326_R505_PIRE		( (u16) 0x0505) /*[0:8]PTE*/
 #define ILI9326_R600_TR			( (u16) 0x0600) 	//Test Register (Software Reset) (R600h)	/*[0]TRSR */
 #define ILI9326_R6F0_NVMC1	( (u16) 0x06F0)  	//NVM Access Control 1 (R6F0h),	/*[5:4]EOP,[6]CALB,[7]TE */
 #define ILI9326_R6F1_NVMC2	( (u16) 0x06F1)  	//NVM Access Control 2 (R6F1h),	/*[15:0]NVDAT */
 #define ILI9326_R6F2_NVMC3	( (u16) 0x06F2)  	//NVM Access Control 3 (R6F2h)/*[3]NVVRF */
+#define ILI9326_R702_SIT1    ( (u16) 0x0702) /*Set internal timing */
+#define ILI9326_R705_SIT2    ( (u16) 0x0705) /*Set internal timing */
+#define ILI9326_R70B_SIT3    ( (u16) 0x070B) /*Set internal timing */
 
 
 
@@ -285,68 +336,73 @@ typedef struct
 
 
 //void ILI9326_Delay(u16 xms);
-void ILI9326_Initialize(sLCD_def *sLCD);
+void ILI9326_Initialize(LCDDef *pInfo);
 
-//void ILI9326_Write_Bus( u16 Com );
-void ILI9326_WriteIndex(unsigned int Index);		//写16位命令索引编号
-void ILI9326_WriteData(unsigned int Data);
-void ILI9326_WriteCMD( u16 addr, u16 Data );		//向lcd写入指令数据
-u16 ILI9326_ReadData( void );					//从LCD读取数据
-void ILI9326_SetDrawWindow( t_Point top_p, t_Point bottom_p );	//LCD 屏显示扫描方式
-
-void ILI9326_DrawDotest(u16 x,u16 y, u16 color );
-	
-
-//void ILI9326_DrawDot( t_Point StartPos, u16 color );		//画点
-void ILI9326_EndDrawDot(void);
-void ILI9326_SetGramAddress( t_Point point );			//设置当前操作坐标点
-void ILI9326_Setbackground( u32 TotalPix, u16 BackColor );	//设置背景颜色
-void ILI9326_SetDrawMode( void );
-void ILI9326_PowerOff( void );		//关闭LCD 电源
-void ILI9326_DispOff( void );			//关闭LCD显示( 黑屏?)
+void ILI9326_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
 void ILI9326_PowerOn( void );			//LCD 上电并初始化相关寄存器
-void ILI9326_DrawPixelEx( u16 x, u16 y, u16 color );
-u16 ILI9326_GetPixel( t_Sreen_Rotate ScrnRotat, t_PixCfg PixCfg, t_Point p );
-void ILI9326_DrawHLine( u16 x, u16 y, u16 Len, u16 color );
-void ILI9326_DrawVLine( u16 x, u16 y, u16 Len, u16 color );
-void ILI9326_SetDispalyRange( u16 StartLine, u16 LineNum );
-void ILI9326_DrawBox( t_Point Top, t_Point Bottom );				//同过顶点和底部坐标画一个矩形
-//void ILI9326_DrawLine( t_Point *pPointA, t_Point *pPointB, u16 color );				//AB 两个坐标画一条直线
-//void ILI9326_DrawRectangle( t_Point *pTop_p, t_Point *pBotton_p, u16 color );	//画一个矩形框
-//void ILI9326_DrawCircle( t_Point point, u16 R, u8 Filled, u16 color );				//画一个圆形框
-void ILI9326_DrawFullFillBuf( u8 *pdata, u16 color );												//全屏像素点单色填充显示
-void ILI9326_DrawFullFillColorBuf( u8 *pdata );
-void ILI9326_DrawRectangleFillBuf( t_LcdCfg *pcfg, t_Rect *pRect, u8 *pdata, u16 color );	//矩形像素点单色填充显示
-void ILI9326_DrawRectangleColorBuf( t_Rect *pRect, u8 *pdata );
-void ILI9326_Init( t_LcdCfg **pLcdpara );
+void ILI9326_PowerOff( void );		//关闭LCD 电源
+
+
+////void ILI9326_Write_Bus( u16 Com );
+//void ILI9326_WriteIndex(unsigned int Index);		//写16位命令索引编号
+//void ILI9326_WriteData(unsigned int Data);
+//void ILI9326_WriteCMD( u16 addr, u16 Data );		//向lcd写入指令数据
+//u16 ILI9326_ReadData( void );					//从LCD读取数据
+////void ILI9326_SetDrawWindow( t_Point top_p, t_Point bottom_p );	//LCD 屏显示扫描方式
+
+//void ILI9326_DrawDotest(u16 x,u16 y, u16 color );
+//	
+
+////void ILI9326_DrawDot( t_Point StartPos, u16 color );		//画点
+//void ILI9326_EndDrawDot(void);
+//void ILI9326_SetGramAddress( t_Point point );			//设置当前操作坐标点
+//void ILI9326_Setbackground( u32 TotalPix, u16 BackColor );	//设置背景颜色
+//void ILI9326_SetDrawMode( void );
+//void ILI9326_PowerOff( void );		//关闭LCD 电源
+//void ILI9326_DispOff( void );			//关闭LCD显示( 黑屏?)
+//void ILI9326_PowerOn( void );			//LCD 上电并初始化相关寄存器
+//void ILI9326_DrawPixelEx( u16 x, u16 y, u16 color );
+//u16 ILI9326_GetPixel( t_Sreen_Rotate ScrnRotat, t_PixCfg PixCfg, t_Point p );
+//void ILI9326_DrawHLine( u16 x, u16 y, u16 Len, u16 color );
+//void ILI9326_DrawVLine( u16 x, u16 y, u16 Len, u16 color );
+//void ILI9326_SetDispalyRange( u16 StartLine, u16 LineNum );
+//void ILI9326_DrawBox( t_Point Top, t_Point Bottom );				//同过顶点和底部坐标画一个矩形
+////void ILI9326_DrawLine( t_Point *pPointA, t_Point *pPointB, u16 color );				//AB 两个坐标画一条直线
+////void ILI9326_DrawRectangle( t_Point *pTop_p, t_Point *pBotton_p, u16 color );	//画一个矩形框
+////void ILI9326_DrawCircle( t_Point point, u16 R, u8 Filled, u16 color );				//画一个圆形框
+//void ILI9326_DrawFullFillBuf( u8 *pdata, u16 color );												//全屏像素点单色填充显示
+//void ILI9326_DrawFullFillColorBuf( u8 *pdata );
+//void ILI9326_DrawRectangleFillBuf( t_LcdCfg *pcfg, t_Rect *pRect, u8 *pdata, u16 color );	//矩形像素点单色填充显示
+//void ILI9326_DrawRectangleColorBuf( t_Rect *pRect, u8 *pdata );
+//void ILI9326_Init( t_LcdCfg **pLcdpara );
 
 
 
 
 
 
-//void ILI9326_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);
+////void ILI9326_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);
 
-void ILI9326_Delay(u32 xms);
-//void ILI9326_WriteData16(unsigned int dashuju);				//写16位数据	
+//void ILI9326_Delay(u32 xms);
+////void ILI9326_WriteData16(unsigned int dashuju);				//写16位数据	
 
 
-void ILI9326_WriteCommand(unsigned int index,unsigned int Command);	//写完整控制命令
+//void ILI9326_WriteCommand(unsigned int index,unsigned int Command);	//写完整控制命令
 
-void ILI9326_Initialize0(void);					//按照主控芯片ILI9326的power supply on sequence 进行配置
-void ILI9326_Clean(u16 COLOR); 					//清除屏幕函数
-void ILI9326_SetWindowAddress(unsigned int xs,unsigned int ys,unsigned int xe,unsigned int ye);//设置窗地址
-void ILI9326_CHINESE(unsigned char zimo[720],unsigned int backcolor);  //写入字符
+//void ILI9326_Initialize0(void);					//按照主控芯片ILI9326的power supply on sequence 进行配置
+//void ILI9326_Clean(u16 COLOR); 					//清除屏幕函数
+//void ILI9326_SetWindowAddress(unsigned int xs,unsigned int ys,unsigned int xe,unsigned int ye);//设置窗地址
+//void ILI9326_CHINESE(unsigned char zimo[720],unsigned int backcolor);  //写入字符
 
-void ILI9326_DrawDot(u16 x,u16 y,u16 COLOR);			//画点
-void ILI9326_DrawDot_big(u16 x,u16 y,u16 color);	//画一个大点
-void ILI9326_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
-void ILI9326_DrawLine(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);						//AB 两个坐标画一条直线
-void ILI9326_DrawCircle(u16 x1,u16 y1, u16 R, u8 Filled, u16 color );		//画一个圆形框
-void ILI9326_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);			//画一个矩形框
-void ILI9326_ShowChar(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);						//高通字库测试程序
-void ILI9326_ShowCharT(u16 x,u16 y,u8 num,u8 mode);
-void ILI9326_ShowEn(u16 x,u16 y,u32 num);
+//void ILI9326_DrawDot(u16 x,u16 y,u16 COLOR);			//画点
+//void ILI9326_DrawDot_big(u16 x,u16 y,u16 color);	//画一个大点
+//void ILI9326_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+//void ILI9326_DrawLine(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);						//AB 两个坐标画一条直线
+//void ILI9326_DrawCircle(u16 x1,u16 y1, u16 R, u8 Filled, u16 color );		//画一个圆形框
+//void ILI9326_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);			//画一个矩形框
+//void ILI9326_ShowChar(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);						//高通字库测试程序
+//void ILI9326_ShowCharT(u16 x,u16 y,u8 num,u8 mode);
+//void ILI9326_ShowEn(u16 x,u16 y,u32 num);
 
 
 

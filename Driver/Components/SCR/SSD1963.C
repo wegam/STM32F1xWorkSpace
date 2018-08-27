@@ -94,7 +94,7 @@ void SSD1963_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short
 	MaxH	=	LCDSYS->Data.MaxH;
 	MaxV	=	LCDSYS->Data.MaxV;
 	
-	if	(Rotate	==Draw_Rotate_0D)
+if	(Rotate	==Draw_Rotate_0D)
 {
 	LCDSYS->Data.HSX	=	x1;
 	LCDSYS->Data.HEX	=	x2;
@@ -141,7 +141,7 @@ else //(Rotate	==Draw_Rotate_270D)
 
 	Model	=	0X22;
 }
-
+	//======================================区域设置
 	LCD_WriteIndex(0x002A);			//设置列地址
 	LCD_WriteData(LCDSYS->Data.HSX>>8);		//起始地址高8位
 	LCD_WriteData(LCDSYS->Data.HSX);			//起始地址低8位
@@ -153,7 +153,7 @@ else //(Rotate	==Draw_Rotate_270D)
 	LCD_WriteData(LCDSYS->Data.VSY);
 	LCD_WriteData(LCDSYS->Data.VEY>>8);
 	LCD_WriteData(LCDSYS->Data.VEY);
-
+	
 	LCD_WriteIndex(0x0036);			//设置页地址
 	LCD_WriteData(Model);
 
