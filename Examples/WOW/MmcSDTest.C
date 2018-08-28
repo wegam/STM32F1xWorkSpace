@@ -84,10 +84,10 @@ void MmcSDTest_Configuration(void)
 
 //  
   ADC_TempSensorConfiguration(&ADCDATA);								//STM32内部温度传感器配置
-  LCD_ShowBattery(780,2,2,0);   //显示12x12电池
-  LCD_ShowAntenna(760,2,3,0);   //显示12x12天线
+  LCD_ShowBattery(780,2,2,LCD565_GREEN);   //显示12x12电池
+  LCD_ShowAntenna(760,2,3,LCD565_GREEN);   //显示12x12天线
   
-  LCD_Printf (300,0,32,0,"图片显示测试");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  LCD_Printf (300,0,32,LCD565_GREEN,"图片显示测试");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   
 	SysTick_Configuration(1000);											//系统嘀嗒时钟配置72MHz,单位为uS
 	
@@ -140,44 +140,44 @@ void SD_Configuration(void)
   DIR dir;
   char FilSearchCount[10][13];
   
-  LCD_Printf (0,0,16,0,"STM32F1xWorkSpace--(MmcSDTest)SD卡读取");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-  LCD_Printf (0,16,16,0,"为驱动器注册工作区......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  LCD_Printf (0,0,16,LCD565_GREEN,"STM32F1xWorkSpace--(MmcSDTest)SD卡读取");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  LCD_Printf (0,16,16,LCD565_GREEN,"为驱动器注册工作区......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   //========================为逻辑驱动器注册工作区
   result = f_mount(&FatFsObj[0],"0:",1);
   if(0  ==  result)
   {
     u32 sd_size;
     u32 free;
-    LCD_Printf (0,32,16,0,"驱动器注册成功");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    LCD_Printf (0,32,16,LCD565_GREEN,"驱动器注册成功");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
     //========================得到容量信息，包括总容量和剩余容量
     result = SD_disk_getcapacity("0",&sd_size,&free);
     if(0  ==  result)
     {
-      LCD_Printf (0,48,16,0,"SD卡容量%dKByte,%dMB,%0.5fGB",sd_size,sd_size>>10,(double)(sd_size>>10)/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      LCD_Printf (0,48,16,LCD565_GREEN,"SD卡容量%dKByte,%dMB,%0.5fGB",sd_size,sd_size>>10,(double)(sd_size>>10)/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
       //========================获取剩余容量    
-      LCD_Printf (0,64,16,0,"SD卡剩余容量%dKByte,%dMB,%0.5fGB",free,free>>10,(double)(free>>10)/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      LCD_Printf (0,64,16,LCD565_GREEN,"SD卡剩余容量%dKByte,%dMB,%0.5fGB",free,free>>10,(double)(free>>10)/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
       free  = sd_size-free;
-      LCD_Printf (0,80,16,0,"已用容量%dKByte,%dMB,%0.5fGB",free,free>>10,(double)(free>>10)/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      LCD_Printf (0,80,16,LCD565_GREEN,"已用容量%dKByte,%dMB,%0.5fGB",free,free>>10,(double)(free>>10)/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
     }
     else
     {
-      LCD_Printf (0,48,16,0,"容量信息查询失败");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      LCD_Printf (0,48,16,LCD565_GREEN,"容量信息查询失败");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
     }
   }
   else
   {
-    LCD_Printf (0,32,16,0,"驱动器注册失败");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    LCD_Printf (0,32,16,LCD565_GREEN,"驱动器注册失败");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   }
   //========================查找指定文件
-  LCD_Printf (0,96,16,0,"查找指定文件:bmp");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  LCD_Printf (0,96,16,LCD565_GREEN,"查找指定文件:bmp");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   result  = FilSearch(&FatFsObj[0],&dir,"0:","bmp",FilSearchCount);  //在指定路径下查找指定扩展名的文件，并记录在(*p)[13]数组中，注意最大记录条数
   if(0 != result)
   {
-    LCD_Printf (0,112,16,0,"查找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    LCD_Printf (0,112,16,LCD565_GREEN,"查找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   }
   else
   {
-    LCD_Printf (0,112,16,0,"未找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    LCD_Printf (0,112,16,LCD565_GREEN,"未找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   }
 //  f_getfree();  
 
