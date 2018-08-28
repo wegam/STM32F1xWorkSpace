@@ -176,7 +176,43 @@ bool FilSearch(FATFS *fs,DIR *dir,TCHAR *path,u8 *name,char (*p)[13])
   }while(!res && fno.fname[0] != 0);
   return FALSE;
 }
+/**************************º¯Êý*************************/
+u8 fileNum;
+u8 fileName[32][32];
+FILINFO finfo;
+#define _MAX_LFN 30
+#define _MAX_LFN 32
+void scanfile(const TCHAR *path)
+{
+  DIR dirs;
+  char curdirpath[_MAX_LFN],nextdirpath[_MAX_LFN];
+  if (f_opendir(&dirs, path) == FR_OK) 
+  {
+    while (f_readdir(&dirs, &finfo) == FR_OK) 
+    {
+      if(!finfo.fname[0]) 
+        break;
+      if(finfo.fname[0]=='.' || (finfo.fname[0]=='.' && finfo.fname[1]=='.'))
+        continue;
 
+      if(fileNum<32)
+        strncpy(fileName[fileNum++] ,*finfo.lfname ? finfo.lfname : finfo.fname,32);
+      f_getcwd(curdirpath,_MAX_LFN);
+      if((finfo.fattrib&AM_DIR) == AM_DIR)
+      { 
+        f_getcwd(curdirpath,_MAX_LFN);
+        strcpy(nextdirpath, curdirpath);
+        strcat(nextdirpath,"/");
+        strncat(nextdirpath, *finfo.lfname ? finfo.lfname : finfo.fname, 32); 
+
+        f_chdir(nextdirpath);
+        scanfile(nextdirpath);
+
+        f_chdir(curdirpath);
+      }
+    }
+  }
+}
 
 
 

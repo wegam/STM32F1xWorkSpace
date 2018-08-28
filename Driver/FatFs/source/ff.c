@@ -1829,22 +1829,31 @@ static FRESULT dir_clear (	/* Returns FR_OK or FR_DISK_ERR */
 /*-----------------------------------------------------------------------*/
 /* Directory handling - Set directory index                              */
 /*-----------------------------------------------------------------------*/
-
+/*******************************************************************************
+*函数名			:	dir_sdi
+*功能描述		:	Directory handling - Set directory index 目录处理-设置目录索引
+*输入				: dp指向打开目录对象的指针
+              ofs目录表的偏移量 
+*返回值			:	FR_OK(0):succeeded, !=0:error
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 static FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
-	DIR* dp,		/* Pointer to directory object */
-	DWORD ofs		/* Offset of directory table */
+	DIR* dp,		            /* Pointer to directory object */
+	DWORD ofs		            /* Offset of directory table */
 )
 {
 	DWORD csz, clst;
 	FATFS *fs = dp->obj.fs;
 
-
+  //================================Check range of offset and alignment偏移和对准检查范围
 	if (ofs >= (DWORD)((FF_FS_EXFAT && fs->fs_type == FS_EXFAT) ? MAX_DIR_EX : MAX_DIR) || ofs % SZDIRE)  /* Check range of offset and alignment */
   {	
 		return FR_INT_ERR;
 	}
-	dp->dptr = ofs;				/* Set current offset */
-	clst = dp->obj.sclust;		/* Table start cluster (0:root) */
+	dp->dptr = ofs;				    /* Set current offset */    //设置最近的偏移
+	clst = dp->obj.sclust;		/* Table start cluster (0:root) */    //开始簇（0：根）
 	if (clst == 0 && fs->fs_type >= FS_FAT32) /* Replace cluster# 0 with root cluster# */
   {	
 		clst = fs->dirbase;
@@ -1887,7 +1896,7 @@ static FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
 /*-----------------------------------------------------------------------*/
 /* Directory handling - Move directory table index next                  */
 /*-----------------------------------------------------------------------*/
-
+//目录处理-下一步移动目录表索引
 static FRESULT dir_next (	/* FR_OK(0):succeeded, FR_NO_FILE:End of table, FR_DENIED:Could not stretch */
 	DIR* dp,				/* Pointer to the directory object */
 	int stretch				/* 0: Do not stretch table, 1: Stretch table if needed */
@@ -3899,10 +3908,17 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 
 
 
-/*-----------------------------------------------------------------------*/
-/* Check if the file/directory object is valid or not                    */
-/*-----------------------------------------------------------------------*/
+/*******************************************************************************
+*函数名			:	validate
+*功能描述		:	Check if the file/directory object is valid or not 检查文件/目录对象是否有效
+*输入				: 
+              
+*返回值			:	
 
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 static FRESULT validate (	/* Returns FR_OK or FR_INVALID_OBJECT */
 	FFOBJID* obj,			/* Pointer to the FFOBJID, the 1st member in the FIL/DIR object, to check validity */
 	FATFS** rfs				/* Pointer to pointer to the owner filesystem object to return */
@@ -4010,20 +4026,21 @@ FRESULT f_mount (
 /*******************************************************************************
 *函数名			:	f_open
 *功能描述		:	创建/打开一个用于访问文件的文件对象
-*输入				: 
+*输入				: fp就指向传入的对象file
+              path指向data.txt的地址
 *返回值			:	无
 *修改时间		:	无
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
 FRESULT f_open (
-	FIL* fp,			      /* Pointer to the blank file object */      /* 文件对象结构指针 */
-	const TCHAR* path,  /* Pointer to the file name */              /* 文件名指针 */
-	BYTE mode			      /* Access mode and file open mode flags */  /* 模式标志 */
+                FIL* fp,			      /* Pointer to the blank file object */      /* 文件对象结构指针 */  //fp就指向传入的对象file
+                const TCHAR* path,  /* Pointer to the file name */              /* 文件名指针 */
+                BYTE mode			      /* Access mode and file open mode flags */  /* 模式标志 */
 )
 {
 	FRESULT res;
-	DIR dj;
+	DIR dj;               //目录对象
 	FATFS *fs;
 #if !FF_FS_READONLY
 	DWORD dw, cl, bcs, clst, sc;
@@ -4031,13 +4048,13 @@ FRESULT f_open (
 #endif
 	DEF_NAMBUF
 
-
-	if (!fp) 
+  
+	if (!fp)  //空对象
     return FR_INVALID_OBJECT;
-
-	/* Get logical drive number */
+	//===============================查找驱动器编号/* Get logical drive number */
 	mode &= FF_FS_READONLY ? FA_READ : FA_READ | FA_WRITE | FA_CREATE_ALWAYS | FA_CREATE_NEW | FA_OPEN_ALWAYS | FA_OPEN_APPEND;
 	res = find_volume(&path, &fs, mode);
+  //===============================
 	if (res == FR_OK)
   {
 		dj.obj.fs = fs;
@@ -4955,10 +4972,22 @@ FRESULT f_lseek (
 /*-----------------------------------------------------------------------*/
 /* Create a Directory Object                                             */
 /*-----------------------------------------------------------------------*/
-
+/*******************************************************************************
+*函数名			:	f_opendir
+*功能描述		:	Create a Directory Object 创建目录对象
+*输入				: dp指向要创建的目录对象的指针
+              path指向目录路径的指针 
+*返回值			:	FR_OK 函数成功。
+              FR_INVALID_OBJECT  文件/目录对象无效
+              FR_NO_PATH  找不到该路径
+              FR_TOO_MANY_OPEN_FILES 打开的文件数目
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 FRESULT f_opendir (
-	DIR* dp,			    /* Pointer to directory object to create */
-	const TCHAR* path	/* Pointer to the directory path */
+	DIR* dp,			    /* Pointer to directory object to create */ //指向要创建的目录对象的指针
+	const TCHAR* path	/* Pointer to the directory path */         //指向目录路径的指针
 )
 {
 	FRESULT res;
@@ -4968,50 +4997,65 @@ FRESULT f_opendir (
 
 	if (!dp)
     return FR_INVALID_OBJECT;
-
 	/* Get logical drive */
 	res = find_volume(&path, &fs, 0);
-	if (res == FR_OK) {
+	if (res == FR_OK)
+  {
 		dp->obj.fs = fs;
 		INIT_NAMBUF(fs);
-		res = follow_path(dp, path);			/* Follow the path to the directory */
-		if (res == FR_OK) {						/* Follow completed */
-			if (!(dp->fn[NSFLAG] & NS_NONAME)) {	/* It is not the origin directory itself */
-				if (dp->obj.attr & AM_DIR) {		/* This object is a sub-directory */
-#if FF_FS_EXFAT
-					if (fs->fs_type == FS_EXFAT) {
+		res = follow_path(dp, path);			    /* Follow the path to the directory */
+		if (res == FR_OK)                     /* Follow completed */
+     {						
+			if (!(dp->fn[NSFLAG] & NS_NONAME))  /* It is not the origin directory itself */
+      {	
+				if (dp->obj.attr & AM_DIR)        /* This object is a sub-directory */
+        {		
+#if FF_FS_EXFAT   //如果支持exFAT文件系统
+					if (fs->fs_type == FS_EXFAT)
+          {
 						dp->obj.c_scl = dp->obj.sclust;							/* Get containing directory inforamation */
 						dp->obj.c_size = ((DWORD)dp->obj.objsize & 0xFFFFFF00) | dp->obj.stat;
 						dp->obj.c_ofs = dp->blk_ofs;
 						init_alloc_info(fs, &dp->obj);	/* Get object allocation info */
-					} else
+					}
+          else
 #endif
 					{
 						dp->obj.sclust = ld_clust(fs, dp->dir);	/* Get object allocation info */
 					}
-				} else {						/* This object is a file */
+				}
+        else    /* This object is a file */
+        {						
 					res = FR_NO_PATH;
 				}
 			}
-			if (res == FR_OK) {
+			if (res == FR_OK)
+      {
 				dp->obj.id = fs->id;
 				res = dir_sdi(dp, 0);			/* Rewind directory */
 #if FF_FS_LOCK != 0
-				if (res == FR_OK) {
-					if (dp->obj.sclust != 0) {
+				if (res == FR_OK)
+        {
+					if (dp->obj.sclust != 0)
+          {
 						dp->obj.lockid = inc_lock(dp, 0);	/* Lock the sub directory */
-						if (!dp->obj.lockid) res = FR_TOO_MANY_OPEN_FILES;
-					} else {
-						dp->obj.lockid = 0;	/* Root directory need not to be locked */
+						if (!dp->obj.lockid)
+              res = FR_TOO_MANY_OPEN_FILES;
+					}
+          else    /* Root directory need not to be locked */    //根目录不需要锁定
+          {
+						dp->obj.lockid = 0;	
 					}
 				}
 #endif
 			}
 		}
 		FREE_NAMBUF();
-		if (res == FR_NO_FILE) res = FR_NO_PATH;
+		if (res == FR_NO_FILE)
+      res = FR_NO_PATH;
 	}
-	if (res != FR_OK) dp->obj.fs = 0;		/* Invalidate the directory object if function faild */
+	if (res != FR_OK) /* Invalidate the directory object if function faild */
+    dp->obj.fs = 0;		
 
 	LEAVE_FF(fs, res);
 }
@@ -5046,40 +5090,53 @@ FRESULT f_closedir (
 	return res;
 }
 
-
-
-
-/*-----------------------------------------------------------------------*/
-/* Read Directory Entries in Sequence                                    */
-/*-----------------------------------------------------------------------*/
-
+/*******************************************************************************
+*函数名			:	f_readdir
+*功能描述		:	Read Directory Entries in Sequence 按顺序读取目录条目
+*输入				: dp指向打开目录对象的指针
+              fno指向返回的文件信息指针 
+*返回值			:	FR_OK 函数成功。
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 FRESULT f_readdir (
-	DIR* dp,			/* Pointer to the open directory object */
-	FILINFO* fno  /* Pointer to file information to return */
+	DIR* dp,			/* Pointer to the open directory object */    //指向打开目录对象的指针
+	FILINFO* fno  /* Pointer to file information to return */   //指向返回的文件信息指针
 )
 {
 	FRESULT res;
 	FATFS *fs;
 	DEF_NAMBUF
 
-
+  //==============================检查目录对象的有效性
 	res = validate(&dp->obj, &fs);	/* Check validity of the directory object */
-	if (res == FR_OK) {
-		if (!fno) {
-			res = dir_sdi(dp, 0);			/* Rewind the directory object */
-		} else {
-			INIT_NAMBUF(fs);
-			res = dir_read_file(dp);		/* Read an item */
-			if (res == FR_NO_FILE) res = FR_OK;	/* Ignore end of directory */
-			if (res == FR_OK) {				/* A valid entry is found */
-				get_fileinfo(dp, fno);		/* Get the object information */
-				res = dir_next(dp, 0);		/* Increment index for next */
-				if (res == FR_NO_FILE) res = FR_OK;	/* Ignore end of directory now */
+	if (res == FR_OK)
+  {
+		if (!fno)   //接收文件信息的缓存无效---------
+    {
+			res = dir_sdi(dp, 0);			  /* Rewind the directory object */ //重绕目录对象
+		}
+    else
+    {
+			INIT_NAMBUF(fs);            //未知
+      //--------------------读取一个目录
+			res = dir_read_file(dp);    /* Read an item */
+			if (res == FR_NO_FILE)      /* Ignore end of directory */   //忽略目录的末尾
+        res = FR_OK;	
+			if (res == FR_OK)           /* A valid entry is found */    //找到有效的条目
+      {	
+        //--------------------获取对象信息
+				get_fileinfo(dp, fno);		/* Get the object information */  //获取对象信息
+        //--------------------目录处理-下一步移动目录表索引
+				res = dir_next(dp, 0);		/* Increment index for next */    //目录处理-下一步移动目录表索引  
+				if (res == FR_NO_FILE)    /* Ignore end of directory now */ //已到目录尾端 
+          res = FR_OK;	
 			}
-			FREE_NAMBUF();
+			FREE_NAMBUF();      //释放缓存  
 		}
 	}
-	LEAVE_FF(fs, res);
+	LEAVE_FF(fs, res);      //返回res
 }
 
 
