@@ -244,8 +244,8 @@ extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 void LCD_Initialize(LCDDef *pInfo);
 void LCD_ShowAntenna(u16 x,u16 y,u8 Num,u16 PenColor);   //显示12x12天线
 void LCD_ShowBattery(u16 x,u16 y,u8 Num,u16 PenColor);   //显示12x12电池
-void LCD_Show(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);	
-void LCD_ShowHex(u16 x,u16 y,u8 font,u8 num,u8 bitnum,u8 *Buffer);                //显示十六进制数据
+void LCD_Show(u16 x,u16 y,u8 font,u16 PenColor,u8 num,u8 *Buffer);	
+void LCD_ShowHex(u16 x,u16 y,u8 font,u16 color,u8 num,u8 bitnum,u8 *Buffer);                //显示十六进制数据
 unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...);		//后边的省略号就是可变参数
 
 
@@ -267,8 +267,8 @@ void LCD_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);			//画一个矩形框
 
 void LCD_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 void LCD_SetBackground(u16 BackColor );
-void LCD_ShowChar(u16 x,u16 y,u8 font,u8 num,u8 *Buffer,u16 color);	  //高通字库测试程序
-void LCD_ShowWord(u16 x,u16 y,u8 font,u8 num,u8 *Buffer,u16 color);	  //高通字库测试程序
+void LCD_ShowChar(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
+void LCD_ShowWord(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
 
 
 

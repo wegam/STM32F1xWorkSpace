@@ -479,30 +479,17 @@ void LCD_ShowAntenna(
                     u16 x,			//x				:起点x坐标
 										u16 y,			//y				:起点y坐标
                     u8 Num,
-										u16 color)
+										u16 PenColor)
 {	
   unsigned char GetBufferLength	=	0;
   unsigned char CodeBuffer[32]={0};
-	unsigned short InputDataSize=	0;		//输入可变参数大小
-//	unsigned short PenColor		=	0;		//画笔颜色
-//	unsigned short BackColor	=	0;		//背景颜色
-//	VAsize=strlen((const char*)Num);		//获取数据宽度	
-	//================va_list  声明一个指针变量，跟踪当前参数的指针
-//	va_list args;
-//	//================va_start 初始化这个指针的位置，最开始指向第一个参数的结尾的位置
-//	VAsize=strlen((const char*)Num);		//获取数据宽度
-//	va_start(args, Num);
-//	//================va_arg 则移动指针，指向一个新参数的位置，并返回当前值
-//	PenColor 	= va_arg(args,unsigned short);	//画笔颜色
-//	BackColor = va_arg(args,unsigned short);	//背景颜色
-//	va_end(args);
   if(Num>4)
   {
     Num=4;
   }
   GetBufferLength = GT32L32_GetAntennaCode(Num,CodeBuffer);
 //	LCD_Show(x,y,12,GetBufferLength,CodeBuffer);
-	LCD_ShowWord(x,y,12,GetBufferLength,CodeBuffer,PenColor);
+	LCD_ShowWord(x,y,12,PenColor,GetBufferLength,CodeBuffer);
 }
 /*******************************************************************************
 * 函数名			:	LCD_ShowBattery
@@ -523,7 +510,7 @@ void LCD_ShowBattery(
     Num=3;
   }
   GetBufferLength = GT32L32_GetBatteryCode(Num,CodeBuffer);
-	LCD_ShowWord(x,y,12,GetBufferLength,CodeBuffer,PenColor);
+	LCD_ShowWord(x,y,12,PenColor,GetBufferLength,CodeBuffer);
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -535,9 +522,10 @@ void LCD_ShowChar(
 										u16 x,			//x				:起点x坐标
 										u16 y,			//y				:起点y坐标
 										u8 font,		//font		:字体大小
+										u16 color,	//字体颜色
 										u8 num,			//num			:字节数
-										u8 *Buffer,	//Buffer	:显示的内容缓存
-										u16 color
+										u8 *Buffer	//Buffer	:显示的内容缓存
+										
 )		//高通字库测试程序
 {
 	u8 temp;
@@ -553,6 +541,7 @@ void LCD_ShowChar(
     y2	=	y+font-1;
 	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
 	i=0;
+	LCD_WriteDataStart();
 	for(i=0;i<num;i++)
 	{ 
 		u16 LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色	
@@ -561,13 +550,13 @@ void LCD_ShowChar(
 		{
 			if((temp&0x80)==0X80)
 			{
-				LCD_PEN_COLOR=LCDSYS->Data.PColor;
+				LCD_PEN_COLOR=color;
 			}
 			else
 				LCD_PEN_COLOR=LCDSYS->Data.BColor;
-			LCD_WriteDataStart();
+//			LCD_WriteDataStart();
 			LCD_WriteData(LCD_PEN_COLOR);
-			LCD_WriteDataEnd();
+//			LCD_WriteDataEnd();
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
@@ -578,19 +567,20 @@ void LCD_ShowChar(
       {
         if((temp&0x80)==0X80)
         {
-          LCD_PEN_COLOR=LCDSYS->Data.PColor;
+          LCD_PEN_COLOR=color;
         }
         else
           LCD_PEN_COLOR=LCDSYS->Data.BColor;
-        LCD_WriteDataStart();
+//        LCD_WriteDataStart();
         LCD_WriteData(LCD_PEN_COLOR);
-        LCD_WriteDataEnd();
+//        LCD_WriteDataEnd();
         temp=temp<<1;
       }
       i++;
     }
 		LCDSYS->Data.PColor=colortemp;	
-	}	
+	}
+	LCD_WriteDataEnd();	
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -602,9 +592,10 @@ void LCD_ShowWord(
 										u16 x,			//x				:起点x坐标
 										u16 y,			//y				:起点y坐标
 										u8 font,		//font		:字体大小
+										u16 color,	//字体颜色
 										u8 num,			//num			:字节数
-										u8 *Buffer,	//Buffer	:显示的内容缓存
-										u16 color
+										u8 *Buffer	//Buffer	:显示的内容缓存
+										
 )		//高通字库测试程序
 {
 	u8 temp;
@@ -619,7 +610,7 @@ void LCD_ShowWord(
   x2	=	x+font-1;
   y2	=	y+font-1;
 	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
-
+	LCD_WriteDataStart();
 	for(i=0;i<num;i++)
 	{ 
 		u16 LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色	
@@ -628,13 +619,13 @@ void LCD_ShowWord(
 		{
 			if((temp&0x80)==0X80)
 			{
-				LCD_PEN_COLOR=LCDSYS->Data.PColor;
+				LCD_PEN_COLOR=color;
 			}
 			else
 				LCD_PEN_COLOR=LCDSYS->Data.BColor;
-			LCD_WriteDataStart();
+//			LCD_WriteDataStart();
 			LCD_WriteData(LCD_PEN_COLOR);
-			LCD_WriteDataEnd();
+//			LCD_WriteDataEnd();
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
@@ -645,19 +636,20 @@ void LCD_ShowWord(
       {
         if((temp&0x80)==0X80)
         {
-          LCD_PEN_COLOR=LCDSYS->Data.PColor;
+          LCD_PEN_COLOR=color;
         }
         else
           LCD_PEN_COLOR=LCDSYS->Data.BColor;
-        LCD_WriteDataStart();
+//        LCD_WriteDataStart();
         LCD_WriteData(LCD_PEN_COLOR);
-        LCD_WriteDataEnd();
+//        LCD_WriteDataEnd();
         temp=temp<<1;
       }
       i++;
     }
 		LCDSYS->Data.PColor=colortemp;	
-	}	
+	}
+	LCD_WriteDataEnd();
 }
 
 /*******************************************************************************
@@ -670,6 +662,7 @@ void LCD_Show(
 							u16 x,			//x				:起点x坐标
 							u16 y,			//y				:起点y坐标
 							u8 font,		//font		:字体大小
+							u16 PenColor,//字体颜色
 							u8 num,			//num			:字节数
 							u8 *Buffer	//Buffer	:显示的内容缓存
 )		//高通字库测试程序
@@ -721,7 +714,7 @@ void LCD_Show(
       //A3=====================读取点阵数据
 			GetBufferLength	=	GT32L32_ReadCode(font,word,CodeBuffer);		//从字库中读数据并返回数据长度
 			//A4=====================写入屏幕
-			LCD_ShowWord(x,y,font,GetBufferLength,CodeBuffer,0);
+			LCD_ShowWord(x,y,font,PenColor,GetBufferLength,CodeBuffer);
 			//A5=====================水平显示地址增加
       x+=font;
 			i++;		//双字节，减两次
@@ -744,7 +737,7 @@ void LCD_Show(
       //B3=====================读取点阵数据
 			GetBufferLength	=	GT32L32_ReadCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
 			//B4=====================写入屏幕
-			LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer,0);
+			LCD_ShowChar(x,y,font,PenColor,GetBufferLength,CodeBuffer);
 			//B5=====================水平显示地址增加
       x+=font/2;						
 		}
@@ -760,6 +753,7 @@ void LCD_ShowHex(
 							u16 x,			//x				:起点x坐标
 							u16 y,			//y				:起点y坐标
 							u8 font,		//font		:字体大小
+							u16 color,	///字体颜色
 							u8 num,			//num			:数据个数
               u8 bitnum,  //num			:位数
 							u8 *Buffer	//Buffer	:显示的内容缓存
@@ -769,8 +763,7 @@ void LCD_ShowHex(
 	unsigned char i=0;
   unsigned char Cril  = 0;
 	unsigned char CodeBuffer[130]={0};
-  char	DataBuffer[256]={0};			//记录format内码
-  
+
   
 	switch(LCDSYS->Flag.Rotate)
 	{
@@ -821,7 +814,7 @@ void LCD_ShowHex(
       //3=====================读取点阵数据
       GetBufferLength	=	GT32L32_ReadCode(font,dst,CodeBuffer);		//从字库中读数据并返回数据长度
       //4=====================写入屏幕
-      LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer,0);
+      LCD_ShowChar(x,y,font,color,GetBufferLength,CodeBuffer);
       //5=====================显示地址增加
       x+=font/2;
     }
@@ -858,10 +851,7 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...)			
 //		vsprintf( string , format, ap );    
 //		va_end( ap );
 	
-	unsigned short	MaxV,MaxH;	//边界值
-	unsigned short	i=0;				//显示
 	char	DataBuffer[256]={0};			//记录format内码
-  unsigned char CodeBuffer[130]={0};
 	//1)**********获取数据宽度
   u16 InputDataSize=0;		//获取数据宽度	
 	//3)**********args为定义的一个指向可变参数的变量，va_list以及下边要用到的va_start,va_end都是是在定义，可变参数函数中必须要用到宏， 在stdarg.h头文件中定义
@@ -877,7 +867,7 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...)			
   {
     font  = 24;
   }
-	LCD_Show(x,y,font,InputDataSize,(unsigned char*)DataBuffer);
+	LCD_Show(x,y,font,color,InputDataSize,(unsigned char*)DataBuffer);
 	return InputDataSize;
 }
 /**************************************************************************************************

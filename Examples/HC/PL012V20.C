@@ -33,11 +33,15 @@
 
 
 #include "SWITCHID.H"
+#include 	"TOOL.H"
 
 #include "string.h"				//串和内存操作函数头文件
 #include "stm32f10x_dma.h"
 
 LCDDef	sLCD;
+
+
+#define	font	16
 
 u16	DelayTime=0x1000;
 u16	LCDTime=0;
@@ -80,9 +84,15 @@ u8 SwitchID=0;	//拔码开关地址
 
 u16 ATTime	=	0;
 u8 ATNum	=	0;
+u16	line	=	0;
+u16	row	=	1;
+u8 WriteFlag	=	0;
+u8 PowerUP	=	0;
 
-
-
+u8 	Serial	=	0;
+u8 	Addr	=	0;
+u16 Time	=	0;
+u8 GetAdd	=	0;
 
 /*******************************************************************************
 * 函数名		:	
@@ -114,13 +124,25 @@ void PL012V20_Configuration(void)
 	
 	SwitchID_Configuration();
 	
+//	LCD_ShowAntenna(220,0,0,LCD565_RED);   //显示12x12天线
+//  LCD_ShowAntenna(240,0,1,LCD565_RED);   //显示12x12天线
+//  LCD_ShowAntenna(260,0,2,LCD565_RED);   //显示12x12天线
+//  LCD_ShowAntenna(280,0,3,LCD565_RED);   //显示12x12天线
+//  LCD_ShowAntenna(300,0,4,LCD565_RED);   //显示12x12天线
+//  
+//  LCD_ShowBattery(320,0,0,LCD565_RED);   //显示12x12电池
+//  LCD_ShowBattery(340,0,1,LCD565_RED);   //显示12x12电池
+//  LCD_ShowBattery(360,0,2,LCD565_RED);   //显示12x12电池
+//  LCD_ShowBattery(380,0,3,LCD565_RED);   //显示12x12电池
 	
+	LCD_Printf(0,font*9,24,LCD565_RED,"获取地址......");		//后边的省略号就是可变参数
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--指示灯
 	PWM_OUT(TIM3,PWM_OUTChannel3,500,500);		//PWM设定-20161127版本--背光
 	memset(TxdBuffe,0xA5,128);
+//	PD014Test_Server();
 }
 /*******************************************************************************
 * 函数名		:	
@@ -131,11 +153,21 @@ void PL012V20_Configuration(void)
 *******************************************************************************/
 void PL012V20_Server(void)
 {	
+	
 	IWDG_Feed();								//独立看门狗喂狗
+	
+//	LCD_Fill(10,10,50,50,LCD565_WHITE);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+//	LCD_ShowBattery(360,0,2,LCD565_RED);   //显示12x12电池
+//	LCD_ShowBattery(380,0,3,LCD565_RED);   //显示12x12电池
+//	LCD_Printf(0,180,32,LCD565_RED,"获取地址......");		//后边的省略号就是可变参数
+//	LCD_Clean(LCD565_BLACK); 					//清除屏幕函数
+	
 //	LCD_Display();
 //	return;
-	
-	RS485_Server();
+	PD014Test_Server();
+//	return;
+//	RS485_Server();
 	return;
 //	if(DelayTime++>=500)
 //	{
@@ -183,6 +215,120 @@ void PL012V20_Server(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
+void PD014Test_Server(void)
+{
+	u8 Num	=	0;
+	
+	Pd014AckFarmDef	RecAck;
+	PD014Test_GetAdd();
+	
+//	RS485_Server();
+//	return;
+	Num=RS485_ReadBufferIDLE(&RS485,RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(Num)
+	{
+		PD014Test_Display(RxdBuffe,Num);
+		if(0	==	GetAdd)
+		{
+			GetAdd	=	1;			
+			LCD_Printf(0,font*9,24,LCD565_RED,"获取到地址%0.2X......",Addr);		//后边的省略号就是可变参数
+		}		
+	}
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void PD014Test_GetAdd(void)
+{
+	Pd014Def	pInfo;
+	if((50	==	Time++)&&(0	==	GetAdd))
+	{
+		Time	=	0;
+		pInfo.Head			=	0x7E;
+		pInfo.ADDdestin	=	++Addr;
+		pInfo.ADDsource	=	0x00;
+		pInfo.Serial		=	Serial++;
+		pInfo.Cmd				=	0x01;
+		pInfo.DataLen		=	0x00;
+		pInfo.BCC8			=	BCC8(&pInfo.ADDdestin,5+pInfo.DataLen);
+		pInfo.End				=	0x7F;
+//		LCD_DrawLine(0,212,399,212,LCD565_RED);						//AB 两个坐标画一条直线
+		LCD_Printf(0,font*9,24,LCD565_RED,"获取地址%0.2X......",Addr);		//后边的省略号就是可变参数
+		RS485_DMASend(&RS485,(u8*)&pInfo,8+pInfo.DataLen);
+		PowerUP	=	1;
+	}
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void PD014Test_Display(u8* buffer,u8 RxNum)
+{
+	
+	u16 temp	=	0;
+
+	u16 PenColor	=LCD565_RED;
+	if(0	!=	WriteFlag)
+	{
+		WriteFlag	=	0;
+		PenColor	=LCD565_WHITE;
+	}
+	else
+	{
+		WriteFlag	=	1;
+		PenColor	=LCD565_GREEN;
+	}
+	temp	=	font/2*3*RxNum;
+	if(0<temp%400)
+	{
+		temp	=	(temp/400+1)*font;
+	}
+	else
+	{
+		temp	=	(temp/400)*font;
+	}
+	if(240-font*5<=temp+row)
+	{
+		LCD_Clean(LCD565_BLACK); 					//清除屏幕函数
+		row	=	0;
+//		LCD_Printf(0,font*9,24,LCD565_RED,"获取地址......");		//后边的省略号就是可变参数
+	}
+	
+	LCD_ShowHex(0,row,font,PenColor,RxNum,8,buffer);                //显示十六进制数据
+	temp	=	font/2*3*RxNum;
+	if(0<temp%400)
+	{
+		row	+=	(temp/400+1)*font;
+	}
+	else
+	{
+		row	+=	(temp/400)*font;
+	}
+//	if(row>=240-font)
+//	{
+//		row=0;
+//	}
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 void RS485_Server(void)
 {
 #if 1
@@ -197,13 +343,49 @@ void RS485_Server(void)
 	RxNum=RS485_ReadBufferIDLE(&RS485,RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
-		LCD_ShowAntenna(300,0,4,200);   //显示12x12天线
-//		RxNum	=	200;
-//		memset(RxdBuffe,0x00,200);
+		u16 temp	=	0;
+		u16 PenColor	=LCD565_RED;
+		if(0	!=	WriteFlag)
+		{
+			WriteFlag	=	0;
+			PenColor	=LCD565_WHITE;
+		}
+		else
+		{
+			WriteFlag	=	1;
+			PenColor	=LCD565_GREEN;
+		}
+		temp	=	16*3*RxNum;
+		if(0<temp%400)
+		{
+			temp	=	(temp/400+1)*32;
+		}
+		else
+		{
+			temp	=	(temp/400)*32;
+		}
+		if(240-32<=temp+row)
+		{
+			LCD_Clean(LCD565_BLACK); 					//清除屏幕函数
+			row	=	0;
+		}
+		
+		LCD_ShowHex(0,row,32,PenColor,RxNum,8,RxdBuffe);                //显示十六进制数据
+		temp	=	16*3*RxNum;
+		if(0<temp%400)
+		{
+			row	+=	(temp/400+1)*32;
+		}
+		else
+		{
+			row	+=	(temp/400)*32;
+		}
+		if(row>=240-32)
+		{
+			row=0;
+//			LCD_Clean(LCD565_BLACK); 					//清除屏幕函数
+		}
 //		LCD_Show(0,100,32,RxNum,RxdBuffe);
-		LCD_Fill(0,16,399,40,sLCD.Data.BColor);
-		LCD_ShowHex(0,16,32,RxNum,8,RxdBuffe);                //显示十六进制数据
-		LCD_Show(0,100,32,RxNum,RxdBuffe);
 //		PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
 	}
 	return;

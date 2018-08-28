@@ -263,13 +263,19 @@ void ILI9326_SetWindowAddress(
 					Model	=	0x5030;
 			break;
 		case 	Draw_Rotate_90D:
-					sILI9326->Data.HSX	=	y1;
-					sILI9326->Data.HEX	=	y2;	
-					sILI9326->Data.VSY	=	MaxV	-	x2	-	1;
-					sILI9326->Data.VEY	=	MaxV	-	x1	-	1;	
-					sILI9326->Data.HXA	=	sILI9326->Data.HSX;
-					sILI9326->Data.VYA	=	sILI9326->Data.VEY;
-					Model	=	0X5018;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
+//					sILI9326->Data.HSX	=	y1;
+//					sILI9326->Data.HEX	=	y2;	
+//					sILI9326->Data.VSY	=	MaxV	-	x2	-	1;
+//					sILI9326->Data.VEY	=	MaxV	-	x1	-	1;	
+//					sILI9326->Data.HXA	=	sILI9326->Data.HSX;
+//					sILI9326->Data.VYA	=	sILI9326->Data.VEY;
+						sILI9326->Data.HSX	=	y1;
+						sILI9326->Data.HEX	=	y2;	
+						sILI9326->Data.VSY	=	MaxV	-	x2	-	1;
+						sILI9326->Data.VEY	=	MaxV	-	x1	-	1;	
+						sILI9326->Data.HXA	=	sILI9326->Data.HSX;
+						sILI9326->Data.VYA	=	sILI9326->Data.VEY;
+					Model	=	0X0098;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
 			break;
 		case 	Draw_Rotate_180D:
 					sILI9326->Data.HSX	=	MaxH	-	x2	-	1;
@@ -296,15 +302,14 @@ void ILI9326_SetWindowAddress(
 	LCD_WriteCommand(ILI9326_R212_VSA,sILI9326->Data.VSY);		//Window Vertical RAM Address Start (R212h)			//垂直
 	LCD_WriteCommand(ILI9326_R213_VEA,sILI9326->Data.VEY);		//Window Vertical RAM Address End (R213h)				//垂直
 	//======================================设置起始点
-	LCD_WriteCommand( LCD_REG_HA, sILI9326->Data.HSX );
-	LCD_WriteCommand( LCD_REG_VA, sILI9326->Data.VSY );
+	LCD_WriteCommand( ILI9326_R200_HA, sILI9326->Data.HSX );
+	LCD_WriteCommand( ILI9326_R201_VA, sILI9326->Data.VSY );
 	//======================================设置写入模式
 	LCD_WriteCommand( ILI9326_R003_EM, Model);
 	//======================================启动写入
 	LCD_WriteIndexStart();
 	LCD_WriteData( ILI9326_R202_GDRW );
 	LCD_WriteIndexEnd();
-
 }
 //#endif//LCD_61509_EN
 /************************************** The End Of FILE **************************************/

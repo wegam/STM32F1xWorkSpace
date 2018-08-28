@@ -101,16 +101,16 @@ void PL012V30_Server(void)
 //	LCD_Printf(0,46,24,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
 //	LCD_Printf(0,70,32,0,"ABCDefgh係边乽劑匑囀宮戁甅");		//后边的省略号就是可变参数
 //	LCD_Show(0,70,32,strlen(tep),tep);
-  LCD_ShowAntenna(220,0,0,0);   //显示12x12天线
-  LCD_ShowAntenna(240,0,1,0);   //显示12x12天线
-  LCD_ShowAntenna(260,0,2,0);   //显示12x12天线
-  LCD_ShowAntenna(280,0,3,0);   //显示12x12天线
-  LCD_ShowAntenna(300,0,4,200);   //显示12x12天线
+  LCD_ShowAntenna(220,0,0,LCD565_RED);   //显示12x12天线
+  LCD_ShowAntenna(240,0,1,LCD565_RED);   //显示12x12天线
+  LCD_ShowAntenna(260,0,2,LCD565_RED);   //显示12x12天线
+  LCD_ShowAntenna(280,0,3,LCD565_RED);   //显示12x12天线
+  LCD_ShowAntenna(300,0,4,LCD565_RED);   //显示12x12天线
   
-  LCD_ShowBattery(320,0,0,0);   //显示12x12电池
-  LCD_ShowBattery(340,0,1,0);   //显示12x12电池
-  LCD_ShowBattery(360,0,2,0);   //显示12x12电池
-  LCD_ShowBattery(380,0,3,0);   //显示12x12电池
+  LCD_ShowBattery(320,0,0,LCD565_RED);   //显示12x12电池
+  LCD_ShowBattery(340,0,1,LCD565_RED);   //显示12x12电池
+  LCD_ShowBattery(360,0,2,LCD565_RED);   //显示12x12电池
+  LCD_ShowBattery(380,0,3,LCD565_RED);   //显示12x12电池
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -200,8 +200,8 @@ void RS485_Server(void)
 //		LCD_Clean(LCD565_BLACK);	//清除屏幕函数
 //		LCD_Fill(0,16,399,31,LCD565_GBLUE);
 		LCD_Fill(0,16,399,32,sLCD.Data.BColor);
-		LCD_ShowHex(0,16,16,RxNum,8,RxdBuffe);                //显示十六进制数据
-		LCD_Show(0,100,32,RxNum,RxdBuffe);
+		LCD_ShowHex(0,16,16,LCD565_WHITE,RxNum,8,RxdBuffe);                //显示十六进制数据
+		LCD_Show(0,100,32,LCD565_WHITE,RxNum,RxdBuffe);
 //		PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
 	}
 #else

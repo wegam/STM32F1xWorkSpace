@@ -162,8 +162,8 @@
 #define LCD_REG_PC4	( (u16) 0x0103) /*[12:8]VDV ,[13]VCOMG */
 #define LCD_REG_PC5	( (u16) 0x0107) /*[0:3]DCT ,[4:5]DCM */
 
-#define LCD_REG_HA	( (u16) 0x0200) /*[7:0] */
-#define LCD_REG_VA	( (u16) 0x0201) /*[8:0] */
+//#define LCD_REG_HA	( (u16) 0x0200) /*[7:0] */
+//#define LCD_REG_VA	( (u16) 0x0201) /*[8:0] */
 //#define LCD_CMD_GDRW	( (u16) 0x0202)
 #define LCD_CMD_FRCC	( (u16) 0x020B) /*[0:3] FRS*/
 
