@@ -89,10 +89,10 @@
 /   865 - Nordic
 /   866 - Russian
 /   869 - Greek 2
-/   932 - Japanese (DBCS)
-/   936 - Simplified Chinese (DBCS)
-/   949 - Korean (DBCS)
-/   950 - Traditional Chinese (DBCS)
+/   932 - Japanese (DBCS)             //DBCS为双位元组字元系统(双字节) Double Byte Char Systems 
+/   936 - Simplified Chinese (DBCS)   //DBCS为双位元组字元系统(双字节) Double Byte Char Systems 
+/   949 - Korean (DBCS)               //DBCS为双位元组字元系统(双字节) Double Byte Char Systems 
+/   950 - Traditional Chinese (DBCS)  //DBCS为双位元组字元系统(双字节) Double Byte Char Systems 
 /     0 - Include all code pages above and configured by f_setcp()
 */
 

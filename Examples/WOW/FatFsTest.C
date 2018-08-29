@@ -77,9 +77,9 @@ void FatFsTest_Configuration(void)
   
   LCD_Printf (0,0,16,0,"为逻辑驱动器注册工作区......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   /* 为逻辑驱动器注册工作区 */
-  res = f_mount(&fs[0],"",1);
+  res = f_mount(&fs[0],"",1);               //在FatFs模块上注册/注销一个工作区(文件系统对象)
   LCD_Printf (0,16,16,0,"%2d",res);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-  res = f_mount(&fs[1],"",1);
+  res = f_mount(&fs[1],"",1);               //在FatFs模块上注册/注销一个工作区(文件系统对象)
   LCD_Printf (0,32,16,0,"输出结果%0.2X",res);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   res = f_open(&fsrc, "1:srcfile.dat", FA_OPEN_EXISTING | FA_READ);
   LCD_Printf (0,48,16,0,"%0.5X",res);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数

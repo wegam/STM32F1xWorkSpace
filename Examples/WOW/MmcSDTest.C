@@ -143,7 +143,7 @@ void SD_Configuration(void)
   LCD_Printf (0,0,16,LCD565_GREEN,"STM32F1xWorkSpace--(MmcSDTest)SD卡读取");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   LCD_Printf (0,16,16,LCD565_GREEN,"为驱动器注册工作区......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   //========================为逻辑驱动器注册工作区
-  result = f_mount(&FatFsObj[0],"0:",1);
+  result = f_mount(&FatFsObj[0],"0:",1);    //在FatFs模块上注册/注销一个工作区(文件系统对象)
   if(0  ==  result)
   {
     u32 sd_size;

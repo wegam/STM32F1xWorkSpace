@@ -15383,7 +15383,9 @@ WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 					for (c = 0; c < 0x80 && uc != p[c]; c++) ;	/* Find OEM code in the table */
 					c = (c + 0x80) & 0xFF;
 				}
-			} else {	/* DBCS */
+			}
+      else   /* DBCS */   //DBCS为双位元组字元系统(双字节) Double Byte Char Systems 
+      {	
 				switch (cp) {	/* Get conversion table */
 				case 932 : p = uni2oem932; hi = sizeof uni2oem932 / 4 - 1; break;
 				case 936 : p = uni2oem936; hi = sizeof uni2oem936 / 4 - 1; break;
@@ -15432,7 +15434,9 @@ WCHAR ff_oem2uni (	/* Returns Unicode character, zero on error */
 			if (p) {	/* Is it a valid CP ? */
 				if (oem < 0x100) c = p[oem - 0x80];
 			}
-		} else {	/* DBCS */
+		}
+    else   /* DBCS */ //DBCS为双位元组字元系统(双字节) Double Byte Char Systems 
+    {	
 			switch (cp) {
 			case 932 : p = oem2uni932; hi = sizeof oem2uni932 / 4 - 1; break;
 			case 936 : p = oem2uni936; hi = sizeof oem2uni936 / 4 - 1; break;
