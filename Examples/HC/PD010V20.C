@@ -23,7 +23,8 @@ u32 RunTime	=	0;
 unsigned short	TextSize	=	0;
 
 PD010Def	PD010V20S;
-
+u8 tem	=	0;
+u8 buff[20]={0};
 
 //===============================================================================
 //函数:	PD008V11_Configuration
@@ -39,7 +40,9 @@ void PD010V20_Configuration(void)
 	Sensor_Configuration();	
 	Switch_Configuration();	
 	Pmos_Configuration();	
-	Motor_Configuration();	
+	Motor_Configuration();
+	USART_DMA_ConfigurationNR	(USART2,115200,64);	//USART_DMA配置--查询方式，不开中断	
+	USART_DMA_ConfigurationNR	(USART3,115200,64);	//USART_DMA配置--查询方式，不开中断	
 //	RS485_Configuration();	
 //	RS232_Configuration();	
 //	CAN_Configuration();
@@ -56,7 +59,36 @@ void PD010V20_Configuration(void)
 //===============================================================================
 void PD010V20_Server(void)
 {
+	
+	u8 Rxnum=0;
 	IWDG_Feed();						//独立看门狗喂狗
+	
+	Rxnum	=	USART_ReadBufferIDLE	(USART2,buff);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数
+	if(Rxnum)
+	{
+		memset(buff,buff[0]+1,Rxnum);
+		USART_DMASend(USART2,buff,8);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+		SysTick_DeleymS(500);				//SysTick延时nmS
+	}
+	Rxnum	=	USART_ReadBufferIDLE	(USART3,buff);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数
+	if(Rxnum)
+	{
+		memset(buff,buff[0]+1,Rxnum);
+		USART_DMASend(USART3,buff,8);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+		SysTick_DeleymS(500);				//SysTick延时nmS
+	}
+	if(tem==1)
+	{
+		memset(buff,buff[0]+1,Rxnum);
+		USART_DMASend(USART3,buff,8);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+	}
+	else if(tem==2)
+	{
+		memset(buff,buff[0]+1,Rxnum);
+		USART_DMASend(USART3,buff,8);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+	}
+	tem	=	0;
+	
 
 	if(RunTime++>2000)
 	{

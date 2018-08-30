@@ -9,6 +9,10 @@
 
   <project>
     <PathAndName>.\Project\STM32F1xWOW\STM32F1xWOW.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\Project\STM32F1xHC\STM32F1xHC.uvprojx</PathAndName>
     <NodeIsActive>1</NodeIsActive>
     <NodeIsExpanded>1</NodeIsExpanded>
   </project>
