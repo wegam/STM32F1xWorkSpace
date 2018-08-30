@@ -59,7 +59,7 @@ u8 bsr  = 0x08;
 u16 time=0;
 u32 ADCDATA = 0;
 //void GT32L32_PinSet(void);
-FATFS FatFsObj[2]; /* 逻辑驱动器的工作区(文件系统对象) */	
+FATFS FatFsObj[1]; /* 逻辑驱动器的工作区(文件系统对象) */	
 FIL fsrc, fdst; /* 文件对象 */
 BYTE buffer[4096]; /* 文件拷贝缓冲区 */
 FRESULT res; /* FatFs 函数公共结果代码 */
@@ -138,7 +138,7 @@ void SD_Configuration(void)
 {
   unsigned char result  = 0;
   DIR dir;
-  char FilSearchCount[10][13];
+  char FilSearchCount[10][13]={0,0};
   
   LCD_Printf (0,0,16,LCD565_GREEN,"STM32F1xWorkSpace--(MmcSDTest)SD卡读取");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   LCD_Printf (0,16,16,LCD565_GREEN,"为驱动器注册工作区......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
@@ -170,14 +170,28 @@ void SD_Configuration(void)
   }
   //========================查找指定文件
   LCD_Printf (0,96,16,LCD565_GREEN,"查找指定文件:bmp");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-  result  = FilSearch(&FatFsObj[0],&dir,"0:","bmp",FilSearchCount);  //在指定路径下查找指定扩展名的文件，并记录在(*p)[13]数组中，注意最大记录条数
+  result  = FilSearch(&FatFsObj[0],&dir,"0:/","bmp",FilSearchCount);  //在指定路径下查找指定扩展名的文件，并记录在(*p)[13]数组中，注意最大记录条数
   if(0 != result)
   {
+    unsigned char i=0;
     LCD_Printf (0,112,16,LCD565_GREEN,"查找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    for(i=0;i<10;i++)
+    {
+      if(0  !=  FilSearchCount[i][0])
+      {
+        unsigned char k = 0;
+        for(k=0;k<13;++k)
+        {
+          if(0  ==  FilSearchCount[i][k])
+            break;
+        }
+        LCD_Show(0,128,16,LCD565_GREEN,k,FilSearchCount[i]);
+      }
+    }
   }
   else
-  {
-    LCD_Printf (0,112,16,LCD565_GREEN,"未找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  {    
+    LCD_Printf (0,112,16,LCD565_GREEN,"未找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数    
   }
 //  f_getfree();  
 

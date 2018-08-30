@@ -95,10 +95,10 @@ typedef DWORD FSIZE_t;
 /* Filesystem object structure (FATFS) */
 typedef struct 
 {
-	BYTE	fs_type;		/* Filesystem type (0:N/A) */
+	BYTE	fs_type;		/* Filesystem type (0:N/A) */   //子类
 	BYTE	pdrv;			  /* Physical drive number */     //驱动器号
 	BYTE	n_fats;			/* Number of FATs (1 or 2) */   //文件分配表的数目
-	BYTE	wflag;			/* win[] flag (b0:dirty) */     //文件是否改动的标志，为1时要回写。
+	BYTE	wflag;			/* win[] flag (b0:dirty) */     //是否需要写入标志，1为需要写入
 	BYTE	fsi_flag;		/* FSINFO flags (b7:disabled, b0:dirty) */
 	WORD	id;				  /* Volume mount ID */           //文件系统加载ID
 	WORD	n_rootdir;  /* Number of root directory entries (FAT12/16) */ //根目录区目录项的数目
@@ -127,13 +127,13 @@ typedef struct
 	DWORD	cdc_ofs;		/* Offset in the containing directory (invalid when cdir is 0) */   //包含目录中的偏移量（当CDIR为0时无效） 
 #endif
 #endif
-	DWORD	n_fatent;		/* Number of FAT entries (number of clusters + 2) */  //扇区数目
+	DWORD	n_fatent;		/* Number of FAT entries (number of clusters + 2) */  //总的簇数目
 	DWORD	fsize;			/* Size of an FAT [sectors] */    //文件系统的单个扇区大小
-	DWORD	volbase;		/* Volume base sector */
-	DWORD	fatbase;		/* FAT base sector */
+	DWORD	volbase;		/* Volume base sector */          //扇区基地址
+	DWORD	fatbase;		/* FAT base sector */             //卷中起始扇区地址
 	DWORD	dirbase;		/* Root directory base sector/cluster */    //根目录基扇区/簇 
-	DWORD	database;		/* Data base sector */      //数据基扇区
-	DWORD	winsect;		/* Current sector appearing in the win[] */   //窗口中出现的扇区
+	DWORD	database;		/* Data base sector */                      //数据起始扇区 
+	DWORD	winsect;		/* Current sector appearing in the win[] */ //窗口中出现的扇区
 	BYTE	win[FF_MAX_SS];	/* Disk access window for Directory, FAT (and file data at tiny cfg) */ //用于目录、FAT的磁盘访问窗口（以及在小型CFG上的文件数据）
 } FATFS;    //文件系统对象结构体
 
@@ -142,21 +142,21 @@ typedef struct
 /* Object ID and allocation information (FFOBJID) */
 typedef struct
 {
-	FATFS*	fs;				/* Pointer to the hosting volume of this object */    //指向此对象的宿主卷的指针
-	WORD	id;				  /* Hosting volume mount ID */     //主机卷安装ID
-	BYTE	attr;			  /* Object attribute */            //对象属性
-	BYTE	stat;			  /* Object chain status (b1-0: =0:not contiguous, =2:contiguous, =3:flagmented in this session, b2:sub-directory stretched) */   //对象链状态（B1-0:＝0：不连续，＝2：邻接，＝3：标记I）
-	DWORD	sclust;			/* Object data start cluster (0:no cluster or root directory) */  //对象数据启动集群（0：没有集群或根目录）
-	FSIZE_t	objsize;  /* Object size (valid when sclust != 0) */    //对象大小（当sclust != 0时有效）
-#if FF_FS_EXFAT     //如果支持exFAT文件系统
-	DWORD	n_cont;			/* Size of first fragment - 1 (valid when stat == 3) */   //第一个片段的大小- 1（当STAT＝3时有效）
-	DWORD	n_frag;			/* Size of last fragment needs to be written to FAT (valid when not zero) */    //最后一个需要写到FAT的片段大小（有效时不为零
-	DWORD	c_scl;			/* Containing directory start cluster (valid when sclust != 0) */               //包含目录启动群集（ScRestUp时有效）= 0） 
-	DWORD	c_size;			/* b31-b8:Size of containing directory, b7-b0: Chain status (valid when c_scl != 0) */  //B31-B8:包含目录的大小，B7 B0:链状态（CSCL时有效） 
-	DWORD	c_ofs;			/* Offset in the containing directory (valid when file object and sclust != 0) */       //在包含目录中的偏移量（当文件对象和SCLUST时有效）= 0）
+	FATFS*	fs;				  /* Pointer to the hosting volume of this object */    //指向此对象的宿主卷的指针
+	WORD	  id;				  /* Hosting volume mount ID */     //主机卷安装ID
+	BYTE	  attr;			  /* Object attribute */            //对象属性
+	BYTE	  stat;			  /* Object chain status (b1-0: =0:not contiguous, =2:contiguous, =3:flagmented in this session, b2:sub-directory stretched) */   //对象链状态（B1-0:＝0：不连续，＝2：邻接，＝3：标记I）
+	DWORD	  sclust;			/* Object data start cluster (0:no cluster or root directory) */  //对象数据启动集群（0：没有集群或根目录）
+	FSIZE_t	objsize;    /* Object size (valid when sclust != 0) */    //对象大小（当sclust != 0时有效）
+#if FF_FS_EXFAT       //如果支持exFAT文件系统
+	DWORD	  n_cont;			/* Size of first fragment - 1 (valid when stat == 3) */   //第一个片段的大小- 1（当STAT＝3时有效）
+	DWORD	  n_frag;			/* Size of last fragment needs to be written to FAT (valid when not zero) */    //最后一个需要写到FAT的片段大小（有效时不为零
+	DWORD	  c_scl;			/* Containing directory start cluster (valid when sclust != 0) */               //包含目录启动群集（ScRestUp时有效）= 0） 
+	DWORD	  c_size;			/* b31-b8:Size of containing directory, b7-b0: Chain status (valid when c_scl != 0) */  //B31-B8:包含目录的大小，B7 B0:链状态（CSCL时有效） 
+	DWORD	  c_ofs;			/* Offset in the containing directory (valid when file object and sclust != 0) */       //在包含目录中的偏移量（当文件对象和SCLUST时有效）= 0）
 #endif
 #if FF_FS_LOCK
-	UINT	lockid;			/* File lock ID origin from 1 (index of file semaphore table Files[]) */    //文件锁ID源于1（文件信号量表文件索引） 
+	UINT	  lockid;			/* File lock ID origin from 1 (index of file semaphore table Files[]) */    //文件锁ID源于1（文件信号量表文件索引） 
 #endif
 } FFOBJID;    //对象ID和分配信息结构体
 
@@ -236,7 +236,7 @@ typedef enum
 	FR_DENIED,				    /* (7) Access denied due to prohibited access or directory full */  //由于下列原因，所需的访问被拒绝
 	FR_EXIST,				      /* (8) Access denied due to prohibited access */  //该文件已存在
 	FR_INVALID_OBJECT,		/* (9) The file/directory object is invalid */    //文件/目录对象无效
-	FR_WRITE_PROTECTED,		/* (10) The physical drive is write protected */  //在存储介质被写保护的情况下，以写模式打开或创建文件对象
+	FR_WRITE_PROTECTED,		/* (10) The physical drive is write protected */  //存储介质被写保护
 	FR_INVALID_DRIVE,		  /* (11) The logical drive number is invalid */    //驱动器号无效
 	FR_NOT_ENABLED,			  /* (12) The volume has no work area */            //逻辑驱动器没有工作区
 	FR_NO_FILESYSTEM,		  /* (13) There is no valid FAT volume */           //磁盘上没有有效地FAT卷

@@ -25,6 +25,7 @@
 #include "MMC_SD.h"
 
 
+bool ByteCmp(char,char);
 
 int SD_disk_initialize(void);
 int SD_disk_status(void);

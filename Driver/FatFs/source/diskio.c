@@ -151,7 +151,20 @@ DSTATUS disk_initialize (
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
-
+/*******************************************************************************
+*函数名			:	Read Sector(s) 
+*功能描述		:	读扇区               
+*输入				: BYTE pdrv--要读取的物理驱动器号（磁盘号）
+              buff--读取的数据缓存
+              sector--待读取的起始扇区号
+              count --待读取的扇区个数
+*返回值			:	
+*修改时间		:	无
+*修改说明		:	无
+*应用举例		: 
+              
+*注释				:	wegam@sina.com
+*******************************************************************************/
 DRESULT disk_read (
 	BYTE pdrv,		/* Physical drive nmuber to identify the drive */
 	BYTE *buff,		/* Data buffer to store read data */
@@ -199,12 +212,25 @@ DRESULT disk_read (
 /*-----------------------------------------------------------------------*/
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
-
+/*******************************************************************************
+*函数名			:	Write Sector(s)
+*功能描述		:	写入扇区               
+*输入				: BYTE pdrv--要写入的物理驱动器号（磁盘号）
+              buff--数据缓存
+              sector--待写入的起始扇区号
+              count --待写入的扇区个数
+*返回值			:	
+*修改时间		:	无
+*修改说明		:	无
+*应用举例		: 
+              
+*注释				:	wegam@sina.com
+*******************************************************************************/
 DRESULT disk_write (
-	BYTE pdrv,			  /* Physical drive nmuber to identify the drive */
-	const BYTE *buff,	/* Data to be written */
-	DWORD sector,		  /* Start sector in LBA */
-	UINT count			  /* Number of sectors to write */
+                    BYTE pdrv,			  /* Physical drive nmuber to identify the drive */
+                    const BYTE *buff,	/* Data to be written */
+                    DWORD sector,		  /* Start sector in LBA */
+                    UINT count			  /* Number of sectors to write */
 )
 {
 	DRESULT res;

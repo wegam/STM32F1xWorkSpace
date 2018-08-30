@@ -36,7 +36,7 @@
 
 /* Character code support macros */
 #define IsUpper(c)		((c) >= 'A' && (c) <= 'Z')
-#define IsLower(c)		((c) >= 'a' && (c) <= 'z')
+#define IsLower(c)		((c) >= 'a' && (c) <= 'z')    //判断字母是否为小写字母，是--返回1
 #define IsDigit(c)		((c) >= '0' && (c) <= '9')    //判断是否为数字
 #define IsSurrogate(c)	((c) >= 0xD800 && (c) <= 0xDFFF)
 #define IsSurrogateH(c)	((c) >= 0xD800 && (c) <= 0xDBFF)
@@ -84,15 +84,15 @@
 #define BPB_BytsPerSec  11		/* Sector size [byte] (WORD) */
 #define BPB_SecPerClus  13		/* Cluster size [sector] (BYTE) */
 #define BPB_RsvdSecCnt  14		/* Size of reserved area [sector] (WORD) */
-#define BPB_NumFATs			16		/* Number of FATs (BYTE) */
-#define BPB_RootEntCnt  17		/* Size of root directory area for FAT [entry] (WORD) */
-#define BPB_TotSec16		19		/* Volume size (16-bit) [sector] (WORD) */
+#define BPB_NumFATs			16		/* Number of FATs (BYTE) */         //扇区数量信息储存偏移地址
+#define BPB_RootEntCnt  17		/* Size of root directory area for FAT [entry] (WORD) */    //根目录条目数信息储存偏移地址
+#define BPB_TotSec16		19		/* Volume size (16-bit) [sector] (WORD) */    //卷数里信息存储地址偏移--16位
 #define BPB_Media			  21		/* Media descriptor byte (BYTE) */
 #define BPB_FATSz16			22		/* FAT size (16-bit) [sector] (WORD) */
 #define BPB_SecPerTrk		24		/* Number of sectors per track for int13h [sector] (WORD) */
 #define BPB_NumHeads		26		/* Number of heads for int13h (WORD) */
 #define BPB_HiddSec			28		/* Volume offset from top of the drive (DWORD) */
-#define BPB_TotSec32		32		/* Volume size (32-bit) [sector] (DWORD) */
+#define BPB_TotSec32		32		/* Volume size (32-bit) [sector] (DWORD) */     //卷数里信息存储地址偏移--32位
 #define BS_DrvNum			  36		/* Physical drive number for int13h (BYTE) */
 #define BS_NTres			  37		/* WindowsNT error flag (BYTE) */
 #define BS_BootSig			38		/* Extended boot signature (BYTE) */
@@ -102,7 +102,7 @@
 #define BS_BootCode			62		/* Boot code (448-byte) */
 #define BS_55AA				  510		/* Signature word (WORD) */
 
-#define BPB_FATSz32			36		/* FAT32: FAT size [sector] (DWORD) */
+#define BPB_FATSz32			36		/* FAT32: FAT size [sector] (DWORD) */  //扇区大小信息存储地址
 #define BPB_ExtFlags32  40		/* FAT32: Extended flags (WORD) */
 #define BPB_FSVer32			42		/* FAT32: Filesystem version (WORD) */
 #define BPB_RootClus32  44		/* FAT32: Root directory cluster (DWORD) */
@@ -179,12 +179,12 @@
 
 #define FSI_LeadSig			0		/* FAT32 FSI: Leading signature (DWORD) */
 #define FSI_StrucSig		484		/* FAT32 FSI: Structure signature (DWORD) */
-#define FSI_Free_Count  488		/* FAT32 FSI: Number of free clusters (DWORD) */
+#define FSI_Free_Count  488		/* FAT32 FSI: Number of free clusters (DWORD) */  //空闲计数器基地址
 #define FSI_Nxt_Free		492		/* FAT32 FSI: Last allocated cluster (DWORD) */
 
-#define MBR_Table			446		/* MBR: Offset of partition table in the MBR */
-#define SZ_PTE				16		/* MBR: Size of a partition table entry */
-#define PTE_Boot			0		  /* MBR PTE: Boot indicator */
+#define MBR_Table			446		/* MBR: Offset of partition table in the MBR */   //MBR中分区表的偏移量
+#define SZ_PTE				16		/* MBR: Size of a partition table entry */        //分区表条目的大小
+#define PTE_Boot			0		  /* MBR PTE: Boot indicator */                     //引导分区
 #define PTE_StHead	  1		  /* MBR PTE: Start head */
 #define PTE_StSec			2		  /* MBR PTE: Start sector */
 #define PTE_StCyl			3		  /* MBR PTE: Start cylinder */
@@ -216,8 +216,8 @@
 #define LD2PD(vol) VolToPart[vol].pd	/* Get physical drive number */
 #define LD2PT(vol) VolToPart[vol].pt	/* Get partition index */
 #else
-#define LD2PD(vol) (BYTE)(vol)	/* Each logical drive is bound to the same physical drive number */
-#define LD2PT(vol) 0			/* Find first valid partition or in SFD */
+#define LD2PD(vol) (BYTE)(vol)	/* Each logical drive is bound to the same physical drive number */   //每个逻辑驱动器绑定到相同的物理驱动器号。
+#define LD2PT(vol) 0			/* Find first valid partition or in SFD */    //查找第一个有效分区或在SFD中 
 #endif
 
 
@@ -1137,7 +1137,8 @@ static void clear_lock (	/* Clear lock entries of the volume */
 
 /*******************************************************************************
 *函数名			:	sync_window
-*功能描述		:	Move/Flush disk access window in the filesystem object 
+*功能描述		:	Move/Flush disk access window in the filesystem object
+              在文件系统对象中移动/刷新磁盘访问窗口（检查是否有未完成的写操作及完成写操作） 
 *输入				: 
 *返回值			:	
 *修改时间		:	无
@@ -1148,13 +1149,13 @@ static void clear_lock (	/* Clear lock entries of the volume */
 *******************************************************************************/
 #if !FF_FS_READONLY
 static FRESULT sync_window (	/* Returns FR_OK or FR_DISK_ERR */
-	FATFS* fs			/* Filesystem object */
+                            FATFS* fs			/* Filesystem object */
 )
 {
 	FRESULT res = FR_OK;
 
 
-	if (fs->wflag)  /* Is the disk access window dirty */
+	if (fs->wflag)  /* Is the disk access window dirty */   //磁盘是否有碎片
   {
 		if (disk_write(fs->pdrv, fs->win, fs->winsect, 1) == RES_OK)  /* Write back the window */
     {	
@@ -1196,8 +1197,8 @@ static FRESULT move_window (	      /* Returns FR_OK or FR_DISK_ERR */
 
 	if (sector != fs->winsect)  /* Window offset changed? */
   {	
-#if !FF_FS_READONLY
-		res = sync_window(fs);		/* Write-back changes */
+#if !FF_FS_READONLY     //未定义只读
+		res = sync_window(fs);		/* Write-back changes */  //在文件系统对象中移动/刷新磁盘访问窗口（检查是否有未完成的写操作及完成写操作）
 #endif
 		if (res == FR_OK) /* Fill sector window with new data */
     {			
@@ -3903,9 +3904,11 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 
 
 #if FF_FS_RPATH != 0
-	if (*path != '/' && *path != '\\') {	/* Without heading separator */
+	if (*path != '/' && *path != '\\')  /* Without heading separator */ //无标题分隔符
+  {	
 		dp->obj.sclust = fs->cdir;				/* Start from current directory */
-	} else
+	} 
+  else
 #endif
 	{										/* With heading separator */
 		while (*path == '/' || *path == '\\') path++;	/* Strip heading separator */
@@ -3929,8 +3932,8 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 #endif
 #endif
 
-	if ((UINT)*path < ' ')
-  {				/* Null path name is the origin directory itself */
+	if ((UINT)*path < ' ')  /* Null path name is the origin directory itself */
+  {				
 		dp->fn[NSFLAG] = NS_NONAME;
 		res = dir_sdi(dp, 0);
 
@@ -3989,29 +3992,27 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 	return res;
 }
 
-/*-----------------------------------------------------------------------*/
-/* Get logical drive number from path name                               */
-/*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	get_ldnumber
 *功能描述		:	Get logical drive number from path name
-*输入				: 
-*返回值			:	
+              从路径名称获取逻辑驱动器号
+*输入				: TCHAR** path 指向驱动器路径名称的指针
+*返回值			:	-1无效名称或者空指针；返回驱动器号
 *修改时间		:	无
 *修改说明		:	无
 *应用举例		: 
               
 *注释				:	wegam@sina.com
 *******************************************************************************/
-static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive number or null pointer) */
-	const TCHAR** path		/* Pointer to pointer to the path name */
+static int get_ldnumber (	                /* Returns logical drive number (-1:invalid drive number or null pointer) */
+                    const TCHAR** path		/* Pointer to pointer to the path name */   //指向驱动器路径名称的指针
 )
 {
-	const TCHAR *tp, *tt;
-	TCHAR tc;
-	int i, vol = -1;
+	const TCHAR *tp, *tt; //指向路径的指针变量，*tp用来找到数字编号位置，*tt用来查找冒号位置
+	TCHAR tc;             //查找冒号时使用的变量
+	int i, vol = -1;      //驱动器编号（例如"0:","1:"中的0，1）
   
-#if FF_STR_VOLUME_ID		/* Find string volume ID */
+#if FF_STR_VOLUME_ID		/* Find string volume ID */   //如果已定义字符串类型盘符
 	const char *sp;
 	char c;
 #endif
@@ -4022,17 +4023,17 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
   //==============================在路径中查找冒号(冒号前为驱动器编号)
 	do
     tc = *tt++; 
-  while ((UINT)tc >= (FF_USE_LFN ? ' ' : '!') && tc != ':');	/* Find a colon in the path */
+  while ((UINT)tc >= (FF_USE_LFN ? ' ' : '!') && tc != ':');	/* Find a colon in the path */ //在路径中找到冒号（路径名称结构为"n:")
 
-	if (tc == ':')    //查找到冒号
-  {	/* DOS/Windows style volume ID? */
+	if (tc == ':')                    //查找到冒号
+  {	/* DOS/Windows style volume ID? */  //DOS/Windows风格的盘符
 		i = FF_VOLUMES;   //#define FF_VOLUMES		1 //驱动器数量
     //-----------------------------检查是路径结构是否为数字+冒号并且获取驱动器编号
-		if (IsDigit(*tp) && tp + 2 == tt)         
+		if (IsDigit(*tp) && tp + 2 == tt)   //冒号前两位为数字    
     {	/* Is there a numeric volume ID + colon? */
 			i = (int)*tp - '0';	/* Get the LD number */   //获取驱动器编号
 		}
-    //-----------------------------如果启用了任意字符串
+    //-----------------------------如果启用了任意字符串用做驱动器号----暂时忽略（不启用）
 #if FF_STR_VOLUME_ID == 1	/* Arbitrary string is enabled */   //启用任意字符串
 		else 
     {
@@ -4051,30 +4052,36 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 			}while ((c || tp != tt) && ++i < FF_VOLUMES);	/* Repeat for each id until pattern match */
 		}
 #endif
-    //==============================如果找到卷ID，获取驱动器号并将其删除。
+    //==============================如果找到卷ID，获取驱动器号并剪断驱动器前缀
 		if (i < FF_VOLUMES)   //#define FF_VOLUMES		1 //驱动器数量 /* If a volume ID is found, get the drive number and strip it */
     {	
-			vol = i;		/* Drive number */
-			*path = tt;		/* Snip the drive prefix off */
+			vol = i;		  /* Drive number */
+			*path = tt;		/* Snip the drive prefix off */   //剪断驱动器前缀（例如"0:")
 		}
-		return vol;
+		return vol;     //返回驱动器号，如果驱动器号末找到或者无效，返回-1
 	}
-#if FF_STR_VOLUME_ID == 2		/* Unix style volume ID is enabled */
-	if (*tp == '/') {
+#if FF_STR_VOLUME_ID == 2		/* Unix style volume ID is enabled */   //如果已使能字符串方式命名巻
+	if (*tp == '/')   //起始字符为'/'
+  {
 		i = 0;
 		do 
     {
-			sp = VolumeStr[i]; tp = *path;	/* This string volume ID and path name */
+			sp = VolumeStr[i]; 
+      tp = *path;	          /* This string volume ID and path name */
 			do /* Compare the volume ID with path name */
       {	
-				c = *sp++; tc = *(++tp);
-				if (IsLower(c)) c -= 0x20;
-				if (IsLower(tc)) tc -= 0x20;
+				c = *sp++; 
+        tc = *(++tp);
+				if (IsLower(c))     //判断字母是否为小写字母，是--返回1
+          c -= 0x20;
+				if (IsLower(tc))    //判断字母是否为小写字母，是--返回1
+          tc -= 0x20;
 			} while (c && (TCHAR)c == tc);
 		}while ((c || (tc != '/' && (UINT)tc >= (FF_USE_LFN ? ' ' : '!'))) && ++i < FF_VOLUMES);	/* Repeat for each ID until pattern match */
-		if (i < FF_VOLUMES) 	/* If a volume ID is found, get the drive number and strip it */
+		//==============================如果找到卷ID，获取驱动器号并剪断驱动器前缀
+    if (i < FF_VOLUMES) 	/* If a volume ID is found, get the drive number and strip it */
     {
-			vol = i;		/* Drive number */
+			vol = i;		  /* Drive number */
 			*path = tp;		/* Snip the drive prefix off */
 			return vol;
 		}
@@ -4097,9 +4104,10 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 /*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	check_fs
-*功能描述		:	Load a sector and check if it is an FAT VBR 该函数用于读取BOOT扇区，检查是否FAT文件系统。
-*输入				: 
-              
+*功能描述		:	Load a sector and check if it is an FAT VBR 
+              加载一个扇区并检查它是否是一个FAT文件系统--该函数用于读取BOOT扇区，检查是否FAT文件系统。
+*输入				: Filesystem object 文件系统
+              检查的扇区号
 *返回值			:	
 
 *修改时间		:	无
@@ -4111,11 +4119,14 @@ static BYTE check_fs (	/* 0:FAT, 1:exFAT, 2:Valid BS but not FAT, 3:Not a BS, 4:
 	DWORD sect			/* Sector# (lba) to load and check if it is an FAT-VBR or not */
 )
 {
-	fs->wflag = 0; fs->winsect = 0xFFFFFFFF;		/* Invaidate window */
-	if (move_window(fs, sect) != FR_OK)
-    return 4;	/* Load boot record */
+	fs->wflag   = 0;            //文件是否改动的标志，为1时要回写。
+  fs->winsect = 0xFFFFFFFF;		//窗口中出现的扇区  /* Invaidate window */
+  //改变文件系统的当前工作扇区，如果想要操作的扇区就是当前扇区，什么事不做；如果不是，则将原扇区写回；如果是FAT表，还得写入备份区。
+  //这个函数内部使用，外部无法引用。
+	if (move_window(fs, sect) != FR_OK)   //检查读写数据功能并读取数据
+    return 4;	/* Load boot record */    //加载引导记录
 
-	if (ld_word(fs->win + BS_55AA) != 0xAA55) 	/* Check boot record signature (always here regardless of the sector size) */
+	if (ld_word(fs->win + BS_55AA) != 0xAA55) 	/* Check boot record signature (always here regardless of the sector size) */ //检查引导记录签名（总是在这里不考虑扇区大小）
     return 3;
 
 #if FF_FS_EXFAT
@@ -4127,7 +4138,7 @@ static BYTE check_fs (	/* 0:FAT, 1:exFAT, 2:Valid BS but not FAT, 3:Not a BS, 4:
 		if (!mem_cmp(fs->win + BS_FilSysType, "FAT", 3)) return 0;		/* Is it an FAT VBR? */
 		if (!mem_cmp(fs->win + BS_FilSysType32, "FAT32", 5)) return 0;	/* Is it an FAT32 VBR? */
 	}
-	return 2;	/* Valid BS but not FAT */
+	return 2;	/* Valid BS but not FAT */    //有效Bs但不是FAT
 }
 
 
@@ -4139,6 +4150,7 @@ static BYTE check_fs (	/* 0:FAT, 1:exFAT, 2:Valid BS but not FAT, 3:Not a BS, 4:
 /*******************************************************************************
 *函数名			:	find_volume
 *功能描述		:	Determine logical drive number and mount the volume if needed
+              确定逻辑驱动器号并在需要时装入卷及初始化驱动器及获取磁盘相关信息
 *输入				: 
 *返回值			:	
 *修改时间		:	无
@@ -4153,40 +4165,41 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
               BYTE mode					      /* !=0: Check write protection for write access */
 )
 {
-	BYTE fmt, *pt;
-	int vol;
-	DSTATUS stat;
-	DWORD bsect, fasize, tsect, sysect, nclst, szbfat, br[4];
-	WORD nrsv;
-	FATFS *fs;
-	UINT i;
+	BYTE      fmt, *pt;
+	int       vol;
+	DSTATUS   stat;
+	DWORD     bsect, fasize, tsect, sysect, nclst, szbfat, br[4];
+	WORD      nrsv;
+	FATFS     *fs;
+	UINT      i;
 
 
 	/* Get logical drive number */
-	*rfs = 0;
-	vol = get_ldnumber(path);
+	*rfs  = 0;
+	vol   = get_ldnumber(path);   //从路径名称获取逻辑驱动器号
 	if (vol < 0) 
-    return FR_INVALID_DRIVE;
+    return FR_INVALID_DRIVE;    //无效驱动器号
 
 	/* Check if the filesystem object is valid or not */
-	fs = FatFs[vol];					/* Get pointer to the filesystem object */
-	if (!fs) 
-    return FR_NOT_ENABLED;		/* Is the filesystem object available? */
+  //=========================检查文件系统是否有效，
+	fs = FatFs[vol];				  /* Get pointer to the filesystem object */
+	if (!fs)                  //文件系统不可用
+    return FR_NOT_ENABLED;  /* Is the filesystem object available? */
 #if FF_FS_REENTRANT
-	if (!lock_fs(fs))     //获取文件系统同步对象，不成功返回超时，成功，继续执行。
-    return FR_TIMEOUT;	/* Lock the volume */
+	if (!lock_fs(fs))         //获取文件系统同步对象，不成功返回超时，成功，继续执行。
+    return FR_TIMEOUT;	    /* Lock the volume */
 #endif
-	*rfs = fs;							/* Return pointer to the filesystem object */
+	*rfs = fs;							  /* Return pointer to the filesystem object */
 
-	mode &= (BYTE)~FA_READ;				/* Desired access mode, write access or not */
-	if (fs->fs_type != 0)
-  {				/* If the volume has been mounted */
-		stat = disk_status(fs->pdrv);
-		if (!(stat & STA_NOINIT))
+	mode &= (BYTE)~FA_READ;	  /* Desired access mode, write access or not */  //mode==1,立即安装驱动
+	if (fs->fs_type != 0)     /* If the volume has been mounted */    //驱动器号已占用--已安装
+  {				
+		stat = disk_status(fs->pdrv);   //获取驱动器状态
+		if (!(stat & STA_NOINIT))       //驱动器未初始化
     {		/* and the physical drive is kept initialized */
 			if (!FF_FS_READONLY && mode && (stat & STA_PROTECT))
       {	/* Check write protection if needed */
-				return FR_WRITE_PROTECTED;
+				return FR_WRITE_PROTECTED;    //在存储介质被写保护的情况下，以写模式打开或创建文件对象
 			}
 			return FR_OK;				/* The filesystem object is valid */
 		}
@@ -4195,14 +4208,15 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 	/* The filesystem object is not valid. */
 	/* Following code attempts to mount the volume. (analyze BPB and initialize the filesystem object) */
 
-	fs->fs_type = 0;					/* Clear the filesystem object */
-	fs->pdrv = LD2PD(vol);				/* Bind the logical drive and a physical drive */
+	fs->fs_type = 0;					        /* Clear the filesystem object */   //清除文件对象
+	fs->pdrv = LD2PD(vol);				    /* Bind the logical drive and a physical drive */ //绑定逻辑驱动器和物理驱动器
+  //=========================初始化驱动器
 	stat = disk_initialize(fs->pdrv);	/* Initialize the physical drive */
-	if (stat & STA_NOINIT)
+	if (stat & STA_NOINIT)    //未初始化成功
   { 			/* Check if the initialization succeeded */
 		return FR_NOT_READY;			/* Failed to initialize due to no medium or hard error */
 	}
-	if (!FF_FS_READONLY && mode && (stat & STA_PROTECT))
+	if (!FF_FS_READONLY && mode && (stat & STA_PROTECT))    //已写保护
   { /* Check disk write protection if needed */
 		return FR_WRITE_PROTECTED;
 	}
@@ -4212,14 +4226,14 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 	if (SS(fs) > FF_MAX_SS || SS(fs) < FF_MIN_SS || (SS(fs) & (SS(fs) - 1)))
     return FR_DISK_ERR;
 #endif
-
+  //在驱动器上找到一个FAT分区。只支持通用分区规则
 	/* Find an FAT partition on the drive. Supports only generic partitioning rules, FDISK and SFD. */
 	bsect = 0;
-	fmt = check_fs(fs, bsect);			/* Load sector 0 and check if it is an FAT-VBR as SFD */    //该函数用于读取BOOT扇区，检查是否FAT文件系统。
-	if (fmt == 2 || (fmt < 2 && LD2PT(vol) != 0))
-  {	/* Not an FAT-VBR or forced partition number */
-		for (i = 0; i < 4; i++)
-    {		/* Get partition offset */
+	fmt = check_fs(fs, bsect);			/* Load sector 0 and check if it is an FAT-VBR as SFD */    //加载一个扇区并检查它是否是一个FAT文件系统--该函数用于读取BOOT扇区，检查是否FAT文件系统。
+	if (fmt == 2 || (fmt < 2 && LD2PT(vol) != 0))   /* Not an FAT-VBR or forced partition number */ //不是FAT-VBR或强制分区号
+  {	
+		for (i = 0; i < 4; i++)   /* Get partition offset */    //获取分区偏移 
+    {		
 			pt = fs->win + (MBR_Table + i * SZ_PTE);
 			br[i] = pt[PTE_System] ? ld_dword(pt + PTE_StLba) : 0;
 		}
@@ -4227,7 +4241,7 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 		if (i != 0)
       i--;
 		do
-    {							/* Find an FAT volume */
+    {							/* Find an FAT volume */   // 查找FAT卷
 			bsect = br[i];
 			fmt = bsect ? check_fs(fs, bsect) : 3;	/* Check the partition */   //该函数用于读取BOOT扇区，检查是否FAT文件系统。
 		}while (LD2PT(vol) == 0 && fmt >= 2 && ++i < 4);
@@ -4306,15 +4320,15 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 		if (fs->csize == 0 || (fs->csize & (fs->csize - 1))) 
       return FR_NO_FILESYSTEM;	/* (Must be power of 2) */
 
-		fs->n_rootdir = ld_word(fs->win + BPB_RootEntCnt);	/* Number of root directory entries */
+		fs->n_rootdir = ld_word(fs->win + BPB_RootEntCnt);	/* Number of root directory entries */  //根目录条目数
 		if (fs->n_rootdir % (SS(fs) / SZDIRE)) 
       return FR_NO_FILESYSTEM;	/* (Must be sector aligned) */
 
-		tsect = ld_word(fs->win + BPB_TotSec16);		/* Number of sectors on the volume */
+		tsect = ld_word(fs->win + BPB_TotSec16);		/* Number of sectors on the volume */   //卷上扇区数
 		if (tsect == 0) 
       tsect = ld_dword(fs->win + BPB_TotSec32);
 
-		nrsv = ld_word(fs->win + BPB_RsvdSecCnt);		/* Number of reserved sectors */
+		nrsv = ld_word(fs->win + BPB_RsvdSecCnt);		/* Number of reserved sectors */    //预留扇区数
 		if (nrsv == 0) 
       return FR_NO_FILESYSTEM;			/* (Must not be 0) */
 
@@ -4336,10 +4350,10 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
       return FR_NO_FILESYSTEM;
 
 		/* Boundaries and Limits */
-		fs->n_fatent = nclst + 2;						/* Number of FAT entries */
-		fs->volbase = bsect;							/* Volume start sector */
-		fs->fatbase = bsect + nrsv; 					/* FAT start sector */
-		fs->database = bsect + sysect;					/* Data start sector */
+		fs->n_fatent  = nclst + 2;					  /* Number of FAT entries */
+		fs->volbase   = bsect;							  /* Volume start sector */
+		fs->fatbase   = bsect + nrsv; 			  /* FAT start sector */
+		fs->database  = bsect + sysect;			  /* Data start sector */
 		if (fmt == FS_FAT32) 
     {
 			if (ld_word(fs->win + BPB_FSVer32) != 0) 
@@ -4387,7 +4401,7 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 	}
 
 	fs->fs_type = fmt;		/* FAT sub-type */
-	fs->id = ++Fsid;		/* Volume mount ID */
+	fs->id = ++Fsid;		  /* Volume mount ID */
 #if FF_USE_LFN == 1
 	fs->lfnbuf = LfnBuf;	/* Static LFN working buffer */
 #if FF_FS_EXFAT
@@ -4417,9 +4431,9 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-static FRESULT validate (	/* Returns FR_OK or FR_INVALID_OBJECT */
-        FFOBJID* obj,			/* Pointer to the FFOBJID, the 1st member in the FIL/DIR object, to check validity */
-        FATFS** rfs				/* Pointer to pointer to the owner filesystem object to return */
+static FRESULT    validate (	/* Returns FR_OK or FR_INVALID_OBJECT */
+        FFOBJID*  obj,			  /* Pointer to the FFOBJID, the 1st member in the FIL/DIR object, to check validity */
+        FATFS**   rfs				  /* Pointer to pointer to the owner filesystem object to return */
 )
 {
 	FRESULT res = FR_INVALID_OBJECT;
@@ -4479,49 +4493,50 @@ static FRESULT validate (	/* Returns FR_OK or FR_INVALID_OBJECT */
 *注释				:	wegam@sina.com
 *******************************************************************************/
 FRESULT f_mount (
-	FATFS* fs,			    /* Pointer to the filesystem object (NULL:unmount)*/    //指向文件系统对象的指针（null：卸载）
-	const TCHAR* path,	/* Logical drive number to be mounted/unmounted */      //要安装/卸载的逻辑驱动器号 
-	BYTE opt			      /* Mode option 0:Do not mount (delayed mount), 1:Mount immediately */ //模式选项0：不要挂载（延迟安装），1：立即安装 
+                FATFS* fs,			    /* Pointer to the filesystem object (NULL:unmount)*/    //指向文件系统对象的指针（null：卸载）
+                const TCHAR* path,	/* Logical drive number to be mounted/unmounted */      //要安装/卸载的逻辑驱动器号 
+                BYTE opt			      /* Mode option 0:Do not mount (delayed mount), 1:Mount immediately */ //模式选项0：不要挂载（延迟安装），1：立即安装 
 )
 {
-	FATFS *cfs;
+	FATFS *cfs;           //文件系统对象结构体
 	int vol;
 	FRESULT res;
 	const TCHAR *rp = path;
 
 
 	//==========================获取逻辑驱动器号
-	vol = get_ldnumber(&rp);  /* Get logical drive number */
+	vol = get_ldnumber(&rp);    /* Get logical drive number */  //从路径名称获取逻辑驱动器号
 	if (vol < 0) 
-    return FR_INVALID_DRIVE;
-	cfs = FatFs[vol];					/* Pointer to fs object */
-
-	if (cfs)
+    return FR_INVALID_DRIVE;  //无效驱动器号
+	cfs = FatFs[vol];					  /* Pointer to fs object */      //指向文件系统地址
+  //==========================
+	if (cfs)    //已经有旧文件系统---需要清除相关数据
   {
-#if FF_FS_LOCK != 0
+#if FF_FS_LOCK != 0   //如果已定义锁功能（暂时忽略）
 		clear_lock(cfs);
 #endif
-#if FF_FS_REENTRANT						/* Discard sync object of the current volume */
+#if FF_FS_REENTRANT		//如果定义重构驱动器（暂时忽略）				/* Discard sync object of the current volume */ //丢弃当前卷的同步对象
 		if (!ff_del_syncobj(cfs->sobj))
       return FR_INT_ERR;
 #endif
-		cfs->fs_type = 0;				/* Clear old fs object */
+		cfs->fs_type = 0;				/* Clear old fs object */   //清除旧的fs对象
 	}
-
-	if (fs)
+  //========================
+	if (fs)   //如果导入的文件系统地址有效（用户已建立）
   {
-		fs->fs_type = 0;				  /* Clear new fs object */
-#if FF_FS_REENTRANT						/* Create sync object for the new volume */
+		fs->fs_type = 0;				  /* Clear new fs object */   //清除新的fs对象
+#if FF_FS_REENTRANT						/* Create sync object for the new volume *///为新驱动器创建新的对象（暂时忽略）
 		if (!ff_cre_syncobj((BYTE)vol, &fs->sobj))
       return FR_INT_ERR;
 #endif
 	}
+  //==========================注册新的fs对象（将新的对象地址存入用户文件系统）
 	FatFs[vol] = fs;					/* Register new fs object */
   //==========================模式选项0：不要挂载（延迟安装），1：立即安装
-	if (opt == 0) 
+	if (opt == 0)     //不立即安装
     return FR_OK;			/* Do not mount now, it will be mounted later */
   //==========================立即安装
-	res = find_volume(&path, &fs, 0);	/* Force mounted the volume */
+	res = find_volume(&path, &fs, 0);	  /* Force mounted the volume */
 	LEAVE_FF(fs, res);    //释放文件系统同步对象并将状态返回(return)。
 }
 
@@ -5220,7 +5235,7 @@ FRESULT f_chdrive (
 	int vol;
  
 	/* Get logical drive number */
-	vol = get_ldnumber(&path);
+	vol = get_ldnumber(&path);    //从路径名称获取逻辑驱动器号
 	if (vol < 0)
     return FR_INVALID_DRIVE;
 	CurrVol = (BYTE)vol;	/* Set it as current volume */
@@ -5658,8 +5673,8 @@ FRESULT f_lseek (
 *注释				:	wegam@sina.com
 *******************************************************************************/
 FRESULT f_opendir (
-	DIR* dp,			    /* Pointer to directory object to create */ //指向要创建的目录对象的指针
-	const TCHAR* path	/* Pointer to the directory path */         //指向目录路径的指针
+                  DIR* dp,			    /* Pointer to directory object to create */ //指向要创建的目录对象的指针
+                  const TCHAR* path	/* Pointer to the directory path */         //指向目录路径的指针
 )
 {
 	FRESULT res;
@@ -5670,7 +5685,7 @@ FRESULT f_opendir (
 	if (!dp)
     return FR_INVALID_OBJECT;
 	/* Get logical drive */
-	res = find_volume(&path, &fs, 0);
+	res = find_volume(&path, &fs, 0);   //确定逻辑驱动器号并在需要时装入卷及初始化驱动器及获取磁盘相关信息
 	if (res == FR_OK)
   {
 		dp->obj.fs = fs;
@@ -5993,7 +6008,7 @@ FRESULT f_getfree (
 
 
 	/* Get logical drive */
-	res = find_volume(&path, &fs, 0);
+	res = find_volume(&path, &fs, 0);   //确定逻辑驱动器号并在需要时装入卷及初始化驱动器及获取磁盘相关信息
 	if (res == FR_OK)
   {
 		*fatfs = fs;				/* Return ptr to the fs object */
@@ -6450,7 +6465,7 @@ FRESULT f_rename (
 	DEF_NAMBUF
 
 
-	get_ldnumber(&path_new);						/* Snip the drive number of new name off */
+	get_ldnumber(&path_new);						/* Snip the drive number of new name off */   //从路径名称获取逻辑驱动器号
 	res = find_volume(&path_old, &fs, FA_WRITE);	/* Get logical drive of the old object */
 	if (res == FR_OK) 
   {
@@ -7276,7 +7291,7 @@ FRESULT f_mkfs (
 
 
 	/* Check mounted drive and clear work area */
-	vol = get_ldnumber(&path);					/* Get target logical drive */
+	vol = get_ldnumber(&path);					/* Get target logical drive */    //从路径名称获取逻辑驱动器号
 	if (vol < 0) 
     return FR_INVALID_DRIVE;
 	if (FatFs[vol]) FatFs[vol]->fs_type = 0;	/* Clear the volume if mounted */

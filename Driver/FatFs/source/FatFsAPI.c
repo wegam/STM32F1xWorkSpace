@@ -79,8 +79,33 @@ int SD_disk_read(BYTE *buff,DWORD sector,UINT count)
 int SD_disk_write(const BYTE *buff,DWORD sector,UINT count)
 {
   unsigned char result  = 0;
-  
+  result  = SD_WriteDisk((u8*)buff,sector,count);   //往SD卡写数据
   return result;
+}
+/*******************************************************************************
+*函数名			:	ByteCmp
+*功能描述		:	字节比较
+*输入				: a,b
+*返回值			:	返回值:FALSE,不相同.TRUE,相同
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+bool ByteCmp(char a,char b)
+{
+  if(a==b)
+    return TRUE;
+  if((a>='a')&&(a<='z'))
+  {
+    if(a-32==b)
+      return TRUE;
+  }
+  if((b>='a')&&(b<='z'))
+  {
+    if(b-32==a)
+      return TRUE;
+  }
+  return FALSE;
 }
 /*******************************************************************************
 *函数名			:	SD_disk_getcapacity
@@ -95,9 +120,11 @@ int SD_disk_write(const BYTE *buff,DWORD sector,UINT count)
 *******************************************************************************/
 unsigned char SD_disk_getcapacity(unsigned char *drv,unsigned long *total,unsigned long *free)
 {
-	FATFS *fs1;
+	FATFS *fs1;         //文件系统对象结构体
 	u8 res;
-  u32 fre_clust=0, fre_sect=0, tot_sect=0;
+  u32 fre_clust=0;    /* 存储空闲簇数目变量的指针 */
+  u32 fre_sect=0;
+  u32 tot_sect=0;
   //========================得到磁盘信息及空闲簇数量
   res =(u32)f_getfree((const TCHAR*)drv, (DWORD*)&fre_clust, &fs1);
   if(res==0)
@@ -149,7 +176,7 @@ bool FilSearch(FATFS *fs,DIR *dir,TCHAR *path,u8 *name,char (*p)[13])
   FRESULT res;
   u8 i,j,k;
   j = k = 0;
-  res = f_opendir(dir,path);
+  res = f_opendir(dir,path);    //创建目录对象
   if(res != FR_OK)
     return FALSE;
   do
@@ -157,62 +184,63 @@ bool FilSearch(FATFS *fs,DIR *dir,TCHAR *path,u8 *name,char (*p)[13])
     res = f_readdir(dir,&fno);
     if(res != FR_OK)
       return FALSE;
-    if(fno.fname[0] == 0)
-      return TRUE; 
+//    if(fno.fname[0] == 0)
+//      return TRUE; 
     i = 13;
     while(--i)
     {
-      if((fno.fname[i] == 0x2E) && (fno.fname[i+1] == name[0] && fno.fname[i+2] == name[1] && fno.fname[i+3] == name[2]))
-        break;
+      if((fno.fname[i] == 0x2E) && (ByteCmp(fno.fname[i+1],name[0]) && ByteCmp(fno.fname[i+2],name[1]) && ByteCmp(fno.fname[i+3],name[2])))
+        break;    
     }
     if(i) //检索到一个符合扩展名条件的文件
     {
       for(k =0;k < 13;k++) 
         *(*(p+j)+k) = fno.fname[k];
       j++; 
+      return TRUE;
     }
-    else
-      return FALSE;
+//    else
+//      return FALSE;
   }while(!res && fno.fname[0] != 0);
   return FALSE;
 }
-/**************************函数*************************/
-u8 fileNum;
-u8 fileName[32][32];
-FILINFO finfo;
-#define _MAX_LFN 30
-#define _MAX_LFN 32
-void scanfile(const TCHAR *path)
-{
-  DIR dirs;
-  char curdirpath[_MAX_LFN],nextdirpath[_MAX_LFN];
-  if (f_opendir(&dirs, path) == FR_OK) 
-  {
-    while (f_readdir(&dirs, &finfo) == FR_OK) 
-    {
-      if(!finfo.fname[0]) 
-        break;
-      if(finfo.fname[0]=='.' || (finfo.fname[0]=='.' && finfo.fname[1]=='.'))
-        continue;
+///**************************函数*************************/
+//u8 fileNum;
+//u8 fileName[32][32];
+//FILINFO finfo;
+//#define _MAX_LFN 30
+//#define _MAX_LFN 32
+//void scanfile(const TCHAR *path)
+//{
+//  DIR dirs;
+//  char curdirpath[_MAX_LFN],nextdirpath[_MAX_LFN];
+//  if (f_opendir(&dirs, path) == FR_OK) 
+//  {
+//    while (f_readdir(&dirs, &finfo) == FR_OK) 
+//    {
+//      if(!finfo.fname[0]) 
+//        break;
+//      if(finfo.fname[0]=='.' || (finfo.fname[0]=='.' && finfo.fname[1]=='.'))
+//        continue;
 
-      if(fileNum<32)
-        strncpy(fileName[fileNum++] ,*finfo.lfname ? finfo.lfname : finfo.fname,32);
-      f_getcwd(curdirpath,_MAX_LFN);
-      if((finfo.fattrib&AM_DIR) == AM_DIR)
-      { 
-        f_getcwd(curdirpath,_MAX_LFN);
-        strcpy(nextdirpath, curdirpath);
-        strcat(nextdirpath,"/");
-        strncat(nextdirpath, *finfo.lfname ? finfo.lfname : finfo.fname, 32); 
+//      if(fileNum<32)
+//        strncpy(fileName[fileNum++] ,*finfo.lfname ? finfo.lfname : finfo.fname,32);
+//      f_getcwd(curdirpath,_MAX_LFN);
+//      if((finfo.fattrib&AM_DIR) == AM_DIR)
+//      { 
+//        f_getcwd(curdirpath,_MAX_LFN);
+//        strcpy(nextdirpath, curdirpath);
+//        strcat(nextdirpath,"/");
+//        strncat(nextdirpath, *finfo.lfname ? finfo.lfname : finfo.fname, 32); 
 
-        f_chdir(nextdirpath);
-        scanfile(nextdirpath);
+//        f_chdir(nextdirpath);
+//        scanfile(nextdirpath);
 
-        f_chdir(curdirpath);
-      }
-    }
-  }
-}
+//        f_chdir(curdirpath);
+//      }
+//    }
+//  }
+//}
 
 
 
