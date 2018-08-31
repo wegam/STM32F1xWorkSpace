@@ -531,8 +531,7 @@ void LCD_ShowChar(
 	u8 temp;
 	u8 i=0,j=0;
 	unsigned short x1=0,x2=0,y1=0,y2=0;
-	u16 colortemp=LCDSYS->Data.PColor;
-//	CoordinateTransform(&x1,&y1,&x2,&y2);
+	unsigned short LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色
 	x1	=	x;
 	y1	=	y;
 //  if(x>LCDSYS->Data.MaxV-font||y>LCDSYS->Data.MaxH-font)
@@ -544,7 +543,6 @@ void LCD_ShowChar(
 	LCD_WriteDataStart();
 	for(i=0;i<num;i++)
 	{ 
-		u16 LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色	
 		temp=Buffer[i];		 					//调用1608字体--二维数组形式--字库使用时取消
 		for(j=0;j<8;j++)
 		{
@@ -554,9 +552,7 @@ void LCD_ShowChar(
 			}
 			else
 				LCD_PEN_COLOR=LCDSYS->Data.BColor;
-//			LCD_WriteDataStart();
 			LCD_WriteData(LCD_PEN_COLOR);
-//			LCD_WriteDataEnd();
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
@@ -571,14 +567,11 @@ void LCD_ShowChar(
         }
         else
           LCD_PEN_COLOR=LCDSYS->Data.BColor;
-//        LCD_WriteDataStart();
         LCD_WriteData(LCD_PEN_COLOR);
-//        LCD_WriteDataEnd();
         temp=temp<<1;
       }
       i++;
-    }
-		LCDSYS->Data.PColor=colortemp;	
+    }		
 	}
 	LCD_WriteDataEnd();	
 }
@@ -601,7 +594,7 @@ void LCD_ShowWord(
 	u8 temp;
 	u8 i=0,j=0;
 	unsigned short x1=0,x2=0,y1=0,y2=0;
-	u16 colortemp=LCDSYS->Data.PColor;
+	unsigned short LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色
 	x1	=	x;
 	y1	=	y;
   
@@ -623,9 +616,7 @@ void LCD_ShowWord(
 			}
 			else
 				LCD_PEN_COLOR=LCDSYS->Data.BColor;
-//			LCD_WriteDataStart();
 			LCD_WriteData(LCD_PEN_COLOR);
-//			LCD_WriteDataEnd();
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
@@ -640,14 +631,11 @@ void LCD_ShowWord(
         }
         else
           LCD_PEN_COLOR=LCDSYS->Data.BColor;
-//        LCD_WriteDataStart();
         LCD_WriteData(LCD_PEN_COLOR);
-//        LCD_WriteDataEnd();
         temp=temp<<1;
       }
       i++;
-    }
-		LCDSYS->Data.PColor=colortemp;	
+    }			
 	}
 	LCD_WriteDataEnd();
 }

@@ -125,7 +125,10 @@ void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct)
 {
   u32 currentmode = 0x00, currentpin = 0x00, pinpos = 0x00, pos = 0x00;
   u32 tmpreg = 0x00, pinmask = 0x00;
-
+	if(0	==	GPIOx)
+	{
+		return;
+	}
   /* Check the parameters */
   assert_param(IS_GPIO_ALL_PERIPH(GPIOx));
   assert_param(IS_GPIO_MODE(GPIO_InitStruct->GPIO_Mode));

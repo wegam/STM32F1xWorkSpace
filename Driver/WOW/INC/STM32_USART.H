@@ -40,7 +40,7 @@ typedef struct
 	//RS485_CTL
 	GPIO_TypeDef* 	RS485_CTL_PORT;				//GPIOX
 	unsigned short 	RS485_CTL_Pin;				//GPIO_Pin_x
-}RS485_TypeDef;
+}RS485Def;
 typedef struct
 {
 	unsigned char USART_IDLESTD	:1;		//bit[0] 0-串口空闲；1-串口非空闲，状态根据以下位定义
@@ -81,14 +81,14 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx);		//串口状态检查
 
 //---------------------------RS485
 //*****************RS485初始化---使用DMA空闲接收，标志查询方式
-void	RS485_DMA_ConfigurationNR			(RS485_TypeDef *RS485_Info,u32 USART_BaudRate,u16 BufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-void	RS485_DMA_ConfigurationNRRemap(RS485_TypeDef *RS485_Info,u32 USART_BaudRate,u32 *RxdBuffer,u32 BufferSize);	//USART_DMA配置(映射)--查询方式，不开中断,配置完默认为接收状态
+void	RS485_DMA_ConfigurationNR			(RS485Def *pRS485,u32 USART_BaudRate,u16 BufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+void	RS485_DMA_ConfigurationNRRemap(RS485Def *pRS485,u32 USART_BaudRate,u32 *RxdBuffer,u32 BufferSize);	//USART_DMA配置(映射)--查询方式，不开中断,配置完默认为接收状态
 //*****************RS485接收
-u16		RS485_ReadBufferIDLE			(RS485_TypeDef *RS485_Info,u8 *RevBuffer);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+u16		RS485_ReadBufferIDLE			(RS485Def *pRS485,u8 *RevBuffer);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 
 //*****************RS485发送
-u16 	RS485_DMAPrintf						(RS485_TypeDef *RS485_Info,const char *format,...);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-u16 	RS485_DMASend							(RS485_TypeDef *RS485_Info,u8 *tx_buffer,u16 BufferSize);	//RS485-DMA发送程序
+u16 	RS485_DMAPrintf						(RS485Def *pRS485,const char *format,...);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+u16 	RS485_DMASend							(RS485Def *pRS485,u8 *tx_buffer,u16 BufferSize);	//RS485-DMA发送程序
 
 
 void 	USART_ConfigurationIT(USART_TypeDef* USARTx,u32 USART_BaudRate,u8 PreemptionPriority,u8 SubPriority);	//USART_配置---常规中断方式

@@ -144,8 +144,8 @@ static struct
 
 //--------ÄÚ²¿Ê¹ÓÃº¯Êı¶¨Òå
 //*****************RS485ÊÕ·¢¿ØÖÆ
-void RS485_TX_EN(RS485_TypeDef *RS485_Info);	//·¢Ê¹ÄÜ
-void RS485_RX_EN(RS485_TypeDef *RS485_Info);		//ÊÕÊ¹ÄÜ£¬ÒÑ¾­ÉèÖÃÎª½ÓÊÕ×´Ì¬·µ»Ø1£¬·ñÔò·µ»Ø0
+void RS485_TX_EN(RS485Def *pRS485);	//·¢Ê¹ÄÜ
+void RS485_RX_EN(RS485Def *pRS485);		//ÊÕÊ¹ÄÜ£¬ÒÑ¾­ÉèÖÃÎª½ÓÊÕ×´Ì¬·µ»Ø1£¬·ñÔò·µ»Ø0
 
 /*******************************************************************************
 *º¯ÊıÃû			:	USART_DMA_ConfigurationNr
@@ -2388,9 +2388,9 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//´®¿Ú×´Ì¬¼ì²é
 *ÊäÈë				: 
 *·µ»ØÖµ			:	ÎŞ
 *******************************************************************************/
-void RS485_TX_EN(RS485_TypeDef *RS485_Info)
+void RS485_TX_EN(RS485Def *pRS485)
 {
-	RS485_Info->RS485_CTL_PORT->BSRR		= RS485_Info->RS485_CTL_Pin;
+	pRS485->RS485_CTL_PORT->BSRR		= pRS485->RS485_CTL_Pin;
 //	GPIO_SetBits(RS485_Info->RS485_CTL_PORT,RS485_Info->RS485_CTL_Pin);
 }
 /*******************************************************************************
@@ -2399,9 +2399,9 @@ void RS485_TX_EN(RS485_TypeDef *RS485_Info)
 *ÊäÈë				: 
 *·µ»ØÖµ			:	ÒÑ¾­ÉèÖÃÎª½ÓÊÕ×´Ì¬·µ»Ø1£¬·ñÔò·µ»Ø0
 *******************************************************************************/
-void RS485_RX_EN(RS485_TypeDef *RS485_Info)
+void RS485_RX_EN(RS485Def *pRS485)
 {
-	RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;	
+	pRS485->RS485_CTL_PORT->BRR 		= pRS485->RS485_CTL_Pin;	
 }
 
 /*******************************************************************************
@@ -2411,14 +2411,14 @@ void RS485_RX_EN(RS485_TypeDef *RS485_Info)
 *·µ»ØÖµ			:	ÎŞ
 *******************************************************************************/
 void	RS485_DMA_ConfigurationNR(
-																RS485_TypeDef *RS485_Info,	//°üº¬RS485Ñ¡ÓÃµÄ´®¿ÚºÅºÍÊÕ·¢¿ØÖÆ½ÅĞÅÏ¢
+																RS485Def *pRS485,	//°üº¬RS485Ñ¡ÓÃµÄ´®¿ÚºÅºÍÊÕ·¢¿ØÖÆ½ÅĞÅÏ¢
 																u32 USART_BaudRate,					//²¨ÌØÂÊ
 																u16 BufferSize							//Éè¶¨½ÓÊÕ»º³åÇø´óĞ¡
 )	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï,ÅäÖÃÍêÄ¬ÈÏÎª½ÓÊÕ×´Ì¬
 {
-	USART_DMA_ConfigurationNR	(RS485_Info->USARTx,USART_BaudRate,BufferSize);		//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
-	GPIO_Configuration_OPP50	(RS485_Info->RS485_CTL_PORT,RS485_Info->RS485_CTL_Pin);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªAPP(¸´ÓÃÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È50MHz----V20170605
-	RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;				//RS485½ÓÊÕ¿ªÆô
+	USART_DMA_ConfigurationNR	(pRS485->USARTx,USART_BaudRate,BufferSize);		//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
+	GPIO_Configuration_OPP50	(pRS485->RS485_CTL_PORT,pRS485->RS485_CTL_Pin);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªAPP(¸´ÓÃÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È50MHz----V20170605
+	pRS485->RS485_CTL_PORT->BRR 		= pRS485->RS485_CTL_Pin;				//RS485½ÓÊÕ¿ªÆô
 }
 /*******************************************************************************
 *º¯ÊıÃû			:	USART_DMA_ConfigurationNr
@@ -2427,15 +2427,15 @@ void	RS485_DMA_ConfigurationNR(
 *·µ»ØÖµ			:	ÎŞ
 *******************************************************************************/
 void	RS485_DMA_ConfigurationNRRemap(
-																RS485_TypeDef *RS485_Info,	//°üº¬RS485Ñ¡ÓÃµÄ´®¿ÚºÅºÍÊÕ·¢¿ØÖÆ½ÅĞÅÏ¢
+																RS485Def *pRS485,	//°üº¬RS485Ñ¡ÓÃµÄ´®¿ÚºÅºÍÊÕ·¢¿ØÖÆ½ÅĞÅÏ¢
 																u32 USART_BaudRate,					//²¨ÌØÂÊ
 																u32 *RXDBuffer,							//½ÓÊÕ»º³åÇøµØÖ·::·¢ËÍ»º³åÇøµØÖ·ÔÚ·¢ËÍÊı¾İÊ±Éè¶¨£¬´®¿ÚÅäÖÃÊ±½èÓÃ½ÓÊÕ»º³åÇøµØÖ·
 																u32 BufferSize							//Éè¶¨½ÓÊÕ»º³åÇø´óĞ¡
 )	//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï,ÅäÖÃÍêÄ¬ÈÏÎª½ÓÊÕ×´Ì¬
 {
-	USART_DMA_ConfigurationNRRemap	(RS485_Info->USARTx,USART_BaudRate,RXDBuffer,BufferSize);		//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
-	GPIO_Configuration_OPP50				(RS485_Info->RS485_CTL_PORT,RS485_Info->RS485_CTL_Pin);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªAPP(¸´ÓÃÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È50MHz----V20170605
-	RS485_Info->RS485_CTL_PORT->BRR 		= RS485_Info->RS485_CTL_Pin;				//RS485½ÓÊÕ¿ªÆô
+	USART_DMA_ConfigurationNRRemap	(pRS485->USARTx,USART_BaudRate,RXDBuffer,BufferSize);		//USART_DMAÅäÖÃ--²éÑ¯·½Ê½£¬²»¿ªÖĞ¶Ï
+	GPIO_Configuration_OPP50				(pRS485->RS485_CTL_PORT,pRS485->RS485_CTL_Pin);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªAPP(¸´ÓÃÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È50MHz----V20170605
+	pRS485->RS485_CTL_PORT->BRR 		= pRS485->RS485_CTL_Pin;				//RS485½ÓÊÕ¿ªÆô
 }
 /*******************************************************************************
 *º¯ÊıÃû			:	RS485_ReadBufferIDLE
@@ -2444,18 +2444,18 @@ void	RS485_DMA_ConfigurationNRRemap(
 *·µ»ØÖµ			:	ÎŞ
 *******************************************************************************/
 u16	RS485_ReadBufferIDLE(
-												RS485_TypeDef *RS485_Info,	//°üº¬RS485Ñ¡ÓÃµÄ´®¿ÚºÅºÍÊÕ·¢¿ØÖÆ½ÅĞÅÏ¢
+												RS485Def *pRS485,	//°üº¬RS485Ñ¡ÓÃµÄ´®¿ÚºÅºÍÊÕ·¢¿ØÖÆ½ÅĞÅÏ¢
 												u8 *RevBuffer								//Êı¾İ±£´æ»º³åÇøµØÖ·£¬Èç¹û´®¿ÚµÄ½ÓÊÕµ½Êı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer
 )	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı£¬È»ºóÖØĞÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer£¬
 {
 	u16 length=0;
 	USARTStatusDef	Status;
-	Status	=	USART_Status(RS485_Info->USARTx);		//´®¿Ú×´Ì¬¼ì²é
+	Status	=	USART_Status(pRS485->USARTx);		//´®¿Ú×´Ì¬¼ì²é
 	
 	if(0  ==  Status.USART_IDLESTD)		//bit[0] 0-´®¿Ú¿ÕÏĞ£»1-´®¿Ú·Ç¿ÕÏĞ£¬×´Ì¬¸ù¾İÒÔÏÂÎ»¶¨Òå
 	{
-		RS485_RX_EN(RS485_Info);
-		length=USART_ReadBufferIDLE(RS485_Info->USARTx,RevBuffer);	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı£¬È»ºóÖØĞÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
+		RS485_RX_EN(pRS485);
+		length=USART_ReadBufferIDLE(pRS485->USARTx,RevBuffer);	//´®¿Ú¿ÕÏĞÄ£Ê½¶Á´®¿Ú½ÓÊÕ»º³åÇø£¬Èç¹ûÓĞÊı¾İ£¬½«Êı¾İ¿½±´µ½RevBuffer,²¢·µ»Ø½ÓÊÕµ½µÄÊı¾İ¸öÊı£¬È»ºóÖØĞÂ½«½ÓÊÕ»º³åÇøµØÖ·Ö¸ÏòRxdBuffer
 	}
 	return length;
 }
@@ -2466,7 +2466,7 @@ u16	RS485_ReadBufferIDLE(
 *ÊäÈë				: 
 *·µ»ØÖµ			:	ÎŞ
 *******************************************************************************/
-u16	RS485_DMAPrintf(RS485_TypeDef *RS485_Info,const char *format,...)						//×Ô¶¨Òåprintf´®¿ÚDMA·¢ËÍ³ÌĞò,ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊı
+u16	RS485_DMAPrintf(RS485Def *pRS485,const char *format,...)						//×Ô¶¨Òåprintf´®¿ÚDMA·¢ËÍ³ÌĞò,ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊı
 {
 		
 //		va_list ap; 										//VA_LIST ÊÇÔÚCÓïÑÔÖĞ½â¾ö±ä²ÎÎÊÌâµÄÒ»×éºê£¬ËùÔÚÍ·ÎÄ¼ş£º#include <stdarg.h>,ÓÃÓÚ»ñÈ¡²»È·¶¨¸öÊıµÄ²ÎÊı
@@ -2501,7 +2501,7 @@ u16	RS485_DMAPrintf(RS485_TypeDef *RS485_Info,const char *format,...)						//×Ô¶
 	va_end(args); 
 	//8)**********½«µÈ·¢ËÍ»º³åÇø´óĞ¡£¨Êı¾İ¸öÊı£©¼°»º³åÇøµØÖ··¢¸øDMA¿ªÆô·¢ËÍ
 	//8)**********DMA·¢ËÍÍê³Éºó×¢ÒâÓ¦¸ÃÊÍ·Å»º³åÇø£ºfree(USART_BUFFER);
-	BufferSize=RS485_DMASend(RS485_Info,(u8*)DMAPrintf_Buffer,BufferSize);	//RS485-DMA·¢ËÍ³ÌĞò
+	BufferSize=RS485_DMASend(pRS485,(u8*)DMAPrintf_Buffer,BufferSize);	//RS485-DMA·¢ËÍ³ÌĞò
 	return BufferSize;			//·µ»Ø·¢ËÍÊı¾İ´óĞ¡
 
 }
@@ -2512,7 +2512,7 @@ u16	RS485_DMAPrintf(RS485_TypeDef *RS485_Info,const char *format,...)						//×Ô¶
 *·µ»ØÖµ			:	Èç¹ûÊı¾İÒÑ¾­´«Èëµ½DMA£¬·µ»ØBuffer´óĞ¡£¬·ñÔò·µ»Ø0£¨·¢ËÍÆ÷Ã¦£©
 *******************************************************************************/
 u16 RS485_DMASend(
-									RS485_TypeDef *RS485_Info,		//°üº¬RS485Ñ¡ÓÃµÄ´®¿ÚºÅºÍÊÕ·¢¿ØÖÆ½ÅĞÅÏ¢
+									RS485Def *pRS485,		//°üº¬RS485Ñ¡ÓÃµÄ´®¿ÚºÅºÍÊÕ·¢¿ØÖÆ½ÅĞÅÏ¢
 									u8 *tx_buffer,								//´ı·¢ËÍÊı¾İ»º³åÇøµØÖ·
 									u16 BufferSize								//Éè¶¨·¢ËÍÊı¾İ´óĞ¡
 )		//RS485-DMA·¢ËÍ³ÌĞò
@@ -2521,7 +2521,7 @@ u16 RS485_DMASend(
 	
 //	u32	DMA_status=0;			//DMA×´Ì¬	
 	USARTStatusDef	Status;
-	USART_TypeDef* USARTx=RS485_Info->USARTx;
+	USART_TypeDef* USARTx=pRS485->USARTx;
 	
 	Status	=	USART_Status(USARTx);		//´®¿Ú×´Ì¬¼ì²é
 	if(1  ==  Status.USART_IDLESTD)   //bit[0] 0-´®¿Ú¿ÕÏĞ£»1-´®¿Ú·Ç¿ÕÏĞ£¬×´Ì¬¸ù¾İÒÔÏÂÎ»¶¨Òå
@@ -2529,7 +2529,7 @@ u16 RS485_DMASend(
 		return 0;
 	}
 //	SysTick_DeleymS(1);				//SysTickÑÓÊ±nmS
-	RS485_TX_EN(RS485_Info);
+	RS485_TX_EN(pRS485);
 	USART_DMASend	(USARTx,(u8*)tx_buffer,BufferSize);		//´®¿ÚDMA·¢ËÍ³ÌĞò
 	return 0;
 }

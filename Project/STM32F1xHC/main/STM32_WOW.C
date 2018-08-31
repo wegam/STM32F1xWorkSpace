@@ -191,10 +191,9 @@ void WOW_Configuration(void)
 	Buzzer_TEST_Configuration();
 #endif
 
-//*********************************PM001V20*********************************//
-#ifdef PM001V20
-	PM001V20_Configuration();
-#endif
+
+
+
 
 //*********************************PC001V10*********************************//
 #ifdef PC001V10
@@ -219,6 +218,10 @@ void WOW_Configuration(void)
 	PC004V21_Configuration();
 #endif
 
+//*********************************PC004V21HC*********************************//
+#ifdef PC004V21HC
+	PC004V21HC_Configuration();
+#endif
 //*********************************PC006V20*********************************//
 #ifdef PC006V20
 	PC006V20_Configuration();
@@ -369,8 +372,15 @@ void WOW_Configuration(void)
 	PL013V20_Configuration();
 #endif
 
+//*********************************PM001V20*********************************//
+#ifdef PM001V20
+	PM001V20_Configuration();
+#endif
 
-
+//*********************************PM001V20HC*********************************//
+#ifdef PM001V20HC
+	PM001V20HC_Configuration();
+#endif
 
 //*********************************PM004V10*********************************//
 #ifdef PM004V10
@@ -651,6 +661,11 @@ void WOW_Server(void)
 #ifdef PC004V21
 	PC004V21_Server();
 #endif
+//*********************************PC004V21HC*********************************//
+#ifdef PC004V21HC
+	PC004V21HC_Server();
+#endif
+
 //*********************************PC006V20*********************************//
 #ifdef PC006V20
 	PC006V20_Server();
@@ -816,6 +831,11 @@ void WOW_Server(void)
 #ifdef PM001V20
 	PM001V20_Server();
 #endif
+//*********************************PM001V20HC*********************************//
+#ifdef PM001V20HC
+	PM001V20HC_Server();
+#endif
+
 //*********************************PM004V10*********************************//
 #ifdef PM004V10
 	PM004V10_Server();

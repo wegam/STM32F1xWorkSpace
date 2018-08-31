@@ -228,11 +228,11 @@ void PD014Test_Server(void)
 	if(Num)
 	{
 		PD014Test_Display(RxdBuffe,Num);
-		if(0	==	GetAdd)
-		{
-			GetAdd	=	1;			
-			LCD_Printf(0,font*9,24,LCD565_RED,"获取到地址%0.2X......",Addr);		//后边的省略号就是可变参数
-		}		
+//		if(0	==	GetAdd)
+//		{
+//			GetAdd	=	1;			
+//			LCD_Printf(0,font*11,24,LCD565_RED,"获取到地址%0.2X",Addr);		//后边的省略号就是可变参数
+//		}		
 	}
 }
 /*******************************************************************************
@@ -250,16 +250,22 @@ void PD014Test_GetAdd(void)
 	if((50	==	Time++)&&(0	==	GetAdd))
 	{
 		Time	=	0;
+		if(Addr++>0x03)
+		{
+			Addr	=	0;
+			Serial+=1;
+		}
+			
 		pInfo.Head			=	0x7E;
-		pInfo.ADDdestin	=	++Addr;
+		pInfo.ADDdestin	=	Addr;
 		pInfo.ADDsource	=	0x00;
-		pInfo.Serial		=	Serial++;
+		pInfo.Serial		=	Serial;
 		pInfo.Cmd				=	0x01;
 		pInfo.DataLen		=	0x00;
 		pInfo.BCC8			=	BCC8(&pInfo.ADDdestin,5+pInfo.DataLen);
 		pInfo.End				=	0x7F;
 //		LCD_DrawLine(0,212,399,212,LCD565_RED);						//AB 两个坐标画一条直线
-		LCD_Printf(0,font*9,24,LCD565_RED,"获取地址%0.2X......",Addr);		//后边的省略号就是可变参数
+		LCD_Printf(0,font*9,24,LCD565_YELLOW,"获取地址%0.2X,流水号%2d......",Addr,Serial);		//后边的省略号就是可变参数
 		RS485_DMASend(&RS485,(u8*)&pInfo,8+pInfo.DataLen);
 		PowerUP	=	1;
 	}

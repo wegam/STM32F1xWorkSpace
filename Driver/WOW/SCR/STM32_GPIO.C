@@ -39,6 +39,10 @@ void GPIO_ClockConf(GPIO_TypeDef* GPIOx,						//GPIO端口
 										u16 GPIO_Pin_x									//GPIO引脚
 										)		//开启相关GPIO时钟	 
 {
+	if(0	==	GPIOx)
+	{
+		return;
+	}
 	assert_param(IS_GPIO_ALL_PERIPH(GPIOx)); 
 	switch (*(u32*)&GPIOx)
 	{
