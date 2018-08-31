@@ -173,7 +173,7 @@ DRESULT disk_read (
 )
 {
 	DRESULT res;
-	int result;
+//	int result;
 
 	switch (pdrv) {
 	case DEV_RAM :
@@ -181,14 +181,14 @@ DRESULT disk_read (
 //		result = RAM_disk_read(buff, sector, count);
 
 		// translate the reslut code here
-    result = SD_disk_read(buff, sector, count);
+    res = SD_disk_read(buff, sector, count);
 
 		return res;
 
 	case DEV_MMC :
 		// translate the arguments here
 
-		result = MMC_disk_read(buff, sector, count);
+		res = MMC_disk_read(buff, sector, count);
 
 		// translate the reslut code here
 
@@ -197,7 +197,7 @@ DRESULT disk_read (
 	case DEV_USB :
 		// translate the arguments here
 
-		result = USB_disk_read(buff, sector, count);
+		res = USB_disk_read(buff, sector, count);
 
 		// translate the reslut code here
 

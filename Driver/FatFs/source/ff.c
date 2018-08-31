@@ -4798,9 +4798,9 @@ FRESULT f_open (
 *******************************************************************************/
 FRESULT f_read (
 	FIL*  fp,   /* Pointer to the file object */
-	void* buff, /* Pointer to data buffer */
-	UINT  btr,  /* Number of bytes to read */
-	UINT* br	  /* Pointer to number of bytes read */
+	void* buff, /* Pointer to data buffer */            //存储读取的数据缓存
+	UINT  btr,  /* Number of bytes to read */           //需要读取的数据个数
+	UINT* br	  /* Pointer to number of bytes read */   //已经读取的数据个数
 )
 {
 	FRESULT res;

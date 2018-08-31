@@ -62,8 +62,9 @@ u32 ADCDATA = 0;
 FATFS FatFsObj[1]; /* 逻辑驱动器的工作区(文件系统对象) */	
 FIL fsrc, fdst; /* 文件对象 */
 BYTE buffer[4096]; /* 文件拷贝缓冲区 */
-FRESULT res; /* FatFs 函数公共结果代码 */
+FRESULT result; /* FatFs 函数公共结果代码 */
 UINT br, bw; /* 文件读/写字节计数 */
+u16 xh=0,yv=0;
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
 //->功能描述	:	 
@@ -81,8 +82,6 @@ void MmcSDTest_Configuration(void)
 //  TM1618_PinSet();
 
 //  res = f_open(&fsrc, "1:srcfile.dat", FA_OPEN_EXISTING | FA_READ);
-
-//  
   ADC_TempSensorConfiguration(&ADCDATA);								//STM32内部温度传感器配置
   LCD_ShowBattery(780,2,2,LCD565_GREEN);   //显示12x12电池
   LCD_ShowAntenna(760,2,3,LCD565_GREEN);   //显示12x12天线
@@ -125,6 +124,27 @@ void MmcSDTest_Server(void)
 
 //	TM1618_DIS();
 }
+unsigned short Clllb(unsigned char r,unsigned char g,unsigned char b)
+{
+  unsigned short temp = 0;
+  r>>=3;      //取高5位
+  temp+=r;
+  temp<<=5;
+  g>>=3;      //取高5位
+  temp+=g;
+  temp<<=6;
+  b>>=3;      //取高5位
+  temp+=b;
+  return temp;
+}
+unsigned short Clll(unsigned char r,unsigned char g)
+{
+  unsigned short temp = 0;
+  temp=r;
+  temp<<=8;
+  temp+=g;
+  return temp;
+}
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -136,7 +156,8 @@ void MmcSDTest_Server(void)
 *******************************************************************************/
 void SD_Configuration(void)
 {
-  unsigned char result  = 0;
+  u16 da=0;
+  u16 color;
   DIR dir;
   char FilSearchCount[10][13]={0,0};
   
@@ -173,7 +194,13 @@ void SD_Configuration(void)
   result  = FilSearch(&FatFsObj[0],&dir,"0:/","bmp",FilSearchCount);  //在指定路径下查找指定扩展名的文件，并记录在(*p)[13]数组中，注意最大记录条数
   if(0 != result)
   {
-    unsigned char i=0;
+    unsigned short    i=0;
+    unsigned short    j = 0;
+    unsigned short    flg=0;
+
+    unsigned short  xs,xe,ys,ye;
+    xh=0;
+    yv=0;
     LCD_Printf (0,112,16,LCD565_GREEN,"查找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
     for(i=0;i<10;i++)
     {
@@ -185,9 +212,328 @@ void SD_Configuration(void)
           if(0  ==  FilSearchCount[i][k])
             break;
         }
-        LCD_Show(0,128,16,LCD565_GREEN,k,FilSearchCount[i]);
+        LCD_Show(0,128+i*16,16,LCD565_GREEN,k,FilSearchCount[i]);
       }
     }
+    while(1)
+    {
+      //===============================图片1
+      yv  = 0;
+      flg = 0;
+      result  = f_open(&fsrc,"0:/Game.bmp",FA_READ);
+      if(result)
+        return;
+      for(i=0;i<480;i++)
+      {
+        if(flg==0)
+        {
+          result  = f_read(&fsrc,buffer,54,&br);
+        }
+        else
+        {
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+        if(FR_OK  !=  result)
+        {
+//          return;
+        }
+        da  = 0;
+        if(flg==0)
+        {
+          flg = 1;
+          da  = 0;
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+
+        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+        yv+=1;
+        if(yv>=480)
+          yv  = 0;
+      }
+      SysTick_DeleyS(3);					//SysTick延时nS
+      //===============================图片2
+      yv  = 0;
+      flg = 0;
+      i   = 0;
+      result  = f_open(&fsrc,"0:/Ga1.bmp",FA_READ);
+      if(result)
+        return;
+      for(i=0;i<480;i++)
+      {
+        if(flg==0)
+        {
+          result  = f_read(&fsrc,buffer,54,&br);
+        }
+        else
+        {
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+        if(FR_OK  !=  result)
+        {
+//          return;
+        }
+        da  = 0;
+        if(flg==0)
+        {
+          flg = 1;
+          da  = 0;
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+
+        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+        yv+=1;
+        if(yv>=480)
+          yv  = 0;
+      }
+      SysTick_DeleyS(3);					//SysTick延时nS
+      //===============================图片3
+      yv  = 0;
+      flg = 0;
+      i   = 0;
+      result  = f_open(&fsrc,"0:/Ga2.bmp",FA_READ);
+      if(result)
+        return;
+      for(i=0;i<480;i++)
+      {
+        if(flg==0)
+        {
+          result  = f_read(&fsrc,buffer,54,&br);
+        }
+        else
+        {
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+        if(FR_OK  !=  result)
+        {
+//          return;
+        }
+        da  = 0;
+        if(flg==0)
+        {
+          flg = 1;
+          da  = 0;
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+
+        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+        yv+=1;
+        if(yv>=480)
+          yv  = 0;
+      }
+      SysTick_DeleyS(3);					//SysTick延时nS
+      //===============================图片4
+      yv  = 0;
+      flg = 0;
+      i   = 0;
+      result  = f_open(&fsrc,"0:/Ga3.bmp",FA_READ);
+      if(result)
+        return;
+      for(i=0;i<480;i++)
+      {
+        if(flg==0)
+        {
+          result  = f_read(&fsrc,buffer,54,&br);
+        }
+        else
+        {
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+        if(FR_OK  !=  result)
+        {
+//          return;
+        }
+        da  = 0;
+        if(flg==0)
+        {
+          flg = 1;
+          da  = 0;
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+
+        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+        yv+=1;
+        if(yv>=480)
+          yv  = 0;
+      }
+      SysTick_DeleyS(3);					//SysTick延时nS
+      //===============================图片5
+      yv  = 0;
+      flg = 0;
+      i   = 0;
+      result  = f_open(&fsrc,"0:/Ga4.bmp",FA_READ);
+      if(result)
+        return;
+      for(i=0;i<480;i++)
+      {
+        if(flg==0)
+        {
+          result  = f_read(&fsrc,buffer,54,&br);
+        }
+        else
+        {
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+        if(FR_OK  !=  result)
+        {
+//          return;
+        }
+        da  = 0;
+        if(flg==0)
+        {
+          flg = 1;
+          da  = 0;
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+
+        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+        yv+=1;
+        if(yv>=480)
+          yv  = 0;
+      }
+      SysTick_DeleyS(3);					//SysTick延时nS
+      //===============================图片5
+      yv  = 0;
+      flg = 0;
+      i   = 0;
+      result  = f_open(&fsrc,"0:/Ga5.bmp",FA_READ);
+      if(result)
+        return;
+      for(i=0;i<480;i++)
+      {
+        if(flg==0)
+        {
+          result  = f_read(&fsrc,buffer,54,&br);
+        }
+        else
+        {
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+        if(FR_OK  !=  result)
+        {
+//          return;
+        }
+        da  = 0;
+        if(flg==0)
+        {
+          flg = 1;
+          da  = 0;
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+
+        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+        yv+=1;
+        if(yv>=480)
+          yv  = 0;
+      }
+      SysTick_DeleyS(3);					//SysTick延时nS
+      //===============================图片5
+      yv  = 0;
+      flg = 0;
+      i   = 0;
+      result  = f_open(&fsrc,"0:/Ga6.bmp",FA_READ);
+      if(result)
+        return;
+      for(i=0;i<480;i++)
+      {
+        if(flg==0)
+        {
+          result  = f_read(&fsrc,buffer,54,&br);
+        }
+        else
+        {
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+        if(FR_OK  !=  result)
+        {
+//          return;
+        }
+        da  = 0;
+        if(flg==0)
+        {
+          flg = 1;
+          da  = 0;
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+
+        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+        yv+=1;
+        if(yv>=480)
+          yv  = 0;
+      }
+      SysTick_DeleyS(3);					//SysTick延时nS
+      //===============================图片5
+      yv  = 0;
+      flg = 0;
+      i   = 0;
+      result  = f_open(&fsrc,"0:/Ga7.bmp",FA_READ);
+      if(result)
+        return;
+      for(i=0;i<480;i++)
+      {
+        if(flg==0)
+        {
+          result  = f_read(&fsrc,buffer,54,&br);
+        }
+        else
+        {
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+        if(FR_OK  !=  result)
+        {
+//          return;
+        }
+        da  = 0;
+        if(flg==0)
+        {
+          flg = 1;
+          da  = 0;
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+
+        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+        yv+=1;
+        if(yv>=480)
+          yv  = 0;
+      }
+      SysTick_DeleyS(3);					//SysTick延时nS
+      //===============================图片5
+      yv  = 0;
+      flg = 0;
+      i   = 0;
+      result  = f_open(&fsrc,"0:/Ga8.bmp",FA_READ);
+      if(result)
+        return;
+      for(i=0;i<480;i++)
+      {
+        if(flg==0)
+        {
+          result  = f_read(&fsrc,buffer,54,&br);
+        }
+        else
+        {
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+        if(FR_OK  !=  result)
+        {
+//          return;
+        }
+        da  = 0;
+        if(flg==0)
+        {
+          flg = 1;
+          da  = 0;
+          result  = f_read(&fsrc,buffer,2400,&br);
+        }
+
+        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+        yv+=1;
+        if(yv>=480)
+          yv  = 0;
+      }
+      SysTick_DeleyS(3);					//SysTick延时nS
+     
+    }
+    
   }
   else
   {    

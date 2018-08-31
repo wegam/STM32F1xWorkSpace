@@ -858,6 +858,40 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...)			
 	LCD_Show(x,y,font,color,InputDataSize,(unsigned char*)DataBuffer);
 	return InputDataSize;
 }
+/*******************************************************************************
+* 函数名			:	LCD_ShowHex
+* 功能描述		:	十六进制显示 
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void LCD_ShowBMP(
+							unsigned short x1, unsigned short y1, 	//x1,y1:起点坐标
+							unsigned short x2, unsigned short y2,		//x2,y2:终点坐标
+							u16 Length,   
+              u8 *RGBBuffer     //RGB888数据地址，传入顺序为BGR，就是第一字节为B
+)		//高通字库测试程序
+{
+	unsigned short i = 0;
+  unsigned short j = 0;
+  unsigned short  RGB565;
+  eRotate Rotate = LCDSYS->Flag.Rotate;
+  LCDSYS->Flag.Rotate  = Draw_Rotate_0D;		//使用旋转角度
+  LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
+  LCD_WriteDataStart();
+	for(i=0;i<Length;)
+	{
+    RGB565  =   (RGBBuffer[j+2]>>3);
+    RGB565  <<= 5;
+    RGB565  |=  (RGBBuffer[j+1]>>3);
+    RGB565  <<= 6;
+    RGB565  |=  (RGBBuffer[j+0]>>3);
+    LCD_WriteData(RGB565);
+    j+=3;
+    i+=3;
+	}
+  LCD_WriteDataEnd();
+  LCDSYS->Flag.Rotate  =  Rotate;
+}
 /**************************************************************************************************
 * [Function] LCD_DrawPixelEx:  函数功能、注意事项等的描述
 * [param01]u16 x: description

@@ -12,3 +12,5 @@
 	将RAM_disk_write改为SD_disk_write
 	将RAM_disk_status改为SD_disk_status
 	并完善函数实现，将以上修改部分分别在disk_initialize，disk_read，disk_write，disk_status函数中替换
+三：20180830
+1，添加并修改bool FilSearch(FATFS *fs,DIR *dir,TCHAR *path,u8 *name,char (*p)[13])函数，可以查找SD卡内包含的文件的格式

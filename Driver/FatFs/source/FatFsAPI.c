@@ -197,12 +197,12 @@ bool FilSearch(FATFS *fs,DIR *dir,TCHAR *path,u8 *name,char (*p)[13])
       for(k =0;k < 13;k++) 
         *(*(p+j)+k) = fno.fname[k];
       j++; 
-      return TRUE;
+//      return TRUE;
     }
 //    else
 //      return FALSE;
   }while(!res && fno.fname[0] != 0);
-  return FALSE;
+  return TRUE;
 }
 ///**************************函数*************************/
 //u8 fileNum;
@@ -241,8 +241,72 @@ bool FilSearch(FATFS *fs,DIR *dir,TCHAR *path,u8 *name,char (*p)[13])
 //    }
 //  }
 //}
-
-
+/*******************************************************************************
+*函数名			:	FATFS_ScanFiles
+*功能描述		:	读取指定文件下所有文件的名字和后缀
+*输入				: fs
+              dir
+              path 要检索的文件路径
+              name 要检索的文件扩展名
+              (*p)[13] 检索结果存放地址
+*返回值			:	输出参数：TRUE 成功 FALSE 出错
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+//unsigned char FATFS_ScanFiles(DIR *dir, FILINFO *file)
+//{
+//  FRESULT res;
+//  FILINFO fileInfo;
+//  DIR dirs;
+//  char *fn, i = 0;
+// #if FF_USE_LFN
+//  static char lfn[FF_MAX_LFN + 1]; /* Buffer to store the LFN */
+//  fileInfo.lfname = lfn;
+//  fileInfo.lfsize = sizeof(lfn);
+//#endif
+//  /* 打开文件夹 */
+//  res = f_opendir(&dirs, (const TCHAR*)dir);
+//  if (res == FR_OK) //成功打开文件夹
+//  {
+//    while (f_readdir(&dirs, &fileInfo) == FR_OK) //按照顺序读文件夹
+//    {
+//      if(!fileInfo.fname[0]) //如果文件名为 0,结束
+//      {
+//        break;
+//      }
+//    /* 判断文件属性 */
+//      if((fileInfo.fattrib == AM_ARC)|(fileInfo.fattrib == AM_DIR))
+//      {
+//#if FF_USE_LFN //为长字符串名准备
+//        fn = *fileInfo.lfname ? fileInfo.lfname : fileInfo.fname;
+//#else
+//        fn = fileInfo.fname;
+//#endif
+//        //============读取名字 */
+//        i = 0;
+//        while((*fn != '.') && (*fn != '\0')) //有一个成立就跳出循环
+//        {
+//          file->name[i] = *fn;
+//          i++;
+//          fn++; 
+//        }
+//        file->fname[i] = '\0';
+//        //============读取后缀 */
+//        i = 0;
+//        while(*fn != '\0')
+//        {
+//          file->type[i] = *fn;
+//          i++;
+//          fn++;
+//        }
+//        file->type[i] = '\0';
+//        file++;
+//      }//end of 文件属性判断呢
+//    } //end of while (f_readdir(&dirs, &fileInfo) == FR_OK)//按照顺序读文件夹
+//  }
+//  return res;
+//}
 
 
 
