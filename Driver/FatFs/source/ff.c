@@ -55,8 +55,8 @@
 #define FA_DIRTY	  0x80	/* FIL.buf[] needs to be written-back */
 
 
-/* Name status flags in fn[11] */
-#define NSFLAG		11		/* Index of the name status byte */
+/* Name status flags in fn[11] */   //名称标志状态
+#define NSFLAG		11		/* Index of the name status byte */   //名称状态字节索引标识
 #define NS_LOSS		0x01	/* Out of 8.3 format */
 #define NS_LFN		0x02	/* Force to create LFN entry */
 #define NS_LAST		0x04	/* Last segment */
@@ -64,7 +64,7 @@
 #define NS_EXT		0x10	/* Lower case flag (ext) */
 #define NS_DOT		0x20	/* Dot entry */
 #define NS_NOLFN	0x40	/* Do not find LFN */
-#define NS_NONAME	0x80	/* Not followed */
+#define NS_NONAME	0x80	/* Not followed */                    //没有文件名
 
 
 /* Limits and boundaries */
@@ -136,7 +136,7 @@
 #define BS_BootCodeEx		  120		/* exFAT: Boot code (390-byte) */
 
 #define DIR_Name			  0		  /* Short file name (11-byte) */
-#define DIR_Attr			  11		/* Attribute (BYTE) */
+#define DIR_Attr			  11		/* Attribute (BYTE) */                    //属性地址偏移位
 #define DIR_NTres			  12		/* Lower case flag (BYTE) */
 #define DIR_CrtTime10   13		/* Created time sub-second (BYTE) */
 #define DIR_CrtTime			14		/* Created time (DWORD) */
@@ -172,8 +172,8 @@
 #define XDIR_FstClus		52		/* exFAT: First cluster of the file data (DWORD) */
 #define XDIR_FileSize		56		/* exFAT: File/Directory size (QWORD) */
 
-#define SZDIRE				32		/* Size of a directory entry */
-#define DDEM				  0xE5	/* Deleted directory entry mark set to DIR_Name[0] */
+#define SZDIRE				32		/* Size of a directory entry */                         //一个目录信息大小
+#define DDEM				  0xE5	/* Deleted directory entry mark set to DIR_Name[0] */   //已删除的目录
 #define RDDEM				  0x05	/* Replacement of the character collides with DDEM */
 #define LLEF				  0x40	/* Last long entry flag in LDIR_Ord */
 
@@ -1056,10 +1056,10 @@ static UINT inc_lock (	/* Increment object open counter and returns its index (0
 		for (i = 0; i < FF_FS_LOCK && Files[i].fs; i++) ;
 		if (i == FF_FS_LOCK)  /* No free entry to register (int err) */
       return 0;	
-		Files[i].fs = dp->obj.fs;
-		Files[i].clu = dp->obj.sclust;
-		Files[i].ofs = dp->dptr;
-		Files[i].ctr = 0;
+		Files[i].fs   = dp->obj.fs;     //目录中包含的文件系统对象结构体地址
+		Files[i].clu  = dp->obj.sclust;
+		Files[i].ofs  = dp->dptr;
+		Files[i].ctr  = 0;
 	}
 
 	if (acc >= 1 && Files[i].ctr) return 0;	/* Access violation (int err) */
@@ -1085,7 +1085,7 @@ static FRESULT dec_lock (	/* Decrement object open counter */
 )
 {
 	WORD n;
-	FRESULT res;
+	FRESULT res;    //文件函数执行结果返回码
 
 
 	if (--i < FF_FS_LOCK) /* Index number origin from 0 */
@@ -1119,7 +1119,7 @@ static FRESULT dec_lock (	/* Decrement object open counter */
 *注释				:	wegam@sina.com
 *******************************************************************************/
 static void clear_lock (	/* Clear lock entries of the volume */
-	FATFS *fs
+                FATFS *fs //文件系统对象结构体
 )
 {
 	UINT i;
@@ -1152,7 +1152,7 @@ static FRESULT sync_window (	/* Returns FR_OK or FR_DISK_ERR */
                             FATFS* fs			/* Filesystem object */
 )
 {
-	FRESULT res = FR_OK;
+	FRESULT res = FR_OK;    //文件函数执行结果返回码
 
 
 	if (fs->wflag)  /* Is the disk access window dirty */   //磁盘是否有碎片
@@ -1177,7 +1177,9 @@ static FRESULT sync_window (	/* Returns FR_OK or FR_DISK_ERR */
 
 /*******************************************************************************
 *函数名			:	move_window
-*功能描述		:	改变文件系统的当前工作扇区，如果想要操作的扇区就是当前扇区，什么事不做；如果不是，则将原扇区写回；如果是FAT表，还得写入备份区。
+*功能描述		:	检查传入的扇区是否可用，如果可用，刚在文件系统中将当前工作扇区更新为此扇区地址
+              改变文件系统的当前工作扇区（fs->winsect），如果想要操作的扇区就是当前扇区，什么事不做；
+              如果不是，则更新工作扇区；如果是FAT表，还得写入备份区。
               这个函数内部使用，外部无法引用。
 *输入				: 
 *返回值			:	
@@ -1192,8 +1194,7 @@ static FRESULT move_window (	      /* Returns FR_OK or FR_DISK_ERR */
                     DWORD sector		/* Sector number to make appearance in the fs->win[] */
 )
 {
-	FRESULT res = FR_OK;
-
+	FRESULT res = FR_OK;    //文件函数执行结果返回码
 
 	if (sector != fs->winsect)  /* Window offset changed? */
   {	
@@ -1202,12 +1203,12 @@ static FRESULT move_window (	      /* Returns FR_OK or FR_DISK_ERR */
 #endif
 		if (res == FR_OK) /* Fill sector window with new data */
     {			
-			if (disk_read(fs->pdrv, fs->win, sector, 1) != RES_OK)
+			if (disk_read(fs->pdrv, fs->win, sector, 1) != RES_OK)    //检查当前扇区是否可用
       {
 				sector = 0xFFFFFFFF;	/* Invalidate window if read data is not valid */
 				res = FR_DISK_ERR;
 			}
-			fs->winsect = sector;
+			fs->winsect = sector;   //将系统当前工作扇区更新为输入的扇区地址
 		}
 	}
 	return res;
@@ -1233,7 +1234,7 @@ static FRESULT sync_fs (	/* Returns FR_OK or FR_DISK_ERR */
 	FATFS* fs		/* Filesystem object */
 )
 {
-	FRESULT res;
+	FRESULT res;    //文件函数执行结果返回码
 
 
 	res = sync_window(fs);
@@ -1270,6 +1271,7 @@ static FRESULT sync_fs (	/* Returns FR_OK or FR_DISK_ERR */
 /*******************************************************************************
 *函数名			:	clst2sect
 *功能描述		:	Get physical sector number from cluster number
+              根据簇号获取数据起始扇区号
 *输入				: 
 *返回值			:	
 *修改时间		:	无
@@ -1283,12 +1285,12 @@ static DWORD clst2sect (	/* !=0:Sector number, 0:Failed (invalid cluster#) */
 	DWORD clst		/* Cluster# to be converted */
 )
 {
-	clst -= 2;		/* Cluster number is origin from 2 */
-	if (clst >= fs->n_fatent - 2)   /* Is it invalid cluster number? */
-    return 0;		
+	clst -= 2;		/* Cluster number is origin from 2 */   //簇号对齐
+	if (clst >= fs->n_fatent - 2)             /* Is it invalid cluster number? */ //无效簇编号
+    return 0;	
+  //============================返回起始扇区号
 	return fs->database + fs->csize * clst;		/* Start sector number of the cluster */
 }
-
 
 
 
@@ -1412,7 +1414,7 @@ static FRESULT put_fat (	/* FR_OK(0):succeeded, !=0:error */
 {
 	UINT bc;
 	BYTE *p;
-	FRESULT res = FR_INT_ERR;
+	FRESULT res = FR_INT_ERR;   //文件函数执行结果返回码
 
 	if (clst >= 2 && clst < fs->n_fatent)   /* Check if in valid range */
   {
@@ -1600,7 +1602,7 @@ static FRESULT fill_first_frag (
 	FFOBJID* obj	/* Pointer to the corresponding object */
 )
 {
-	FRESULT res;
+	FRESULT res;    //文件函数执行结果返回码
 	DWORD cl, n;
   
 	if(obj->stat == 3) /* Has the object been changed 'fragmented' in this session? */
@@ -1637,7 +1639,7 @@ static FRESULT fill_last_frag (
 	DWORD term		/* Value to set the last FAT entry */
 )
 {
-	FRESULT res;
+	FRESULT res;    //文件函数执行结果返回码
 
 
 	while (obj->n_frag > 0) /* Create the chain of last fragment */
@@ -1675,7 +1677,7 @@ static FRESULT remove_chain (	/* FR_OK(0):succeeded, !=0:error */
 	DWORD pclst			/* Previous cluster of clst (0:entire chain) */
 )
 {
-  FRESULT res = FR_OK;
+  FRESULT res = FR_OK;    //文件函数执行结果返回码
 	DWORD nxt;
 	FATFS *fs = obj->fs;
 #if FF_FS_EXFAT || FF_USE_TRIM
@@ -1808,7 +1810,7 @@ static DWORD create_chain (	/* 0:No free cluster, 1:Internal error, 0xFFFFFFFF:D
 )
 {
 	DWORD cs, ncl, scl;
-	FRESULT res;
+	FRESULT res;    //文件函数执行结果返回码
 	FATFS *fs = obj->fs;
 
 
@@ -2033,7 +2035,8 @@ static FRESULT dir_clear (	/* Returns FR_OK or FR_DISK_ERR */
 /*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	dir_sdi
-*功能描述		:	Directory handling - Set directory index 目录处理-设置目录索引
+*功能描述		:	Directory handling - Set directory index
+              目录处理-设置目录索引
 *输入				: dp指向打开目录对象的指针
               ofs目录表的偏移量 
 *返回值			:	FR_OK(0):succeeded, !=0:error
@@ -2042,38 +2045,41 @@ static FRESULT dir_clear (	/* Returns FR_OK or FR_DISK_ERR */
 *注释				:	wegam@sina.com
 *******************************************************************************/
 static FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
-	DIR* dp,		            /* Pointer to directory object */
-	DWORD ofs		            /* Offset of directory table */
+                DIR*  dp, /* Pointer to directory object */
+                DWORD ofs /* Offset of directory table */
 )
 {
-	DWORD csz, clst;
-	FATFS *fs = dp->obj.fs;
+	DWORD csz;    //簇容量（每个簇包含的字节数）
+  DWORD clst;   //根目录起始扇区/簇
+	FATFS *fs = dp->obj.fs;   //目录中包含的文件系统对象结构体地址
 
   //================================Check range of offset and alignment偏移和对准检查范围
 	if (ofs >= (DWORD)((FF_FS_EXFAT && fs->fs_type == FS_EXFAT) ? MAX_DIR_EX : MAX_DIR) || ofs % SZDIRE)  /* Check range of offset and alignment */
   {	
 		return FR_INT_ERR;
 	}
-	dp->dptr = ofs;				    /* Set current offset */    //设置最近的偏移
-	clst = dp->obj.sclust;		/* Table start cluster (0:root) */    //开始簇（0：根）
+	dp->dptr = ofs;				    /* Set current offset */              //设置偏移量
+	clst = dp->obj.sclust;		/* Table start cluster (0:root) */    //读取对象数据起始簇（0：没有集群或根目录）
 	if (clst == 0 && fs->fs_type >= FS_FAT32) /* Replace cluster# 0 with root cluster# */
   {	
-		clst = fs->dirbase;
+		clst = fs->dirbase;     //读取根目录起始扇区(FAT32:Cluster#)
 		if (FF_FS_EXFAT)
-      dp->obj.stat = 0;	/* exFAT: Root dir has an FAT chain */
+      dp->obj.stat = 0;	    /* exFAT: Root dir has an FAT chain */
 	}
-
-	if (clst == 0)  /* Static table (root-directory on the FAT volume) */
+  //=================================
+	if (clst == 0)  /* Static table (root-directory on the FAT volume) */ //静态表（FAT卷上的根目录）
   {	
 		if (ofs / SZDIRE >= fs->n_rootdir)  /* Is index out of range? */
       return FR_INT_ERR;	
 		dp->sect = fs->dirbase;
 
 	}
-  else    /* Dynamic table (sub-directory or root-directory on the FAT32/exFAT volume) */
+  //=================================
+  else    /* Dynamic table (sub-directory or root-directory on the FAT32/exFAT volume) */ //动态表（FAT32／EXFAT卷上的子目录或根目录）
   {			
-		csz = (DWORD)fs->csize * SS(fs);	/* Bytes per cluster */
-		while (ofs >= csz)    /* Follow cluster chain */
+		csz = (DWORD)fs->csize * SS(fs);	/* Bytes per cluster */   //获取每个簇的容量（单个簇包含的扇区数*单个扇区的字节数
+    //===============================扫描簇内容
+		while (ofs >= csz)                /* Follow cluster chain */
     {				
 			clst = get_fat(&dp->obj, clst);				/* Get next cluster */
 			if (clst == 0xFFFFFFFF)   /* Disk error */
@@ -2082,13 +2088,13 @@ static FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
         return FR_INT_ERR;	
 			ofs -= csz;
 		}
-		dp->sect = clst2sect(fs, clst);
+		dp->sect = clst2sect(fs, clst);     //根据簇号获取数据起始扇地址
 	}
-	dp->clust = clst;					/* Current cluster# */
+	dp->clust = clst;					    /* Current cluster# */
 	if (dp->sect == 0)
     return FR_INT_ERR;
 	dp->sect += ofs / SS(fs);			/* Sector# of the directory entry */
-	dp->dir = fs->win + (ofs % SS(fs));	/* Pointer to the entry in the win[] */
+	dp->dir = fs->win + (ofs % SS(fs));	/* Pointer to the entry in the win[] */ //指向目录数据地址
 	return FR_OK;
 }
 
@@ -2104,12 +2110,12 @@ static FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
 *注释				:	wegam@sina.com
 *******************************************************************************/
 static FRESULT dir_next (	/* FR_OK(0):succeeded, FR_NO_FILE:End of table, FR_DENIED:Could not stretch */
-	DIR* dp,				/* Pointer to the directory object */
-	int stretch				/* 0: Do not stretch table, 1: Stretch table if needed */
+                  DIR* dp,				/* Pointer to the directory object */
+                  int stretch		  /* 0: Do not stretch table, 1: Stretch table if needed */
 )
 {
 	DWORD ofs, clst;
-	FATFS *fs = dp->obj.fs;
+	FATFS *fs = dp->obj.fs;   //目录中包含的文件系统对象结构体地址
 
 	ofs = dp->dptr + SZDIRE;	/* Next entry */
 	if (dp->sect == 0 || ofs >= (DWORD)((FF_FS_EXFAT && fs->fs_type == FS_EXFAT) ? MAX_DIR_EX : MAX_DIR)) /* Report EOT when offset has reached max value */
@@ -2145,7 +2151,7 @@ static FRESULT dir_next (	/* FR_OK(0):succeeded, FR_NO_FILE:End of table, FR_DEN
 					}
 					clst = create_chain(&dp->obj, dp->clust);	/* Allocate a cluster */
 					if (clst == 0)
-            return FR_DENIED;			/* No free cluster */
+            return FR_DENIED;			  /* No free cluster */
 					if (clst == 1)
             return FR_INT_ERR;			/* Internal error */
 					if (clst == 0xFFFFFFFF)
@@ -2155,7 +2161,7 @@ static FRESULT dir_next (	/* FR_OK(0):succeeded, FR_NO_FILE:End of table, FR_DEN
 					if (FF_FS_EXFAT) dp->obj.stat |= 4;			/* exFAT: The directory has been stretched */
 #else
 					if (!stretch)
-            dp->sect = 0;					/* (this line is to suppress compiler warning) */
+            dp->sect = 0;					  /* (this line is to suppress compiler warning) */
             dp->sect = 0; 
             return FR_NO_FILE;			/* Report EOT */
 #endif
@@ -2165,8 +2171,8 @@ static FRESULT dir_next (	/* FR_OK(0):succeeded, FR_NO_FILE:End of table, FR_DEN
 			}
 		}
 	}
-	dp->dptr = ofs;						/* Current entry */
-	dp->dir = fs->win + ofs % SS(fs);	/* Pointer to the entry in the win[] */
+	dp->dptr = ofs;						        /* Current entry */     //更新当前读写地址
+	dp->dir = fs->win + ofs % SS(fs);	/* Pointer to the entry in the win[] */   //偏移到下一个目录信息地址
 
 	return FR_OK;
 }
@@ -2194,12 +2200,12 @@ static FRESULT dir_alloc (	/* FR_OK(0):succeeded, !=0:error */
 	UINT nent				/* Number of contiguous entries to allocate */
 )
 {
-	FRESULT res;
+	FRESULT res;    //文件函数执行结果返回码
 	UINT n;
-	FATFS *fs = dp->obj.fs;
+	FATFS *fs = dp->obj.fs;   //目录中包含的文件系统对象结构体地址
 
 
-	res = dir_sdi(dp, 0);
+	res = dir_sdi(dp, 0);   //目录处理-设置目录索引--从0开始查找
 	if (res == FR_OK)
   {
 		n = 0;
@@ -2729,7 +2735,7 @@ static FRESULT load_xdir (	/* FR_INT_ERR: invalid entry block */
 	DIR* dp					/* Reading direcotry object pointing top of the entry block to load */
 )
 {
-	FRESULT res;
+	FRESULT res;    //文件函数执行结果返回码
 	UINT i, sz_ent;
 	BYTE* dirb = dp->obj.fs->dirbuf;	/* Pointer to the on-memory direcotry entry block 85+C0+C1s */
 
@@ -2835,17 +2841,17 @@ static FRESULT load_obj_xdir (
 	const FFOBJID* obj	/* Object with its containing directory information */
 )
 {
-	FRESULT res;
+	FRESULT res;    //文件函数执行结果返回码
 
 	/* Open object containing directory */
-	dp->obj.fs = obj->fs;
+	dp->obj.fs = obj->fs;       //目录中包含的文件系统对象结构体地址
 	dp->obj.sclust = obj->c_scl;
 	dp->obj.stat = (BYTE)obj->c_size;
 	dp->obj.objsize = obj->c_size & 0xFFFFFF00;
 	dp->obj.n_frag = 0;
 	dp->blk_ofs = obj->c_ofs;
 
-	res = dir_sdi(dp, dp->blk_ofs);	/* Goto object's entry block */
+	res = dir_sdi(dp, dp->blk_ofs);	/* Goto object's entry block */   //目录处理-设置目录索引--从dp->blk_ofs开始查找
 	if (res == FR_OK) 
   {
 		res = load_xdir(dp);		/* Load the object's entry block */
@@ -2874,7 +2880,7 @@ static FRESULT store_xdir (
 	DIR* dp				/* Pointer to the direcotry object */
 )
 {
-	FRESULT res;
+	FRESULT res;    //文件函数执行结果返回码
 	UINT nent;
 	BYTE* dirb = dp->obj.fs->dirbuf;	/* Pointer to the direcotry entry block 85+C0+C1s */
 
@@ -2883,7 +2889,7 @@ static FRESULT store_xdir (
 	nent = dirb[XDIR_NumSec] + 1;
 
 	/* Store the direcotry entry block to the directory */
-	res = dir_sdi(dp, dp->blk_ofs);
+	res = dir_sdi(dp, dp->blk_ofs);   //目录处理-设置目录索引--从dp->blk_ofs开始查找
 	while (res == FR_OK)
   {
 		res = move_window(dp->obj.fs, dp->sect);
@@ -2979,20 +2985,20 @@ static FRESULT dir_read (
 	int vol			/* Filtered by 0:file/directory or 1:volume label */
 )
 {
-	FRESULT res = FR_NO_FILE;
-	FATFS *fs = dp->obj.fs;
-	BYTE a, c;
+	FRESULT res = FR_NO_FILE;   //文件函数执行结果返回码
+	FATFS   *fs = dp->obj.fs;   //目录中包含的文件系统对象结构体地址
+	BYTE    a, c;
 #if FF_USE_LFN
 	BYTE ord = 0xFF, sum = 0xFF;
 #endif
 
 	while (dp->sect) 
    {
-		res = move_window(fs, dp->sect);
+		res = move_window(fs, dp->sect);    //检查当前扇区是否可用，如果可用，刚在文件系统中将当前工作扇区修改为此扇区地址
 		if (res != FR_OK) 
       break;
-		c = dp->dir[DIR_Name];	/* Test for the entry type */
-		if (c == 0) 
+		c = dp->dir[DIR_Name];	            /* Test for the entry type */ //检查首字节数据类型
+		if (c == 0)     //空数据----已经读取完目录
     {
 			res = FR_NO_FILE; 
       break; /* Reached to end of the directory */
@@ -3088,14 +3094,14 @@ static FRESULT dir_find (	/* FR_OK(0):succeeded, !=0:error */
 	DIR* dp					/* Pointer to the directory object with the file name */
 )
 {
-	FRESULT res;
-	FATFS *fs = dp->obj.fs;
+	FRESULT res;            //文件函数执行结果返回码
+	FATFS *fs = dp->obj.fs; //目录中包含的文件系统对象结构体地址
 	BYTE c;
 #if FF_USE_LFN
 	BYTE a, ord, sum;
 #endif
 
-	res = dir_sdi(dp, 0);			/* Rewind directory object */
+	res = dir_sdi(dp, 0);			/* Rewind directory object */   //目录处理-设置目录索引--从0开始查找
 	if (res != FR_OK) return res;
 #if FF_FS_EXFAT
 	if (fs->fs_type == FS_EXFAT) 
@@ -3199,8 +3205,8 @@ static FRESULT dir_register (	/* FR_OK:succeeded, FR_DENIED:no free entry or too
 	DIR* dp						/* Target directory with object name to be created */
 )
 {
-	FRESULT res;
-	FATFS *fs = dp->obj.fs;
+	FRESULT res;              //文件函数执行结果返回码
+	FATFS *fs = dp->obj.fs;   //目录中包含的文件系统对象结构体地址
 #if FF_USE_LFN		/* LFN configuration */
 	UINT n, nlen, nent;
 	BYTE sn[12], sum;
@@ -3333,8 +3339,8 @@ static FRESULT dir_remove (	/* FR_OK:Succeeded, FR_DISK_ERR:A disk error */
 	DIR* dp					/* Directory object pointing the entry to be removed */
 )
 {
-	FRESULT res;
-	FATFS *fs = dp->obj.fs;
+	FRESULT res;            //文件函数执行结果返回码
+	FATFS *fs = dp->obj.fs; //目录中包含的文件系统对象结构体地址
 #if FF_USE_LFN		/* LFN configuration */
 	DWORD last = dp->dptr;
 
@@ -3383,7 +3389,7 @@ static FRESULT dir_remove (	/* FR_OK:Succeeded, FR_DISK_ERR:A disk error */
 /*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	get_fileinfo
-*功能描述		:	Get file information from directory entry
+*功能描述		:	Get file information from directory entry从目录条目获取文件信息
 *输入				: 
 *返回值			:	
 *修改时间		:	无
@@ -3393,16 +3399,16 @@ static FRESULT dir_remove (	/* FR_OK:Succeeded, FR_DISK_ERR:A disk error */
 *注释				:	wegam@sina.com
 *******************************************************************************/
 static void get_fileinfo (
-	DIR* dp,			/* Pointer to the directory object */
-	FILINFO* fno		/* Pointer to the file information to be filled */
+                  DIR*      dp,	  /* Pointer to the directory object */
+                  FILINFO*  fno		/* Pointer to the file information to be filled */
 )
 {
-	UINT si, di;
+	UINT    si, di;
 #if FF_USE_LFN
-	WCHAR wc, hs;
-	FATFS *fs = dp->obj.fs;
+	WCHAR   wc, hs;
+	FATFS   *fs = dp->obj.fs;   //目录中包含的文件系统对象结构体地址
 #else
-	TCHAR c;
+	TCHAR   c;
 #endif
 
 
@@ -3489,23 +3495,24 @@ static void get_fileinfo (
       fno->altname[0] = 0;	/* Altname is not needed if neither LFN nor case info is exist. */
 	}
 
-#else	/* Non-LFN configuration */
+#else	/* Non-LFN configuration */ //短文件名
 	si = di = 0;
+  //=============================复制名称正文和扩展名(格式名)
 	while (si < 11) 
-  {		/* Copy name body and extension */
+  {		/* Copy name body and extension */    //复制名称正文和扩展名
 		c = (TCHAR)dp->dir[si++];
-		if (c == ' ') continue;		/* Skip padding spaces */
-		if (c == RDDEM) c = DDEM;	/* Restore replaced DDEM character */
+		if (c == ' ') continue;		          /* Skip padding spaces */
+		if (c == RDDEM) c = DDEM;	          /* Restore replaced DDEM character */
 		if (si == 9) fno->fname[di++] = '.';/* Insert a . if extension is exist */
 		fno->fname[di++] = c;
 	}
 	fno->fname[di] = 0;
 #endif
-
-	fno->fattrib = dp->dir[DIR_Attr];					/* Attribute */
-	fno->fsize = ld_dword(dp->dir + DIR_FileSize);		/* Size */
-	fno->ftime = ld_word(dp->dir + DIR_ModTime + 0);	/* Time */
-	fno->fdate = ld_word(dp->dir + DIR_ModTime + 2);	/* Date */
+  //=============================复制文件属性数据
+	fno->fattrib  = dp->dir[DIR_Attr];					        /* Attribute */
+	fno->fsize    = ld_dword(dp->dir + DIR_FileSize);		/* Size */
+	fno->ftime    = ld_word(dp->dir + DIR_ModTime + 0);	/* Time */
+	fno->fdate    = ld_word(dp->dir + DIR_ModTime + 2);	/* Date */
 }
 
 #endif /* FF_FS_MINIMIZE <= 1 || FF_FS_RPATH >= 2 */
@@ -3898,12 +3905,11 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
                             const TCHAR* path	  /* Full-path string to find a file or directory */
 )
 {
-	FRESULT res;
-	BYTE ns;
-	FATFS *fs = dp->obj.fs;
+	FRESULT res;            //文件函数执行结果返回码
+	BYTE    ns;
+	FATFS   *fs = dp->obj.fs; //目录中包含的文件系统对象结构体地址
 
-
-#if FF_FS_RPATH != 0
+#if FF_FS_RPATH != 0      //使能相对路径
 	if (*path != '/' && *path != '\\')  /* Without heading separator */ //无标题分隔符
   {	
 		dp->obj.sclust = fs->cdir;				/* Start from current directory */
@@ -3911,10 +3917,11 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
   else
 #endif
 	{										/* With heading separator */
-		while (*path == '/' || *path == '\\') path++;	/* Strip heading separator */
-		dp->obj.sclust = 0;					/* Start from root directory */
+		while (*path == '/' || *path == '\\') 
+      path++;	                  /* Strip heading separator */
+		dp->obj.sclust = 0;					/* Start from root directory */   //从根目录开始 
 	}
-#if FF_FS_EXFAT
+#if FF_FS_EXFAT   //exFAT系统
 	dp->obj.n_frag = 0;	/* Invalidate last fragment counter of the object */
 #if FF_FS_RPATH != 0
 	if (fs->fs_type == FS_EXFAT && dp->obj.sclust) {	/* exFAT: Retrieve the sub-directory's status */
@@ -3931,11 +3938,11 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 	}
 #endif
 #endif
-
+  //==============================获取需要查找的路径名字符串
 	if ((UINT)*path < ' ')  /* Null path name is the origin directory itself */
   {				
-		dp->fn[NSFLAG] = NS_NONAME;
-		res = dir_sdi(dp, 0);
+		dp->fn[NSFLAG] = NS_NONAME;   //没有路径名
+		res = dir_sdi(dp, 0);         //目录处理-设置目录索引--从0开始查找
 
 	}
   else
@@ -4170,7 +4177,7 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 	DSTATUS   stat;
 	DWORD     bsect, fasize, tsect, sysect, nclst, szbfat, br[4];
 	WORD      nrsv;
-	FATFS     *fs;
+	FATFS     *fs;    //文件系统对象
 	UINT      i;
 
 
@@ -4436,7 +4443,7 @@ static FRESULT    validate (	/* Returns FR_OK or FR_INVALID_OBJECT */
         FATFS**   rfs				  /* Pointer to pointer to the owner filesystem object to return */
 )
 {
-	FRESULT res = FR_INVALID_OBJECT;
+	FRESULT res = FR_INVALID_OBJECT;    //文件函数执行结果返回码
 
 	if (obj && obj->fs && obj->fs->fs_type && obj->id == obj->fs->id) /* Test if the object is valid */
   {	
@@ -4482,8 +4489,16 @@ static FRESULT    validate (	/* Returns FR_OK or FR_INVALID_OBJECT */
 /*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	f_mount
-*功能描述		:	在FatFs模块上注册/注销一个工作区(文件系统对象)
-              这是一个很重要的函数，装载文件系统。也是从这个函数开始，对外输出供用户调用。
+*功能描述		:	Note1:在FatFs模块上注册/注销一个工作区(文件系统对象)
+                    这是一个很重要的函数，装载文件系统。也是从这个函数开始，对外输出供用户调用。
+              Note2:f_mount函数在FatFS模块中注册/注销一个工作区。
+                    在使用其他文件函数前工作区必须先使用这个函数给定每个卷。
+                    指定一个NULL到FileSystemObject,注销一个工作区,然后工作区将被废弃。 
+                    不管驱动器处于何种状态，此函数总是返回成功。在此函数中不发生媒体访问。
+                    它只初始化给定的工作区域并且注册其地址到内部表。
+                    在f_mount函数执行或者媒体改变后，在第一次文件访问时执行卷安装过程。
+              Note3:在使用任何文件函数前，必须使用f_mount函数在逻辑驱动器上注册一个工作区（文件系统对象）。
+                    除f_fdisk函数外，所有的API函数需在完成此过程后工作。
 *输入				: f_mount(&fs, "1:", 1); f_mount(&fs, "1:/", 1);
 *返回值			:	0:正确
 *修改时间		:	无
@@ -4498,9 +4513,9 @@ FRESULT f_mount (
                 BYTE opt			      /* Mode option 0:Do not mount (delayed mount), 1:Mount immediately */ //模式选项0：不要挂载（延迟安装），1：立即安装 
 )
 {
-	FATFS *cfs;           //文件系统对象结构体
-	int vol;
-	FRESULT res;
+	FATFS       *cfs;       //文件系统对象
+	int         vol;
+	FRESULT     res;        //文件函数执行结果返回码
 	const TCHAR *rp = path;
 
 
@@ -4545,23 +4560,27 @@ FRESULT f_mount (
 /*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	f_open
-*功能描述		:	创建/打开一个用于访问文件的文件对象
-*输入				: fp就指向传入的对象file
-              path指向data.txt的地址
+*功能描述		:	创建一个将要访问的文件对象
+              Note1:
+              在f_open函数执行成功后，文件对象开始有效。文件对象用于随后指定文件的读写函数。
+              使用f_close函数来关闭打开的文件对象。如果更改的文件未被关闭，文件数据可能崩溃。
+*输入				: fp:   要创建的目标文件结构体指针
+              path: 指定创建或打开以空终止的字符串文件名指针
+              mode: 指定访问或打开文件的模式类型。可以是以下标志的组合(查看File access mode and open method flags）
 *返回值			:	无
 *修改时间		:	无
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
 FRESULT f_open (
-                FIL* fp,			      /* Pointer to the blank file object */      /* 文件对象结构指针 */  //fp就指向传入的对象file
-                const TCHAR* path,  /* Pointer to the file name */              /* 文件名指针 */
-                BYTE mode			      /* Access mode and file open mode flags */  /* 模式标志 */
+                FIL* fp,			      /* Pointer to the blank file object */      // 要创建的目标文件结构体指针
+                const TCHAR* path,  /* Pointer to the file name */              // 指定创建或打开以空终止的字符串文件名指针
+                BYTE mode			      /* Access mode and file open mode flags */  // 文件打开模式标志(查看File access mode and open method flags） */
 )
 {
-	FRESULT res;
-	DIR dj;               //目录对象
-	FATFS *fs;
+	FRESULT res;      //文件函数执行结果返回码
+	DIR     dj;       //目录对象
+	FATFS   *fs;      //文件系统对象
 #if !FF_FS_READONLY
 	DWORD dw, cl, bcs, clst, sc;
 	FSIZE_t ofs;
@@ -4787,7 +4806,11 @@ FRESULT f_open (
 /*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	f_read
-*功能描述		:	Read File
+*功能描述		:	从文件读取数据
+              Note:
+                  文件对象的文件指针随着读取字节数的增加而增加,
+                  在函数执行成功后，*ByteRead应该是否检测到了文件结尾。
+                  在*ByteRead < ByteToRead情况下，意味着在读操作期间，读写指针到达了文件尾。
 *输入				: 
 *返回值			:	
 *修改时间		:	无
@@ -4797,47 +4820,48 @@ FRESULT f_open (
 *注释				:	wegam@sina.com
 *******************************************************************************/
 FRESULT f_read (
-	FIL*  fp,   /* Pointer to the file object */
-	void* buff, /* Pointer to data buffer */            //存储读取的数据缓存
-	UINT  btr,  /* Number of bytes to read */           //需要读取的数据个数
-	UINT* br	  /* Pointer to number of bytes read */   //已经读取的数据个数
+              FIL*  fp,   /* Pointer to the file object */        //文件对象结构体指针
+              void* buff, /* Pointer to data buffer */            //读取数据缓冲区指针
+              UINT  btr,  /* Number of bytes to read */           //需要读取的数据个数
+              UINT* br	  /* Pointer to number of bytes read */   //已完成读取的字节数变量指针
 )
 {
-	FRESULT res;
-	FATFS *fs;
-	DWORD clst, sect;
+	FRESULT res;        //文件函数执行结果返回码
+	FATFS   *fs;        //文件系统对象
+	DWORD   clst, sect;
 	FSIZE_t remain;
-	UINT rcnt, cc, csect;
-	BYTE *rbuff = (BYTE*)buff;
+	UINT    rcnt, cc, csect;
+	BYTE    *rbuff = (BYTE*)buff;
 
 
 	*br = 0;	/* Clear read byte counter */
-	res = validate(&fp->obj, &fs);				/* Check validity of the file object */
+	res = validate(&fp->obj, &fs);				                  /* Check validity of the file object */
 	if (res != FR_OK || (res = (FRESULT)fp->err) != FR_OK)  /* Check validity */
     LEAVE_FF(fs, res);	    //释放文件系统同步对象并将状态返回(return)。
 	if (!(fp->flag & FA_READ))  /* Check access mode */
     LEAVE_FF(fs, FR_DENIED);  //释放文件系统同步对象并将状态返回(return)。
 	remain = fp->obj.objsize - fp->fptr;
-	if (btr > remain) 	/* Truncate btr by remaining bytes */
+	if (btr > remain) 	        /* Truncate btr by remaining bytes */
     btr = (UINT)remain;	
-
+  //======================================开始读取数据
 	for ( ;  btr;								/* Repeat until btr bytes read */
 		btr -= rcnt, *br += rcnt, rbuff += rcnt, fp->fptr += rcnt) 
   {
 		if (fp->fptr % SS(fs) == 0) 		/* On the sector boundary? */
     {	
 			csect = (UINT)(fp->fptr / SS(fs) & (fs->csize - 1));	/* Sector offset in the cluster */
-			if (csect == 0) {					/* On the cluster boundary? */
-				if (fp->fptr == 0) 		/* On the top of the file? */
+			if (csect == 0)               /* On the cluster boundary? */
+      {					
+				if (fp->fptr == 0)          /* On the top of the file? */
         {	
 					clst = fp->obj.sclust;		/* Follow cluster chain from the origin */
 				} 
-        else 		/* Middle or end of the file */
+        else 		    /* Middle or end of the file */
         {				
 #if FF_USE_FASTSEEK
 					if (fp->cltbl) 
           {
-						clst = clmt_clust(fp, fp->fptr);	/* Get cluster# from the CLMT */
+						clst = clmt_clust(fp, fp->fptr);	    /* Get cluster# from the CLMT */
 					} 
           else
 #endif
@@ -4845,23 +4869,26 @@ FRESULT f_read (
 						clst = get_fat(&fp->obj, fp->clust);	/* Follow cluster chain on the FAT */
 					}
 				}
-				if (clst < 2) ABORT(fs, FR_INT_ERR);
-				if (clst == 0xFFFFFFFF) ABORT(fs, FR_DISK_ERR);
-				fp->clust = clst;				/* Update current cluster */
+				if (clst < 2)
+          ABORT(fs, FR_INT_ERR);
+				if (clst == 0xFFFFFFFF)
+          ABORT(fs, FR_DISK_ERR);
+				fp->clust = clst;				        /* Update current cluster */    
 			}
-			sect = clst2sect(fs, fp->clust);	/* Get current sector */
+			sect = clst2sect(fs, fp->clust);	/* Get current sector */      //获取当前扇区
 			if (sect == 0) 
         ABORT(fs, FR_INT_ERR);
 			sect += csect;
-			cc = btr / SS(fs);					    /* When remaining bytes >= sector size, */
-			if (cc > 0)                     /* Read maximum contiguous sectors directly */
+			cc = btr / SS(fs);					      /* When remaining bytes >= sector size, */
+			if (cc > 0)                       /* Read maximum contiguous sectors directly */
       {						        
-				if (csect + cc > fs->csize) 	/* Clip at cluster boundary */
+				if (csect + cc > fs->csize) 	  /* Clip at cluster boundary */
         {
 					cc = fs->csize - csect;
 				}
 				if (disk_read(fs->pdrv, rbuff, sect, cc) != RES_OK) 
-          ABORT(fs, FR_DISK_ERR);
+          ABORT(fs, FR_DISK_ERR);       //退出
+        //======================================复制数据
 #if !FF_FS_READONLY && FF_FS_MINIMIZE <= 2		/* Replace one of the read sectors with cached data if it contains a dirty sector */
 #if FF_FS_TINY
 				if (fs->wflag && fs->winsect - sect < cc) 
@@ -4894,10 +4921,10 @@ FRESULT f_read (
 #endif
 			fp->sect = sect;
 		}
-		rcnt = SS(fs) - (UINT)fp->fptr % SS(fs);	/* Number of bytes left in the sector */
-		if (rcnt > btr) rcnt = btr;					/* Clip it by btr if needed */
+		rcnt = SS(fs) - (UINT)fp->fptr % SS(fs);	          /* Number of bytes left in the sector */
+		if (rcnt > btr) rcnt = btr;					                /* Clip it by btr if needed */
 #if FF_FS_TINY
-		if (move_window(fs, fp->sect) != FR_OK) 	/* Move sector window */
+		if (move_window(fs, fp->sect) != FR_OK) 	          /* Move sector window */
       ABORT(fs, FR_DISK_ERR);
 		mem_cpy(rbuff, fs->win + fp->fptr % SS(fs), rcnt);	/* Extract partial sector */
 #else
@@ -4914,7 +4941,12 @@ FRESULT f_read (
 /*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	f_write
-*功能描述		:	Write File
+*功能描述		:	写数据到文件
+              Note:
+                  文件对象的文件指针随着写入字节数的增加而增加。
+                  在函数执行成功后，*ByteWrite应该是否检测到了文件结尾。
+                  当*ByteWrite < ByteToWrite时，意味着在写操作期间卷满了。当卷满或接近满时，函数可能会花费一些时间。
+                  当FS_READONLY == 0时此函数可用。
 *输入				: 
 *返回值			:	
 *修改时间		:	无
@@ -4924,16 +4956,16 @@ FRESULT f_read (
 *注释				:	wegam@sina.com
 *******************************************************************************/
 FRESULT f_write (
-	FIL* fp,			    /* Pointer to the file object */
-	const void* buff,	/* Pointer to the data to be written */
-	UINT btw,			    /* Number of bytes to write */
-	UINT* bw			    /* Pointer to number of bytes written */
+              FIL* fp,			    /* Pointer to the file object */          //文件对象结构体指针
+              const void* buff,	/* Pointer to the data to be written */   //写入数据缓冲区指针
+              UINT btw,			    /* Number of bytes to write */            //需要写入的字节数
+              UINT* bw			    /* Pointer to number of bytes written */  //已完成写入的字节数变量指针
 )
 {
-	FRESULT res;
-	FATFS *fs;
-	DWORD clst, sect;
-	UINT wcnt, cc, csect;
+	FRESULT res;            //文件函数执行结果返回码
+	FATFS   *fs;            //文件系统对象
+	DWORD   clst, sect;
+	UINT    wcnt, cc, csect;
 	const BYTE *wbuff = (const BYTE*)buff;
 
 
@@ -5083,10 +5115,10 @@ FRESULT f_sync (
 	FIL* fp		/* Pointer to the file object */
 )
 {
-	FRESULT res;
-	FATFS *fs;
-	DWORD tm;
-	BYTE *dir;
+	FRESULT res;    //文件函数执行结果返回码
+	FATFS   *fs;    //文件系统对象
+	DWORD   tm;
+	BYTE    *dir;
 
 
 	res = validate(&fp->obj, &fs);	/* Check validity of the file object */
@@ -5171,8 +5203,12 @@ FRESULT f_sync (
 /*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	f_close
-*功能描述		:	Close File
-*输入				: 
+*功能描述		:	关闭一个已打开的文件
+*输入				: fp  要关闭的文件对象结构体指针
+              Note1:
+                    f_close函数关闭一个打开的文件对象。
+                    如果有任何数据写入到了文件，文件的缓冲区信息被写回到磁盘。
+                    在f_close函数执行成功后，文件对象不再有效，并被丢弃。
 *返回值			:	
 *修改时间		:	无
 *修改说明		:	无
@@ -5181,11 +5217,11 @@ FRESULT f_sync (
 *注释				:	wegam@sina.com
 *******************************************************************************/
 FRESULT f_close (
-        FIL* fp		/* Pointer to the file object to be closed */
+        FIL* fp		/* Pointer to the file object to be closed */   //要关闭的文件对象结构体指针
 )
 {
-	FRESULT res;
-	FATFS *fs;
+	FRESULT res;    //文件函数执行结果返回码
+	FATFS   *fs;    //文件系统对象
 
 #if !FF_FS_READONLY
 	res = f_sync(fp);					/* Flush cached data */
@@ -5270,9 +5306,9 @@ FRESULT f_chdir (
 #if FF_STR_VOLUME_ID == 2
 	UINT i;
 #endif
-	FRESULT res;
+	FRESULT res;    //文件函数执行结果返回码
 	DIR dj;
-	FATFS *fs;
+	FATFS *fs;      //文件系统对象
 	DEF_NAMBUF
 
 
@@ -5343,12 +5379,12 @@ FRESULT f_getcwd (
 	UINT len		  /* Size of buff in unit of TCHAR */
 )
 {
-	FRESULT res;
-	DIR dj;
-	FATFS *fs;
-	UINT i, n;
-	DWORD ccl;
-	TCHAR *tp = buff;
+	FRESULT res;    //文件函数执行结果返回码
+	DIR     dj;
+	FATFS   *fs;    //文件系统对象
+	UINT    i, n;
+	DWORD   ccl;
+	TCHAR   *tp = buff;
 #if FF_VOLUMES >= 2
 	UINT vl;
 #endif
@@ -5378,7 +5414,7 @@ FRESULT f_getcwd (
 				res = move_window(fs, dj.sect);
 				if (res != FR_OK) break;
 				dj.obj.sclust = ld_clust(fs, dj.dir);	/* Goto parent directory */
-				res = dir_sdi(&dj, 0);
+				res = dir_sdi(&dj, 0);            //目录处理-设置目录索引--从0开始查找
 				if (res != FR_OK) break;
 				do    /* Find the entry links to the child directory */
         {							
@@ -5391,7 +5427,7 @@ FRESULT f_getcwd (
           res = FR_INT_ERR;/* It cannot be 'not found'. */
 				if (res != FR_OK) 
           break;
-				get_fileinfo(&dj, &fno);		/* Get the directory name and push it to the buffer */
+				get_fileinfo(&dj, &fno);		      /* Get the directory name and push it to the buffer */  //从目录条目获取文件信息
 				for (n = 0; fno.fname[n]; n++) ;	/* Name length */
 				if (i < n + 1) /* Insufficient space to store the path name? */
         {	
@@ -5449,7 +5485,7 @@ FRESULT f_getcwd (
 /*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	f_lseek
-*功能描述		:	Seek File Read/Write Pointer
+*功能描述		:	Seek File Read/Write Pointer移动一个打开文件的文件读写指针
 *输入				: 
 *返回值			:	
 *修改时间		:	无
@@ -5464,8 +5500,8 @@ FRESULT f_lseek (
 )
 {
 	FRESULT res;
-	FATFS *fs;
-	DWORD clst, bcs, nsect;
+	FATFS   *fs;  //文件系统对象
+	DWORD   clst, bcs, nsect;
 	FSIZE_t ifptr;
 #if FF_USE_FASTSEEK
 	DWORD cl, pcl, ncl, tcl, dsc, tlen, ulen, *tbl;
@@ -5661,9 +5697,11 @@ FRESULT f_lseek (
 /*-----------------------------------------------------------------------*/
 /*******************************************************************************
 *函数名			:	f_opendir
-*功能描述		:	Create a Directory Object 创建目录对象
-*输入				: dp指向要创建的目录对象的指针
-              path指向目录路径的指针 
+*功能描述		:	Create a Directory Object 创建目录对象及获取相关参数
+              Note:
+                  此函数打开一个已经存在目录并且为随后的调用创建一个目录对象。目录对象结构体可以随时无任何手续被丢弃。
+*输入				: dp    指向要创建的目录对象的指针
+              path  指向目录路径的指针 
 *返回值			:	FR_OK 函数成功。
               FR_INVALID_OBJECT  文件/目录对象无效
               FR_NO_PATH  找不到该路径
@@ -5673,12 +5711,12 @@ FRESULT f_lseek (
 *注释				:	wegam@sina.com
 *******************************************************************************/
 FRESULT f_opendir (
-                  DIR* dp,			    /* Pointer to directory object to create */ //指向要创建的目录对象的指针
+                  DIR*  dp,			    /* Pointer to directory object to create */ //目录对象结构体指针
                   const TCHAR* path	/* Pointer to the directory path */         //指向目录路径的指针
 )
 {
-	FRESULT res;
-	FATFS *fs;
+	FRESULT res;    //文件函数执行结果返回码
+	FATFS   *fs;    //文件系统对象
 	DEF_NAMBUF
 
 
@@ -5688,7 +5726,7 @@ FRESULT f_opendir (
 	res = find_volume(&path, &fs, 0);   //确定逻辑驱动器号并在需要时装入卷及初始化驱动器及获取磁盘相关信息
 	if (res == FR_OK)
   {
-		dp->obj.fs = fs;
+		dp->obj.fs = fs;    //目录中包含的文件系统对象结构体地址
 		INIT_NAMBUF(fs);
 		res = follow_path(dp, path);			    /* Follow the path to the directory */  //该函数给定一个全路径，得到相应的目录对象。
 		if (res == FR_OK)                     /* Follow completed */
@@ -5718,8 +5756,8 @@ FRESULT f_opendir (
 			}
 			if (res == FR_OK)
       {
-				dp->obj.id = fs->id;
-				res = dir_sdi(dp, 0);			/* Rewind directory */
+				dp->obj.id = fs->id;      //获取当前目录文件系统所挂载ID
+				res = dir_sdi(dp, 0);			/* Rewind directory */    //目录处理-设置目录索引--从dp->blk_ofs开始查找
 #if FF_FS_LOCK != 0
 				if (res == FR_OK)
         {
@@ -5741,8 +5779,8 @@ FRESULT f_opendir (
 		if (res == FR_NO_FILE)
       res = FR_NO_PATH;
 	}
-	if (res != FR_OK) /* Invalidate the directory object if function faild */
-    dp->obj.fs = 0;		
+	if (res != FR_OK)     /* Invalidate the directory object if function faild */
+    dp->obj.fs = 0;	    //目录中包含的文件系统对象结构体地址
 
 	LEAVE_FF(fs, res);    //释放文件系统同步对象并将状态返回(return)。
 }
@@ -5768,8 +5806,8 @@ FRESULT f_closedir (
 	DIR *dp		/* Pointer to the directory object to be closed */
 )
 {
-	FRESULT res;
-	FATFS *fs;
+	FRESULT res;  //文件函数执行结果返回码
+	FATFS   *fs;  //文件系统对象
 
 
 	res = validate(&dp->obj, &fs);	/* Check validity of the file object */
@@ -5779,7 +5817,7 @@ FRESULT f_closedir (
 		if (dp->obj.lockid) res = dec_lock(dp->obj.lockid);	/* Decrement sub-directory open counter */
 		if (res == FR_OK) dp->obj.fs = 0;	/* Invalidate directory object */
 #else
-		dp->obj.fs = 0;	/* Invalidate directory object */
+		dp->obj.fs = 0;	/* Invalidate directory object */   //目录中包含的文件系统对象结构体地址--清除
 #endif
 #if FF_FS_REENTRANT
 		unlock_fs(fs, FR_OK);		/* Unlock volume */
@@ -5790,31 +5828,45 @@ FRESULT f_closedir (
 
 /*******************************************************************************
 *函数名			:	f_readdir
-*功能描述		:	Read Directory Entries in Sequence 按顺序读取目录条目
-*输入				: dp指向打开目录对象的指针
-              fno指向返回的文件信息指针 
+*功能描述		:	Read Directory Entries in Sequence 按顺序读取目录条目及将文件信息存储到fno
+              Note:
+                  反复调用f_readdir函数可以读取目录的所有条目。
+                  当已读完所有的目录条目并且没有其他条目可读时，函数返回一个空字符串到成员变量f_name[]中，并且不返回错误提示。
+                  当FileInfo指向一个空指针，读取的目录对象将被倒回。
+              Note2:
+                    当LFN(FF_USE_LFN)被打开时，文件信息结构体中的lfname和lfsize必须在使用f_readdir函数前初始化为有效值。
+                    lfname是一个返回长文件名的字符串缓冲区指针。lfsize表示以TCHAR为单位的字符串缓冲区的大小。
+                    如果读缓冲区或LFN工作缓冲区容量不够存储LFN或者对象没有LFN，将返回一个空字符串到LFN读缓冲区。
+                    在没有对Unicode API配置的情况下，如果LFN包含任何不能转换成OEM码的字符，将返回一个空字符串。
+                    当lfname是NULL时，LFN没有任何返回。当对象没有LFN时，一些小写字母被包含到SFN中。
+                    当相关的路径特征被使能（_FS_RPATH == 1）,”.”和”..”不被过滤并且将出现在所读条目中。
+                    当_FS_MINIMIZE <= 1时，此函数可用
+*输入				: dp  指向打开目录对象的指针
+              fno 指向返回的文件信息指针 
 *返回值			:	FR_OK 函数成功。
 *修改时间		:	无
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
 FRESULT f_readdir (
-                  DIR* dp,			/* Pointer to the open directory object */    //指向打开目录对象的指针
-                  FILINFO* fno  /* Pointer to file information to return */   //指向返回的文件信息指针
+                DIR*      dp,   /* Pointer to the open directory object */    //打开的目录对象结构体指针
+                FILINFO*  fno   /* Pointer to file information to return */   //存储读取的文件信息结构指针
 )
 {
-	FRESULT res;
-	FATFS *fs;
+	FRESULT   res;  //文件函数执行结果返回码
+	FATFS     *fs;  //文件系统对象
 	DEF_NAMBUF
 
   //==============================检查目录对象的有效性
 	res = validate(&dp->obj, &fs);	/* Check validity of the directory object */
 	if (res == FR_OK)
   {
-		if (!fno)   //接收文件信息的缓存无效---------
+    //==========================接收文件信息的缓存无效---------
+		if (!fno)   
     {
-			res = dir_sdi(dp, 0);			  /* Rewind the directory object */ //重绕目录对象
+			res = dir_sdi(dp, 0);			  /* Rewind the directory object */ //目录处理-设置目录索引--从0开始查找
 		}
+    //==========================接收文件信息的缓存有效---------
     else
     {
 			INIT_NAMBUF(fs);            //未知
@@ -5825,7 +5877,7 @@ FRESULT f_readdir (
 			if (res == FR_OK)           /* A valid entry is found */    //找到有效的条目
       {	
         //--------------------获取对象信息
-				get_fileinfo(dp, fno);		/* Get the object information */  //获取对象信息
+				get_fileinfo(dp, fno);		/* Get the object information */  //从目录条目获取文件信息
         //--------------------目录处理-下一步移动目录表索引
 				res = dir_next(dp, 0);		/* Increment index for next */    //目录处理-下一步移动目录表索引  
 				if (res == FR_NO_FILE)    /* Ignore end of directory now */ //已到目录尾端 
@@ -5859,7 +5911,7 @@ FRESULT f_findnext (
 	FILINFO* fno	/* Pointer to the file information structure */
 )
 {
-	FRESULT res;
+	FRESULT res;  //文件函数执行结果返回码
 
 	for (;;) 
   {
@@ -5896,7 +5948,7 @@ FRESULT f_findfirst (
 	const TCHAR* pattern	/* Pointer to the matching pattern */
 )
 {
-	FRESULT res;
+	FRESULT res;  //文件函数执行结果返回码
 
 
 	dp->pat = pattern;		/* Save pointer to pattern string */
@@ -5942,8 +5994,8 @@ FRESULT f_stat (
 	FILINFO* fno		    /* Pointer to file information to return */   /* FILINFO结构的指针 */
 )
 {
-	FRESULT res;
-	DIR dj;
+	FRESULT res;  //文件函数执行结果返回码
+	DIR     dj;
 	DEF_NAMBUF
 
 
@@ -5961,7 +6013,8 @@ FRESULT f_stat (
 			} 
       else 
       {							/* Found an object */
-				if (fno) get_fileinfo(&dj, fno);
+				if (fno) 
+          get_fileinfo(&dj, fno);   //从目录条目获取文件信息
 			}
 		}
 		FREE_NAMBUF();
@@ -6000,10 +6053,10 @@ FRESULT f_getfree (
 	FATFS** fatfs		    /* Pointer to return pointer to corresponding filesystem object */  /* 文件系统对象指针的指针 */
 )
 {
-	FRESULT res;
-	FATFS *fs;
-	DWORD nfree, clst, sect, stat;
-	UINT i;
+	FRESULT res;  //文件函数执行结果返回码
+	FATFS   *fs;  //文件系统对象
+	DWORD   nfree, clst, sect, stat;
+	UINT    i;
 	FFOBJID obj;
 
 
@@ -6127,9 +6180,9 @@ FRESULT f_truncate (
         FIL* fp		/* Pointer to the file object */
 )
 {
-	FRESULT res;
-	FATFS *fs;
-	DWORD ncl; 
+	FRESULT res;  //文件函数执行结果返回码
+	FATFS   *fs;  //文件系统对象
+	DWORD   ncl; 
 
 
 	res = validate(&fp->obj, &fs);	/* Check validity of the file object */
@@ -6206,10 +6259,10 @@ FRESULT f_unlink (
           const TCHAR* path		/* Pointer to the file or directory path */ /* 对象名的指针 */
 )
 {
-	FRESULT res;
-	DIR dj, sdj;
-	DWORD dclst = 0;
-	FATFS *fs;
+	FRESULT res;        //文件函数执行结果返回码
+	DIR     dj, sdj;
+	DWORD   dclst = 0;
+	FATFS   *fs;        //文件系统对象
 #if FF_FS_EXFAT
 	FFOBJID obj;
 #endif
@@ -6275,7 +6328,7 @@ FRESULT f_unlink (
 							sdj.obj.stat = obj.stat;
 						}
 #endif
-						res = dir_sdi(&sdj, 0);
+						res = dir_sdi(&sdj, 0);   //目录处理-设置目录索引--从0开始查找
 						if (res == FR_OK) 
             {
 							res = dir_read_file(&sdj);			/* Test if the directory is empty */
@@ -6333,11 +6386,11 @@ FRESULT f_mkdir (
 	const TCHAR* path		/* Pointer to the directory path *//* 目录名的指针 */
 )
 {
-	FRESULT res;
-	DIR dj;
-	FATFS *fs;
-	BYTE *dir;
-	DWORD dcl, pcl, tm;
+	FRESULT res;    //文件函数执行结果返回码
+	DIR     dj;
+	FATFS   *fs;    //文件系统对象
+	BYTE    *dir;
+	DWORD   dcl, pcl, tm;
 	DEF_NAMBUF
 
 
@@ -6457,11 +6510,11 @@ FRESULT f_rename (
 	const TCHAR* path_new	  /* Pointer to the new name */                     /* 新对象名的指针 */
 )
 {
-	FRESULT res;
-	DIR djo, djn;
-	FATFS *fs;
-	BYTE buf[FF_FS_EXFAT ? SZDIRE * 2 : SZDIRE], *dir;
-	DWORD dw;
+	FRESULT res;        //文件函数执行结果返回码
+  FATFS   *fs;        //文件系统对象
+	DIR     djo, djn;	
+	BYTE    buf[FF_FS_EXFAT ? SZDIRE * 2 : SZDIRE], *dir;
+	DWORD   dw;
 	DEF_NAMBUF
 
 
@@ -6608,9 +6661,9 @@ FRESULT f_chmod (
 	BYTE mask			      /* Attribute mask to change */    /* 属性掩码 */
 )
 {
-	FRESULT res;
-	DIR dj;
-	FATFS *fs;
+	FRESULT res;  //文件函数执行结果返回码
+  FATFS   *fs;  //文件系统对象
+	DIR     dj;	
 	DEF_NAMBUF
 
 
@@ -6679,9 +6732,9 @@ FRESULT f_utime (
 	const FILINFO* fno	/* Pointer to the timestamp to be set */    /* 待设置的时间和日期 */
 )
 {
-	FRESULT res;
-	DIR dj;
-	FATFS *fs;
+	FRESULT res;  //文件函数执行结果返回码
+  FATFS   *fs;  //文件系统对象
+	DIR     dj;	
 	DEF_NAMBUF
 
 
@@ -6743,10 +6796,10 @@ FRESULT f_getlabel (
           DWORD* vsn			    /* Variable to store the volume serial number */
 )
 {
-	FRESULT res;
-	DIR dj;
-	FATFS *fs;
-	UINT si, di;
+	FRESULT res;    //文件函数执行结果返回码
+  FATFS   *fs;    //文件系统对象
+	DIR     dj;	
+	UINT    si, di;
 	WCHAR wc;
 
 	/* Get logical drive */
@@ -6756,7 +6809,7 @@ FRESULT f_getlabel (
 	if (res == FR_OK && label) 
   {
 		dj.obj.fs = fs; dj.obj.sclust = 0;	/* Open root directory */
-		res = dir_sdi(&dj, 0);
+		res = dir_sdi(&dj, 0);              //目录处理-设置目录索引--从0开始查找
 		if (res == FR_OK) 
     {
 		 	res = dir_read_label(&dj);		/* Find a volume label entry */
@@ -6860,11 +6913,11 @@ FRESULT f_setlabel (
                   const TCHAR* label	/* Volume label to set with heading logical drive number */
 )
 {
-	FRESULT res;
-	DIR dj;
-	FATFS *fs;
-	BYTE dirvn[22];
-	UINT di;
+	FRESULT res;        //文件函数执行结果返回码
+  FATFS   *fs;        //文件系统对象
+	DIR     dj;	
+	BYTE    dirvn[22];
+	UINT    di;
 	WCHAR wc;
 	static const char badchr[] = "+.,;=[]/\\\"*:<>\?|\x7F";	/* [0..] for FAT, [7..] for exFAT */
 #if FF_USE_LFN
@@ -6938,7 +6991,7 @@ FRESULT f_setlabel (
 
 	/* Set volume label */
 	dj.obj.fs = fs; dj.obj.sclust = 0;	/* Open root directory */
-	res = dir_sdi(&dj, 0);
+	res = dir_sdi(&dj, 0);              //目录处理-设置目录索引--从0开始查找
 	if (res == FR_OK) 
   {
 		res = dir_read_label(&dj);	/* Get volume label entry */
@@ -7022,9 +7075,9 @@ FRESULT f_expand (
 	BYTE opt		  /* Operation mode 0:Find and prepare or 1:Find and allocate */
 )
 {
-	FRESULT res;
-	FATFS *fs;
-	DWORD n, clst, stcl, scl, ncl, tcl, lclst;
+	FRESULT res;    //文件函数执行结果返回码
+	FATFS   *fs;    //文件系统对象
+	DWORD   n, clst, stcl, scl, ncl, tcl, lclst;
 
 
 	res = validate(&fp->obj, &fs);		/* Check validity of the file object */
@@ -7164,18 +7217,18 @@ FRESULT f_expand (
 *注释				:	wegam@sina.com
 *******************************************************************************/
 FRESULT f_forward (
-	FIL* fp, 						/* Pointer to the file object */    /* 文件对象 */
-	UINT (*func)(const BYTE*,UINT),	/* Pointer to the streaming function *//* 数据流函数 */
-	UINT btf,						/* Number of bytes to forward */            /* 要转发的字节数 */
-	UINT* bf						/* Pointer to number of bytes forwarded */  /* 已转发的字节数 */
+                FIL* fp, 						/* Pointer to the file object */    /* 文件对象 */
+                UINT (*func)(const BYTE*,UINT),	/* Pointer to the streaming function *//* 数据流函数 */
+                UINT btf,						/* Number of bytes to forward */            /* 要转发的字节数 */
+                UINT* bf						/* Pointer to number of bytes forwarded */  /* 已转发的字节数 */
 )
 {
-	FRESULT res;
-	FATFS *fs;
-	DWORD clst, sect;
+	FRESULT res;        //文件函数执行结果返回码
+	FATFS   *fs;        //文件系统对象
+	DWORD   clst, sect;
 	FSIZE_t remain;
-	UINT rcnt, csect;
-	BYTE *dbuf;
+	UINT    rcnt, csect;
+	BYTE    *dbuf;
 
 
 	*bf = 0;	/* Clear transfer byte counter */
@@ -7863,11 +7916,11 @@ FRESULT f_fdisk (
                 void* work			  /* Pointer to the working buffer (null: use heap memory) */
 )
 {
-	UINT i, n, sz_cyl, tot_cyl, b_cyl, e_cyl, p_cyl;
-	BYTE s_hd, e_hd, *p, *buf = (BYTE*)work;
-	DSTATUS stat;
-	DWORD sz_disk, sz_part, s_part;
-	FRESULT res;
+  FRESULT   res;    //文件函数执行结果返回码
+	UINT      i, n, sz_cyl, tot_cyl, b_cyl, e_cyl, p_cyl;
+	BYTE      s_hd, e_hd, *p, *buf = (BYTE*)work;
+	DSTATUS   stat;
+	DWORD     sz_disk, sz_part, s_part;	
 
 	stat = disk_initialize(pdrv);
 	if (stat & STA_NOINIT) 

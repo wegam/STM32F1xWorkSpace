@@ -95,16 +95,16 @@ typedef DWORD FSIZE_t;
 /* Filesystem object structure (FATFS) */
 typedef struct 
 {
-	BYTE	fs_type;		/* Filesystem type (0:N/A) */   //子类
-	BYTE	pdrv;			  /* Physical drive number */     //驱动器号
-	BYTE	n_fats;			/* Number of FATs (1 or 2) */   //文件分配表的数目
-	BYTE	wflag;			/* win[] flag (b0:dirty) */     //是否需要写入标志，1为需要写入
-	BYTE	fsi_flag;		/* FSINFO flags (b7:disabled, b0:dirty) */
-	WORD	id;				  /* Volume mount ID */           //文件系统加载ID
-	WORD	n_rootdir;  /* Number of root directory entries (FAT12/16) */ //根目录区目录项的数目
-	WORD	csize;			/* Cluster size [sectors] */        //每个簇的扇区数目
+	BYTE	fs_type;		/* Filesystem type (0:N/A) */   //FAT子类型，一般在mount时用，置0表示未挂载
+	BYTE	pdrv;			  /* Physical drive number */     //物理驱动器号，一般为0
+	BYTE	n_fats;			/* Number of FATs (1 or 2) */   //文件分配表的数目(1,2) ，FAT文件系统依次为：引导扇区、两个文件分配表、根目录区和数据区
+	BYTE	wflag;			/* win[] flag (b0:dirty) */     //标记文件是否被改动过，为1时要回写
+	BYTE	fsi_flag;		/* FSINFO flags (b7:disabled, b0:dirty) */  //标记文件系统信息是否被改动过，为1时要回写
+	WORD	id;				  /* Volume mount ID */                       //文件系统挂载ID
+	WORD	n_rootdir;  /* Number of root directory entries (FAT12/16) */ //根目录区入口(目录项)的个数(用于FAT12/16)
+	WORD	csize;			/* Cluster size [sectors] */        //每个簇的扇区数目(1,2,4...128)
 #if FF_MAX_SS != FF_MIN_SS
-	WORD	ssize;			/* Sector size (512, 1024, 2048 or 4096) */ //扇区大小
+	WORD	ssize;			/* Sector size (512, 1024, 2048 or 4096) */ //每扇区的字节数(用于扇区大于512Byte的flash)
 #endif
 #if FF_USE_LFN
 	WCHAR*	lfnbuf;	  /* LFN working buffer */    //LFN工作缓冲区
@@ -116,25 +116,25 @@ typedef struct
 	FF_SYNC_t	sobj;		/* Identifier of sync object */ //同步对象标识符
 #endif
 #if !FF_FS_READONLY //如果没定义为只读
-	DWORD	last_clst;  /* Last allocated cluster */    //最后分配的群集
+	DWORD	last_clst;  /* Last allocated cluster */    //最后一个被分配的簇
 	DWORD	free_clst;  /* Number of free clusters */   //空闲簇数量
 #endif
 #if FF_FS_RPATH
-	DWORD	cdir;			  /* Current directory start cluster (0:root) */  //当前目录启动群集（0：根）//使用相对路径，则要存储文件系统当前目录
+	DWORD	cdir;			  /* Current directory start cluster (0:root) */  //允许相对路径时用，存储当前目录起始簇(0:root)
 #if FF_FS_EXFAT     //如果支持exFAT文件系统
 	DWORD	cdc_scl;		/* Containing directory start cluster (invalid when cdir is 0) */   //包含目录起始群集（当CDIR为0时无效）
 	DWORD	cdc_size;		/* b31-b8:Size of containing directory, b7-b0: Chain status */      //B31-B8:包含目录的大小，B7 B0:链状态 
 	DWORD	cdc_ofs;		/* Offset in the containing directory (invalid when cdir is 0) */   //包含目录中的偏移量（当CDIR为0时无效） 
 #endif
 #endif
-	DWORD	n_fatent;		/* Number of FAT entries (number of clusters + 2) */  //总的簇数目
-	DWORD	fsize;			/* Size of an FAT [sectors] */    //文件系统的单个扇区大小
+	DWORD	n_fatent;		/* Number of FAT entries (number of clusters + 2) */  //FAT目录数(簇的数目 + 2)
+	DWORD	fsize;			/* Size of an FAT [sectors] */    //每个FAT所占扇区
 	DWORD	volbase;		/* Volume base sector */          //扇区基地址
-	DWORD	fatbase;		/* FAT base sector */             //卷中起始扇区地址
-	DWORD	dirbase;		/* Root directory base sector/cluster */    //根目录基扇区/簇 
-	DWORD	database;		/* Data base sector */                      //数据起始扇区 
-	DWORD	winsect;		/* Current sector appearing in the win[] */ //窗口中出现的扇区
-	BYTE	win[FF_MAX_SS];	/* Disk access window for Directory, FAT (and file data at tiny cfg) */ //用于目录、FAT的磁盘访问窗口（以及在小型CFG上的文件数据）
+	DWORD	fatbase;		/* FAT base sector */             //FAT起始扇区
+	DWORD	dirbase;		/* Root directory base sector/cluster */    //根目录起始扇区/簇(FAT32:Cluster#)
+	DWORD	database;		/* Data base sector */                      //数据目录起始扇区 
+	DWORD	winsect;		/* Current sector appearing in the win[] */ //当前缓冲区中存储的扇区号
+	BYTE	win[FF_MAX_SS];	/* Disk access window for Directory, FAT (and file data at tiny cfg) */ //单个扇区缓存，当前为512Byte， FAT (and Data on tiny cfg)
 } FATFS;    //文件系统对象结构体
 
 
@@ -142,11 +142,11 @@ typedef struct
 /* Object ID and allocation information (FFOBJID) */
 typedef struct
 {
-	FATFS*	fs;				  /* Pointer to the hosting volume of this object */    //指向此对象的宿主卷的指针
+	FATFS*	fs;				  /* Pointer to the hosting volume of this object */    //指向主文件系统对象的指针
 	WORD	  id;				  /* Hosting volume mount ID */     //主机卷安装ID
 	BYTE	  attr;			  /* Object attribute */            //对象属性
 	BYTE	  stat;			  /* Object chain status (b1-0: =0:not contiguous, =2:contiguous, =3:flagmented in this session, b2:sub-directory stretched) */   //对象链状态（B1-0:＝0：不连续，＝2：邻接，＝3：标记I）
-	DWORD	  sclust;			/* Object data start cluster (0:no cluster or root directory) */  //对象数据启动集群（0：没有集群或根目录）
+	DWORD	  sclust;			/* Object data start cluster (0:no cluster or root directory) */  //对象数据起始簇（0：没有集群或根目录）
 	FSIZE_t	objsize;    /* Object size (valid when sclust != 0) */    //对象大小（当sclust != 0时有效）
 #if FF_FS_EXFAT       //如果支持exFAT文件系统
 	DWORD	  n_cont;			/* Size of first fragment - 1 (valid when stat == 3) */   //第一个片段的大小- 1（当STAT＝3时有效）
@@ -165,18 +165,18 @@ typedef struct
 /* File object structure (FIL) */
 typedef struct
 {
-	FFOBJID	obj;			  /* Object identifier (must be the 1st member to detect invalid object pointer) */ //对象标识符（必须是检测无效对象指针的第一个成员
-	BYTE	  flag;			  /* File status flags */         //文件状态标志
+	FFOBJID	obj;			  /* Object identifier (must be the 1st member to detect invalid object pointer) */ //所在的文件系统指针
+	BYTE	  flag;			  /* File status flags */         //文件状态标识
 	BYTE	  err;			  /* Abort flag (error code) */   //异常标志（错误代码）
-	FSIZE_t fptr;			  /* File read/write pointer (Zeroed on file open) */   //文件读/写指针（文件打开为零）
+	FSIZE_t fptr;			  /* File read/write pointer (Zeroed on file open) */     //文件读/写指针（文件打开为零）
 	DWORD	  clust;			/* Current cluster of fpter (invalid when fptr is 0) */ //fpter的当前簇（fpter为0时无效） 
 	DWORD	  sect;			  /* Sector number appearing in buf[] (0:invalid) */      //出现在BUF[]中的扇区号（0：无效）
 #if !FF_FS_READONLY   //如果没有定义为只读
 	DWORD	  dir_sect;		/* Sector number containing the directory entry (not used at exFAT) */  //包含目录条目的扇区编号（不用于exFAT）
-	BYTE*	  dir_ptr;		/* Pointer to the directory entry in the win[] (not used at exFAT) */   //指向Win [ ]中的目录条目的指针（不用于ExFAT） 
+	BYTE*	  dir_ptr;		/* Pointer to the directory entry in the win[] (not used at exFAT) */   //目录入口指针（不用于ExFAT） 
 #endif
 #if FF_USE_FASTSEEK   //如果已定义了快速查找功能
-	DWORD*	cltbl;	    /* Pointer to the cluster link map table (nulled on open, set by application) */  //指向群集链接映射表的指针（已打开，由应用程序设置） 
+	DWORD*	cltbl;	    /* Pointer to the cluster link map table (nulled on open, set by application) */  //指向簇链接映射表的指针（已打开，由应用程序设置） 
 #endif
 #if !FF_FS_TINY       //如果没定义微缓冲区
 	BYTE	  buf[FF_MAX_SS];	/* File private data read/write window */   //文件专用数据读/写缓冲区
@@ -188,17 +188,17 @@ typedef struct
 /* Directory object structure (DIR) */    //目录对象结构体
 typedef struct
 {
-	FFOBJID	obj;			/* Object identifier */               //对象标识符
-	DWORD	dptr;			  /* Current read/write offset */       //当前读/写偏移量
-	DWORD	clust;			/* Current cluster */                 //当前簇
-	DWORD	sect;			  /* Current sector (0:Read operation has terminated) */    //当前扇区（0：读取操作已终止）
-	BYTE*	dir;			  /* Pointer to the directory item in the win[] */          //在Win中指向目录项的指针
-	BYTE	fn[12];			/* SFN (in/out) {body[8],ext[3],status[1]} */
-#if FF_USE_LFN
-	DWORD	blk_ofs;		/* Offset of current entry block being processed (0xFFFFFFFF:Invalid) */  //正在处理的当前输入块的偏移量（0xFFFFFFF:无效）
+	FFOBJID	obj;			/* Object identifier */               //所在的文件系统指针
+	DWORD	  dptr;		  /* Current read/write offset */       //当前读/写偏移量
+	DWORD	  clust;	  /* Current cluster */                 //当前簇
+	DWORD	  sect;		  /* Current sector (0:Read operation has terminated) */    //当前扇区（0：读取操作已终止）
+	BYTE*	  dir;		  /* Pointer to the directory item in the win[] */          //在Win中指向目录项的指针
+	BYTE	  fn[12];	  /* SFN (in/out) {body[8],ext[3],status[1]} */             //SFN：Short filename短文件名，文件指针 (in/out) {file[8],ext[3],status[1]}
+#if FF_USE_LFN      //如果使用了长文件名
+	DWORD	  blk_ofs;  /* Offset of current entry block being processed (0xFFFFFFFF:Invalid) */  //正在处理的当前输入块的偏移量（0xFFFFFFF:无效）
 #endif
 #if FF_USE_FIND
-	const TCHAR* pat;		/* Pointer to the name matching pattern */    //指向名称匹配模式的指针
+	const   TCHAR* pat;		/* Pointer to the name matching pattern */    //指向名称匹配模式的指针
 #endif
 }DIR;    //目录对象结构体
 
@@ -246,23 +246,23 @@ typedef enum
 	FR_NOT_ENOUGH_CORE,		/* (17) LFN working buffer could not be allocated */
 	FR_TOO_MANY_OPEN_FILES,	/* (18) Number of open files > FF_FS_LOCK */    //打开的文件数目
 	FR_INVALID_PARAMETER	/* (19) Given parameter is invalid */
-} FRESULT;    //文件函数返回码
+} FRESULT;    //文件函数执行结果返回码
 
 //==============================================================内部函数START（未写出头文件
 //==============================================================内部函数END（未写出头文件
 /*--------------------------------------------------------------*/
 /* FatFs module application interface                           */
 
-FRESULT f_open (FIL* fp, const TCHAR* path, BYTE mode);				    /* Open or create a file */       //打开/创建一个文件
-FRESULT f_close (FIL* fp);											                  /* Close an open file object */   //关闭一个文件
-FRESULT f_read (FIL* fp, void* buff, UINT btr, UINT* br);			    /* Read data from the file */     //读文件/
-FRESULT f_write (FIL* fp, const void* buff, UINT btw, UINT* bw);	/* Write data to the file */      //写文件
-FRESULT f_lseek (FIL* fp, FSIZE_t ofs);								            /* Move file pointer of the file object */  //移动文件读/写指针
+FRESULT f_open (FIL* fp, const TCHAR* path, BYTE mode);				    /* Open or create a file */       //创建一个将要访问的文件对象。
+FRESULT f_close (FIL* fp);											                  /* Close an open file object */   //关闭一个已打开的文件
+FRESULT f_read (FIL* fp, void* buff, UINT btr, UINT* br);			    /* Read data from the file */     //从文件读取数据
+FRESULT f_write (FIL* fp, const void* buff, UINT btw, UINT* bw);	/* Write data to the file */      //写数据到文件
+FRESULT f_lseek (FIL* fp, FSIZE_t ofs);								            /* Move file pointer of the file object */  //移动一个打开文件的文件读写指针
 FRESULT f_truncate (FIL* fp);										                  /* Truncate the file */                     //截断文件
 FRESULT f_sync (FIL* fp);											                    /* Flush cached data of the writing file */ //冲洗缓冲数据
-FRESULT f_opendir (DIR* dp, const TCHAR* path);						        /* Open a directory */                      //打开一个目录
+FRESULT f_opendir (DIR* dp, const TCHAR* path);						        /* Open a directory */                      //打开一个目录,此函数打开一个已经存在目录并且为随后的调用创建一个目录对象
 FRESULT f_closedir (DIR* dp);										                  /* Close an open directory */
-FRESULT f_readdir (DIR* dp, FILINFO* fno);							          /* Read a directory item */                 //按顺序读取目录条目
+FRESULT f_readdir (DIR* dp, FILINFO* fno);							          /* Read a directory item */                 //按顺序读取目录条目及将文件信息存储到fno
 FRESULT f_findfirst (DIR* dp, FILINFO* fno, const TCHAR* path, const TCHAR* pattern);	/* Find first file */
 FRESULT f_findnext (DIR* dp, FILINFO* fno);							          /* Find next file */
 FRESULT f_mkdir (const TCHAR* path);								              /* Create a sub directory */    //创建一个目录
@@ -339,13 +339,13 @@ int ff_del_syncobj (FF_SYNC_t sobj);	/* Delete a sync object */
 
 
 /* File access mode and open method flags (3rd argument of f_open) */
-#define	FA_READ				0x01
-#define	FA_WRITE			0x02
-#define	FA_OPEN_EXISTING	0x00
-#define	FA_CREATE_NEW		0x04
-#define	FA_CREATE_ALWAYS	0x08
-#define	FA_OPEN_ALWAYS		0x10
-#define	FA_OPEN_APPEND		0x30
+#define	FA_READ				    0x01    //指定读访问对象。可以从文件读取数据。与FA_WRITE组合为读写访问。
+#define	FA_WRITE			    0x02    //指定写访问对象。可以向文件写入数据。与FA_READ组合为读写访问。
+#define	FA_OPEN_EXISTING	0x00    //打开文件。如果文件不存在，函数返回失败。（默认模式）
+#define	FA_CREATE_NEW		  0x04    //创建一个新文件。如果文件存在，函数执行失败，并返回FR_EXIST值。
+#define	FA_CREATE_ALWAYS	0x08    //创建一个新文件。如果文件存在，将被删节和复写。
+#define	FA_OPEN_ALWAYS		0x10    //如果存在打开文件。如果文件不存在，创建一个新文件。在使用此模式打开文件后，使用f_lseek函数，追加数据到文件。
+#define	FA_OPEN_APPEND		0x30    //
 
 /* Fast seek controls (2nd argument of f_lseek) */
 #define CREATE_LINKMAP	((FSIZE_t)0 - 1)

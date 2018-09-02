@@ -153,7 +153,7 @@
 #define FF_FS_RPATH		0
 /* This option configures support for relative path.
 /
-/   0: Disable relative path and remove related functions.
+/   0: Disable relative path and remove related functions.            //禁用相对路径并删除相关函数
 /   1: Enable relative path. f_chdir() and f_chdrive() are available.
 /   2: f_getcwd() function is available in addition to 1.
 */
@@ -229,8 +229,8 @@
 /  Instead of private sector buffer eliminated from the file object, common sector
 /  buffer in the filesystem object (FATFS) is used for the file data transfer. */
 
-
-#define FF_FS_EXFAT		0
+  
+#define FF_FS_EXFAT		0   //exFAT系统
 /* This option switches support for exFAT filesystem. (0:Disable or 1:Enable)
 /  To enable exFAT, also LFN needs to be enabled.
 /  Note that enabling exFAT discards ANSI C (C89) compatibility. */

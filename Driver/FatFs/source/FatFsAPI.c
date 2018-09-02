@@ -176,17 +176,17 @@ bool FilSearch(FATFS *fs,DIR *dir,TCHAR *path,u8 *name,char (*p)[13])
   FRESULT res;
   u8 i,j,k;
   j = k = 0;
-  res = f_opendir(dir,path);    //创建目录对象
+  res = f_opendir(dir,path);    //创建目录对象及获取相关参数
   if(res != FR_OK)
     return FALSE;
   do
   {
-    res = f_readdir(dir,&fno);
+    res = f_readdir(dir,&fno);  //按顺序读取目录条目及将文件信息
     if(res != FR_OK)
       return FALSE;
 //    if(fno.fname[0] == 0)
 //      return TRUE; 
-    i = 13;
+    i = 13;   //单个文件信息存储长度
     while(--i)
     {
       if((fno.fname[i] == 0x2E) && (ByteCmp(fno.fname[i+1],name[0]) && ByteCmp(fno.fname[i+2],name[1]) && ByteCmp(fno.fname[i+3],name[2])))

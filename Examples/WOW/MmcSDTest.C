@@ -20,6 +20,8 @@
 #include "STM32_USART.H"
 //#include "STM32_DMA.H"
 
+#include 	"Image.H"
+#include 	"LinkedList.H"
 
 #include "TM1618.H"
 //#include "MMC_SD.h"
@@ -33,7 +35,8 @@
 //#define SDCardTest
 //#define GT32L32M0180Test	
 //
-
+BMPInftDef BmpInf;
+LINK_NODE Node;
 
 LCDDef	sLCD;
 SPIDef	sSCport;
@@ -59,11 +62,17 @@ u8 bsr  = 0x08;
 u16 time=0;
 u32 ADCDATA = 0;
 //void GT32L32_PinSet(void);
-FATFS FatFsObj[1]; /* 逻辑驱动器的工作区(文件系统对象) */	
-FIL fsrc, fdst; /* 文件对象 */
-BYTE buffer[4096]; /* 文件拷贝缓冲区 */
-FRESULT result; /* FatFs 函数公共结果代码 */
-UINT br, bw; /* 文件读/写字节计数 */
+#define FileNum 16
+FRESULT result;       //FatFs 函数公共结果代码
+FATFS   FatFsObj[1];  //逻辑驱动器的工作区(文件系统对象)
+DIR     dir;          //目录对象结构体
+FILINFO fno;          //文件信息结构体
+FIL fsrc, fdst;       //文件对象
+BYTE buffer[4096];    //文件拷贝缓冲区
+char FilSearchInf[FileNum][13]={0,0};    //存储查找到的文件名数组
+unsigned char LenName = 0;
+
+UINT br, bw;          //文件读/写字节计数
 u16 xh=0,yv=0;
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
@@ -158,8 +167,8 @@ void SD_Configuration(void)
 {
   u16 da=0;
   u16 color;
-  DIR dir;
-  char FilSearchCount[10][13]={0,0};
+  
+  
   
   LCD_Printf (0,0,16,LCD565_GREEN,"STM32F1xWorkSpace--(MmcSDTest)SD卡读取");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   LCD_Printf (0,16,16,LCD565_GREEN,"为驱动器注册工作区......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
@@ -191,349 +200,72 @@ void SD_Configuration(void)
   }
   //========================查找指定文件
   LCD_Printf (0,96,16,LCD565_GREEN,"查找指定文件:bmp");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-  result  = FilSearch(&FatFsObj[0],&dir,"0:/","bmp",FilSearchCount);  //在指定路径下查找指定扩展名的文件，并记录在(*p)[13]数组中，注意最大记录条数
+  result  = FilSearch(&FatFsObj[0],&dir,"0:/","bmp",FilSearchInf);  //在指定路径下查找指定扩展名的文件，并记录在(*p)[13]数组中，注意最大记录条数
   if(0 != result)
   {
     unsigned short    i=0;
     unsigned short    j = 0;
     unsigned short    flg=0;
-
-    unsigned short  xs,xe,ys,ye;
-    xh=0;
-    yv=0;
     LCD_Printf (0,112,16,LCD565_GREEN,"查找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-    for(i=0;i<10;i++)
+    for(i=0;i<FileNum;i++)
     {
-      if(0  !=  FilSearchCount[i][0])
+      if(0  !=  FilSearchInf[i][0])
       {
         unsigned char k = 0;
         for(k=0;k<13;++k)
         {
-          if(0  ==  FilSearchCount[i][k])
+          if(0  ==  FilSearchInf[i][k])
             break;
         }
-        LCD_Show(0,128+i*16,16,LCD565_GREEN,k,FilSearchCount[i]);
+        //===============打印查找的bmp文件名
+        LCD_Show(0,128+i*16,16,LCD565_GREEN,k,FilSearchInf[i]);
       }
     }
     while(1)
     {
+//      i=0;
+//      j=0;
       //===============================图片1
-      yv  = 0;
-      flg = 0;
-      result  = f_open(&fsrc,"0:/Game.bmp",FA_READ);
-      if(result)
-        return;
-      for(i=0;i<480;i++)
+      for(i=0;i<FileNum;i++)
       {
-        if(flg==0)
+        if(FilSearchInf[i][0] !=0)
         {
-          result  = f_read(&fsrc,buffer,54,&br);
-        }
-        else
-        {
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-        if(FR_OK  !=  result)
-        {
-//          return;
-        }
-        da  = 0;
-        if(flg==0)
-        {
-          flg = 1;
-          da  = 0;
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-
-        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
-        yv+=1;
-        if(yv>=480)
           yv  = 0;
-      }
-      SysTick_DeleyS(3);					//SysTick延时nS
-      //===============================图片2
-      yv  = 0;
-      flg = 0;
-      i   = 0;
-      result  = f_open(&fsrc,"0:/Ga1.bmp",FA_READ);
-      if(result)
-        return;
-      for(i=0;i<480;i++)
-      {
-        if(flg==0)
-        {
-          result  = f_read(&fsrc,buffer,54,&br);
-        }
-        else
-        {
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-        if(FR_OK  !=  result)
-        {
-//          return;
-        }
-        da  = 0;
-        if(flg==0)
-        {
-          flg = 1;
-          da  = 0;
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
+          flg = 0;
+          result  = f_open(&fsrc,&FilSearchInf[i][0],FA_READ);
+//          if(result)
+//            break;
+          for(j=0;j<480;j++)
+          {
+            if(flg==0)
+            {
+              result  = f_read(&fsrc,buffer,54,&br);
+            }
+            else
+            {
+              result  = f_read(&fsrc,buffer,2400,&br);
+            }
+            if(FR_OK  !=  result)
+            {
+    //          return;
+            }
+            da  = 0;
+            if(flg==0)
+            {
+              flg = 1;
+              da  = 0;
+              result  = f_read(&fsrc,buffer,2400,&br);
+            }
 
-        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
-        yv+=1;
-        if(yv>=480)
-          yv  = 0;
-      }
-      SysTick_DeleyS(3);					//SysTick延时nS
-      //===============================图片3
-      yv  = 0;
-      flg = 0;
-      i   = 0;
-      result  = f_open(&fsrc,"0:/Ga2.bmp",FA_READ);
-      if(result)
-        return;
-      for(i=0;i<480;i++)
-      {
-        if(flg==0)
-        {
-          result  = f_read(&fsrc,buffer,54,&br);
+            LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+            yv+=1;
+            if(yv>=480)
+              yv  = 0;
+          }
+//          SysTick_DeleyS(3);					//SysTick延时nS
         }
-        else
-        {
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-        if(FR_OK  !=  result)
-        {
-//          return;
-        }
-        da  = 0;
-        if(flg==0)
-        {
-          flg = 1;
-          da  = 0;
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-
-        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
-        yv+=1;
-        if(yv>=480)
-          yv  = 0;
-      }
-      SysTick_DeleyS(3);					//SysTick延时nS
-      //===============================图片4
-      yv  = 0;
-      flg = 0;
-      i   = 0;
-      result  = f_open(&fsrc,"0:/Ga3.bmp",FA_READ);
-      if(result)
-        return;
-      for(i=0;i<480;i++)
-      {
-        if(flg==0)
-        {
-          result  = f_read(&fsrc,buffer,54,&br);
-        }
-        else
-        {
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-        if(FR_OK  !=  result)
-        {
-//          return;
-        }
-        da  = 0;
-        if(flg==0)
-        {
-          flg = 1;
-          da  = 0;
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-
-        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
-        yv+=1;
-        if(yv>=480)
-          yv  = 0;
-      }
-      SysTick_DeleyS(3);					//SysTick延时nS
-      //===============================图片5
-      yv  = 0;
-      flg = 0;
-      i   = 0;
-      result  = f_open(&fsrc,"0:/Ga4.bmp",FA_READ);
-      if(result)
-        return;
-      for(i=0;i<480;i++)
-      {
-        if(flg==0)
-        {
-          result  = f_read(&fsrc,buffer,54,&br);
-        }
-        else
-        {
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-        if(FR_OK  !=  result)
-        {
-//          return;
-        }
-        da  = 0;
-        if(flg==0)
-        {
-          flg = 1;
-          da  = 0;
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-
-        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
-        yv+=1;
-        if(yv>=480)
-          yv  = 0;
-      }
-      SysTick_DeleyS(3);					//SysTick延时nS
-      //===============================图片5
-      yv  = 0;
-      flg = 0;
-      i   = 0;
-      result  = f_open(&fsrc,"0:/Ga5.bmp",FA_READ);
-      if(result)
-        return;
-      for(i=0;i<480;i++)
-      {
-        if(flg==0)
-        {
-          result  = f_read(&fsrc,buffer,54,&br);
-        }
-        else
-        {
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-        if(FR_OK  !=  result)
-        {
-//          return;
-        }
-        da  = 0;
-        if(flg==0)
-        {
-          flg = 1;
-          da  = 0;
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-
-        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
-        yv+=1;
-        if(yv>=480)
-          yv  = 0;
-      }
-      SysTick_DeleyS(3);					//SysTick延时nS
-      //===============================图片5
-      yv  = 0;
-      flg = 0;
-      i   = 0;
-      result  = f_open(&fsrc,"0:/Ga6.bmp",FA_READ);
-      if(result)
-        return;
-      for(i=0;i<480;i++)
-      {
-        if(flg==0)
-        {
-          result  = f_read(&fsrc,buffer,54,&br);
-        }
-        else
-        {
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-        if(FR_OK  !=  result)
-        {
-//          return;
-        }
-        da  = 0;
-        if(flg==0)
-        {
-          flg = 1;
-          da  = 0;
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-
-        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
-        yv+=1;
-        if(yv>=480)
-          yv  = 0;
-      }
-      SysTick_DeleyS(3);					//SysTick延时nS
-      //===============================图片5
-      yv  = 0;
-      flg = 0;
-      i   = 0;
-      result  = f_open(&fsrc,"0:/Ga7.bmp",FA_READ);
-      if(result)
-        return;
-      for(i=0;i<480;i++)
-      {
-        if(flg==0)
-        {
-          result  = f_read(&fsrc,buffer,54,&br);
-        }
-        else
-        {
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-        if(FR_OK  !=  result)
-        {
-//          return;
-        }
-        da  = 0;
-        if(flg==0)
-        {
-          flg = 1;
-          da  = 0;
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-
-        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
-        yv+=1;
-        if(yv>=480)
-          yv  = 0;
-      }
-      SysTick_DeleyS(3);					//SysTick延时nS
-      //===============================图片5
-      yv  = 0;
-      flg = 0;
-      i   = 0;
-      result  = f_open(&fsrc,"0:/Ga8.bmp",FA_READ);
-      if(result)
-        return;
-      for(i=0;i<480;i++)
-      {
-        if(flg==0)
-        {
-          result  = f_read(&fsrc,buffer,54,&br);
-        }
-        else
-        {
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-        if(FR_OK  !=  result)
-        {
-//          return;
-        }
-        da  = 0;
-        if(flg==0)
-        {
-          flg = 1;
-          da  = 0;
-          result  = f_read(&fsrc,buffer,2400,&br);
-        }
-
-        LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
-        yv+=1;
-        if(yv>=480)
-          yv  = 0;
-      }
-      SysTick_DeleyS(3);					//SysTick延时nS
-     
-    }
-    
+      }           
+    }    
   }
   else
   {    

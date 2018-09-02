@@ -53,7 +53,7 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 
 /* Generic command (Not used by FatFs) */
 #define CTRL_POWER			5	/* Get/Set power status */
-#define CTRL_LOCK			6	/* Lock/Unlock media removal */
+#define CTRL_LOCK			  6	/* Lock/Unlock media removal */
 #define CTRL_EJECT			7	/* Eject media */
 #define CTRL_FORMAT			8	/* Create physical format on the media */
 
@@ -62,7 +62,7 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 #define MMC_GET_CSD			11	/* Get CSD */
 #define MMC_GET_CID			12	/* Get CID */
 #define MMC_GET_OCR			13	/* Get OCR */
-#define MMC_GET_SDSTAT		14	/* Get SD status */
+#define MMC_GET_SDSTAT  14	/* Get SD status */
 #define ISDIO_READ			55	/* Read data form SD iSDIO register */
 #define ISDIO_WRITE			56	/* Write data to SD iSDIO register */
 #define ISDIO_MRITE			57	/* Masked write data to SD iSDIO register */
