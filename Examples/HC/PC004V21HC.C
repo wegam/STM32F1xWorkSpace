@@ -11,7 +11,7 @@
 
 #include "STM32_CAN.H"
 #include "STM32_USART.H"
-#include "STM32_TOOLS.H"		//数据校验工具
+
 
 #include "HC_PHY.H"
 
@@ -57,7 +57,13 @@ void PC004V21HC_Configuration(void)
 *******************************************************************************/
 void PC004V21HC_Server(void)
 {
-
+  u8 *buffer;
+  unsigned short length;
+  length = DataProcessGet(buffer);
+  if(length)
+  {
+    Lock_Configuration();							//锁端口配置
+  }
 }
 /*******************************************************************************
 * 函数名			:	Communiction_Configuration

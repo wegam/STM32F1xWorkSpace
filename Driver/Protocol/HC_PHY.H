@@ -135,7 +135,7 @@ typedef	struct	_RS485Frame			//485通讯消息帧结构体MessageFarme
 	RS485AddrDef		Addr;				//通讯地址结构体	
 	RS485StsDef			StsCode;		//状态码/错误码	
 	unsigned char		data[BusDataSize];		//BusDataSize为最大数据接收缓冲，实际数据大小按照Length-4(4为地址和状态码长度)	
-	unsigned char		Bcc8;				//异或校验	//计算范围为起始段到数据段(dAdd~data[n])到错误码
+	unsigned char		Bcc8;				//异或校验	//计算范围为起始段到数据段(TargetAdd-data[n])到错误码
 	RS485HeadDef		End;				//结束符 0x7F
 }RS485FrameDef;
 
@@ -143,11 +143,13 @@ typedef	struct	_RS485Frame			//485通讯消息帧结构体MessageFarme
 
 
 
-typedef	struct	_Borad_Info
+typedef	struct	_HCSYS
 {
+  unsigned char Addr;				    //本板地址
+  unsigned char AddrBase;				//本板地址偏移(0-CabinetAddr，1-LayerAddr，2-SlotAddr）
 	unsigned int	SerialNum;				//序列号
 	const char		*Borad_Name;			//PCB板名
-}Borad_InfoDef;
+}HCSYSDef;
 
 
 
@@ -159,11 +161,11 @@ typedef	struct	_Borad_Info
 
 
 
+unsigned short DataProcessGet(unsigned char *buffer);
+HCResult DataProcessSet(const unsigned char *buffer,unsigned short length);
 
-
-
-HCResult UMFrameProcess(void);
-HCResult DMFrameProcess(void);
+HCResult UMFrameProcess(const unsigned char *buffer);
+HCResult DMFrameProcess(const unsigned char *buffer);
 
 
 

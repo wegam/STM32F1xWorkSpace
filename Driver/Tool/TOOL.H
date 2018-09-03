@@ -6,9 +6,9 @@
 
 
 
-u8 BCC8(u8 *Pointer,u16 num);			//异或校验
-u8 CRC8(u8 *Pointer);			//循环冗余校验
-u8 LRC8(u8 *Pointer);		//纵向冗余校验
+unsigned char BCC8(const unsigned char *buffer,unsigned short num);		//异或校验
+unsigned char CRC8(const unsigned char *buffer);						//循环冗余校验
+unsigned char LRC8(const unsigned char *buffer);						//纵向冗余校验
 
 unsigned char 	GetMaxChar	(unsigned char *pBuffer,unsigned short Length);		//获取unsigned char型最大值
 unsigned short 	GetMaxShort	(unsigned short *pBuffer,unsigned short Length);	//获取unsigned short型最大值

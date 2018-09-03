@@ -40,17 +40,18 @@ int n; /*结点总数 */
 /*******************************************************************************
 * 函数名		:	8位异或校验
 * 功能描述	: 
-* 输入			: *P 指针，numb数据长度（个数）
+* 输入			: buffer计算的数据缓存起始地址
+              numb数据长度（个数）
 * 输出			: 计算结果
 * 返回			: 无
 *******************************************************************************/
-u8 BCC8(u8 *Pointer,u16 num)			//异或校验
+unsigned char BCC8(const unsigned char *buffer,unsigned short num)			//异或校验
 {
 	u16 i_Num=0;
 	u16 temp=0;
 	for(i_Num=0;i_Num<num;i_Num++)
 	{
-		temp=temp^Pointer[i_Num];
+		temp=temp^buffer[i_Num];
 	}
 	return temp;
 }
@@ -61,7 +62,7 @@ u8 BCC8(u8 *Pointer,u16 num)			//异或校验
 * 输出			: 计算结果
 * 返回			: 无
 *******************************************************************************/
-u8 CRC8(u8 *Pointer)			//循环冗余校验
+unsigned char CRC8(const unsigned char *buffer)			//循环冗余校验
 {
 	return 0;
 }
@@ -72,7 +73,7 @@ u8 CRC8(u8 *Pointer)			//循环冗余校验
 * 输出			: 无
 * 返回			: 无
 *******************************************************************************/
-u8 LRC8(u8 *Pointer)		//纵向冗余校验
+unsigned char LRC8(const unsigned char *buffer)		//纵向冗余校验
 {
 	return 0;
 }
