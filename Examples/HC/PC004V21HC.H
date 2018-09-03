@@ -2,7 +2,7 @@
 #define __PC004V21HC_H
 
 #include "stm32f10x_type.h"
-#include "HCTYPE.H"
+#include "HC_PHY.H"
 
 //#define	RS485MaxDataSize	64			//RS485总线最大数据长度
 //#define	Rs232MaxDataSize	64			//RS232最大数据长度

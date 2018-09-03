@@ -83,9 +83,9 @@ sBoradDef			sBorad;					//端口/槽位所有信息结构体
 
 
 //==============结体体
-RS485_TypeDef	RS485_Bus;		//总线通讯485
-RS485_TypeDef	RS485_Seg7;		//数码管显示485
-SWITCHID_CONF	SWITCHID;			//拔码开关
+RS485Def	RS485_Bus;		//总线通讯485
+RS485Def	RS485_Seg7;		//数码管显示485
+SwitchDef	SWITCHID;			//拔码开关
 
 
 u8 RS485BusTxd[Bus485BufferSize];
@@ -1541,16 +1541,16 @@ void Data_Initialize(void)						//参数初始化
 	u8 Num	=	0;
 	PortDef*	Port	=	&(sBorad.Port1);
 	//========================各端口锁绑定
-	sBorad.Port1.Lock.GPIOx	=	LockPort1;
+	sBorad.Port1.Lock.GPIOx				=	LockPort1;
 	sBorad.Port1.Lock.GPIO_Pin_n	=	LockPin1;
 	
-	sBorad.Port2.Lock.GPIOx	=	LockPort2;
+	sBorad.Port2.Lock.GPIOx				=	LockPort2;
 	sBorad.Port2.Lock.GPIO_Pin_n	=	LockPin2;
 	
-	sBorad.Port3.Lock.GPIOx	=	LockPort3;
+	sBorad.Port3.Lock.GPIOx				=	LockPort3;
 	sBorad.Port3.Lock.GPIO_Pin_n	=	LockPin3;
 	
-	sBorad.Port4.Lock.GPIOx	=	LockPort4;
+	sBorad.Port4.Lock.GPIOx				=	LockPort4;
 	sBorad.Port4.Lock.GPIO_Pin_n	=	LockPin4;
 	
 	//========================端口编号

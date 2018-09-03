@@ -13,6 +13,8 @@
 #include "STM32_USART.H"
 #include "STM32_TOOLS.H"		//数据校验工具
 
+#include "HC_PHY.H"
+
 #include "SWITCHID.H"
 
 
@@ -23,7 +25,7 @@ RS485Def gRS485Bus;			//与上层总线接口(网关板)
 RS485Def gRS485lay;			//与下级总线接口(层板)	
 
 SwitchDef gSwitch;
-
+extern RS485FrameDef	*RS485Node;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -56,7 +58,6 @@ void PC004V21HC_Configuration(void)
 void PC004V21HC_Server(void)
 {
 
-
 }
 /*******************************************************************************
 * 函数名			:	Communiction_Configuration
@@ -78,7 +79,7 @@ void Communiction_Configuration(void)
 	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
 	gRS485lay.USARTx						=	RS485laySerialPort;
 	gRS485lay.RS485_CTL_PORT		=	RS485layCtlPort;
-	gRS485lay.RS485_CTL_Pin		=	RS485layCtlPin;
+	gRS485lay.RS485_CTL_Pin			=	RS485layCtlPin;
 	RS485_DMA_ConfigurationNR(&gRS485lay,RS485layBaudRate,RS485layDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 	
 	//=============================RS232A端口(USART1)

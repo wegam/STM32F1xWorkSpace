@@ -2,33 +2,145 @@
 #define __HC_PHY_H
 
 
+#define	HC_Head1			0xFA				//头标识符第一字节
+#define	HC_Head2			0xF5				//头标识符第二字节
+#define	BusDataSize		84					//一条消息携带的最大数据个数
+
+typedef enum _ErrCode
+{
+	Err_FAULT_NON						=	0x00,	//无错误
+	Err_FAULT_BUSY					=	0x01,	//忙状态
+	Err_FAULT_ILLAGALPARA		=	0x02,	//参数非法
+	Err_FAULT_INACTIVE			=	0x03,	//称重通道未激活
+	Err_FAULT_DIRECTION			=	0x04,	//传感器方向错
+	Err_FAULT_DIFFOVF				=	0x05,	//称重差值过大
+	Err_FAULT_SENSOR				=	0x06,	//传感器故障
+	Err_FAULT_ILLIGALWEIGHT	=	0x07,	//称重数值非法
+	Err_FAULT_WEIGHTOVF			=	0x08,	//称重数据溢出
+	Err_Fault_Nocail				=	0x09,	//称重未标定
+	Err_CC_Error						=	0x0A	//校验错误
+}ErrDef;			//错误码
+typedef enum	_ePro485Sts			//状态码
+{
+	eNoErr		=	0x00,		//无错误
+	eNoData		=	0x23,		//无药箱数据
+	eBoxTout	=	0x24,		//取药箱超时
+	eBoxOff		=	0x25,		//药箱取走
+	eBoxBack	=	0x26,		//药箱取走后收回
+	eReadErr	=	0x27,		//读卡器通讯异常
+	eBoxTake	=	0x25,		//药箱被强制取走,原28
+}RS485StsDef;
+typedef enum _CmdCode
+{
+	CMD_WRITE_QTY				=	0x01,	//写入数量
+	CMD_UNLOCK					=	0x02,	//解锁
+	CMD_ADD_MTRL				=	0x04,	//加料
+	CMD_RDC_MTRL				=	0x06,	//取料
+	CMD_CHECK_QTY				=	0x07,	//盘点
+	CMD_WRITE_HINT			=	0x08,	//写入提示
+	CMD_WRITE_NOTE			=	0x09,	//写入注释
+	CMD_CNTRL_LED				=	0x0A,	//提示灯控制 ，该指令由单元板执行
+	CMD_CNTRL_GATE			=	0x0B,	//冰箱门控制 ，该指令由网关执行，不往下层传递
+	CMD_CHECK_VERSION		=	0x0C	//查询软件版本
+}CmdDef;			//命令码
+typedef enum
+{
+	RES_OK = 0,		/* 0: Successful */
+	RES_ERROR,		/* 1: R/W Error */
+	RES_WRPRT,		/* 2: Write Protected */
+	RES_NOTRDY,		/* 3: Not Ready */
+	RES_PARERR		/* 4: Invalid Parameter */
+}HCResult;
+typedef enum _FrameType
+{
+	FRAME_TYPE_DATA						=	0x01,		//帧类型--数据帧
+	FRAME_TYPE_ACK						=	0x02,		//帧类型--应答帧
+	FRAME_TYPE_INVALID				=	0x00		//帧类型--无效帧
+}FrameTypeDef;	//帧类型
+typedef enum _OrderState
+{
+	ORDER_STAT_IDLE						=	0,			//空闲状态
+	ORDER_STAT_WORK						=	1				//工作状态--忙状态
+}OrderStateDef;	//工作状态
 
 
-
-
-
+typedef struct	_RS232Fram
+{
+	unsigned short 	FarmLen;
+	unsigned char		Data[];
+}RS232FramDef;		//RS232消息帧格式(PC机通讯)
+typedef struct	_RS485Fram
+{
+	unsigned short 	FarmLen;
+	unsigned char		Data[];
+}RS485FramDef;		//RS485消息帧格式()
 
 typedef enum	_Head
 {
 	Head1		=	0xFA,
 	Head2		=	0xF5,
-}HeadDef;
-
-
-typedef enum	_Cmd
+}RS232HeadDef;
+typedef enum	_ePro485Us			//485协议头尾标识符
 {
-	GetStatus	=	1,
-	GetData		=	2,
-	SetStatus	=	3,
-	SetData		=	4,
-}CmdDef;
+	ePro485Head			=	0x7E,			//头标识
+	ePro485End			=	0x7F,			//结束标识
+}RS485HeadDef;
+typedef struct	_Step
+{
+	unsigned char	IDLE:1;			//b0	空闲标志,					0-空闲，1-根据以下位的忙状态
+	unsigned char	SendU:1;		//b1	往上级发送标志,		0-空闲，1-表示正在发送中
+	unsigned char	WaitU:1;		//b2	等待上级响应标志,	0-空闲，1-表示等待下层板响应
+	unsigned char	SendD:1;		//b3	往下级发送标志,		0-空闲，1-表示正在发送中
+	unsigned char	WaitD:1;		//b4	等待下级响应标志,	0-空闲，1-表示等待下层板响应
+	
+}StepDef;
 
-//typedef	struct	_Communication
+
+//typedef enum	_Cmd
+//{
+//	GetStatus	=	1,
+//	GetData		=	2,
+//	SetStatus	=	3,
+//	SetData		=	4,
+//}CmdDef;
+//-----------------------------------------------------------------------------------结构体
+typedef	struct	_RS485Addr			//通讯地址结构体（下行时：Addr1,Addr2,Addr3都得有数据，上行时，柜地址为0x00）
+{
+	unsigned char 	CabinetAddr;	//柜地址(单元柜号)  下行时为柜地址，上行时，柜地址为0x00）
+	unsigned char 	LayerAddr;		//层地址
+	unsigned char		SlotAddr;			//槽地址(终端地址)	
+}RS485AddrDef;
+typedef	struct	_RS232Frame
+{
+	RS232HeadDef Head1;
+	RS232HeadDef Head2;
+	CmdDef	Cmd;
+}RS232FrameDef;			//RS232帧格式
+
+//typedef	struct	_RS485Frame
 //{
 //	HeadDef Head1;
 //	HeadDef Head2;
 //	CmdDef	Cmd;
-//}CommunicationDef;
+//}RS485FrameDef;			//RS485帧格式
+typedef	struct	_RS485Frame			//485通讯消息帧结构体MessageFarme  
+{
+	RS485HeadDef		Head;				//b0识别符	0x7E
+	unsigned char		TargetAdd;	//b1目标地址（暂时理解为单元柜地址）下发为接收地址，上传为0x00
+	unsigned char		SourceAdd;	//b2源地址 下发为0x00，上传为本地址
+	unsigned char		Serial;			//b3流水号 0x01~0x7D 每次使用后加1(为了不与起始符和结束符冲突，流水号最大值为0x7D)
+	CmdDef					Cmd;				//b4命令号：0x12-获取指定IC卡号，0x13取药,上报命令也在此位
+	unsigned char		UserCode;		//b5用户码：不处理，原样返回
+	unsigned char		Length;			//b6地址+异常码固定长度为4，卡数据长度为3	
+	RS485AddrDef		Addr;				//通讯地址结构体	
+	RS485StsDef			StsCode;		//状态码/错误码	
+	unsigned char		data[BusDataSize];		//BusDataSize为最大数据接收缓冲，实际数据大小按照Length-4(4为地址和状态码长度)	
+	unsigned char		Bcc8;				//异或校验	//计算范围为起始段到数据段(dAdd~data[n])到错误码
+	RS485HeadDef		End;				//结束符 0x7F
+}RS485FrameDef;
+
+
+
 
 
 typedef	struct	_Borad_Info
@@ -36,6 +148,28 @@ typedef	struct	_Borad_Info
 	unsigned int	SerialNum;				//序列号
 	const char		*Borad_Name;			//PCB板名
 }Borad_InfoDef;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HCResult UMFrameProcess(void);
+HCResult DMFrameProcess(void);
+
+
+
+
+
+
 
 
 
