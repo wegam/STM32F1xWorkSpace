@@ -3,7 +3,7 @@
 
 
 
-#define	MaxNetPerLayer	64				//每个结点所连接的最大支点数
+#define	MaxNetPerLayer	64				//每个结点所连接的最大支点数为64
 #define	TargetLayer			CALayer		//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	MBLayer					0					//网关板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	CALayer					1					//单元板在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
@@ -17,10 +17,11 @@
 #define	RS485Head1			0x7E				//RS485头标识符
 #define	RS485end1				0x7F				//RS485尾标识符
 
-#define	BusDataSize		64					//一条消息携带的最大数据个数
+#define	BusDataSize		80					//一条消息携带的最大数据个数
 //#define	BascDataLen		64					//单元地址+层地址+槽地址+状态码
 #define	BascDataLen		4						//单元地址+层地址+槽地址+状态码
 #define	HeadDataLen		9						//单元地址+层地址+槽地址+状态码
+#define	AckDataLen		9				    //应答消息长度
 
 typedef enum
 {
@@ -118,11 +119,11 @@ typedef enum	_Head
 	Head1		=	0xFA,
 	Head2		=	0xF5,
 }RS232HeadDef;
-typedef enum	_ePro485Us			//485协议头尾标识符
-{
-	ePro485Head			=	0x7E,			//头标识
-	ePro485End			=	0x7F,			//结束标识
-}RS485HeadDef;
+//typedef enum			//485协议头尾标识符
+//{
+//	ePro485Head			=	0x7E,			//头标识
+//	ePro485End			=	0x7F,			//结束标识
+//}RS485HeadDef;
 typedef struct	_Step
 {
 	unsigned char	IDLE:1;			//b0	空闲标志,					0-空闲，1-根据以下位的忙状态
@@ -155,12 +156,6 @@ typedef	struct	_RS232Frame
 	CmdDef	Cmd;
 }RS232FrameDef;			//RS232帧格式
 
-//typedef	struct	_RS485Frame
-//{
-//	HeadDef Head1;
-//	HeadDef Head2;
-//	CmdDef	Cmd;
-//}RS485FrameDef;			//RS485帧格式
 typedef	struct	_RS485Frame			//485通讯消息帧结构体MessageFarme  
 {
 	unsigned char		RS485Head;	//b0识别符	0x7E
@@ -169,34 +164,41 @@ typedef	struct	_RS485Frame			//485通讯消息帧结构体MessageFarme
 	unsigned char		Serial;			//b3流水号 0x01~0x7D 每次使用后加1(为了不与起始符和结束符冲突，流水号最大值为0x7D)
 	CmdDef					Cmd;				//b4命令号：0x12-获取指定IC卡号，0x13取药,上报命令也在此位
 	unsigned char		UserCode;		//b5用户码：不处理，原样返回
-	unsigned char		Length;			//b6地址+异常码固定长度为4，卡数据长度为3	
+	unsigned char		Length;			//b6地址+异常码固定长度为4，卡数据长度为3
 	RS485AddrDef		Addr;				//通讯地址结构体	
 	RS485StsDef			StsCode;		//状态码/错误码	
-	unsigned char		data[BusDataSize];		//BusDataSize为最大数据接收缓冲，实际数据大小按照Length-4(4为地址和状态码长度)	
-//	unsigned char		Bcc8;				//异或校验	//计算范围为起始段到数据段(TargetAdd-data[n])到错误码
-//	RS485HeadDef		End;				//结束符 0x7F
+	unsigned char		*data;	
+	unsigned char		Bcc8;				//异或校验	//计算范围为起始段到数据段(TargetAdd-data[n])到错误码
+	unsigned char		End;				//结束符 0x7F
 }RS485FrameDef;
 typedef	struct	_RS485Ack			//485通讯消息帧结构体MessageFarme  
 {
-	unsigned char		RS485Head;	//b0识别符	0x7E
+	unsigned char		HeadCode;	  //b0识别符	0x7E  为其它表示无应答数据
 	unsigned char		TargetAdd;	//b1目标地址（暂时理解为单元柜地址）下发为接收地址，上传为0x00
 	unsigned char		SourceAdd;	//b2源地址 下发为0x00，上传为本地址
 	unsigned char		Serial;			//b3流水号 0x01~0x7D 每次使用后加1(为了不与起始符和结束符冲突，流水号最大值为0x7D)
 	CmdDef					Cmd;				//b4命令号：0x12-获取指定IC卡号，0x13取药,上报命令也在此位
 	unsigned char		UserCode;		//b5用户码：不处理，原样返回
 	unsigned char		Length;			//b6地址+异常码固定长度为4，卡数据长度为3	
-	RS485AddrDef		Addr;				//通讯地址结构体	
-	RS485StsDef			StsCode;		//状态码/错误码	
-	unsigned char		data[BusDataSize];		//BusDataSize为最大数据接收缓冲，实际数据大小按照Length-4(4为地址和状态码长度)	
-//	unsigned char		Bcc8;				//异或校验	//计算范围为起始段到数据段(TargetAdd-data[n])到错误码
-//	RS485HeadDef		End;				//结束符 0x7F
+//	RS485StsDef			StsCode;		//状态码/错误码	
+	unsigned char		Bcc8;				//异或校验	//计算范围为起始段到数据段(TargetAdd-data[n])到错误码
+	unsigned char		EndCode;	  //结束符 0x7F
 }RS485AckDef;
-
-typedef	struct	_RS485Node			//缓存节点  
+typedef	struct	_RS485Node	  //485通讯消息帧结构体MessageFarme  
 {
-	unsigned char	NodeLength;			//此结点存储的有效数据长度（需要发送的长度）
-	unsigned char	data[BusDataSize];		//BusDataSize为最大数据接收缓冲，实际数据大小按照Length-4(4为地址和状态码长度)
+  unsigned short  Length;     //Frame的总长度
+	unsigned char   data[BusDataSize];
 }RS485NodeDef;
+typedef	struct	_Trans			//485通讯消息帧结构体MessageFarme  
+{
+  unsigned short Length;    //待传输数据长度，数据不为0表示有数据
+  struct
+  {
+    unsigned char Time;     //计时器-单位ms
+    unsigned char Retry;    //重试次数
+  }Retry;
+	unsigned char   data[1024+15];
+}TransDef;
 
 
 typedef	struct	_HCSYS
@@ -218,11 +220,11 @@ HCResult HCBoradSet(const unsigned char *buffer,unsigned short length);
 unsigned short GetAck(unsigned char *buffer,unsigned char flag);
 
 HCResult GetSubOnlineAddr(void);
-unsigned short GetDataProcess(unsigned char *buffer);
-HCResult SetDataProcess(const unsigned char *buffer,unsigned short length);
-HCResult SetDataRS485(const unsigned char *buffer,unsigned short length);
-HCResult AddACKRS485(const unsigned char *buffer,unsigned short length);
-HCResult AddDataRS485(const unsigned char *buffer,unsigned short length);
+unsigned short GetDataProcess(unsigned char *buffer,const unsigned char UDflag);
+HCResult SetDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
+
+HCResult AddACKRS485(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
+HCResult AddDataRS485(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
 
 HCResult UMFrameProcess(const unsigned char *buffer);
 HCResult DMFrameProcess(const unsigned char *buffer);

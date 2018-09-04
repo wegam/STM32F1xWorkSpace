@@ -28,7 +28,8 @@ SwitchDef gSwitch;
 unsigned char PowerFlag	=	0;
 extern RS485FrameDef	*RS485Node;
 unsigned short time	=	0;
-unsigned char RS485Buffer[1024]={0};		//下级数据接收缓存
+unsigned char RS485BufferU[1024]={0};		//与上层通讯相关数据缓存
+unsigned char RS485BufferD[1024]={0};		//与下层通讯相关数据缓存
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -49,8 +50,8 @@ void PC004V21HC_Configuration(void)
 	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,800);	//PWM设定-20161127版本
 	
-	RS485Buffer[1]	=	gSwitch.nSWITCHID;
-	HCBoradSet(RS485Buffer,2);
+	RS485BufferD[1]	=	gSwitch.nSWITCHID;
+	HCBoradSet(RS485BufferD,2);
 		
 	IWDG_Configuration(1000);							//独立看门狗配置---参数单位ms
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
@@ -70,33 +71,55 @@ void PC004V21HC_Server(void)
 	
 	IWDG_Feed();								//独立看门狗喂狗
 	
-	length	=	RS485_ReadBufferIDLE(&gRS485Bus,RS485Buffer);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+  //======================================上行总线
+	length	=	RS485_ReadBufferIDLE(&gRS485Bus,RS485BufferU);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(length)
 	{
 		HCResult	res;
-		res	=	SetDataProcess(RS485Buffer,length);
+		res	=	SetDataProcess(RS485BufferU,length,0);
 	}
-	length	=	GetAck(RS485Buffer,0);
+	length	=	GetAck(RS485BufferU,0);
 	if(length)
 	{
-		RS485_DMASend(&gRS485Bus,RS485Buffer,length);	//RS485-DMA发送程序
+		RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
 	}
-	
+  
+  
+  //======================================下行总线
+  length	=	RS485_ReadBufferIDLE(&gRS485lay,RS485BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(length)
+	{
+		HCResult	res;
+		res	=	SetDataProcess(RS485BufferD,length,1);
+	}
+	length	=	GetAck(RS485BufferD,1);
+	if(length)
+	{
+		RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
+	}
+
+  
+	//======================================模拟程序
 	if(time++>50)
 	{
 		time	=	0;
-		length = GetDataProcess(RS485Buffer);
+    length = GetDataProcess(RS485BufferU,0);
 		if(length)
 		{
-			RS485_DMASend(&gRS485lay,RS485Buffer,length);	//RS485-DMA发送程序
+			RS485_DMASend(&gRS485Bus,RS485BufferD,length);	//RS485-DMA发送程序
+		}
+    
+		length = GetDataProcess(RS485BufferD,1);
+		if(length)
+		{
+			RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
 		}
 		else if(0	==	PowerFlag)
 		{
 			PowerFlag	=	1;
 			GetSubOnlineAddr();
 		}
-	}
-  
+	}  
 }
 /*******************************************************************************
 * 函数名			:	Communiction_Configuration
