@@ -55,7 +55,7 @@ u16	DelayTime=0;
 u8 testFlg=0;
 u16	SensorData	=	0;
 u16	SensorDataBac	=	0;
-RS485_TypeDef RS485A,RS485B;
+RS485Def RS485A,RS485B;
 
 /*******************************************************************************
 * 函数名		:	
@@ -102,7 +102,7 @@ void PD011V20_Server(void)
 		SYSTime=0;							//循环计时变量
 		PD011V20_OutServer();		//输出接口
 	}
-	PD011V20_UsartServer();		//串口
+//	PD011V20_UsartServer();		//串口
 	
 	
 }

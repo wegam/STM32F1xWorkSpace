@@ -132,7 +132,7 @@
 //#define LCD_DC1_PARTIAL_ENABLE_BIT	0x0100
 
 /*¹¦ÄÜÎ» */
-#define LCD_DC1_IMAGE_ENABLE_BIT	0x1073
+#define LCD_DC1_IMAGE_ENABLE_BIT		0x1073
 #define LCD_DC1_PARTIAL_ENABLE_BIT	0x0173
 
 #define LCD_REG_ID	( (u16) 0x0000) /*Device ID Read*/

@@ -25,7 +25,10 @@ RS485Def gRS485Bus;			//与上层总线接口(网关板)
 RS485Def gRS485lay;			//与下级总线接口(层板)	
 
 SwitchDef gSwitch;
+unsigned char PowerFlag	=	0;
 extern RS485FrameDef	*RS485Node;
+unsigned short time	=	0;
+unsigned char RS485Buffer[1024]={0};		//下级数据接收缓存
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -45,8 +48,13 @@ void PC004V21HC_Configuration(void)
 	
 	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,800);	//PWM设定-20161127版本
+	
+	RS485Buffer[1]	=	gSwitch.nSWITCHID;
+	HCBoradSet(RS485Buffer,2);
+		
 	IWDG_Configuration(1000);							//独立看门狗配置---参数单位ms
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
+	
 }
 /*******************************************************************************
 * 函数名		:	
@@ -57,13 +65,38 @@ void PC004V21HC_Configuration(void)
 *******************************************************************************/
 void PC004V21HC_Server(void)
 {
-  u8 *buffer;
-  unsigned short length;
-  length = DataProcessGet(buffer);
-  if(length)
-  {
-    Lock_Configuration();							//锁端口配置
-  }
+//  u8 *buffer;
+	unsigned short length;
+	
+	IWDG_Feed();								//独立看门狗喂狗
+	
+	length	=	RS485_ReadBufferIDLE(&gRS485Bus,RS485Buffer);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(length)
+	{
+		HCResult	res;
+		res	=	SetDataProcess(RS485Buffer,length);
+	}
+	length	=	GetAck(RS485Buffer,0);
+	if(length)
+	{
+		RS485_DMASend(&gRS485Bus,RS485Buffer,length);	//RS485-DMA发送程序
+	}
+	
+	if(time++>50)
+	{
+		time	=	0;
+		length = GetDataProcess(RS485Buffer);
+		if(length)
+		{
+			RS485_DMASend(&gRS485lay,RS485Buffer,length);	//RS485-DMA发送程序
+		}
+		else if(0	==	PowerFlag)
+		{
+			PowerFlag	=	1;
+			GetSubOnlineAddr();
+		}
+	}
+  
 }
 /*******************************************************************************
 * 函数名			:	Communiction_Configuration

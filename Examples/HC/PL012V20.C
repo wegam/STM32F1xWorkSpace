@@ -65,7 +65,7 @@ u8	Onlinede=0;		//待发药槽位
 //t_Point point;
 u8 zimo[720]="R61509V_DrawRectangle(11,11,229,389,0X07FF)";
 
-RS485_TypeDef  RS485;
+RS485Def  RS485;
 u8 RS485FLG	=	0;
 u32 RS485Time	=	0;
 u32 RSRLen	=	0;
@@ -78,7 +78,7 @@ char	Char_Buffer[256]={0xFF};		//记录format内码
 //t_LcdCfg **pLcdpara;
 
 
-SWITCHID_CONF	SWITCHID;
+SwitchDef	SWITCHID;
 u8 SwitchID=0;	//拔码开关地址
 
 
@@ -220,7 +220,7 @@ void PD014Test_Server(void)
 	u8 Num	=	0;
 	
 	Pd014AckFarmDef	RecAck;
-	PD014Test_GetAdd();
+//	PD014Test_GetAdd();
 	
 //	RS485_Server();
 //	return;
