@@ -8,18 +8,33 @@
 //#define	Rs232MaxDataSize	64			//RS232最大数据长度
 
 //=============================RS485A总线端口(与上层/单元板通讯接口)
-#define	RS485BusDataSize		64			//RS485总线最大数据长度
-#define	RS485BusBaudRate		19200
-#define	RS485BusSerialPort	USART2
-#define	RS485BusCtlPort			GPIOA
-#define	RS485BusCtlPin			GPIO_Pin_1
-
-//=============================RS485B总线端口(与下层/层板通讯接口)
-#define	RS485layDataSize		64			//RS485总线最大数据长度
-#define	RS485layBaudRate		19200
-#define	RS485laySerialPort	UART4
-#define	RS485layCtlPort			GPIOC
-#define	RS485layCtlPin			GPIO_Pin_12
+#if (TargetLayer	==	CALayer)
+	#define	RS485BusDataSize		64			//RS485总线最大数据长度
+	#define	RS485BusBaudRate		19200
+	#define	RS485BusSerialPort	USART2
+	#define	RS485BusCtlPort			GPIOA
+	#define	RS485BusCtlPin			GPIO_Pin_1
+	//=============================RS485B总线端口(与下层/层板通讯接口)
+	#define	RS485layDataSize		64			//RS485总线最大数据长度
+	#define	RS485layBaudRate		19200
+	#define	RS485laySerialPort	UART4
+	#define	RS485layCtlPort			GPIOC
+	#define	RS485layCtlPin			GPIO_Pin_12
+#endif
+//=============================RS485A总线端口(与上层/单元板通讯接口)
+#if (TargetLayer	==	LALayer)
+	#define	RS485BusDataSize		64			//RS485总线最大数据长度
+	#define	RS485BusBaudRate		19200
+	#define	RS485BusSerialPort	USART2
+	#define	RS485BusCtlPort			GPIOA
+	#define	RS485BusCtlPin			GPIO_Pin_1
+	//=============================RS485B总线端口(与下层/层板通讯接口)
+	#define	RS485layDataSize		64			//RS485总线最大数据长度
+	#define	RS485layBaudRate		19200
+	#define	RS485laySerialPort	UART4
+	#define	RS485layCtlPort			GPIOC
+	#define	RS485layCtlPin			GPIO_Pin_12
+#endif
 
 //=============================RS232A端口
 #define	RS232ADataSize			64			//RS485总线最大数据长度

@@ -74,13 +74,13 @@ HCResult HCBoradSet(const unsigned char *buffer,unsigned short length)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-HCResult SetDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag)
+HCResult DataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag)
 {
 	HCResult	res	=	RES_OK;
-//  RS485FrameDef *Frame  = (RS485FrameDef*)buffer;
+  RS485FrameDef *Frame  = NULL;
   if(NULL ==  buffer)
   {
-    return RES_ERROR;
+    return RES_NODATA;
   }
   if(length<=AckDataLen)      //应答消息，有应答，清除相关缓存，不再重发
   {
@@ -102,9 +102,20 @@ HCResult SetDataProcess(const unsigned char *buffer,const unsigned short length,
 	//===================================RS485数据协议
 	else if(RS485Head1	==	buffer[0])		//0x7E RS485通讯协议头标识符
 	{
-    //-----------------------------------设置应答数据
-    res	=	AddACKRS485(buffer,length,UDflag);
-		res	=	AddDataRS485(buffer,length,UDflag);
+		Frame	=	(RS485FrameDef*)memchr(buffer,RS485Head1,length);		//查找RS485Head1头标识符
+		if(NULL	==	Frame)	//未找到
+		{
+			return	RES_UNKNOW;
+		}
+		switch(Frame->Cmd)
+		{
+			case CMD_LINK:	return RES_LINK;
+				break;
+			default:
+							res	=	WriteDataProcess(buffer,length,UDflag);
+							res	=	AddACKRS485(buffer,length,UDflag);			//将数据存入缓存
+			break;
+		}
 	}
 	//===================================其它跳过协议和地址的命令（透传）
 	return res;
@@ -198,7 +209,7 @@ HCResult AddACKRS485(const unsigned char *buffer,const unsigned short length,con
   RS485FrameDef *Frame  = (RS485FrameDef*)buffer;
   if(NULL ==  buffer)		//空地址
   {
-    return RES_ERROR;
+    return RES_NODATA;
   }
 	//===================================上层发数据需要向上应答（上层下发地址识别：目标地址为本地址）
   if( (0  ==  UDflag)                           //上层下发数据标志
@@ -211,7 +222,7 @@ HCResult AddACKRS485(const unsigned char *buffer,const unsigned short length,con
     RS485ACKU.Cmd				  =	Frame->Cmd;                     //命令号
     RS485ACKU.UserCode	  =	Frame->UserCode;                //用户码
     RS485ACKU.Length		  =	0;                              //数据长度
-    RS485ACKU.Bcc8	      =	BCC8(&RS485ACKU.TargetAdd,6);		//校验码
+    RS485ACKU.Bcc8	      =	BCC8(&(RS485ACKU.TargetAdd),6);		//校验码
     RS485ACKU.EndCode		  =	RS485end1;
   }
   //===================================下层上传数据需要应答（下层上传数据识别：目标地址为0）
@@ -219,13 +230,13 @@ HCResult AddACKRS485(const unsigned char *buffer,const unsigned short length,con
          &&(0x00	==	Frame->TargetAdd))	                  //目标地址为0
   {
     RS485ACKD.HeadCode	  =	RS485Head1;                     //头标识符
-    RS485ACKD.TargetAdd	  =	0x00;                           //目标地址
-    RS485ACKD.SourceAdd 	=	HCSYS.SwitchAddr;               //源地址
+    RS485ACKD.TargetAdd	  =	Frame->SourceAdd;             	//目标地址
+    RS485ACKD.SourceAdd 	=	0x00;               						//源地址
     RS485ACKD.Serial		  =	Frame->Serial;                  //流水号
     RS485ACKD.Cmd				  =	Frame->Cmd;                     //命令号
     RS485ACKD.UserCode	  =	Frame->UserCode;                //用户码
     RS485ACKD.Length		  =	0;                              //数据长度
-    RS485ACKD.Bcc8	      =	BCC8(&RS485ACKU.TargetAdd,6);		//校验码
+    RS485ACKD.Bcc8	      =	BCC8(&(RS485ACKD.TargetAdd),6);		//校验码
     RS485ACKD.EndCode		  =	RS485end1;
   }
 	return res;
@@ -239,58 +250,48 @@ HCResult AddACKRS485(const unsigned char *buffer,const unsigned short length,con
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-HCResult AddDataRS485(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag)
+HCResult WriteDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag)
 {
 	HCResult	res	=	RES_OK;
-  RS485FrameDef *Frame  = (RS485FrameDef*)buffer;
-  unsigned char *Address  = (unsigned char*)&(Frame->Addr.CabinetAddr);
+  RS485FrameDef *Frame  = NULL;
+  unsigned char *Address  = NULL;	//地址域起始地址
+	unsigned char TargetAdd	=	0;		//目标地址
+	unsigned char NextAddr	=	0;		//下一级目标地址
   if(NULL ==  buffer)		//空地址
   {
-    return RES_ERROR;
+    return RES_NODATA;
   }
-  if(length<=AckDataLen) //应答消息
-  {
-    
-  }
+	Frame	=	(RS485FrameDef*)memchr(buffer,RS485Head1,length);		//查找RS485Head1头标识符
+	Address  = (unsigned char*)&(Frame->Addr.CabinetAddr);			//找到地址起始指针
+	TargetAdd	=	Frame->TargetAdd;																//目标地址
+	NextAddr	=	Address[HCSYS.Layer];														//下一级目标地址
+	
 	//===================================上层下发数据：目标地址与本地址相符，UDflag==0
-  if((0==UDflag)&&(Frame->TargetAdd==HCSYS.SwitchAddr))		//上层下发数据              
+  if((0==UDflag)&&(TargetAdd==HCSYS.SwitchAddr))		//上层下发数据              
   {    
     //-----------------------------------单元板级:转发目标地址为层地址，按层地址将数据包存入相应缓冲数组
     if(	SALayer	>	HCSYS.Layer)	        //非最低层板，如果缓存为空，将数据存入缓存数组待转发，如果非空，报忙或者等待状态
     {
-      //-----------------------------------将要转发给下级的目标地址
-      Frame->TargetAdd	=	Address[HCSYS.Layer]-1;		  //目标地址  
-      if(0x00	==	RS485Node[Frame->TargetAdd].Length)				//数组缓存中下级目标地址为0表示缓存空
+      //-----------------------------------将要转发给下级的目标地址	
+      if(0x00	==	RS485Node[NextAddr].Length)				//数组缓存中下级目标地址为0表示缓存空
       {	
-        RS485Node[Frame->TargetAdd].data[0]   = RS485Head1;                   //头标识
-        RS485Node[Frame->TargetAdd].data[1]   = Address[HCSYS.Layer];         //目标地址
-        RS485Node[Frame->TargetAdd].data[2]   = 0x00;                         //源地址
-        RS485Node[Frame->TargetAdd].data[3]   = Frame->Serial;                //流水号
-        RS485Node[Frame->TargetAdd].data[4]   = Frame->Cmd;                   //命令号
-        RS485Node[Frame->TargetAdd].data[5]   = Frame->UserCode;              //用户码
-        RS485Node[Frame->TargetAdd].data[6]   = Frame->Length;                //地址+状态码+数据长度
-        RS485Node[Frame->TargetAdd].data[7]   = Frame->Addr.CabinetAddr;      //柜地址(单元柜号)  下行时为柜地址，上行时，柜地址为0x00）
-        RS485Node[Frame->TargetAdd].data[8]   = Frame->Addr.LayerAddr;        //层地址
-        RS485Node[Frame->TargetAdd].data[9]   = Frame->Addr.SlotAddr;         //槽地址(终端地址)
-        RS485Node[Frame->TargetAdd].data[10]  = Frame->StsCode;               //状态码
+        RS485Node[NextAddr].data[0]   = RS485Head1;                   //头标识
+        RS485Node[NextAddr].data[1]   = Address[HCSYS.Layer];         //目标地址
+        RS485Node[NextAddr].data[2]   = 0x00;                         //源地址
+        RS485Node[NextAddr].data[3]   = Frame->Serial;                //流水号
+        RS485Node[NextAddr].data[4]   = Frame->Cmd;                   //命令号
+        RS485Node[NextAddr].data[5]   = Frame->UserCode;              //用户码
+        RS485Node[NextAddr].data[6]   = Frame->Length;                //地址+状态码+数据长度
+        RS485Node[NextAddr].data[7]   = Frame->Addr.CabinetAddr;      //柜地址(单元柜号)  下行时为柜地址，上行时，柜地址为0x00）
+        RS485Node[NextAddr].data[8]   = Frame->Addr.LayerAddr;        //层地址
+        RS485Node[NextAddr].data[9]   = Frame->Addr.SlotAddr;         //槽地址(终端地址)
+        RS485Node[NextAddr].data[10]  = Frame->StsCode;               //状态码
         //---------------------------------拷贝数据
-        memcpy(&RS485Node[Frame->TargetAdd].data[11],Frame->data,Frame->Length-4);  //复制数据
-        RS485Node[Frame->TargetAdd].data[Frame->Length-4+7] = BCC8(&RS485Node[Frame->TargetAdd].data[1],(Frame->Length+6));   //校验码
-        RS485Node[Frame->TargetAdd].data[Frame->Length-4+8] = RS485end1;      //结束符
+        memcpy(&(RS485Node[Frame->TargetAdd].data[11]),&buffer[11],Frame->Length-4);  //复制数据
+        RS485Node[NextAddr].data[10+Frame->Length-4+1] = BCC8(&(RS485Node[NextAddr].data[1]),(Frame->Length+6));   //校验码
+        RS485Node[NextAddr].data[Frame->Length-4+12] = RS485end1;      //结束符
 
-        RS485Node[Frame->TargetAdd].Length  =	Frame->Length-4+9;
-      }
-      else				//数组缓存有数据未处理完---报忙或者等待状态
-      {					
-//					Frame->SourceAdd	=	Frame->TargetAdd;	//b2源地址 下发为0x00，上传为本地址
-//					Frame->TargetAdd	=	0x00;		//b1目标地址（暂时理解为单元柜地址）下发为接收地址，上传为0x00
-//					Frame->Cmd				=	(CmdDef)((unsigned char)Frame->Cmd|0x80);
-//					Frame->StsCode		=	eBoxBusy;
-//					Frame->Length			=	BascDataLen;				//基础数据长度（地址+状态）
-//					Frame->data[(Frame->Length)-BascDataLen]		=	BCC8(&(Frame->TargetAdd),HeadDataLen+Frame->Length-3);		//校验码
-//					Frame->data[(Frame->Length)-BascDataLen+1]	=	RS485end1;					//结束符
-//					memcpy(&TransU.data,Frame,HeadDataLen+Frame->Length);						//数据复制到发送缓冲区
-//          TransU.Length = HeadDataLen+Frame->Length;
+        RS485Node[NextAddr].Length  =	Frame->Length-4+13;
       }
     }
     //-----------------------------------驱动层
@@ -308,24 +309,26 @@ HCResult AddDataRS485(const unsigned char *buffer,const unsigned short length,co
   {
     if(0x00	==	RS485Node[Frame->TargetAdd].Length)				//数组缓存中下级目标地址为0表示缓存空
     {	
-      RS485Node[Frame->TargetAdd].data[0]   = RS485Head1;                   //头标识
-      RS485Node[Frame->TargetAdd].data[1]   = 0x00;                         //目标地址--
-      RS485Node[Frame->TargetAdd].data[2]   = HCSYS.SwitchAddr;             //源地址
-      RS485Node[Frame->TargetAdd].data[3]   = Frame->Serial;                //流水号
-      RS485Node[Frame->TargetAdd].data[4]   = Frame->Cmd;                   //命令号
-      RS485Node[Frame->TargetAdd].data[5]   = Frame->UserCode;              //用户码
-      RS485Node[Frame->TargetAdd].data[6]   = Frame->Length;                //地址+状态码+数据长度
-      RS485Node[Frame->TargetAdd].data[7]   = Frame->Addr.CabinetAddr;      //柜地址(单元柜号)  下行时为柜地址，上行时，柜地址为0x00）
-      RS485Node[Frame->TargetAdd].data[8]   = Frame->Addr.LayerAddr;        //层地址
-      RS485Node[Frame->TargetAdd].data[9]   = Frame->Addr.SlotAddr;         //槽地址(终端地址)
-      RS485Node[Frame->TargetAdd].data[10]  = Frame->StsCode;               //状态码
-      RS485Node[Frame->TargetAdd].data[HCSYS.Layer+6] = HCSYS.SwitchAddr;   //加入本层地址码
+      RS485Node[Frame->SourceAdd].data[0]   = RS485Head1;                   //头标识
+      RS485Node[Frame->SourceAdd].data[1]   = 0x00;                         //目标地址--
+      RS485Node[Frame->SourceAdd].data[2]   = HCSYS.SwitchAddr;             //源地址
+      RS485Node[Frame->SourceAdd].data[3]   = Frame->Serial;                //流水号
+      RS485Node[Frame->SourceAdd].data[4]   = Frame->Cmd;                   //命令号
+      RS485Node[Frame->SourceAdd].data[5]   = Frame->UserCode;              //用户码
+      RS485Node[Frame->SourceAdd].data[6]   = Frame->Length;                //地址+状态码+数据长度
+      RS485Node[Frame->SourceAdd].data[7]   = Frame->Addr.CabinetAddr;      //柜地址(单元柜号)  下行时为柜地址，上行时，柜地址为0x00）
+      RS485Node[Frame->SourceAdd].data[8]   = Frame->Addr.LayerAddr;        //层地址
+      RS485Node[Frame->SourceAdd].data[9]   = Frame->Addr.SlotAddr;         //槽地址(终端地址)
+      RS485Node[Frame->SourceAdd].data[10]  = Frame->StsCode;               //状态码
+			//---------------------------------加入本层地址数据
+      RS485Node[Frame->SourceAdd].data[HCSYS.Layer+6] = HCSYS.SwitchAddr;   //加入源层地址码
+			RS485Node[Frame->SourceAdd].data[HCSYS.Layer+7] = Frame->SourceAdd;  	//加入本层地址码
       //---------------------------------拷贝数据
-      memcpy(&RS485Node[Frame->TargetAdd].data[11],Frame->data,Frame->Length-4);  //复制数据
-      RS485Node[Frame->TargetAdd].data[Frame->Length-4+7] = BCC8(&RS485Node[Frame->TargetAdd].data[1],(Frame->Length+6));   //校验码
-      RS485Node[Frame->TargetAdd].data[Frame->Length-4+8] = RS485end1;      //结束符
+      memcpy(&(RS485Node[Frame->SourceAdd].data[11]),&buffer[11],Frame->Length-4);  //复制数据
+			RS485Node[Frame->SourceAdd].data[Frame->Length-4+11] = BCC8(&(RS485Node[Frame->SourceAdd].data[1]),(Frame->Length+6));   //校验码
+			RS485Node[Frame->SourceAdd].data[Frame->Length-4+12] = RS485end1;      //结束符
 
-      RS485Node[Frame->TargetAdd].Length  =	Frame->Length-4+9;
+			RS485Node[Frame->SourceAdd].Length  =	Frame->Length-4+13;
     }
     else
     {
@@ -355,6 +358,10 @@ unsigned short GetDataProcess(unsigned char *buffer,const unsigned char UDflag)
     if(Length)                  //发送缓冲有数据
     {
       memcpy(buffer,TransU.data,Length);
+			if(TransU.Retry.Retry++>=ReSendCount)
+			{
+				TransU.Length	=	0;
+			}
       return Length;
     }
     else                        //发送缓冲区无数据，检查数据队列中有没待发送数据
@@ -386,6 +393,47 @@ unsigned short GetDataProcess(unsigned char *buffer,const unsigned char UDflag)
     if(Length)                  //发送缓冲有数据
     {
       memcpy(buffer,TransD.data,Length);
+			if(TransD.Retry.Retry++>ReSendCount)		//下发示响应
+			{				
+				unsigned char TargetAdd	=	TransD.data[1];
+				memcpy(&RS485Node[TargetAdd].data[0],&TransD.data[0],15);
+//				RS485Node[TargetAdd].data[0]   	= RS485Head1;       	//头标识
+				RS485Node[TargetAdd].data[1]   	= 0x00;             	//目标地址--
+				RS485Node[TargetAdd].data[2]   	= HCSYS.SwitchAddr; 	//源地址
+//				RS485Node[TargetAdd].data[3]   	= TransD.data[3]+1; 		//流水号
+				RS485Node[TargetAdd].data[4]   	= TransD.data[4]|0x80; 		//命令号
+//				RS485Node[TargetAdd].data[4]   	= 0x84; 		//命令号
+//				RS485Node[TargetAdd].data[5]   	= TransD.data[5]; 		//用户码
+//				RS485Node[TargetAdd].data[6]   	= TransD.data[6]; 		//地址+状态码+数据长度
+				RS485Node[TargetAdd].data[6]   	= 6; 										//地址+状态码+数据长度
+//				RS485Node[TargetAdd].data[7]   	= TransD.data[7]; 		//柜地址(单元柜号)  下行时为柜地址，上行时，柜地址为0x00）
+//				RS485Node[TargetAdd].data[8]   	= TransD.data[8]; 		//层地址
+//				RS485Node[TargetAdd].data[9]   	= TransD.data[9]; 		//槽地址(终端地址)
+//				RS485Node[TargetAdd].data[10]  	= TransD.data[10]; 		//状态码
+				RS485Node[TargetAdd].data[10]		=	Err_FAULT_ILLAGALPARA;					//错误码
+//				RS485Node[TargetAdd].data[11]		=	0x00;
+//				RS485Node[TargetAdd].data[12]		=	0x00;
+//				RS485Node[TargetAdd].data[6]		=	6;
+//				RS485Node[TargetAdd].data[5]   	= 0x0D; 		//用户码
+				
+				/*	连接超时：超时时，返回超时单元地址
+				switch(HCSYS.Layer)
+				{
+					case CALayer:	//单元板
+												RS485Node[TargetAdd].data[9]   	= 0x00; 		//槽地址(终端地址)
+						break;
+					case MBLayer:	//层板
+												RS485Node[TargetAdd].data[8]   	= TransD.data[8]; 		//层地址
+												RS485Node[TargetAdd].data[9]   	= 0x00; 		//槽地址(终端地址)
+						break;			
+					default:break;
+				}
+				*/
+				RS485Node[TargetAdd].data[13]		=	BCC8(&(RS485Node[TargetAdd].data[1]),12);
+				RS485Node[TargetAdd].data[14]		=	RS485end1;				
+				RS485Node[TargetAdd].Length			=	15;
+				TransD.Length	=	0;
+			}
       return Length;
     }
     else                        //发送缓冲区无数据，检查数据队列中有没待发送数据
@@ -396,7 +444,7 @@ unsigned short GetDataProcess(unsigned char *buffer,const unsigned char UDflag)
         {
           if(0x00 !=  RS485Node[i].data[1])   //目标地址不为0表示为下发数据
           {
-            memcpy(TransU.data,RS485Node[i].data,RS485Node[i].Length);
+            memcpy(TransD.data,RS485Node[i].data,RS485Node[i].Length);
             memcpy(buffer,RS485Node[i].data,RS485Node[i].Length);
             
             TransD.Length = RS485Node[i].Length;

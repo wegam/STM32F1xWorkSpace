@@ -3,8 +3,8 @@
 
 
 
-#define	MaxNetPerLayer	64				//每个结点所连接的最大支点数为64
-#define	TargetLayer			CALayer		//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
+#define	MaxNetPerLayer	8				//每个结点所连接的最大支点数为64
+#define	TargetLayer			LALayer		//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	MBLayer					0					//网关板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	CALayer					1					//单元板在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	LALayer					2					//层板在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
@@ -17,11 +17,16 @@
 #define	RS485Head1			0x7E				//RS485头标识符
 #define	RS485end1				0x7F				//RS485尾标识符
 
+#define	ReSendCount			3					//重发次数
+
 #define	BusDataSize		80					//一条消息携带的最大数据个数
-//#define	BascDataLen		64					//单元地址+层地址+槽地址+状态码
+//#define	BascDataLen		64				//单元地址+层地址+槽地址+状态码
 #define	BascDataLen		4						//单元地址+层地址+槽地址+状态码
 #define	HeadDataLen		9						//单元地址+层地址+槽地址+状态码
 #define	AckDataLen		9				    //应答消息长度
+
+#define	CMDRead(n)		(n&0x80)		//最高位为1
+#define	CMDWrite(n)		(!(n&0x80))	//最高位为0
 
 typedef enum
 {
@@ -35,7 +40,8 @@ typedef enum
 	Err_FAULT_ILLIGALWEIGHT	=	0x07,	//称重数值非法
 	Err_FAULT_WEIGHTOVF			=	0x08,	//称重数据溢出
 	Err_Fault_Nocail				=	0x09,	//称重未标定
-	Err_CC_Error						=	0x0A	//校验错误
+	Err_CC_Error						=	0x0A,	//校验错误
+	Err_TimeOut							=	0x0B	//连接超时
 }ErrDef;			//错误码
 typedef enum		//状态码
 {
@@ -64,7 +70,8 @@ typedef enum
 	CMD_SET_DATA				=	0x71,	//设置数据/参数
 	CMD_GET_DATA				=	0x72,	//获取数据/参数
 	CMD_GET_CTL					=	0x73,	//控制命令
-	CMD_GET_ADDR				=	0x74	//控制命令
+	CMD_GET_ADDR				=	0x74,	//控制命令
+	CMD_LINK						=	0x0E	//透传传---如升级时使用
 }CmdDef;			//命令码
 typedef enum
 {
@@ -84,11 +91,14 @@ typedef enum
 typedef enum
 {
 	RES_OK = 0,			/* 0: Successful */
-	RES_ERROR,			/* 1: R/W Error */
-	RES_WRPRT,			/* 2: Write Protected */
+	RES_READ,				/* 1: 读数据 */
+	RES_WRITE,			/* 2: 写数据 */
 	RES_NOTRDY,			/* 3: Not Ready */
 	RES_PARERR,			/* 4: Invalid Parameter */
-	RES_ACKMaster		/* 5: 应答主机 */
+	RES_ACKMaster,	/* 5: 应答主机 */
+	RES_UNKNOW,			/* 6: 未识别 */
+	RES_NODATA,			/* 7: 无数据 */
+	RES_LINK				// 8: 透传 例如升级使用，直接转发
 }HCResult;
 typedef enum
 {
@@ -221,10 +231,10 @@ unsigned short GetAck(unsigned char *buffer,unsigned char flag);
 
 HCResult GetSubOnlineAddr(void);
 unsigned short GetDataProcess(unsigned char *buffer,const unsigned char UDflag);
-HCResult SetDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
+HCResult DataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
 
 HCResult AddACKRS485(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
-HCResult AddDataRS485(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
+HCResult WriteDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
 
 HCResult UMFrameProcess(const unsigned char *buffer);
 HCResult DMFrameProcess(const unsigned char *buffer);

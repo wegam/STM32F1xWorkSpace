@@ -53,7 +53,7 @@ void PC004V21HC_Configuration(void)
 	RS485BufferD[1]	=	gSwitch.nSWITCHID;
 	HCBoradSet(RS485BufferD,2);
 		
-	IWDG_Configuration(1000);							//独立看门狗配置---参数单位ms
+//	IWDG_Configuration(2000);							//独立看门狗配置---参数单位ms
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
 	
 }
@@ -76,11 +76,13 @@ void PC004V21HC_Server(void)
 	if(length)
 	{
 		HCResult	res;
-		res	=	SetDataProcess(RS485BufferU,length,0);
+		time	=	0;
+		res	=	DataProcess(RS485BufferU,length,0);
 	}
 	length	=	GetAck(RS485BufferU,0);
 	if(length)
 	{
+		time	=	0;
 		RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
 	}
   
@@ -90,11 +92,13 @@ void PC004V21HC_Server(void)
 	if(length)
 	{
 		HCResult	res;
-		res	=	SetDataProcess(RS485BufferD,length,1);
+		time	=	0;
+		res	=	DataProcess(RS485BufferD,length,1);
 	}
 	length	=	GetAck(RS485BufferD,1);
 	if(length)
 	{
+		time	=	0;
 		RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
 	}
 
@@ -106,7 +110,7 @@ void PC004V21HC_Server(void)
     length = GetDataProcess(RS485BufferU,0);
 		if(length)
 		{
-			RS485_DMASend(&gRS485Bus,RS485BufferD,length);	//RS485-DMA发送程序
+			RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
 		}
     
 		length = GetDataProcess(RS485BufferD,1);
@@ -114,10 +118,10 @@ void PC004V21HC_Server(void)
 		{
 			RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
 		}
-		else if(0	==	PowerFlag)
+		else if(PowerFlag++>	30)
 		{
-			PowerFlag	=	1;
-			GetSubOnlineAddr();
+			PowerFlag	=	0;
+//			GetSubOnlineAddr();
 		}
 	}  
 }
@@ -132,6 +136,7 @@ void PC004V21HC_Server(void)
 *******************************************************************************/
 void Communiction_Configuration(void)
 {
+
 	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
 	gRS485Bus.USARTx						=	RS485BusSerialPort;
 	gRS485Bus.RS485_CTL_PORT		=	RS485BusCtlPort;
@@ -143,7 +148,7 @@ void Communiction_Configuration(void)
 	gRS485lay.RS485_CTL_PORT		=	RS485layCtlPort;
 	gRS485lay.RS485_CTL_Pin			=	RS485layCtlPin;
 	RS485_DMA_ConfigurationNR(&gRS485lay,RS485layBaudRate,RS485layDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	
+#if (TargetLayer	==	CALayer)	
 	//=============================RS232A端口(USART1)
 	USART_DMA_ConfigurationNR	(RS232ASerialPort,RS232ABaudRate,RS232ADataSize);	//USART_DMA配置--查询方式，不开中断
 	
@@ -153,6 +158,9 @@ void Communiction_Configuration(void)
 	//=============================CAN
 	CAN_Configuration_NR(CANBaudRate);													//CAN1配置---标志位查询方式，不开中断
 	CAN_FilterInitConfiguration_StdData(0X01,0X000,0X000);			//CAN滤波器配置---标准数据帧模式---不过滤
+#endif
+
+
 }
 /*******************************************************************************
 * 函数名			:	Communiction_Configuration

@@ -63,32 +63,32 @@
 #define	uRxSize		512				//默认串口DMA接收缓冲大小,如果配置时未输入缓存大小时使用的默认值
 #define	uTxSize		uRxSize		//默认串口DMA发送缓冲大小
 #define	uBaudRate	115200	//默认串口波特率
-//unsigned char uRx1Addr[uRxSize]	=	{0};					//串口1接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
-//unsigned char uRx2Addr[uRxSize]	=	{0};					//串口2接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
-//unsigned char uRx3Addr[uRxSize]	=	{0};					//串口3接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
-//unsigned char uRx4Addr[uRxSize]	=	{0};					//串口4接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+unsigned char uRx1Addr[uRxSize]	=	{0};					//串口1接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+unsigned char uRx2Addr[uRxSize]	=	{0};					//串口2接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+unsigned char uRx3Addr[uRxSize]	=	{0};					//串口3接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+unsigned char uRx4Addr[uRxSize]	=	{0};					//串口4接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
 
-//unsigned char uTx1Addr[uTxSize]	=	{0};					//串口1发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
-//unsigned char uTx2Addr[uTxSize]	=	{0};					//串口2发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
-//unsigned char uTx3Addr[uTxSize]	=	{0};					//串口3发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
-//unsigned char uTx4Addr[uTxSize]	=	{0};					//串口4发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+unsigned char uTx1Addr[uTxSize]	=	{0};					//串口1发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+unsigned char uTx2Addr[uTxSize]	=	{0};					//串口2发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+unsigned char uTx3Addr[uTxSize]	=	{0};					//串口3发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+unsigned char uTx4Addr[uTxSize]	=	{0};					//串口4发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
 
-unsigned char *uRx1Addr;					//串口1接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
-unsigned char *uRx2Addr;					//串口2接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
-unsigned char *uRx3Addr;					//串口3接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
-unsigned char *uRx4Addr;					//串口4接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+//unsigned char *uRx1Addr;					//串口1接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+//unsigned char *uRx2Addr;					//串口2接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+//unsigned char *uRx3Addr;					//串口3接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
+//unsigned char *uRx4Addr;					//串口4接收缓冲区地址::发送缓冲区地址在发送数据时设定，串口配置时借用接收缓冲区地址
 
-unsigned char *uTx1Addr;					//串口1发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
-unsigned char *uTx2Addr;					//串口2发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
-unsigned char *uTx3Addr;					//串口3发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
-unsigned char *uTx4Addr;					//串口4发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+//unsigned char *uTx1Addr;					//串口1发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+//unsigned char *uTx2Addr;					//串口2发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+//unsigned char *uTx3Addr;					//串口3发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
+//unsigned char *uTx4Addr;					//串口4发送缓冲区地址::将待发送数据拷贝到此缓冲进行发送
 
 
-static LINK_NODE *uRxLink1  = NULL;   //USART1接收链表
-static LINK_NODE *uRxLink2  = NULL;   //USART2接收链表
-static LINK_NODE *uRxLink3  = NULL;   //USART3接收链表
-static LINK_NODE *uRxLink4  = NULL;   //UART4接收链表
-//static LINK_NODE *uRxLink5  = NULL;   //UART5接收链表
+//static LINK_NODE *uRxLink1  = NULL;   //USART1接收链表
+//static LINK_NODE *uRxLink2  = NULL;   //USART2接收链表
+//static LINK_NODE *uRxLink3  = NULL;   //USART3接收链表
+//static LINK_NODE *uRxLink4  = NULL;   //UART4接收链表
+////static LINK_NODE *uRxLink5  = NULL;   //UART5接收链表
 
 static LINK_NODE *uTxLink1  = NULL;   //USART1发送链表
 static LINK_NODE *uTxLink2  = NULL;   //USART2发送链表
@@ -183,8 +183,8 @@ void	USART_DMA_ConfigurationNR(
 						SetDmaSize.nUSART1=uRxSize;
 					else
 						SetDmaSize.nUSART1=BufferSize;					
-          free(uRx1Addr);
-          uRx1Addr  = (unsigned char*)malloc(SetDmaSize.nUSART1);
+//          free(uRx1Addr);
+//          uRx1Addr  = (unsigned char*)malloc(SetDmaSize.nUSART1);
 					RXDBuffer	=	uRx1Addr;
 					GPIO_TX=GPIOA;
 					GPIO_RX=GPIOA;
@@ -198,8 +198,8 @@ void	USART_DMA_ConfigurationNR(
 						SetDmaSize.nUSART2=uRxSize;
 					else
 						SetDmaSize.nUSART2=BufferSize;
-          free(uRx2Addr);
-          uRx2Addr  = (unsigned char*)malloc(SetDmaSize.nUSART2);
+//          free(uRx2Addr);
+//          uRx2Addr  = (unsigned char*)malloc(SetDmaSize.nUSART2);
 					RXDBuffer	=	uRx2Addr;
 					GPIO_TX=GPIOA;
 					GPIO_RX=GPIOA;
@@ -213,8 +213,8 @@ void	USART_DMA_ConfigurationNR(
 						SetDmaSize.nUSART3=uRxSize;
 					else
 						SetDmaSize.nUSART3=BufferSize;
-          free(uRx3Addr);
-          uRx3Addr  = (unsigned char*)malloc(SetDmaSize.nUSART3);
+//          free(uRx3Addr);
+//          uRx3Addr  = (unsigned char*)malloc(SetDmaSize.nUSART3);
 					RXDBuffer	=	uRx3Addr;
 					GPIO_TX=GPIOB;
 					GPIO_RX=GPIOB;
@@ -232,8 +232,8 @@ void	USART_DMA_ConfigurationNR(
 						SetDmaSize.nUART4=uRxSize;
 					else
 						SetDmaSize.nUART4=BufferSize;
-          free(uRx4Addr);
-          uRx4Addr  = (unsigned char*)malloc(SetDmaSize.nUART4);
+//          free(uRx4Addr);
+//          uRx4Addr  = (unsigned char*)malloc(SetDmaSize.nUART4);
 					RXDBuffer	=	uRx4Addr;
 					GPIO_TX=GPIOC;
 					GPIO_RX=GPIOC;
@@ -1848,9 +1848,9 @@ u16 USART_DMASend(
 						||((DMA1_Channel4->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-            if(NULL !=  uTx1Addr)
-              free(uTx1Addr);
-            uTx1Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+//            if(NULL !=  uTx1Addr)
+//              free(uTx1Addr);
+//            uTx1Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
             if(NULL ==  uTx1Addr)   //内存申请失败
             {
               return 0;
@@ -1879,9 +1879,9 @@ u16 USART_DMASend(
 						||((DMA1_Channel7->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-            if(NULL !=  uTx2Addr)
-              free(uTx2Addr);
-            uTx2Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+//            if(NULL !=  uTx2Addr)
+//              free(uTx2Addr);
+//            uTx2Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
             if(NULL ==  uTx2Addr)   //内存申请失败
             {
               return 0;
@@ -1906,9 +1906,9 @@ u16 USART_DMASend(
 						||((DMA1_Channel2->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-            if(NULL !=  uTx3Addr)
-              free(uTx3Addr);
-            uTx3Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+//            if(NULL !=  uTx3Addr)
+//              free(uTx3Addr);
+//            uTx3Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
             if(NULL ==  uTx3Addr)   //内存申请失败
             {
               return 0;
@@ -1933,9 +1933,9 @@ u16 USART_DMASend(
 						||((DMA2_Channel5->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-            if(NULL !=  uTx4Addr)
-              free(uTx4Addr);
-            uTx4Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+//            if(NULL !=  uTx4Addr)
+//              free(uTx4Addr);
+//            uTx4Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
             if(NULL ==  uTx4Addr)   //内存申请失败
             {
               return 0;
@@ -1985,9 +1985,9 @@ u16 USART_DMASendList(
 					{            
             if(NULL ==  uTxLink1)
             {
-              if(NULL !=  uTx1Addr)
-                free(uTx1Addr);
-              uTx1Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+//              if(NULL !=  uTx1Addr)
+//                free(uTx1Addr);
+//              uTx1Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
               if(NULL ==  uTx1Addr)   //内存申请失败
               {
                 return 0;
@@ -2038,9 +2038,9 @@ u16 USART_DMASendList(
 					{            
             if(NULL ==  uTxLink2)
             {
-              if(NULL !=  uTx2Addr)
-                free(uTx2Addr);
-              uTx2Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+//              if(NULL !=  uTx2Addr)
+//                free(uTx2Addr);
+//              uTx2Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
               if(NULL ==  uTx2Addr)   //内存申请失败
               {
                 return 0;
@@ -2091,9 +2091,9 @@ u16 USART_DMASendList(
 					{
             if(NULL ==  uTxLink3)
             {
-              if(NULL !=  uTx3Addr)
-                free(uTx3Addr);
-              uTx3Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+//              if(NULL !=  uTx3Addr)
+//                free(uTx3Addr);
+//              uTx3Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
               if(NULL ==  uTx3Addr)   //内存申请失败
               {
                 return 0;
@@ -2144,9 +2144,9 @@ u16 USART_DMASendList(
 					{
             if(NULL ==  uTxLink4)
             {
-              if(NULL !=  uTx4Addr)
-                free(uTx4Addr);
-              uTx4Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+//              if(NULL !=  uTx4Addr)
+//                free(uTx4Addr);
+//              uTx4Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
               if(NULL ==  uTx4Addr)   //内存申请失败
               {
                 return 0;
