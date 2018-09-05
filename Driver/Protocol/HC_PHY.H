@@ -98,7 +98,8 @@ typedef enum
 	RES_ACKMaster,	/* 5: 应答主机 */
 	RES_UNKNOW,			/* 6: 未识别 */
 	RES_NODATA,			/* 7: 无数据 */
-	RES_LINK				// 8: 透传 例如升级使用，直接转发
+  RES_FARMERR,	  // 8: 帧格式错误
+	RES_LINK				// 9: 透传 例如升级使用，直接转发
 }HCResult;
 typedef enum
 {
@@ -169,17 +170,17 @@ typedef	struct	_RS232Frame
 typedef	struct	_RS485Frame			//485通讯消息帧结构体MessageFarme  
 {
 	unsigned char		RS485Head;	//b0识别符	0x7E
-	unsigned char		TargetAdd;	//b1目标地址（暂时理解为单元柜地址）下发为接收地址，上传为0x00
-	unsigned char		SourceAdd;	//b2源地址 下发为0x00，上传为本地址
-	unsigned char		Serial;			//b3流水号 0x01~0x7D 每次使用后加1(为了不与起始符和结束符冲突，流水号最大值为0x7D)
-	CmdDef					Cmd;				//b4命令号：0x12-获取指定IC卡号，0x13取药,上报命令也在此位
-	unsigned char		UserCode;		//b5用户码：不处理，原样返回
-	unsigned char		Length;			//b6地址+异常码固定长度为4，卡数据长度为3
-	RS485AddrDef		Addr;				//通讯地址结构体	
-	RS485StsDef			StsCode;		//状态码/错误码	
-	unsigned char		*data;	
-	unsigned char		Bcc8;				//异或校验	//计算范围为起始段到数据段(TargetAdd-data[n])到错误码
+  unsigned char		Length;			//b1此条消息长度（从RS485Head到End的长度，不包含Bcc8校验位)
+	unsigned char		TargetAdd;	//b2目标地址（暂时理解为单元柜地址）下发为接收地址，上传为0x00
+	unsigned char		SourceAdd;	//b3源地址 下发为0x00，上传为本地址
+	unsigned char		Serial;			//b4流水号 0x01~0x7D 每次使用后加1(为了不与起始符和结束符冲突，流水号最大值为0x7D)
+	CmdDef					Cmd;				//b5命令号：0x12-获取指定IC卡号，0x13取药,上报命令也在此位
+	unsigned char		UserCode;		//b6用户码：不处理，原样返回
+  RS485StsDef			StsCode;		//b7状态码/错误码
+	RS485AddrDef		Addr;				//通讯地址结构体		
+	unsigned char		*data;	    //数据	
 	unsigned char		End;				//结束符 0x7F
+  unsigned char		Bcc8;				//异或校验	//计算范围为起始段到数据段(TargetAdd-data[n])到错误码
 }RS485FrameDef;
 typedef	struct	_RS485Ack			//485通讯消息帧结构体MessageFarme  
 {
@@ -232,6 +233,12 @@ unsigned short GetAck(unsigned char *buffer,unsigned char flag);
 HCResult GetSubOnlineAddr(void);
 unsigned short GetDataProcess(unsigned char *buffer,const unsigned char UDflag);
 HCResult DataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
+HCResult DataCheck(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
+
+HCResult MBLayerDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
+HCResult CALayerDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
+HCResult LALayerDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
+HCResult SALayerDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
 
 HCResult AddACKRS485(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
 HCResult WriteDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag);
