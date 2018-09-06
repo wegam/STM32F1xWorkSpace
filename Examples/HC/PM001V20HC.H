@@ -1,55 +1,172 @@
 #ifndef __PM001V20HC_H
 #define __PM001V20HC_H
 
+#include "stm32f10x_type.h"
+#include "HC_PHY.H"
+
+//#define	RS485MaxDataSize	64			//RS485总线最大数据长度
+//#define	Rs232MaxDataSize	64			//RS232最大数据长度
+
+//=============================RS485A总线端口(与上层/单元板通讯接口)
+#if (TargetLayer	==	CALayer)
+	#define	RS485BusDataSize		64			//RS485总线最大数据长度
+	#define	RS485BusBaudRate		19200
+	#define	RS485BusSerialPort	USART2
+	#define	RS485BusCtlPort			GPIOA
+	#define	RS485BusCtlPin			GPIO_Pin_1
+	//=============================RS485B总线端口(与下层/层板通讯接口)
+	#define	RS485layDataSize		64			//RS485总线最大数据长度
+	#define	RS485layBaudRate		19200
+	#define	RS485laySerialPort	UART4
+	#define	RS485layCtlPort			GPIOC
+	#define	RS485layCtlPin			GPIO_Pin_12
+	//=============================RS232A端口
+	#define	RS232ADataSize			64			//RS485总线最大数据长度
+	#define	RS232ABaudRate			19200
+	#define	RS232ASerialPort		USART1
+
+	//=============================RS232A端口
+	#define	RS232BDataSize			64			//RS485总线最大数据长度
+	#define	RS232BBaudRate			19200
+	#define	RS232BSerialPort		USART3
+
+	//=============================CAN.
+	#define	CANBaudRate					100000		//100K
+	
+	//=============================拨码开关端口
+	#define NumOfSwitch			8			//拨码位数
+	#define	GPIOxSW1		GPIOC
+	#define	PinxSW1			GPIO_Pin_0
+
+	#define	GPIOxSW2		GPIOC
+	#define	PinxSW2			GPIO_Pin_1
+
+	#define	GPIOxSW3		GPIOC
+	#define	PinxSW3			GPIO_Pin_2
+
+	#define	GPIOxSW4		GPIOC
+	#define	PinxSW4			GPIO_Pin_3
+
+	#define	GPIOxSW5		GPIOC
+	#define	PinxSW5			GPIO_Pin_4
+
+	#define	GPIOxSW6		GPIOC
+	#define	PinxSW6			GPIO_Pin_5
+
+	#define	GPIOxSW7		GPIOC
+	#define	PinxSW7			GPIO_Pin_6
+
+	#define	GPIOxSW8		GPIOC
+	#define	PinxSW8			GPIO_Pin_7
+	
+	//=============================锁及锁信号检测
+	#define	Lock1DrPort		GPIOB					//锁控制端口
+	#define	Lock1DrPin		GPIO_Pin_13		//锁控制管脚
+	#define	Lock1SiPort		GPIOB					//锁控制端口
+	#define	Lock1SiPin		GPIO_Pin_14		//锁控制管脚
+
+	#define	Lock2DrPort		GPIOB					//锁控制端口
+	#define	Lock2DrPin		GPIO_Pin_0		//锁控制管脚
+	#define	Lock2SiPort		GPIOB					//锁控制端口
+	#define	Lock2SiPin		GPIO_Pin_1		//锁控制管脚
+
+	#define	Lock3DrPort		GPIOA					//锁控制端口
+	#define	Lock3DrPin		GPIO_Pin_6		//锁控制管脚
+	#define	Lock3SiPort		GPIOA					//锁控制端口
+	#define	Lock3SiPin		GPIO_Pin_7		//锁控制管脚
+
+	#define	Lock4DrPort		GPIOA					//锁控制端口
+	#define	Lock4DrPin		GPIO_Pin_4		//锁控制管脚
+	#define	Lock4SiPort		GPIOA					//锁控制端口
+	#define	Lock4SiPin		GPIO_Pin_5		//锁控制管脚
+
+#endif
+//=============================RS485A总线端口(与上层/单元板通讯接口)
+#if (TargetLayer	==	LALayer)
+	#define	RS485BusDataSize		64			//RS485总线最大数据长度
+	#define	RS485BusBaudRate		19200
+	#define	RS485BusSerialPort	USART3
+	#define	RS485BusCtlPort			GPIOB
+	#define	RS485BusCtlPin			GPIO_Pin_12
+	//=============================RS485B总线端口(与下层/层板通讯接口)
+	#define	RS485layDataSize		64			//RS485总线最大数据长度
+	#define	RS485layBaudRate		19200
+	#define	RS485laySerialPort	USART2
+	#define	RS485layCtlPort			GPIOA
+	#define	RS485layCtlPin			GPIO_Pin_1
+	
+	//=============================拨码开关端口
+	#define NumOfSwitch			8			//拨码位数
+	#define	GPIOxSW1		GPIOB
+	#define	PinxSW1			GPIO_Pin_9
+
+	#define	GPIOxSW2		GPIOB
+	#define	PinxSW2			GPIO_Pin_8
+
+	#define	GPIOxSW3		GPIOB
+	#define	PinxSW3			GPIO_Pin_7
+
+	#define	GPIOxSW4		GPIOB
+	#define	PinxSW4			GPIO_Pin_6
+
+	#define	GPIOxSW5		GPIOB
+	#define	PinxSW5			GPIO_Pin_5
+
+	#define	GPIOxSW6		GPIOB
+	#define	PinxSW6			GPIO_Pin_4
+
+	#define	GPIOxSW7		GPIOB
+	#define	PinxSW7			GPIO_Pin_3
+
+	#define	GPIOxSW8		GPIOA
+	#define	PinxSW8			GPIO_Pin_15
+	
+#endif
+
+//=============================RS485A总线端口(与上层/单元板通讯接口)
+#if (TargetLayer	==	MBLayer)
+	#define	RS485BusDataSize		64			//RS485总线最大数据长度
+	#define	RS485BusBaudRate		19200
+	#define	RS485BusSerialPort	USART2
+	#define	RS485BusCtlPort			GPIOA
+	#define	RS485BusCtlPin			GPIO_Pin_1
+//	//=============================RS485B总线端口(与下层/层板通讯接口)
+//	#define	RS485layDataSize		64			//RS485总线最大数据长度
+//	#define	RS485layBaudRate		19200
+//	#define	RS485laySerialPort	USART3
+//	#define	RS485layCtlPort			GPIOB
+//	#define	RS485layCtlPin			GPIO_Pin_1
+	//=============================DB9端口
+	#define	RS232ADataSize			64			//RS485总线最大数据长度
+	#define	RS232ABaudRate			19200
+	#define	RS232ASerialPort		USART1
 
 
-typedef enum _ErrCode
-{
-	GBL_FAULT_NON							=	0x00,	//无错误
-	GBL_FAULT_BUSY						=	0x01,	//忙状态
-	GBL_FAULT_ILLAGALPARA			=	0x02,	//参数非法
-	GBL_FAULT_INACTIVE				=	0x03,	//称重通道未激活
-	GBL_FAULT_DIRECTION				=	0x04,	//传感器方向错
-	GBL_FAULT_DIFFOVF					=	0x05,	//称重差值过大
-	GBL_FAULT_SENSOR					=	0x06,	//传感器故障
-	GBL_FAULT_ILLIGALWEIGHT		=	0x07,	//称重数值非法
-	GBL_FAULT_WEIGHTOVF				=	0x08,	//称重数据溢出
-	GBL_FAULT_NOCALI					=	0x09	//称重未标定
-}ErrDef;			//错误码
-typedef enum _CmdCode
-{
-	CMD_WRITE_QTY							=	0x01,	//写入数量
-	CMD_UNLOCK								=	0x02,	//解锁
-	CMD_ADD_MTRL							=	0x04,	//加料
-	CMD_RDC_MTRL							=	0x06,	//取料
-	CMD_CHECK_QTY							=	0x07,	//盘点
-	CMD_WRITE_HINT						=	0x08,	//写入提示
-	CMD_WRITE_NOTE						=	0x09,	//写入注释
-	CMD_CNTRL_LED							=	0x0A,	//提示灯控制 ，该指令由单元板执行
-	CMD_CNTRL_GATE						=	0x0B,	//冰箱门控制 ，该指令由网关执行，不往下层传递
-	CMD_CHECK_VERSION					=	0x0C	//查询软件版本
-}CmdDef;			//命令码
-typedef enum _FrameType
-{
-	FRAME_TYPE_DATA						=	0x01,		//帧类型--数据帧
-	FRAME_TYPE_ACK						=	0x02,		//帧类型--应答帧
-	FRAME_TYPE_INVALID				=	0x00		//帧类型--无效帧
-}FrameTypeDef;	//帧类型
-typedef enum _OrderState
-{
-	ORDER_STAT_IDLE						=	0,			//空闲状态
-	ORDER_STAT_WORK						=	1				//工作状态--忙状态
-}OrderStateDef;	//工作状态
+	//=============================CAN.
+	#define	CANBaudRate					100000		//100K
+	
+	//=============================锁及锁信号检测
+	#define	Lock1DrPort		GPIOC					//锁控制端口
+	#define	Lock1DrPin		GPIO_Pin_6		//锁控制管脚
+	#define	Lock1SiPort		GPIOB					//锁控制端口
+	#define	Lock1SiPin		GPIO_Pin_12		//锁控制管脚
 
+	#define	Lock2DrPort		GPIOC					//锁控制端口
+	#define	Lock2DrPin		GPIO_Pin_7		//锁控制管脚
+	#define	Lock2SiPort		GPIOB					//锁控制端口
+	#define	Lock2SiPin		GPIO_Pin_13		//锁控制管脚
 
-typedef struct	_RS232RceFram
-{
-	unsigned short 	FarmLen;
-	unsigned char		Data[];
-}RS232RceFramDef;		//232接收帧格式(PC机通讯)
+	#define	Lock3DrPort		GPIOC					//锁控制端口
+	#define	Lock3DrPin		GPIO_Pin_8		//锁控制管脚
+	#define	Lock3SiPort		GPIOB					//锁控制端口
+	#define	Lock3SiPin		GPIO_Pin_14		//锁控制管脚
 
+	#define	Lock4DrPort		GPIOC					//锁控制端口
+	#define	Lock4DrPin		GPIO_Pin_9		//锁控制管脚
+	#define	Lock4SiPort		GPIOB					//锁控制端口
+	#define	Lock4SiPin		GPIO_Pin_15		//锁控制管脚
 
-
+#endif
 
 
 
@@ -73,13 +190,96 @@ typedef struct	_RS232RceFram
 
 void PM001V20HC_Configuration(void);
 void PM001V20HC_Server(void);
-void PM001V20_SysLed(void);			//系统运行指示灯
-void USART_Configuration(void);
-void Driver_Configuration(void);
-void USART_Server(void);
-void Driver_Server(void);
-void CAN_Server(void);
 
+
+
+
+void Communiction_Configuration(void);			//通讯接口配置：包含RS485,RS232,CAN
+void Switch_Configuration(void);						//拨码开关配置
+void Lock_Configuration(void);							//锁端口配置
+
+
+
+/*##############################################################################
+################################################################################
+# 项目名		:	MS0800_PC004V10	
+# 功能描述	:	智能药架单元板
+-------------------------------------------------------------------------------	
+********************************功能说明***************************************
+-------------------------------------------------------------------------------
+● 与网关板通讯，传达指令到数码管显示板，
+● 显示地址：柜机号
+● 拔码方式：
+● CAN通讯说明：
+	波特率：	100K
+	公有地址：0X000
+	
+● 485通讯说明：485与网关板通讯
+	波特率：	9600
+	串口号：	USART2
+	控制脚：	PA1
+	头码：		0XFA,0XFB
+	私有地址：拔码开关地址
+-------------------------------------------------------------------------------
+********************************软件流程***************************************
+-------------------------------------------------------------------------------
+1）配置项目
+2）上电后主动获取单元地址
+3）	
+4）	
+5）	
+-------------------------------------------------------------------------------
+*****************************指令/协议说明*************************************
+-------------------------------------------------------------------------------
+
+--------------------------------CAN协议----------------------------------------
+1.1）	CAN协议：				与数码管板通讯
+			CAN—ID：					0X3FF(StdId=0X3FF;)
+			长度：						3	(DLC=1;)
+			层时间同步：			0XAA;(Data[0]=0XAA;)
+			获取/显示ID指令：	0X01;(Data[0]=0X01;)
+			自检指令：				0X02;(Data[0]=0X02;)
+			熄屏指令：				0X03;(Data[0]=0X02;)
+-------------------------------------------------------------------------------		
+1.2）	数码管板上报地址：设定完数码管板ID后往单元板上他地址
+			CAN—ID：			SW_ID（拔码开关地址）
+			长度：				1	(DLC=1;)
+			层时间同步：	0XAA;(Data[0]=0XAA;)
+		
+1.3）	数码管板接收数据：接收上级单元板数据，显示或者关闭
+			CAN—ID：			SW_ID（拔码开关地址）
+			长度：					3	(DLC=3;)
+			数据显示标识：	0X08;(Data[0]=0X08;)
+			显示数据内容：	最大显示999
+										高位8位：Data[1]
+										低位8位：Data[2]
+									
+1.4）	数码管板应答：数据完板接收到正确的数据后的回执
+			CAN—ID：			SW_ID（拔码开关地址）
+			长度：					1	(DLC=1;)
+			层时间同步：		0XA0;(Data[0]=0XA0;)
+--------------------------------485协议----------------------------------------
+2.1）	485协议：			与网关板通讯
+			数据长度：	13Byte
+			RS232通讯说明：			FA F5 01 01 BCC8 00 06 01 01 01 00 01 25------->FA F5 01 01 27 00 06 01 01 01 00 01 25
+//			格式：			HEAD(2)，命令，柜号，单元号，数值高位，数值低位，异或校验
+			说明：
+			HEAD:				0XFA,0XFB
+			命令：			0X00--关闭显示，0X01--显示数值，0x02--获取连接设备地址（柜号和单元号）,0x03--显示单元ID，
+			柜号：			单元柜号，1~0XFF
+			单元号：		数码管ID号，10~77
+			数值高位：	与低位连接
+			数值低位：	与高位连接，连接后取值范围：0~999，数码管只有三位
+			异或校验：	Byte0~Byte6校验
+			接收数据单元无误，回执位为0X80|命令类型
+			接收数据单元地址错误：回执位0XE0|命令类型
+-------------------------------------------------------------------------------
+
+
+********************************************************************************
+
+################################################################################
+###############################################################################*/
 
 #endif
 

@@ -1,40 +1,35 @@
-
-
-
-
-#ifdef PM001V20HC				//网关板
+#ifdef PM001V20HC				//单元控制板
 
 #include "PM001V20HC.H"
-
-#define master 0
-
+#include "STM32F10x_BitBand.H"
 #include "STM32_GPIO.H"
 #include "STM32_SYS.H"
 #include "STM32_SYSTICK.H"
 #include "STM32_WDG.H"
-#include "STM32_USART.H"
 #include "STM32_PWM.H"
+
+
 #include "STM32_CAN.H"
+#include "STM32_USART.H"
+
+
+#include "HC_PHY.H"
+
+#include "SWITCHID.H"
+
 
 #include "string.h"				//串和内存操作函数头文件
-#include "stm32f10x_dma.h"
-#include "STM32F10x_BitBand.H"
 
-#define BufferSize	128
-RS485_TypeDef	RS485A,RS485B;
-CanRxMsg RxMessage;
+//=============================RS485A总线端口(与上层/单元板通讯接口)
+RS485Def gRS485Bus;			//与上层总线接口(网关板)
+//RS485Def gRS485lay;			//与下级总线接口(层板)	
 
-u16 sysledcnt=0;			//系统运行指示灯扫描计数  0.5秒
-
-u8 txBuffer[BufferSize]={0};
-u8 rxBuffer[BufferSize]={0};
-u16 CanTime	=	0;
-u8 CanNum	=	0;
-
-u8	txflg=0;	//发送标志
-u8	rxflg=0;	//接收标志
-u8	bpflg=0;	//蜂鸣器使能标志
-
+SwitchDef gSwitch;
+unsigned char PowerFlag	=	0;
+//extern RS485FrameDef	*RS485Node;
+unsigned short time	=	0;
+unsigned char RS232Buffer[1024]={0};		//与上层通讯相关数据缓存
+unsigned char RS485Buffer[1024]={0};		//与下层通讯相关数据缓存
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -44,24 +39,23 @@ u8	bpflg=0;	//蜂鸣器使能标志
 *******************************************************************************/
 void PM001V20HC_Configuration(void)
 {
-	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
 	
-	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
+	SYS_Configuration();							//系统配置---打开系统时钟 STM32_SYS.H	
+	GPIO_DeInitAll();									//将所有的GPIO关闭----V20170605
 	
-//	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms
+	Communiction_Configuration();			//通讯接口配置：包含RS485,RS232,CAN
+//	Switch_Configuration();						//拨码开关配置
+//	Lock_Configuration();							//锁端口配置
 	
-	GPIO_DeInitAll();							//将所有的GPIO关闭----V20170605
 	
-	Driver_Configuration();
+	PWM_OUT(TIM2,PWM_OUTChannel1,1,800);	//PWM设定-20161127版本
 	
-	USART_Configuration();
+//	RS232Buffer[1]	=	gSwitch.nSWITCHID;
+	HCBoradSet(0,0);
+		
+//	IWDG_Configuration(2000);							//独立看门狗配置---参数单位ms
+	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
 	
-	CAN_Configuration_NR(100000);				//CAN1配置---标志位查询方式，不开中断
-	
-	CAN_FilterInitConfiguration_StdData(1,1,0);	//CAN滤波器配置---标准数据帧模式
-	
-	PWM_OUT(TIM2,PWM_OUTChannel1,1,500);	//PWM设定-20161127版本	
-
 }
 /*******************************************************************************
 * 函数名		:	
@@ -71,210 +65,146 @@ void PM001V20HC_Configuration(void)
 * 返回 		:
 *******************************************************************************/
 void PM001V20HC_Server(void)
-{	
-	IWDG_Feed();								//独立看门狗喂狗
-	PM001V20_SysLed();					//系统运行指示灯
+{
+//  u8 *buffer;
+	unsigned short length;
 	
-	USART_Server();
-	Driver_Server();
-	CAN_Server();
+	IWDG_Feed();								//独立看门狗喂狗
+	
+  //======================================上行总线
+	length	=	USART_ReadBufferIDLE(RS232ASerialPort,RS232Buffer);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数
+	if(length)
+	{
+		HCResult	res;
+		time	=	0;
+		res	=	SetDataProcess(RS232Buffer,length,0);
+	}
+	length	=	GetAck(RS232Buffer,0);
+	if(length)
+	{
+		time	=	0;
+		USART_DMASend(RS232ASerialPort,RS232Buffer,length);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+	}  
+  //======================================下行总线
+  length	=	RS485_ReadBufferIDLE(&gRS485Bus,RS485Buffer);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(length)
+	{
+		HCResult	res;
+		time	=	0;
+		res	=	SetDataProcess(RS485Buffer,length,1);
+	}
+	length	=	GetAck(RS485Buffer,1);
+	if(length)
+	{
+		time	=	0;
+		RS485_DMASend(&gRS485Bus,RS485Buffer,length);	//RS485-DMA发送程序
+	}
+
+  
+	//======================================模拟程序
+	if(time++>500)
+	{
+		time	=	0;
+    length = GetDataProcess(RS232Buffer,0);
+		if(length)
+		{
+			RS485_DMASend(&gRS485Bus,RS232Buffer,length);	//RS485-DMA发送程序
+		}
+    
+		length = GetDataProcess(RS485Buffer,1);
+		if(length)
+		{
+			RS485_DMASend(&gRS485Bus,RS485Buffer,length);	//RS485-DMA发送程序
+		}
+		else if(0 == PowerFlag)
+		{
+			PowerFlag	=	1;
+			GetSubOnlineAddr();
+		}
+	}  
 }
 /*******************************************************************************
-* 函数名		:	
-* 功能描述	:	 
-* 输入		:	
-* 输出		:
-* 返回 		:
+* 函数名			:	Communiction_Configuration
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
 *******************************************************************************/
-void CAN_Server(void)
-{	
-	u8 num	=	0;
-#if master
-	num	=	CAN_RX_DATA(&RxMessage);								//检查CAN接收有无数据
-	if(num)
-	{
-		char *p	=	"can数据";
-		memcpy(rxBuffer,p,8);
-//		rxBuffer[0]+=1;
-		CAN_StdTX_DATA(1,8,rxBuffer);			//CAN使用标准帧发送数据
-	}
-#else
-	num	=	CAN_RX_DATA(&RxMessage);								//检查CAN接收有无数据
-	if(num)
-	{
-		num	=	RxMessage.DLC;
-		if(num)
-		{
-			memcpy(rxBuffer,RxMessage.Data,num);
-			USART_DMASendList(USART1,rxBuffer,num);		//自定义printf串口DMA发送程序
-		}
-	}
+void Communiction_Configuration(void)
+{
+	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
+	gRS485Bus.USARTx						=	RS485BusSerialPort;
+	gRS485Bus.RS485_CTL_PORT		=	RS485BusCtlPort;
+	gRS485Bus.RS485_CTL_Pin			=	RS485BusCtlPin;
+	RS485_DMA_ConfigurationNR(&gRS485Bus,RS485BusBaudRate,RS485BusDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	
+//	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
+//	gRS485lay.USARTx						=	RS485laySerialPort;
+//	gRS485lay.RS485_CTL_PORT		=	RS485layCtlPort;
+//	gRS485lay.RS485_CTL_Pin			=	RS485layCtlPin;
+//	RS485_DMA_ConfigurationNR(&gRS485lay,RS485layBaudRate,RS485layDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	//=============================RS232A端口(USART1)
+	USART_DMA_ConfigurationNR	(RS232ASerialPort,RS232ABaudRate,RS232ADataSize);	//USART_DMA配置--查询方式，不开中断
+
+	//=============================CAN
+	CAN_Configuration_NR(CANBaudRate);													//CAN1配置---标志位查询方式，不开中断
+	CAN_FilterInitConfiguration_StdData(0X01,0X000,0X000);			//CAN滤波器配置---标准数据帧模式---不过滤
+
+}
+/*******************************************************************************
+* 函数名			:	Communiction_Configuration
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void Switch_Configuration(void)
+{
+#ifndef MBLayer
+	gSwitch.NumOfSW		=	NumOfSwitch;
+	
+	gSwitch.SW1_PORT	=	GPIOxSW1;
+	gSwitch.SW1_Pin		=	PinxSW1;
+	
+	gSwitch.SW2_PORT	=	GPIOxSW2;
+	gSwitch.SW2_Pin		=	PinxSW2;
+	
+	gSwitch.SW3_PORT	=	GPIOxSW3;
+	gSwitch.SW3_Pin		=	PinxSW3;
+	
+	gSwitch.SW4_PORT	=	GPIOxSW4;
+	gSwitch.SW4_Pin		=	PinxSW4;
+	
+	gSwitch.SW5_PORT	=	GPIOxSW5;
+	gSwitch.SW5_Pin		=	PinxSW5;
+	
+	gSwitch.SW6_PORT	=	GPIOxSW6;
+	gSwitch.SW6_Pin		=	PinxSW6;
+	
+	gSwitch.SW7_PORT	=	GPIOxSW7;
+	gSwitch.SW7_Pin		=	PinxSW7;
+	
+	gSwitch.SW8_PORT	=	GPIOxSW8;
+	gSwitch.SW8_Pin		=	PinxSW8;
+	
+	SwitchIdInitialize(&gSwitch);
 #endif
 }
 /*******************************************************************************
-* 函数名			:	function
+* 函数名			:	Communiction_Configuration
 * 功能描述		:	函数功能说明 
 * 输入			: void
 * 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
 *******************************************************************************/
-void PM001V20_SysLed(void)
+void Lock_Configuration(void)
 {
-	if(sysledcnt++>=1000)			//系统运行指示灯扫描计数  0.5秒
-	{
-		sysledcnt=0;
-		GPIO_Toggle	(GPIOC,GPIO_Pin_0);		//SysLed//将GPIO相应管脚输出翻转----V20170605
-		if(bpflg)
-		GPIO_Toggle	(GPIOC,GPIO_Pin_1);		//BUZZER//将GPIO相应管脚输出翻转----V20170605
-	}
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
-* 输入			: void
-* 返回值			: void
-*******************************************************************************/
-void USART_Configuration(void)
-{
-	//=============================DB9-USART1配置
-	USART_DMA_ConfigurationNR(USART1,115200,BufferSize);	//USART_DMA配置
-	//=============================RS485A(BUS1)-USART2配置
-	RS485A.USARTx	=	USART2;
-	RS485A.RS485_CTL_PORT	=	GPIOA;
-	RS485A.RS485_CTL_Pin	=	GPIO_Pin_1;
-	RS485_DMA_ConfigurationNR(&RS485A,19200,BufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	//=============================RS485B(BUS2)-USART3配置
-	RS485B.USARTx	=	USART3;
-	RS485B.RS485_CTL_PORT	=	GPIOB;
-	RS485B.RS485_CTL_Pin	=	GPIO_Pin_1;
-	RS485_DMA_ConfigurationNR(&RS485B,19200,BufferSize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态	
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
-* 输入			: void
-* 返回值			: void
-*******************************************************************************/
-void Driver_Configuration(void)
-{
-	//=============================系统运行指示灯配置
-	GPIO_Configuration_OOD2	(GPIOC,GPIO_Pin_0);			//SysLed//将GPIO相应管脚配置为OD(开漏)输出模式，最大速度2MHz----V20170605
-	//=============================蜂鸣器配置
-	GPIO_Configuration_OPP2	(GPIOC,GPIO_Pin_1);			//BUZZER//将GPIO相应管脚配置为OD(开漏)输出模式，最大速度2MHz----V20170605
-	//=============================Dout1配置
-	GPIO_Configuration_OPP50	(GPIOC,GPIO_Pin_6);			
-	//=============================Dout2配置
-	GPIO_Configuration_OPP50	(GPIOC,GPIO_Pin_7);	
-	//=============================Dout3配置
-	GPIO_Configuration_OPP50	(GPIOC,GPIO_Pin_8);	
-	//=============================Dout4配置
-	GPIO_Configuration_OPP50	(GPIOC,GPIO_Pin_9);	
-	//=============================Sin1配置
-	GPIO_Configuration_IPU(GPIOB,GPIO_Pin_12);
-	//=============================Sin2配置
-	GPIO_Configuration_IPU(GPIOB,GPIO_Pin_13);
-	//=============================Sin3配置
-	GPIO_Configuration_IPU(GPIOB,GPIO_Pin_14);
-	//=============================Sin4配置
-	GPIO_Configuration_IPU(GPIOB,GPIO_Pin_15);
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
-* 输入			: void
-* 返回值			: void
-*******************************************************************************/
-void Driver_Server(void)
-{
-	if(sysledcnt++>=1000)			//系统运行指示灯扫描计数  0.5秒
-	{
-		sysledcnt=0;
-		GPIO_Toggle	(GPIOC,GPIO_Pin_0);		//SysLed//将GPIO相应管脚输出翻转----V20170605
-		if(bpflg)
-		GPIO_Toggle	(GPIOC,GPIO_Pin_1);		//BUZZER//将GPIO相应管脚输出翻转----V20170605
-		
-		GPIO_Toggle	(GPIOC,GPIO_Pin_6);
-		GPIO_Toggle	(GPIOC,GPIO_Pin_7);
-		GPIO_Toggle	(GPIOC,GPIO_Pin_8);
-		GPIO_Toggle	(GPIOC,GPIO_Pin_9);
-	}
-	if(sysledcnt%100!=0)
-	{
-		return;
-	}
-	if(0==PB12in)
-	{
-		USART_DMAPrintfList(USART1,"传感器输入1\r\n");
-	}
-	if(0==PB13in)
-	{
-		USART_DMAPrintfList(USART1,"传感器输入2\r\n");
-	}
-	if(0==PB14in)
-	{
-		USART_DMAPrintfList(USART1,"传感器输入3\r\n");
-	}
-	if(1==PB15in)
-	{
-		USART_DMAPrintfList(USART1,"传感器输入4\r\n");
-	}
-	
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
-* 输入			: void
-* 返回值			: void
-*******************************************************************************/
-void USART_Server(void)
-{
-	u32 num=0;
-	//=============================DB9-USART1服务
-	num	=	USART_ReadBufferIDLE(USART1,rxBuffer);
-	if(num)
-	{
-		if(num==1)
-		{
-			if(rxBuffer[0]==0xFA)
-			{
-				bpflg=1;	//蜂鸣器使能标志
-			}
-			else if(rxBuffer[0]==0xFB)
-			{
-				bpflg=0;	//蜂鸣器使能标志
-				GPIO_WriteBit(GPIOC,GPIO_Pin_1,Bit_RESET);			//将相应GPIO管脚输出为高
-			}
-			return;
-		}
-		if(0x01	==	rxBuffer[0])
-		{
-			RS485_DMASend(&RS485A,rxBuffer,num);
-		}
-		else if(0x02	==	rxBuffer[0])
-		{
-			RS485_DMASend(&RS485B,rxBuffer,num);
-		}
-		else if(0x03	==	rxBuffer[0])
-		{
-			CAN_StdTX_DATA(1,8,rxBuffer);			//CAN使用标准帧发送数据
-		}
-		else
-		{
-			memset(rxBuffer,0x03,num);
-			USART_DMASendList(USART1,rxBuffer,num);		//自定义printf串口DMA发送程序
-		}
-	}
-	//=============================RS485A(BUS1)-USART2服务
-	num	=	RS485_ReadBufferIDLE(&RS485A,rxBuffer);
-	if(num)
-	{	
-		USART_DMASendList(USART1,rxBuffer,num);		//自定义printf串口DMA发送程序
-	}
-	//=============================RS485B(BUS2)-USART3服务
-	num	=	RS485_ReadBufferIDLE(&RS485B,rxBuffer);
-	if(num)
-	{	
-		USART_DMASendList(USART1,rxBuffer,num);		//自定义printf串口DMA发送程序
-	}	
-	
+
 }
 #endif

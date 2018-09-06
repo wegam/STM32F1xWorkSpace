@@ -45,10 +45,18 @@ int n; /*结点总数 */
 * 输出			: 计算结果
 * 返回			: 无
 *******************************************************************************/
-const unsigned char BCC8(const unsigned char *buffer,unsigned short num)			//异或校验
+unsigned char BCC8(const unsigned char *buffer,unsigned short num)			//异或校验
 {
 	u16 i=0;
 	u16 temp=0;
+	if(NULL	==	buffer)
+	{
+		return 0;
+	}
+	if(1	>=	num)
+	{
+		return 0;
+	}
 	for(i=0;i<num;i++)
 	{
 		temp=temp^buffer[i];
