@@ -98,7 +98,8 @@ HCResult SetDataProcess(const unsigned char *buffer,const unsigned short length,
      break;
    default:break;
   }
-	res	=	AckDataProcess(buffer,length,UDflag);
+  if(RES_OK ==  res)
+    res	=	AckDataProcess(buffer,length,UDflag);
 
 	//===================================其它跳过协议和地址的命令（透传）
 	return res;
@@ -194,8 +195,8 @@ HCResult AckDataProcess(const unsigned char *buffer,const unsigned short length,
   RS485FrameDef *RecFrame 	= NULL;	//接收到的消息帧结构体
 	RS485FrameDef *AckFrame 	= NULL;	//应答帧结构体
 	unsigned char	TargetAdd		=	0;		//目标地址
-	unsigned char	LayerAddr		=	0;		//层地址
-	unsigned char	FrameLength	=	0;		//消息帧总长度，从HeadCode到EndCode的字节数
+//	unsigned char	LayerAddr		=	0;		//层地址
+//	unsigned char	FrameLength	=	0;		//消息帧总长度，从HeadCode到EndCode的字节数
   if(NULL ==  buffer)		//空地址
   {
     return RES_NODATA;
@@ -203,8 +204,8 @@ HCResult AckDataProcess(const unsigned char *buffer,const unsigned short length,
 	//----------------------------------
 	RecFrame		=	(RS485FrameDef*)memchr(buffer,RS485Head1,length);		//查找RS485Head1头标识符
 	TargetAdd		=	RecFrame->TargetAdd;	          //目标地址
-	LayerAddr		=	RecFrame->Addr.SlotAddr;		    //下一级目标地址：如果下级地址为0，表示此消息是本板使用消息，存入RS485Node[0]
-	FrameLength	=	RecFrame->DataLength+13;
+//	LayerAddr		=	RecFrame->Addr.SlotAddr;		    //下一级目标地址：如果下级地址为0，表示此消息是本板使用消息，存入RS485Node[0]
+//	FrameLength	=	RecFrame->DataLength+13;
 	
 	//===================================上层发数据需要向上应答（上层下发地址识别：目标地址为本地址）应答协议：目标地址为0，源地址为本地址，下级及往后地址都为0
   if( (0  ==  UDflag)                         	//上层下发数据标志:向上层应答
@@ -273,8 +274,10 @@ HCResult MBLayerDataProcess(const unsigned char *buffer,const unsigned short len
 {
 	HCResult	res	=	RES_OK;
 	RS232FrameDef	*RS232Frame	=	NULL;
+  RS485FrameDef *RS485Frame	=	NULL;
 	unsigned char TargetAddr		=	0;			//目标地址
 	res	=	CheckDataFarm(buffer,length,UDflag);
+  //======================================RS232转RS485
 	if(RES_FARME232	==	res)		//232格式数据
 	{
 		if(7	==	length)			//上位机应答数据长度
@@ -282,22 +285,67 @@ HCResult MBLayerDataProcess(const unsigned char *buffer,const unsigned short len
 			TransU.Length	=	0;
 		}
 		else			//转换为RS485格式数据
-		{
-			RS485FrameDef *RS485Frame	=	NULL;
-			RS232Frame	=	(RS232FrameDef*)memchr(buffer,RS232Head1,length);		//查找RS485Head1头标识符
-			TargetAddr	=	RS232Frame->Addr.CabinetAddr;												//获取单元板地址
-			
+		{			
+			RS232Frame	=	(RS232FrameDef*)memchr(buffer,RS232Head1,length);		//查找RS232Head1头标识符
+			TargetAddr	=	RS232Frame->Addr.CabinetAddr;												//获取单元板地址			
 			RS485Frame	=	(RS485FrameDef*)DataNode[TargetAddr].data;					//数据存储起始地址
+      
+      if(3<RS232Frame->Head.DataLength)   //无数据，表示为上位机应答
+      {
+        TransU.Length = 0;      //清除上传标志
+        return RES_ACKMSG;      //退出--返回此标志为应答标志
+      }
 			RS485Frame->HeadCode	=	RS485Head1;								//头标识
 			RS485Frame->TargetAdd	=	TargetAddr;								//目标地址
 			RS485Frame->SourceAdd	=	0x00;											//源地址
 			RS485Frame->Serial		=	RS232Frame->Head.Serial;	//流水号
 			RS485Frame->Cmd				=	RS232Frame->Head.Cmd;			//命令号
 			RS485Frame->UserCode	=	RS232Frame->Head.UserCode;//用户码
-			RS485Frame->DataLength=		RS232Frame->Head.DataLength-3;	//数据长度，去掉地址长度
+      RS485Frame->DataLength=		RS232Frame->Head.DataLength-3;	//数据长度，去掉地址长度,RS485协议数据长度不包含地址长度
+      
+      memcpy(&RS485Frame->Addr.CabinetAddr,&RS232Frame->Addr,RS485Frame->DataLength); //复制数据，包含地址信息        
 
+      DataNode[TargetAddr].data[RS485Frame->DataLength+11] = BCC8(&RS485Frame->HeadCode,RS485Frame->DataLength+11);
+      DataNode[TargetAddr].data[RS485Frame->DataLength+12] = RS485end1;
+      DataNode[TargetAddr].FarmeInfo.Length = RS485Frame->DataLength+13;    //整个帧长度
+      DataNode[TargetAddr].FarmeInfo.UD     = 1;    //此数据需要转发到下一级
+      DataNode[TargetAddr].FarmeInfo.Flag   = 1;    //有数据标识
+      
 		}
 	}
+  //======================================RS485转RS232
+  else if(RES_FARME485	==	res)		//232格式数据
+  {
+    RS485Frame  = (RS485FrameDef*)memchr(buffer,RS485Head1,length);		//查找RS485Head1头标识符
+    TargetAddr  = RS485Frame->SourceAdd;                              //上传数据的单元板地址
+    RS232Frame  = (RS232FrameDef*)DataNode[TargetAddr].data;
+    
+    if(0  ==  RS485Frame->DataLength)   //无数据，表示为单元板应答
+    {
+      TransD.Length = 0;      //清除下发标志
+      return RES_ACKMSG;      //退出--返回此标志为应答标志
+    }
+    
+    RS232Frame->Head.Head1      = RS232Head1;
+    RS232Frame->Head.Head2      = RS232Head2;
+    RS232Frame->Head.Serial     = SerialU++;      //往上传流水号
+    RS232Frame->Head.Cmd        = RS485Frame->Cmd;
+    //-->此为校验码
+    RS232Frame->Head.StsCode    = RS485Frame->StsCode;
+    RS232Frame->Head.UserCode   = RS485Frame->UserCode;
+    
+    RS232Frame->Head.DataLength   = RS485Frame->DataLength+3;
+    RS232Frame->Addr.CabinetAddr  = RS485Frame->Addr.CabinetAddr;
+    RS232Frame->Addr.LayerAddr    = RS485Frame->Addr.LayerAddr;
+    RS232Frame->Addr.SlotAddr     = RS485Frame->Addr.SlotAddr;
+    
+    memcpy(&DataNode[TargetAddr].data[10],RS485Frame->data,RS485Frame->DataLength);
+    
+    RS232Frame->Head.Bcc8 = BCC8(&DataNode[TargetAddr].data[8],RS232Frame->Head.DataLength);
+    DataNode[TargetAddr].FarmeInfo.Length = RS232Frame->Head.DataLength+8;  //整个帧长度
+    DataNode[TargetAddr].FarmeInfo.UD     = 0;    //此数据需要转发到上一级
+    DataNode[TargetAddr].FarmeInfo.Flag   = 1;    //有数据标识
+  }
 
   return res;
 }
@@ -313,7 +361,66 @@ HCResult MBLayerDataProcess(const unsigned char *buffer,const unsigned short len
 HCResult CALayerDataProcess(const unsigned char *buffer,const unsigned short length,const unsigned char UDflag)
 {
 	HCResult	res	=	RES_OK;
-
+  RS485FrameDef *Frame  		= NULL;
+	unsigned char TargetAdd		=	0;		//目标地址
+	unsigned char LayerAddr		=	0;		//层地址
+	unsigned char FrameLength	=	0;	//消息帧总长度，从HeadCode到EndCode的字节数
+	
+  if(NULL ==  buffer)		//空地址
+  {
+    return RES_NODATA;
+  }
+	Frame	    =	(RS485FrameDef*)memchr(buffer,RS485Head1,length);		//查找RS485Head1头标识符
+	TargetAdd	=	Frame->TargetAdd;	          //目标地址
+	LayerAddr	=	Frame->Addr.LayerAddr;		  //下一级目标地址：如果下级地址为0，表示此消息是本板使用消息，存入RS485Node[0]  
+	FrameLength	=	Frame->DataLength+13;     //整个帧长度
+  if((TargetAdd ==  HCSYS.SwitchAddr)     //本板消息
+    &&(0  ==  UDflag))                    //此消息为上层下发消息
+  {
+    if(0  ==  Frame->DataLength)  //无数据，表示为网关板应答
+    {
+      TransU.Length = 0;      //清除上传标志
+      return RES_ACKMSG;      //退出--返回此标志为应答标志
+    }
+    memcpy(&(DataNode[LayerAddr].data[0]),Frame,FrameLength+13);   //复制数据到本地缓存
+    if((0<LayerAddr)&&(0xFF>LayerAddr))   //此消息需要传递到下一层
+    {
+      ((RS485FrameDef*)(DataNode[LayerAddr].data))->TargetAdd  	= LayerAddr;        //目标地址
+      ((RS485FrameDef*)(DataNode[LayerAddr].data))->SourceAdd  	= 0x00; 						//源地址--下发为00
+      
+      DataNode[LayerAddr].data[Frame->DataLength+11]  = BCC8(DataNode[LayerAddr].data,Frame->DataLength+11);  //重新计数校验
+      DataNode[LayerAddr].data[Frame->DataLength+12]  = RS485end1;
+      
+      DataNode[LayerAddr].FarmeInfo.Length = Frame->DataLength+13;  //整个帧长度
+      DataNode[LayerAddr].FarmeInfo.UD     = 1;    //此数据需要转发到下一级
+      DataNode[LayerAddr].FarmeInfo.Flag   = 1;    //有数据标识
+    }
+    res	=	RES_OK;
+  }
+  else if(1  ==  UDflag)      //底层上传数据：需要添加本层地址后待上传
+  {
+    if(0  ==  Frame->DataLength)  //无数据，表示为层板应答
+    {
+      TransD.Length = 0;      //清除下发标志
+      return RES_ACKMSG;      //退出--返回此标志为应答标志
+    }
+    memcpy(&(DataNode[LayerAddr].data[0]),Frame,Frame->DataLength+13);      							//复制数据到本地缓存
+    ((RS485FrameDef*)(DataNode[LayerAddr].data))->TargetAdd					= 0;    							//目标地址:上传为0
+    ((RS485FrameDef*)(DataNode[LayerAddr].data))->SourceAdd					= HCSYS.SwitchAddr;  	//源地址
+    
+    ((RS485FrameDef*)(DataNode[LayerAddr].data))->Addr.CabinetAddr  = HCSYS.SwitchAddr;  	//加入本地址--层板地址
+    
+    DataNode[LayerAddr].data[Frame->DataLength+11]  = BCC8(DataNode[LayerAddr].data,Frame->DataLength+11);  //重新计数校验
+    DataNode[LayerAddr].data[Frame->DataLength+12]  = RS485end1;
+    DataNode[LayerAddr].FarmeInfo.Length            = Frame->DataLength+13;  //整个帧长度
+    DataNode[LayerAddr].FarmeInfo.UD     = 0;    //此数据需要转发到上一级
+    DataNode[LayerAddr].FarmeInfo.Flag   = 1;    //有数据标识
+    res	=	RES_OK;
+  }
+  else
+  {
+    res	= RES_UNKNOW;
+  }
   return res;
 }
 /*******************************************************************************
@@ -339,29 +446,49 @@ HCResult LALayerDataProcess(const unsigned char *buffer,const unsigned short len
   }
 	Frame	    =	(RS485FrameDef*)memchr(buffer,RS485Head1,length);		//查找RS485Head1头标识符
 	TargetAdd	=	Frame->TargetAdd;	          //目标地址
-	LayerAddr	=	Frame->Addr.SlotAddr;		    //下一级目标地址：如果下级地址为0，表示此消息是本板使用消息，存入RS485Node[0]
-	FrameLength	=	Frame->DataLength+13;
+	LayerAddr	=	Frame->Addr.SlotAddr;		    //下一级目标地址：如果下级地址为0，表示此消息是本板使用消息，存入RS485Node[0]  
+	FrameLength	=	Frame->DataLength+13;     //整个帧长度
   if((TargetAdd ==  HCSYS.SwitchAddr)     //本板消息
     &&(0  ==  UDflag))                    //此消息为上层下发消息
   {
-    memcpy(&(DataNode[LayerAddr].data[0]),Frame,FrameLength);   //复制数据到本地缓存
+    if(0  ==  Frame->DataLength)  //无数据，表示为单元板应答
+    {
+      TransU.Length = 0;      //清除上传标志
+      return RES_ACKMSG;      //退出--返回此标志为应答标志
+    }
+    memcpy(&(DataNode[LayerAddr].data[0]),Frame,FrameLength+13);   //复制数据到本地缓存
     if((0<LayerAddr)&&(0xFF>LayerAddr))   //此消息需要传递到下一层
     {
       ((RS485FrameDef*)(DataNode[LayerAddr].data))->TargetAdd  	= LayerAddr;        //目标地址
       ((RS485FrameDef*)(DataNode[LayerAddr].data))->SourceAdd  	= 0x00; 						//源地址--下发为00
-      DataNode[LayerAddr].data[Frame->DataLength+12]						= BCC8(DataNode[LayerAddr].data,Frame->DataLength+11);  //重新计数校验
-      DataNode[LayerAddr].FarmeInfo.Length               						= FrameLength;    	//加上校验位，总共需要发送的数据长度
+      
+      DataNode[LayerAddr].data[Frame->DataLength+11]  = BCC8(DataNode[LayerAddr].data,Frame->DataLength+11);  //重新计数校验
+      DataNode[LayerAddr].data[Frame->DataLength+12]  = RS485end1;
+      
+      DataNode[LayerAddr].FarmeInfo.Length = Frame->DataLength+13;  //整个帧长度
+      DataNode[LayerAddr].FarmeInfo.UD     = 1;    //此数据需要转发到下一级
+      DataNode[LayerAddr].FarmeInfo.Flag   = 1;    //有数据标识
     }
     res	=	RES_OK;
   }
   else if(1  ==  UDflag)      //底层上传数据：需要添加本层地址后待上传
   {
+    if(0  ==  Frame->DataLength)  //无数据，表示为驱动板应答
+    {
+      TransD.Length = 0;      //清除下发标志
+      return RES_ACKMSG;      //退出--返回此标志为应答标志
+    }
     memcpy(&(DataNode[LayerAddr].data[0]),Frame,Frame->DataLength+13);      							//复制数据到本地缓存
     ((RS485FrameDef*)(DataNode[LayerAddr].data))->TargetAdd					= 0;    							//目标地址:上传为0
     ((RS485FrameDef*)(DataNode[LayerAddr].data))->SourceAdd					= HCSYS.SwitchAddr;  	//源地址
-    ((RS485FrameDef*)(DataNode[LayerAddr].data))->Addr.LayerAddr		= HCSYS.SwitchAddr;  	//加入本地址--层板地址
-    DataNode[LayerAddr].data[Frame->DataLength+12]									= BCC8(DataNode[LayerAddr].data,Frame->DataLength+11);  //重新计数校验
-    DataNode[LayerAddr].FarmeInfo.Length               									= FrameLength;    		//加上校验位，总共需要发送的数据长度
+    
+    ((RS485FrameDef*)(DataNode[LayerAddr].data))->Addr.LayerAddr    = HCSYS.SwitchAddr;  	//加入本地址--层板地址
+    
+    DataNode[LayerAddr].data[Frame->DataLength+11]  = BCC8(DataNode[LayerAddr].data,Frame->DataLength+11);  //重新计数校验
+    DataNode[LayerAddr].data[Frame->DataLength+12]  = RS485end1;
+    DataNode[LayerAddr].FarmeInfo.Length            = Frame->DataLength+13;  //整个帧长度
+    DataNode[LayerAddr].FarmeInfo.UD     = 0;    //此数据需要转发到上一级
+    DataNode[LayerAddr].FarmeInfo.Flag   = 1;    //有数据标识
     res	=	RES_OK;
   }
   else
@@ -383,9 +510,9 @@ HCResult SALayerDataProcess(const unsigned char *buffer,const unsigned short len
 {
 	HCResult	res	=	RES_OK;
   RS485FrameDef *Frame  = NULL;
-  unsigned char *Address  = NULL;	//地址域起始地址
+//  unsigned char *Address  = NULL;	//地址域起始地址
 	unsigned char TargetAdd	=	0;		//目标地址
-	unsigned char LayerAddr	=	0;		//层地址
+//	unsigned char LayerAddr	=	0;		//层地址
   if(NULL ==  buffer)		//空地址
   {
     return RES_NODATA;
@@ -396,6 +523,11 @@ HCResult SALayerDataProcess(const unsigned char *buffer,const unsigned short len
   if((TargetAdd ==  HCSYS.SwitchAddr)     //本板消息
     &&(0  ==  UDflag))                    //此消息为上层下发消息
   {
+    if(0  ==  Frame->DataLength)  //无数据，表示为层板应答
+    {
+      TransU.Length = 0;      //清除上传标志
+      return RES_ACKMSG;      //退出--返回此标志为应答标志
+    }
     memcpy(&(DataNode[0].data[0]),Frame,Frame->DataLength+13);   //复制数据到本地缓存
     res	=	RES_OK;
   }
@@ -453,7 +585,7 @@ HCResult CheckDataFarm(const unsigned char *buffer,const unsigned short length,c
   if(Bcc8 ==  ((unsigned char*)RS485Frame)[RS485Frame->DataLength+11])   	//校验位在消息尾端，不计算在消息长度内
   {
 		if(eBoxAck	==	RS485Frame->StsCode)
-			return RES_ACK;
+			return RES_ACKMSG;
 		else
 			return RES_FARME485;     	//232格式数据
   }  
@@ -474,7 +606,7 @@ HCResult RS485FarmCheck(const unsigned char *buffer,const unsigned short length,
   RS485FrameDef   *RS485Frame	= NULL;
 	RS232FrameDef		*RS232Frame	=	NULL;
   unsigned char   Bcc8      = 0;    //校验码
-  unsigned short  BassAddr  = 0;    //找到头标识符在输入数组中的偏移地址
+//  unsigned short  BassAddr  = 0;    //找到头标识符在输入数组中的偏移地址
 	if(NULL ==  buffer)		//空地址
   {
     return RES_NODATA;
@@ -527,7 +659,7 @@ HCResult RS485FarmCheck(const unsigned char *buffer,const unsigned short length,
   if(Bcc8 ==  ((unsigned char*)RS485Frame)[RS485Frame->DataLength+11])   	//校验位在消息尾端，不计算在消息长度内
   {
 		if(eBoxAck	==	RS485Frame->StsCode)
-			return RES_ACK;
+			return RES_ACKMSG;
 		else
 			return RES_OK;          //数据校验正确
   }  
@@ -566,15 +698,15 @@ unsigned short GetDataProcess(unsigned char *buffer,const unsigned char UDflag)
       for(i	=	1;i<=MaxNetPerLayer;i++) 				//遍历
       {
 				Length  = DataNode[i].FarmeInfo.Length;
-        if(Length&&(0x00 ==  DataNode[i].data[1]))
+        if(Length&&(DataNode[i].FarmeInfo.Flag)&&(0 ==  DataNode[i].FarmeInfo.UD))
         {
-					memcpy(TransU.data,DataNode[i].data,DataNode[i].FarmeInfo.Length);
-					memcpy(buffer,DataNode[i].data,DataNode[i].FarmeInfo.Length);
+					memcpy(TransU.data,DataNode[i].data,Length);
+					memcpy(buffer,DataNode[i].data,Length);
 					
-					TransU.Length = DataNode[i].FarmeInfo.Length;
-					TransU.Retry.Retry  = 0;
-					TransU.Retry.Time   = 0;
-					DataNode[i].FarmeInfo.Length = 0;    //清除缓存数据标志
+					TransU.Length               = Length;
+					TransU.Retry.Retry          = 0;
+					TransU.Retry.Time           = 0;
+          DataNode[i].FarmeInfo.Flag  =  0;  //清除待发送标志
 					return Length;
         }
       }
@@ -599,22 +731,22 @@ unsigned short GetDataProcess(unsigned char *buffer,const unsigned char UDflag)
       for(i	=	1;i<=MaxNetPerLayer;i++) //遍历
       {
 				Length  = DataNode[i].FarmeInfo.Length;
-        if(Length&&(0x00 !=  DataNode[i].data[1]))
+        if(Length&&(DataNode[i].FarmeInfo.Flag)&&(1 ==  DataNode[i].FarmeInfo.UD))
         {
 					memcpy(TransD.data,DataNode[i].data,Length);
 					memcpy(buffer,DataNode[i].data,Length);
 					
-					TransD.Length = Length;
-					TransD.Retry.Retry  = 0;
-					TransD.Retry.Time   = 0;
-					DataNode[i].FarmeInfo.Length = 0;    //清除缓存数据标志
+					TransD.Length                 = Length;
+					TransD.Retry.Retry            = 0;
+					TransD.Retry.Time             = 0;
+					DataNode[i].FarmeInfo.Flag  =  0;  //清除待发送标志
 					return Length;
         }
       }
       return 0;
     }
   }
-	return Length;
+//	return Length;
 }
 /*******************************************************************************
 * 函数名			:	function

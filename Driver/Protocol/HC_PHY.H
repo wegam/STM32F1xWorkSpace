@@ -97,7 +97,7 @@ typedef enum
 	RES_WRITE,			/* 2: Ğ´Êı¾İ */
 	RES_NOTRDY,			/* 3: Not Ready */
 	RES_PARERR,			/* 4: Invalid Parameter */
-	RES_ACK,				/* 5: Ó¦´ğÏûÏ¢ */
+	RES_ACKMSG,				/* 5: Ó¦´ğÏûÏ¢ */
 	RES_UNKNOW,			/* 6: Î´Ê¶±ğ */
 	RES_NODATA,			/* 7: ÎŞÊı¾İ */
   RES_FARMERR,	  // 8: Ö¡¸ñÊ½´íÎó
@@ -148,18 +148,19 @@ typedef	struct	_Addr						//Í¨Ñ¶µØÖ·½á¹¹Ìå£¨ÏÂĞĞÊ±£ºAddr1,Addr2,Addr3¶¼µÃÓĞÊı¾İ£
 }AddrDef;
 typedef	struct	_RS232Head
 {
-	unsigned char	Head1;		//b1	0xFA
-	unsigned char	Head2;		//b2	0xF5
-	unsigned char	Serial;		//b3			Á÷Ë®ºÅ 0x01~0x7D Ã¿´ÎÊ¹ÓÃºó¼Ó1(ÎªÁË²»ÓëÆğÊ¼·ûºÍ½áÊø·û³åÍ»£¬Á÷Ë®ºÅ×î´óÖµÎª0x7D)
-	CmdDef			Cmd;		//b4			ÃüÁîºÅ£º0x12-»ñÈ¡Ö¸¶¨IC¿¨ºÅ£¬0x13È¡Ò©,ÉÏ±¨ÃüÁîÒ²ÔÚ´ËÎ»
-	unsigned char	Bcc8;		//b5			Òì»òĞ£Ñé	//¼ÆËã·¶Î§Îª´ÓµØÖ·¿ªÊ¼(¼ÆËã³¤¶ÈDataLength)
-	StatusDef		StsCode;	//b7			×´Ì¬Âë/´íÎóÂë
-	unsigned char	DataLength;	//b8			Êı¾İ³¤¶È´ÓµØÖ·¿ªÊ¼¼ÆËã³¤¶È
+	unsigned char	Head1;		  //b1	0xFA
+	unsigned char	Head2;		  //b2	0xF5
+	unsigned char	Serial;		  //b3			Á÷Ë®ºÅ 0x01~0x7D Ã¿´ÎÊ¹ÓÃºó¼Ó1(ÎªÁË²»ÓëÆğÊ¼·ûºÍ½áÊø·û³åÍ»£¬Á÷Ë®ºÅ×î´óÖµÎª0x7D)
+	CmdDef			  Cmd;		    //b4			ÃüÁîºÅ£º0x12-»ñÈ¡Ö¸¶¨IC¿¨ºÅ£¬0x13È¡Ò©,ÉÏ±¨ÃüÁîÒ²ÔÚ´ËÎ»
+	unsigned char	Bcc8;		    //b5			Òì»òĞ£Ñé	//¼ÆËã·¶Î§Îª´ÓµØÖ·¿ªÊ¼(¼ÆËã³¤¶ÈDataLength)
+	StatusDef		  StsCode;	  //b7			×´Ì¬Âë/´íÎóÂë
+  unsigned char	UserCode;		//b8			ÓÃ»§Âë£º²»´¦Àí£¬Ô­Ñù·µ»Ø
+	unsigned char	DataLength;	//b9			Êı¾İ³¤¶È´ÓµØÖ·¿ªÊ¼¼ÆËã³¤¶È--°üº¬µØÖ·
 }RS232HeadDef;			//RS232Ö¡¸ñÊ½
 typedef	struct	_RS232Frame
 {
 	RS232HeadDef	Head;				//b1-b8		RS232±ê×¼Í·ÎÄ¼ş
-	AddrDef			Addr;				//b9-b12	Í¨Ñ¶µØÖ·½á¹¹Ìå£¨Èı¼¶µØÖ·£©
+	AddrDef			  Addr;				//b9-b12	Í¨Ñ¶µØÖ·½á¹¹Ìå£¨Èı¼¶µØÖ·£©
 	unsigned char	*data;	    //b3			Êı¾İ³¤¶ÈÎª(DataLength-3)µÄÊı¾İÆğÊ¼µØÖ·	
 }RS232FrameDef;			//RS232Ö¡¸ñÊ½
 
@@ -169,11 +170,11 @@ typedef	struct	_RS485Frame			//485Í¨Ñ¶ÏûÏ¢Ö¡½á¹¹ÌåMessageFarme
 	unsigned char	TargetAdd;	//b2			Ä¿±êµØÖ·£¨ÔİÊ±Àí½âÎªµ¥Ôª¹ñµØÖ·£©ÏÂ·¢Îª½ÓÊÕµØÖ·£¬ÉÏ´«Îª0x00
 	unsigned char	SourceAdd;	//b3			Ô´µØÖ· ÏÂ·¢Îª0x00£¬ÉÏ´«Îª±¾µØÖ·
 	unsigned char	Serial;			//b4			Á÷Ë®ºÅ 0x01~0x7D Ã¿´ÎÊ¹ÓÃºó¼Ó1(ÎªÁË²»ÓëÆğÊ¼·ûºÍ½áÊø·û³åÍ»£¬Á÷Ë®ºÅ×î´óÖµÎª0x7D)
-	CmdDef			Cmd;				//b5			ÃüÁîºÅ£º0x12-»ñÈ¡Ö¸¶¨IC¿¨ºÅ£¬0x13È¡Ò©,ÉÏ±¨ÃüÁîÒ²ÔÚ´ËÎ»
+	CmdDef			  Cmd;				//b5			ÃüÁîºÅ£º0x12-»ñÈ¡Ö¸¶¨IC¿¨ºÅ£¬0x13È¡Ò©,ÉÏ±¨ÃüÁîÒ²ÔÚ´ËÎ»
 	unsigned char	UserCode;		//b6			ÓÃ»§Âë£º²»´¦Àí£¬Ô­Ñù·µ»Ø
-	StatusDef		StsCode;		//b7			×´Ì¬Âë/´íÎóÂë	
-	unsigned char	DataLength;	//b11			dataÊı¾İ³¤¶È£¨*data)			
-	AddrDef			Addr;				//b8-b10	Í¨Ñ¶µØÖ·½á¹¹Ìå£¨Èı¼¶µØÖ·£©	
+	StatusDef		  StsCode;		//b7			×´Ì¬Âë/´íÎóÂë	
+	unsigned char	DataLength;	//b11			dataÊı¾İ³¤¶È£¨*data)	--²»°üº¬µØÖ·		
+	AddrDef			  Addr;				//b8-b10	Í¨Ñ¶µØÖ·½á¹¹Ìå£¨Èı¼¶µØÖ·£©	
 	unsigned char	*data;	    //b(DataLength)-b(DataLength)Êı¾İ	
 	unsigned char	Bcc8;				//b(DataLength+12)Òì»òĞ£Ñé	//¼ÆËã·¶Î§ÎªÆğÊ¼¶Îµ½Êı¾İ¶Î(RS485Head-data[DataLength-1])
 	unsigned char	EndCode;		//b(DataLength+13)½áÊø·û 0x7F
