@@ -4,7 +4,7 @@
 
 
 #define	MaxNetPerLayer	8					//每个结点所连接的最大支点数为64
-#define	TargetLayer			MBLayer		//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
+#define	TargetLayer			LALayer		//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	MBLayer					0					//网关板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	CALayer					1					//单元板在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	LALayer					2					//层板在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
@@ -17,9 +17,9 @@
 #define	RS485Head1			0x7E				//RS485头标识符
 #define	RS485end1				0x7F				//RS485尾标识符
 
-#define	ReSendCount			3						//重发次数
+#define	ReSendCount			5						//重发次数
 
-#define	BusDataSize		80						//一条消息携带的最大数据个数
+#define	BusDataSize		128						//一条消息携带的最大数据个数
 //#define	BascDataLen		64					//单元地址+层地址+槽地址+状态码
 //#define	BascDataLen		4						//单元地址+层地址+槽地址+状态码
 //#define	HeadDataLen		8						//单元地址+层地址+槽地址+状态码
@@ -152,16 +152,16 @@ typedef	struct	_RS232Head
 	unsigned char	Head2;		  //b2	0xF5
 	unsigned char	Serial;		  //b3			流水号 0x01~0x7D 每次使用后加1(为了不与起始符和结束符冲突，流水号最大值为0x7D)
 	CmdDef			  Cmd;		    //b4			命令号：0x12-获取指定IC卡号，0x13取药,上报命令也在此位
-	unsigned char	Bcc8;		    //b5			异或校验	//计算范围为从地址开始(计算长度DataLength)
-	StatusDef		  StsCode;	  //b7			状态码/错误码
-  unsigned char	UserCode;		//b8			用户码：不处理，原样返回
-	unsigned char	DataLength;	//b9			数据长度从地址开始计算长度--包含地址
+	unsigned char	Bcc8;		    //b5			异或校验	//计算范围为从地址开始(计算长度DataLength)	
+  unsigned char	UserCode;		//b6			用户码：不处理，原样返回
+	unsigned char	DataLength;	//b7			数据长度从地址开始计算长度--包含地址、数据和状态码
 }RS232HeadDef;			//RS232帧格式
 typedef	struct	_RS232Frame
 {
-	RS232HeadDef	Head;				//b1-b8		RS232标准头文件
-	AddrDef			  Addr;				//b9-b12	通讯地址结构体（三级地址）
-	unsigned char	*data;	    //b3			数据长度为(DataLength-3)的数据起始地址	
+	RS232HeadDef	Head;				//b1-b7		RS232标准头文件
+	AddrDef			  Addr;				//b8-b10	通讯地址结构体（三级地址）
+	StatusDef		  StsCode;	  //b11			状态码/错误码	
+	unsigned char	*data;	    //b12-n		数据长度为(DataLength-4)的数据起始地址	
 }RS232FrameDef;			//RS232帧格式
 
 typedef	struct	_RS485Frame			//485通讯消息帧结构体MessageFarme  
@@ -173,8 +173,8 @@ typedef	struct	_RS485Frame			//485通讯消息帧结构体MessageFarme
 	CmdDef			  Cmd;				//b5			命令号：0x12-获取指定IC卡号，0x13取药,上报命令也在此位
 	unsigned char	UserCode;		//b6			用户码：不处理，原样返回
 	StatusDef		  StsCode;		//b7			状态码/错误码	
-	unsigned char	DataLength;	//b11			data数据长度（*data)	--不包含地址		
-	AddrDef			  Addr;				//b8-b10	通讯地址结构体（三级地址）	
+	unsigned char	DataLength;	//b8			data数据长度（*data)	--不包含地址		
+	AddrDef			  Addr;				//b9-b11	通讯地址结构体（三级地址）	
 	unsigned char	*data;	    //b(DataLength)-b(DataLength)数据	
 	unsigned char	Bcc8;				//b(DataLength+12)异或校验	//计算范围为起始段到数据段(RS485Head-data[DataLength-1])
 	unsigned char	EndCode;		//b(DataLength+13)结束符 0x7F

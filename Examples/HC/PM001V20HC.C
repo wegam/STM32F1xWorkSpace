@@ -102,13 +102,13 @@ void PM001V20HC_Server(void)
 
   
 	//======================================模拟程序
-	if(time++>500)
+	if(time++>50)
 	{
 		time	=	0;
     length = GetDataProcess(RS232Buffer,0);
 		if(length)
 		{
-			RS485_DMASend(&gRS485Bus,RS232Buffer,length);	//RS485-DMA发送程序
+			USART_DMASend(RS232ASerialPort,RS232Buffer,length);	//RS485-DMA发送程序
 		}
     
 		length = GetDataProcess(RS485Buffer,1);

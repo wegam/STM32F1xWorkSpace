@@ -13,9 +13,11 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
-#ifdef PL009V33				//智能药架称重LCD板---单称重
+#ifdef PL009V33HC				//智能药架称重LCD板---单称重
 
-#include "PL009V33.H"
+#include "PL009V33HC.H"
+
+#include "HC_PHY.H"
 
 #include "R61509V.h"
 #include "CS5530.H"
@@ -56,7 +58,7 @@ u16 millisecond=0;
 
 RS485Def  RS485;
 OneWrieDef DS18B20;
-#define	Rs485Size	256
+#define	Rs485Size	32
 u8 RxdBuffe[Rs485Size]={0};
 u8 RevBuffe[Rs485Size]={0};
 u8 TxdBuffe[Rs485Size]={0};
@@ -82,8 +84,8 @@ u8	DspFlg	=	0;
 
 u16 BKlight	=	0;
 
-u8 lineCH1	=	0;
-u8 lineCH2	=	0;
+u8 lineCH1	=	120;
+u8 lineCH2	=	120;
 u8 lineT	=	0;
 
 
@@ -116,6 +118,10 @@ u16	HY	=	0;
 unsigned short	Color	=	0;
 u8 ADCc	=	0;
 u32 READ_GAIN	=	0;
+
+u8 WriteFlag	=	0;
+u16	row	=	1;
+unsigned short time	=	0;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -123,7 +129,7 @@ u32 READ_GAIN	=	0;
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL009V33_Configuration(void)
+void PL009V33HC_Configuration(void)
 {
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
 	
@@ -143,9 +149,12 @@ void PL009V33_Configuration(void)
 	
 	LCD_Configuration();
 	
+	LCD_Printf(0		,0,16	,LCD565_RED,"ID:%-0.3d",SWITCHID.nSWITCHID);		//待发药槽位，后边的省略号就是可变参数
 //	ADC_TempSensorConfiguration(&TempData);
 	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
+	
+	HCBoradSet(3,SWITCHID.nSWITCHID);
 	
 //	IWDG_Configuration(2000);			//独立看门狗配置---参数单位ms	
 
@@ -159,27 +168,14 @@ void PL009V33_Configuration(void)
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL009V33_Server(void)
+void PL009V33HC_Server(void)
 {	
 	unsigned short	tmepr=50;
-	double	WenDu	=	0.0;
 	IWDG_Feed();				//独立看门狗喂狗
-//	RS485_Server();		//通讯管理---负责信息的接收与发送
+	RS485_Server();		//通讯管理---负责信息的接收与发送
 //	LCD_Server();				//显示服务相关
-	CS5530_Server();		//称重服务，AD值处理，获取稳定值
-//	TempSensor_Server();	//内部温度传感器
-//	tmepr	=	DS18B20_Read(&DS18B20);						//复位Dallas,返回结果
-	WenDu	=	tmepr*0.0625;
-//	if(WenDubac!=WenDu)
-//	{
-		WenDubac	=	WenDu;
-		if(lineT>=240)
-			lineT	=	0;	
-//		LCD_Printf(200		,lineT,16	,"温度:%4.4f℃",WenDubac);		//待发药槽位，后边的省略号就是可变参数
-//		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",tmepr);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
-		lineT+=16;	
-//	}
-//	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
+//	CS5530_Server();		//称重服务，AD值处理，获取稳定值
+	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
 }
 /*******************************************************************************
 * 函数名		:	
@@ -236,8 +232,8 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 	CS5530_ADC_Value	=	0;
 	if((CS5530CH1.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530CH1.Data.WeighLive	!=CS5530_ADC_Value))
 	{
-		if(lineCH1>=240)
-			lineCH1	=	0;
+		if(lineCH1>=230)
+			lineCH1	=	120;
 		CS5530_ADC_Value	=	CS5530CH1.Data.WeighLive>>0;
 		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>5);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
 		LCD_Printf(0		,lineCH1,16	,LCD565_RED,"AD1:%0.8d",CS5530_ADC_Value>>5);				//待发药槽位，后边的省略号就是可变参数
@@ -251,8 +247,8 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 	
 	if((CS5530CH2.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530CH2.Data.WeighLive	!=CS5530_ADC_Value))
 	{
-		if(lineCH2>=240)
-			lineCH2	=	0;
+		if(lineCH2>=230)
+			lineCH2	=	120;
 		CS5530_ADC_Value	=	CS5530CH2.Data.WeighLive>>0;
 		USART_DMAPrintf	(UART4,"CH2:%0.8X\r\n",CS5530_ADC_Value>>5);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
 		LCD_Printf(200		,lineCH2,16	,LCD565_GBLUE,"AD2:%0.8d",CS5530_ADC_Value>>5);				//待发药槽位，后边的省略号就是可变参数		
@@ -333,37 +329,78 @@ void LCD_Server(void)			//显示服务相关
 *******************************************************************************/
 void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 {
+	HCResult	res;
 #if Master			//主机
 	RxNum=RS485_ReadBufferIDLE(&RS485,RevBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-	if(		RxNum								\
-			&&	(RevBuffe[0]	==	0xFB)			\
-			&&	(RevBuffe[1]	==	0xF6)			\
-		)
-	{		
-		Rs485_Time	=	0;
-		Rev_ADC	=	0;
-		Rev_ID	=	RevBuffe[2];
-		
-		Rev_ADC	+=	RevBuffe[3];
-		Rev_ADC	<<=	8;
-		Rev_ADC	+=	RevBuffe[4];
-		Rev_ADC<<=8;
-		Rev_ADC	+=	RevBuffe[5];
-		
-		LCD_Printf(0		,128	,16	,LCD565_RED,"接收到通道%0.2d称重值：%0.8d",Rev_ID,Rev_ADC);				//待发药槽位，后边的省略号就是可变参数
-		
-	}
-	if(Rs485_Time	++>5)
+	if(		RxNum	)
 	{
-		Rs485_Time	=	0;
-		TxdBuffe[0]	=	0xFA;
-		TxdBuffe[1]	=	0xF5;
-		TxdBuffe[2]	=	SlaveID;
-		TxdBuffe[3]	=	0x01;
-		RS485_DMASend	(&RS485,TxdBuffe,4);	//RS485-DMA发送程序
-		if(SlaveID++>=250)
-			SlaveID	=	1;
+		u16 temp	=	0;
+		u16 PenColor	=LCD565_RED;
+		
+		time	=	0;
+		
+		if(0	!=	WriteFlag)
+		{
+			WriteFlag	=	0;
+			PenColor	=LCD565_WHITE;
+		}
+		else
+		{
+			WriteFlag	=	1;
+			PenColor	=LCD565_GREEN;
+		}
+//		LCD_Fill(0,16,400,48,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+//		LCD_ShowHex(0,16,16,PenColor,RxNum,8,RevBuffe);    //显示十六进制数据
+		
+		if(row>=240-100)
+		{
+			LCD_Fill(0,16,400,240-100,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+			row	=	16;
+		}
+		if(16>row)
+		{
+			row=16;
+		}
+		
+		LCD_ShowHex(0,row,16,PenColor,RxNum,8,RevBuffe);                //显示十六进制数据
+		temp	=	8*3*RxNum;
+		if(0<temp%400)
+		{
+			row	+=	(temp/400+1)*16;
+		}
+		else
+		{
+			row	+=	(temp/400)*16;
+		}
+		res		=	SetDataProcess(RevBuffe,RxNum,0);
+		RxNum	=	GetAck(RevBuffe,0);
+		if(RxNum)
+		{
+			RS485_DMASend(&RS485,RevBuffe,RxNum);	//RS485-DMA发送程序
+		}
 	}
+	else if(time++>50)
+	{
+		time	=	0;
+		
+		RxNum	=	GetDataProcess(RevBuffe,0);				//获取需要上传的数据
+		if(RxNum)
+		{
+			RS485_DMASend(&RS485,RevBuffe,RxNum);	//RS485-DMA发送程序
+		}
+		
+	}
+//	if(Rs485_Time	++>5)
+//	{
+//		Rs485_Time	=	0;
+//		TxdBuffe[0]	=	0xFA;
+//		TxdBuffe[1]	=	0xF5;
+//		TxdBuffe[2]	=	SlaveID;
+//		TxdBuffe[3]	=	0x01;
+//		RS485_DMASend	(&RS485,TxdBuffe,4);	//RS485-DMA发送程序
+//		if(SlaveID++>=250)
+//			SlaveID	=	1;
+//	}
 #else
 	RxNum=RS485_ReadBufferIDLE(&RS485,(u32*)RevBuffe,(u32*)RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(		RxNum												\
@@ -411,7 +448,8 @@ void SwitchID_Server(void)	//拔码开关处理--动态更新拨码地址
 	if(SwitchID	!=	ID_Temp)
 	{
 		SwitchID	=	ID_Temp;
-		LCD_Printf(0		,0,32	,LCD565_RED,"地址：%0.2d",SwitchID);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(0		,0,16	,LCD565_RED,"ID:%-0.3d",SwitchID);				//待发药槽位，后边的省略号就是可变参数
+		HCBoradSet(2,SWITCHID.nSWITCHID);
 	}
 }
 /*******************************************************************************
@@ -425,7 +463,7 @@ void SwitchID_Server(void)	//拔码开关处理--动态更新拨码地址
 *******************************************************************************/
 void SwitchID_Configuration(void)
 {
-	SWITCHID.NumOfSW	=	6;
+	SWITCHID.NumOfSW	=	8;
 	
 	SWITCHID.SW1_PORT	=	GPIOC;
 	SWITCHID.SW1_Pin	=	GPIO_Pin_6;
@@ -444,6 +482,12 @@ void SwitchID_Configuration(void)
 	
 	SWITCHID.SW6_PORT	=	GPIOC;
 	SWITCHID.SW6_Pin	=	GPIO_Pin_13;
+	
+	SWITCHID.SW7_PORT	=	GPIOC;
+	SWITCHID.SW7_Pin	=	GPIO_Pin_14;
+	
+	SWITCHID.SW8_PORT	=	GPIOC;
+	SWITCHID.SW8_Pin	=	GPIO_Pin_15;
 	
 	SwitchIdInitialize(&SWITCHID);							//
 	
@@ -568,7 +612,7 @@ void RS485_Configuration(void)
 	RS485.RS485_CTL_PORT=GPIOA;
 	RS485.RS485_CTL_Pin=GPIO_Pin_11;
 	
-	RS485_DMA_ConfigurationNR	(&RS485,115200,Rs485Size);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485,19200,Rs485Size);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 /*******************************************************************************
 * 函数名			:	function

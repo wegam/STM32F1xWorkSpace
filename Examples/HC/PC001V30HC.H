@@ -1,5 +1,5 @@
-#ifndef __PC004V21HC_H
-#define __PC004V21HC_H
+#ifndef __PC001V30HC_H
+#define __PC001V30HC_H
 
 #include "stm32f10x_type.h"
 #include "HC_PHY.H"
@@ -7,78 +7,47 @@
 //#define	RS485MaxDataSize	64			//RS485总线最大数据长度
 //#define	Rs232MaxDataSize	64			//RS232最大数据长度
 
+
 //=============================RS485A总线端口(与上层/单元板通讯接口)
 
 	#define	RS485BusDataSize		64			//RS485总线最大数据长度
 	#define	RS485BusBaudRate		19200
-	#define	RS485BusSerialPort	USART2
-	#define	RS485BusCtlPort			GPIOA
-	#define	RS485BusCtlPin			GPIO_Pin_1
+	#define	RS485BusSerialPort	USART3
+	#define	RS485BusCtlPort			GPIOB
+	#define	RS485BusCtlPin			GPIO_Pin_12
 	//=============================RS485B总线端口(与下层/层板通讯接口)
 	#define	RS485layDataSize		64			//RS485总线最大数据长度
 	#define	RS485layBaudRate		19200
-	#define	RS485laySerialPort	UART4
-	#define	RS485layCtlPort			GPIOC
-	#define	RS485layCtlPin			GPIO_Pin_12
-	//=============================RS232A端口
-	#define	RS232ADataSize			64			//RS485总线最大数据长度
-	#define	RS232ABaudRate			19200
-	#define	RS232ASerialPort		USART1
-
-	//=============================RS232A端口
-	#define	RS232BDataSize			64			//RS485总线最大数据长度
-	#define	RS232BBaudRate			19200
-	#define	RS232BSerialPort		USART3
-
-	//=============================CAN.
-	#define	CANBaudRate					100000		//100K
+	#define	RS485laySerialPort	USART2
+	#define	RS485layCtlPort			GPIOA
+	#define	RS485layCtlPin			GPIO_Pin_1
 	
 	//=============================拨码开关端口
 	#define NumOfSwitch			8			//拨码位数
-	#define	GPIOxSW1		GPIOC
-	#define	PinxSW1			GPIO_Pin_0
+	#define	GPIOxSW1		GPIOB
+	#define	PinxSW1			GPIO_Pin_9
 
-	#define	GPIOxSW2		GPIOC
-	#define	PinxSW2			GPIO_Pin_1
+	#define	GPIOxSW2		GPIOB
+	#define	PinxSW2			GPIO_Pin_8
 
-	#define	GPIOxSW3		GPIOC
-	#define	PinxSW3			GPIO_Pin_2
+	#define	GPIOxSW3		GPIOB
+	#define	PinxSW3			GPIO_Pin_7
 
-	#define	GPIOxSW4		GPIOC
-	#define	PinxSW4			GPIO_Pin_3
+	#define	GPIOxSW4		GPIOB
+	#define	PinxSW4			GPIO_Pin_6
 
-	#define	GPIOxSW5		GPIOC
-	#define	PinxSW5			GPIO_Pin_4
+	#define	GPIOxSW5		GPIOB
+	#define	PinxSW5			GPIO_Pin_5
 
-	#define	GPIOxSW6		GPIOC
-	#define	PinxSW6			GPIO_Pin_5
+	#define	GPIOxSW6		GPIOB
+	#define	PinxSW6			GPIO_Pin_4
 
-	#define	GPIOxSW7		GPIOC
-	#define	PinxSW7			GPIO_Pin_6
+	#define	GPIOxSW7		GPIOB
+	#define	PinxSW7			GPIO_Pin_3
 
-	#define	GPIOxSW8		GPIOC
-	#define	PinxSW8			GPIO_Pin_7
+	#define	GPIOxSW8		GPIOA
+	#define	PinxSW8			GPIO_Pin_15
 	
-	//=============================锁及锁信号检测
-	#define	Lock1DrPort		GPIOB					//锁控制端口
-	#define	Lock1DrPin		GPIO_Pin_13		//锁控制管脚
-	#define	Lock1SiPort		GPIOB					//锁控制端口
-	#define	Lock1SiPin		GPIO_Pin_14		//锁控制管脚
-
-	#define	Lock2DrPort		GPIOB					//锁控制端口
-	#define	Lock2DrPin		GPIO_Pin_0		//锁控制管脚
-	#define	Lock2SiPort		GPIOB					//锁控制端口
-	#define	Lock2SiPin		GPIO_Pin_1		//锁控制管脚
-
-	#define	Lock3DrPort		GPIOA					//锁控制端口
-	#define	Lock3DrPin		GPIO_Pin_6		//锁控制管脚
-	#define	Lock3SiPort		GPIOA					//锁控制端口
-	#define	Lock3SiPin		GPIO_Pin_7		//锁控制管脚
-
-	#define	Lock4DrPort		GPIOA					//锁控制端口
-	#define	Lock4DrPin		GPIO_Pin_4		//锁控制管脚
-	#define	Lock4SiPort		GPIOA					//锁控制端口
-	#define	Lock4SiPin		GPIO_Pin_5		//锁控制管脚
 
 
 
@@ -102,8 +71,8 @@
 
 
 
-void PC004V21HC_Configuration(void);
-void PC004V21HC_Server(void);
+void PC001V30HC_Configuration(void);
+void PC001V30HC_Server(void);
 
 
 

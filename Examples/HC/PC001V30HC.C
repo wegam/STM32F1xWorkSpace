@@ -1,6 +1,6 @@
-#ifdef PC004V21HC				//单元控制板
+#ifdef PC001V30HC				//单元控制板
 
-#include "PC004V21HC.H"
+#include "PC001V30HC.H"
 #include "STM32F10x_BitBand.H"
 #include "STM32_GPIO.H"
 #include "STM32_SYS.H"
@@ -37,7 +37,7 @@ unsigned char RS485BufferD[1024]={0};		//与下层通讯相关数据缓存
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PC004V21HC_Configuration(void)
+void PC001V30HC_Configuration(void)
 {
 	
 	SYS_Configuration();							//系统配置---打开系统时钟 STM32_SYS.H	
@@ -51,7 +51,7 @@ void PC004V21HC_Configuration(void)
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,800);	//PWM设定-20161127版本
 	
 	RS485BufferD[1]	=	gSwitch.nSWITCHID;
-	HCBoradSet(1,gSwitch.nSWITCHID);
+	HCBoradSet(2,gSwitch.nSWITCHID);
 		
 //	IWDG_Configuration(2000);							//独立看门狗配置---参数单位ms
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
@@ -64,7 +64,7 @@ void PC004V21HC_Configuration(void)
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PC004V21HC_Server(void)
+void PC001V30HC_Server(void)
 {
 //  u8 *buffer;
 	unsigned short length;
@@ -136,7 +136,6 @@ void PC004V21HC_Server(void)
 *******************************************************************************/
 void Communiction_Configuration(void)
 {
-#if (TargetLayer	==	CALayer)	
 	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
 	gRS485Bus.USARTx						=	RS485BusSerialPort;
 	gRS485Bus.RS485_CTL_PORT		=	RS485BusCtlPort;
@@ -148,54 +147,6 @@ void Communiction_Configuration(void)
 	gRS485lay.RS485_CTL_PORT		=	RS485layCtlPort;
 	gRS485lay.RS485_CTL_Pin			=	RS485layCtlPin;
 	RS485_DMA_ConfigurationNR(&gRS485lay,RS485layBaudRate,RS485layDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	//=============================RS232A端口(USART1)
-	USART_DMA_ConfigurationNR	(RS232ASerialPort,RS232ABaudRate,RS232ADataSize);	//USART_DMA配置--查询方式，不开中断
-	
-	//=============================RS232B端口(USART3)
-	USART_DMA_ConfigurationNR	(RS232BSerialPort,RS232BBaudRate,RS232BDataSize);	//USART_DMA配置--查询方式，不开中断
-	
-	//=============================CAN
-	CAN_Configuration_NR(CANBaudRate);													//CAN1配置---标志位查询方式，不开中断
-	CAN_FilterInitConfiguration_StdData(0X01,0X000,0X000);			//CAN滤波器配置---标准数据帧模式---不过滤
-#endif
-#if (TargetLayer	==	LALayer)	
-	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
-	gRS485Bus.USARTx						=	RS485BusSerialPort;
-	gRS485Bus.RS485_CTL_PORT		=	RS485BusCtlPort;
-	gRS485Bus.RS485_CTL_Pin			=	RS485BusCtlPin;
-	RS485_DMA_ConfigurationNR(&gRS485Bus,RS485BusBaudRate,RS485BusDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	
-	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
-	gRS485lay.USARTx						=	RS485laySerialPort;
-	gRS485lay.RS485_CTL_PORT		=	RS485layCtlPort;
-	gRS485lay.RS485_CTL_Pin			=	RS485layCtlPin;
-	RS485_DMA_ConfigurationNR(&gRS485lay,RS485layBaudRate,RS485layDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-//	//=============================RS232A端口(USART1)
-//	USART_DMA_ConfigurationNR	(RS232ASerialPort,RS232ABaudRate,RS232ADataSize);	//USART_DMA配置--查询方式，不开中断
-//	
-//	//=============================RS232B端口(USART3)
-//	USART_DMA_ConfigurationNR	(RS232BSerialPort,RS232BBaudRate,RS232BDataSize);	//USART_DMA配置--查询方式，不开中断
-
-#endif
-#if (TargetLayer	==	MBLayer)	
-	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
-	gRS485Bus.USARTx						=	RS485BusSerialPort;
-	gRS485Bus.RS485_CTL_PORT		=	RS485BusCtlPort;
-	gRS485Bus.RS485_CTL_Pin			=	RS485BusCtlPin;
-	RS485_DMA_ConfigurationNR(&gRS485Bus,RS485BusBaudRate,RS485BusDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	
-	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
-	gRS485lay.USARTx						=	RS485laySerialPort;
-	gRS485lay.RS485_CTL_PORT		=	RS485layCtlPort;
-	gRS485lay.RS485_CTL_Pin			=	RS485layCtlPin;
-	RS485_DMA_ConfigurationNR(&gRS485lay,RS485layBaudRate,RS485layDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	//=============================RS232A端口(USART1)
-	USART_DMA_ConfigurationNR	(RS232ASerialPort,RS232ABaudRate,RS232ADataSize);	//USART_DMA配置--查询方式，不开中断
-
-	//=============================CAN
-	CAN_Configuration_NR(CANBaudRate);													//CAN1配置---标志位查询方式，不开中断
-	CAN_FilterInitConfiguration_StdData(0X01,0X000,0X000);			//CAN滤波器配置---标准数据帧模式---不过滤
-#endif
 }
 /*******************************************************************************
 * 函数名			:	Communiction_Configuration

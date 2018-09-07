@@ -416,45 +416,45 @@ void LCD_Fill(
 {          
 	unsigned int i;
 	unsigned int j;	
-	unsigned short HSX,HEX,HSY,HEY,MaxH,MaxV;
-	eRotate	Rotate	=	LCDSYS->Flag.Rotate;
-	
-	MaxH	=	LCDSYS->Data.MaxH;
-	MaxV	=	LCDSYS->Data.MaxV;
-	
-	switch(Rotate)
-	{
-		case 	Draw_Rotate_0D:
-					HSX	=	0;
-					HEX	=	MaxH-1;
-					HSY	=	0;
-					HEY	=	MaxV-1;
-			break;
-		case	Draw_Rotate_90D:
-					HSX	=	x1;
-					HEX	=	x2;
-					HSY	=	y1;
-					HEY	=	y2;
-			break;
-		case	Draw_Rotate_180D:
-					HSX	=	0;
-					HEX	=	MaxH-1;
-					HSY	=	0;
-					HEY	=	MaxV-1;
-			break;
-		default:
-					HSX	=	0;
-					HEX	=	MaxV-1;
-					HSY	=	0;
-					HEY	=	MaxH-1;
-			break;			
-	}
-
-	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);
+//	unsigned short HSX,HEX,HSY,HEY,MaxH,MaxV;
+//	eRotate	Rotate	=	LCDSYS->Flag.Rotate;
+//	
+//	MaxH	=	LCDSYS->Data.MaxH;
+//	MaxV	=	LCDSYS->Data.MaxV;
+//	
+//	switch(Rotate)
+//	{
+//		case 	Draw_Rotate_0D:
+//					HSX	=	x1;
+//					HEX	=	x2;
+//					HSY	=	y1;
+//					HEY	=	y2;
+//			break;
+//		case	Draw_Rotate_90D:
+//					HSX	=	x1;
+//					HEX	=	x2;
+//					HSY	=	y1;
+//					HEY	=	y2;
+//			break;
+//		case	Draw_Rotate_180D:
+//					HSX	=	x1;
+//					HEX	=	x2;
+//					HSY	=	y1;
+//					HEY	=	y2;
+//			break;
+//		default:
+//					HSX	=	x1;
+//					HEX	=	x2;
+//					HSY	=	y1;
+//					HEY	=	y2;
+//			break;			
+//	}
+//	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);
+	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);
 	LCD_WriteDataStart();
-	for(i=0;i<=HEX-HSX;i++)
+	for(i=0;i<=x2-x1;i++)
 	{
-		for(j=0;j<=HEY-HSY;j++)
+		for(j=0;j<=y2-y1;j++)
 		{
 			LCD_WriteData(color);
 		}

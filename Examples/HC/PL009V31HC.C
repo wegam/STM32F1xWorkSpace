@@ -13,9 +13,9 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
-#ifdef PL009V31				//称重LCD板---双称重
+#ifdef PL009V31HC				//称重LCD板---双称重
 
-#include "PL009V31.H"
+#include "PL009V31HC.H"
 
 #include "R61509V.h"
 #include "CS5530.H"
@@ -78,6 +78,9 @@ u8	DspFlg	=	0;
 
 u16 BKlight	=	0;
 
+u8 WriteFlag	=	0;
+u16	row	=	1;
+
 
 
 CS5530Def CS5530;
@@ -115,7 +118,7 @@ u32 SYSTIME	=	0;
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL009V31_Configuration(void)
+void PL009V31HC_Configuration(void)
 {
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
 	
@@ -123,17 +126,19 @@ void PL009V31_Configuration(void)
 	
 //	SwitchID_Configuration();
 //	
-	CS5530_Configuration();
+//	CS5530_Configuration();
 	
-//	RS485_Configuration();
+	RS485_Configuration();
 	
 	LCD_Configuration();	
+	
+	LCD_Printf(0,32,32,LCD565_CYAN,"LCD初始化完成");  //后边的省略号就是可变参数
 	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(2000);			//独立看门狗配置---参数单位ms	
 
-	PWM_OUT(TIM2,PWM_OUTChannel1,1,500);	//PWM设定-20161127版本--运行指示灯
+	PWM_OUT(TIM2,PWM_OUTChannel1,500,900);	//PWM设定-20161127版本--运行指示灯
 	USART_DMA_ConfigurationNR	(USART1,115200,64);	//USART_DMA配置--查询方式，不开中断
 //	PWM_OUT(TIM2,PWM_OUTChannel4,500,200);		//PWM设定-20161127版本--背光
 //	LCD_Clean(LCD565_RED);			//清除屏幕函数--
@@ -154,13 +159,13 @@ void PL009V31_Configuration(void)
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL009V31_Server(void)
+void PL009V31HC_Server(void)
 {	
 //	GPIO_Toggle	(GPIOB,	GPIO_Pin_3);		//将GPIO相应管脚输出翻转----V20170605
 //	IWDG_Feed();				//独立看门狗喂狗
 //	RS485_Server();			//通讯管理---负责信息的接收与发送
 	LCD_Server();				//显示服务相关
-	CS5530_Server();	//称重服务，AD值处理，获取稳定值
+//	CS5530_Server();	//称重服务，AD值处理，获取稳定值
 //	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
 }
 /*******************************************************************************
@@ -287,6 +292,65 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 *******************************************************************************/
 void LCD_Server(void)			//显示服务相关
 {
+	#if 1
+//	if(ATTime++>1000)
+//	{
+//		ATTime=0;
+//		if(ATNum++>4)
+//			ATNum=0;
+//		LCD_Clean(LCD565_BLACK); 					//清除屏幕函数
+//	}
+//	LCD_ShowAntenna(300,0,ATNum,200);   //显示12x12天线
+	RxNum=RS485_ReadBufferIDLE(&RS485,RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(RxNum)
+	{
+		u16 temp	=	0;
+		u16 PenColor	=LCD565_RED;
+		if(0	!=	WriteFlag)
+		{
+			WriteFlag	=	0;
+			PenColor	=LCD565_WHITE;
+		}
+		else
+		{
+			WriteFlag	=	1;
+			PenColor	=LCD565_GREEN;
+		}
+//		temp	=	8*3*RxNum;
+//		if(0<temp%400)
+//		{
+//			temp	=	(temp/400+1)*16;
+//		}
+//		else
+//		{
+//			temp	=	(temp/400)*16;
+//		}
+		if(row>=240-32)
+		{
+			LCD_Clean(LCD565_BLACK); 					//清除屏幕函数
+			row	=	0;
+		}
+		
+		LCD_ShowHex(0,row,16,PenColor,RxNum,8,RxdBuffe);                //显示十六进制数据
+		temp	=	8*3*RxNum;
+		if(0<temp%400)
+		{
+			row	+=	(temp/400+1)*16;
+		}
+		else
+		{
+			row	+=	(temp/400)*16;
+		}
+		if(row>=240-32)
+		{
+//			row=0;
+//			LCD_Clean(LCD565_BLACK); 					//清除屏幕函数
+		}
+//		LCD_Show(0,100,32,RxNum,RxdBuffe);
+//		PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
+	}
+	return;
+#endif
 #if 0
 	u32 LCDTime=100;
 //	u8 i	=	0;
@@ -391,7 +455,7 @@ void LCD_Server(void)			//显示服务相关
 	}
 //	SysTick_DeleymS(100);					//SysTick延时nmS
 #endif
-#if 1		//刷屏测试
+#if 0		//刷屏测试
 	u32 LCDTime=500;
 ////	u8 i	=	0;
 //	for(Color	=	0;Color<=0xFFFF;)
@@ -744,6 +808,9 @@ void LCD_Configuration(void)
 	SPIx->Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
 	
 	R61509V_Initialize(&sLCD);
+	
+	GPIO_PinRemapConfig(GPIO_PartialRemap1_TIM2,ENABLE);				//I/O口重映射开启
+	PWM_OUTRemap(TIM2,PWM_OUTChannel2,500,50);									//PWM设定-20161127版本--运行指示灯
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -806,7 +873,7 @@ void RS485_Configuration(void)
 	RS485.RS485_CTL_PORT=GPIOA;
 	RS485.RS485_CTL_Pin=GPIO_Pin_1;
 	
-	RS485_DMA_ConfigurationNR	(&RS485,9600,Rs485Size);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	RS485_DMA_ConfigurationNR	(&RS485,19200,Rs485Size);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 
 
