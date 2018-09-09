@@ -20,6 +20,8 @@
 
 #include "string.h"				//串和内存操作函数头文件
 
+#include "stm32f10x_crc.h"
+
 //=============================RS485A总线端口(与上层/单元板通讯接口)
 RS485Def gRS485Bus;			//与上层总线接口(网关板)
 //RS485Def gRS485lay;			//与下级总线接口(层板)	
@@ -30,6 +32,7 @@ unsigned char PowerFlag	=	0;
 unsigned short time	=	0;
 unsigned char RS232Buffer[1024]={0};		//与上层通讯相关数据缓存
 unsigned char RS485Buffer[1024]={0};		//与下层通讯相关数据缓存
+unsigned short length;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -46,7 +49,9 @@ void PM001V20HC_Configuration(void)
 	Communiction_Configuration();			//通讯接口配置：包含RS485,RS232,CAN
 //	Switch_Configuration();						//拨码开关配置
 //	Lock_Configuration();							//锁端口配置
-	
+
+	/* Enable CRC clock */
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
 	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,800);	//PWM设定-20161127版本
 	
@@ -67,7 +72,7 @@ void PM001V20HC_Configuration(void)
 void PM001V20HC_Server(void)
 {
 //  u8 *buffer;
-	unsigned short length;
+	
 	
 	IWDG_Feed();								//独立看门狗喂狗
 	
@@ -77,7 +82,7 @@ void PM001V20HC_Server(void)
 	{
 		HCResult	res;
 		time	=	0;
-		res	=	SetDataProcess(RS232Buffer,length,0);
+		res	=	APISetDataProcess(RS232Buffer,length);
 	}
 	length	=	GetAck(RS232Buffer,0);
 	if(length)
@@ -91,7 +96,7 @@ void PM001V20HC_Server(void)
 	{
 		HCResult	res;
 		time	=	0;
-		res	=	SetDataProcess(RS485Buffer,length,1);
+		res	=	APISetDataProcess(RS485Buffer,length);
 	}
 	length	=	GetAck(RS485Buffer,1);
 	if(length)

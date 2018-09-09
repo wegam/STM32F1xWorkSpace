@@ -20,6 +20,8 @@
 
 #include "string.h"				//串和内存操作函数头文件
 
+#include "stm32f10x_crc.h"
+
 //=============================RS485A总线端口(与上层/单元板通讯接口)
 RS485Def gRS485Bus;			//与上层总线接口(网关板)
 RS485Def gRS485lay;			//与下级总线接口(层板)	
@@ -30,6 +32,7 @@ unsigned char PowerFlag	=	0;
 unsigned short time	=	0;
 unsigned char RS485BufferU[1024]={0};		//与上层通讯相关数据缓存
 unsigned char RS485BufferD[1024]={0};		//与下层通讯相关数据缓存
+unsigned long Crr = 0;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -55,6 +58,7 @@ void PC001V30HC_Configuration(void)
 		
 //	IWDG_Configuration(2000);							//独立看门狗配置---参数单位ms
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
+  
 	
 }
 /*******************************************************************************

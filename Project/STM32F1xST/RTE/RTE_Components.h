@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xST' 
- * Target:  'SPI_M25P64_FLASH' 
+ * Target:  'SPI_CRC' 
  */
 
 #ifndef RTE_COMPONENTS_H
