@@ -48,7 +48,7 @@ typedef enum
 	Err_FAULT_DIFFOVF				=	0x05,	//称重差值过大
 	Err_FAULT_SENSOR				=	0x06,	//传感器故障
 	Err_FAULT_ILLIGALWEIGHT	=	0x07,	//称重数值非法
-	Err_FAULT_WEIGHTOVF		=	0x08,	//称重数据溢出
+	Err_FAULT_WEIGHTOVF		  =	0x08,	//称重数据溢出
 	Err_Fault_Nocail				=	0x09,	//称重未标定
 	Err_CC_Error						=	0x0A,	//校验错误
 	Err_TimeOut							=	0x0B,	//连接超时
@@ -273,15 +273,15 @@ typedef	struct	_HCSYS
 
 HCResult APISetDataProcess(const void *buffer,const unsigned short length);
 
-HCResult RS485ToRS485(const unsigned long *buffer,const unsigned short length);
-RS485FrameDef* RS485Step1FindData(const unsigned long *buffer,const unsigned short length);		//查找RS485数据在buffer中的起始地址并校验数据
-HCResult RS485Step2AckProcess(const unsigned long *buffer,const unsigned short length);
-HCResult RS485Step3SaveData(const unsigned long *buffer,const unsigned short length);
+HCResult RS485ToRS485(const void *buffer,const unsigned short length);
+RS485FrameDef* RS485Step1FindData(const void *buffer,const unsigned short length);		//查找RS485数据在buffer中的起始地址并校验数据
+HCResult RS485Step2AckProcess(const void *buffer,const unsigned short length);
+HCResult RS485Step3SaveData(const void *buffer,const unsigned short length);
 
-HCResult RS232ToRS485(const unsigned long *buffer,const unsigned short length);
-RS232FrameDef* RS232Step1FindData(const unsigned long *buffer,const unsigned short length);
-HCResult RS232Step2AckProcess(const unsigned long *buffer,const unsigned short length);
-HCResult RS232Step3SaveData(const unsigned long *buffer,const unsigned short length);
+HCResult RS232ToRS485(const void *buffer,const unsigned short length);
+RS232FrameDef* RS232Step1FindData(const void *buffer,const unsigned short length);
+HCResult RS232Step2AckProcess(const void *buffer,const unsigned short length);
+HCResult RS232Step3SaveData(const void *buffer,const unsigned short length);
 
 
 unsigned short APIRS485GetUplinkData(unsigned char *buffer);

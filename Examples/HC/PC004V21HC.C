@@ -30,6 +30,7 @@ unsigned char PowerFlag	=	0;
 unsigned short time	=	0;
 unsigned char RS485BufferU[1024]={0};		//与上层通讯相关数据缓存
 unsigned char RS485BufferD[1024]={0};		//与下层通讯相关数据缓存
+unsigned char TestBuffer[]={0x7E,0x01,0x00,0x04,0x04,0x0E,0x00,0x05,0x01,0x02,0x01,0x00,0x00,0x76,0x7F};
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -50,8 +51,10 @@ void PC004V21HC_Configuration(void)
 	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,800);	//PWM设定-20161127版本
 	
-	RS485BufferD[1]	=	gSwitch.nSWITCHID;
-	HCBoradSet(1,gSwitch.nSWITCHID);
+//	RS485BufferD[1]	=	gSwitch.nSWITCHID;
+//	HCBoradSet(1,gSwitch.nSWITCHID);
+  
+  HCBoradSet(1,1);
 		
 //	IWDG_Configuration(2000);							//独立看门狗配置---参数单位ms
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
@@ -95,6 +98,10 @@ void PC004V21HC_Server(void)
 	{
 //		RS485_DMAPrintf(&gRS485Bus,"test");
 		time	=	0;
+    
+    APISetDataProcess(TestBuffer,15);
+    
+    
 		length	=	APIRS485GetUplinkData(RS485BufferU);
 		if(length)
 		{
