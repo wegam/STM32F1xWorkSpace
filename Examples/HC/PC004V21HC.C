@@ -77,48 +77,38 @@ void PC004V21HC_Server(void)
 	{
 		HCResult	res;
 		time	=	0;
-		res	=	SetDataProcess(RS485BufferU,length,0);
+		res	=	APISetDataProcess(RS485BufferU,length);
 	}
-	length	=	GetAck(RS485BufferU,0);
-	if(length)
-	{
-		time	=	0;
-		RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
-	}
-  
-  
-  //======================================下行总线
+	//======================================下行总线
   length	=	RS485_ReadBufferIDLE(&gRS485lay,RS485BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(length)
 	{
 		HCResult	res;
 		time	=	0;
-		res	=	SetDataProcess(RS485BufferD,length,1);
+		res	=	APISetDataProcess(RS485BufferD,length);
 	}
-	length	=	GetAck(RS485BufferD,1);
-	if(length)
-	{
-		time	=	0;
-		RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
-	}
-
-  
+	
+	
+	  
 	//======================================模拟程序
 	if(time++>50)
 	{
+//		RS485_DMAPrintf(&gRS485Bus,"test");
 		time	=	0;
-    length = GetDataProcess(RS485BufferU,0);
+		length	=	APIRS485GetUplinkData(RS485BufferU);
 		if(length)
 		{
+			time	=	0;
+			
 			RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
 		}
-    
-		length = GetDataProcess(RS485BufferD,1);
+		length	=	APIRS485GetdownlinkData(RS485BufferD);
 		if(length)
 		{
+			time	=	0;
 			RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
 		}
-		else if(0 == PowerFlag)
+		if(0 == PowerFlag)
 		{
 			PowerFlag	=	1;
 			GetSubOnlineAddr();
@@ -136,7 +126,6 @@ void PC004V21HC_Server(void)
 *******************************************************************************/
 void Communiction_Configuration(void)
 {
-#if (TargetLayer	==	CALayer)	
 	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
 	gRS485Bus.USARTx						=	RS485BusSerialPort;
 	gRS485Bus.RS485_CTL_PORT		=	RS485BusCtlPort;
@@ -157,45 +146,7 @@ void Communiction_Configuration(void)
 	//=============================CAN
 	CAN_Configuration_NR(CANBaudRate);													//CAN1配置---标志位查询方式，不开中断
 	CAN_FilterInitConfiguration_StdData(0X01,0X000,0X000);			//CAN滤波器配置---标准数据帧模式---不过滤
-#endif
-#if (TargetLayer	==	LALayer)	
-	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
-	gRS485Bus.USARTx						=	RS485BusSerialPort;
-	gRS485Bus.RS485_CTL_PORT		=	RS485BusCtlPort;
-	gRS485Bus.RS485_CTL_Pin			=	RS485BusCtlPin;
-	RS485_DMA_ConfigurationNR(&gRS485Bus,RS485BusBaudRate,RS485BusDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	
-	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
-	gRS485lay.USARTx						=	RS485laySerialPort;
-	gRS485lay.RS485_CTL_PORT		=	RS485layCtlPort;
-	gRS485lay.RS485_CTL_Pin			=	RS485layCtlPin;
-	RS485_DMA_ConfigurationNR(&gRS485lay,RS485layBaudRate,RS485layDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-//	//=============================RS232A端口(USART1)
-//	USART_DMA_ConfigurationNR	(RS232ASerialPort,RS232ABaudRate,RS232ADataSize);	//USART_DMA配置--查询方式，不开中断
-//	
-//	//=============================RS232B端口(USART3)
-//	USART_DMA_ConfigurationNR	(RS232BSerialPort,RS232BBaudRate,RS232BDataSize);	//USART_DMA配置--查询方式，不开中断
 
-#endif
-#if (TargetLayer	==	MBLayer)	
-	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
-	gRS485Bus.USARTx						=	RS485BusSerialPort;
-	gRS485Bus.RS485_CTL_PORT		=	RS485BusCtlPort;
-	gRS485Bus.RS485_CTL_Pin			=	RS485BusCtlPin;
-	RS485_DMA_ConfigurationNR(&gRS485Bus,RS485BusBaudRate,RS485BusDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	
-	//=============================RS485Bus总线端口(与上层/单元板通讯接口)
-	gRS485lay.USARTx						=	RS485laySerialPort;
-	gRS485lay.RS485_CTL_PORT		=	RS485layCtlPort;
-	gRS485lay.RS485_CTL_Pin			=	RS485layCtlPin;
-	RS485_DMA_ConfigurationNR(&gRS485lay,RS485layBaudRate,RS485layDataSize);			//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-	//=============================RS232A端口(USART1)
-	USART_DMA_ConfigurationNR	(RS232ASerialPort,RS232ABaudRate,RS232ADataSize);	//USART_DMA配置--查询方式，不开中断
-
-	//=============================CAN
-	CAN_Configuration_NR(CANBaudRate);													//CAN1配置---标志位查询方式，不开中断
-	CAN_FilterInitConfiguration_StdData(0X01,0X000,0X000);			//CAN滤波器配置---标准数据帧模式---不过滤
-#endif
 }
 /*******************************************************************************
 * 函数名			:	Communiction_Configuration

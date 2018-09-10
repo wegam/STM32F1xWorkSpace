@@ -4,7 +4,7 @@
 
 
 #define	MaxNetPerLayer	8					//每个结点所连接的最大支点数为64
-#define	TargetLayer			LALayer		//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
+//#define	TargetLayer			LALayer		//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	MBLayer					0					//网关板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	CALayer					1					//单元板在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	LALayer					2					//层板在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
@@ -12,21 +12,28 @@
 
 #define	SubTargetAdd		HCSYS.Layer+1	//下一级目标地址
 
-#define	RS232Head1			0xFA				//RS232头标识符第一字节
-#define	RS232Head2			0xF5				//RS232头标识符第二字节
-#define	RS485HeadCode		0x7E				//RS485头标识符
-#define	RS485endCode		0x7F				//RS485尾标识符
+#define	RS232Head1			(unsigned char)0xFA				//RS232头标识符第一字节
+#define	RS232Head2			(unsigned char)0xF5				//RS232头标识符第二字节
+#define	RS485HeadCode		(unsigned char)0x7E				//RS485头标识符
+#define	RS485endCode		(unsigned char)0x7F				//RS485尾标识符
 
-#define	ReSendCount			5						//重发次数
+#define	ReSendCount			2						//重发次数
 
 #define	BusDataSize		128						//一条消息携带的最大数据个数
+#define	SelfBuffSize				10					//本地址需要处理的消息缓存大小(不需要转发给下一层的消息)
+
 //#define	BascDataLen		64					//单元地址+层地址+槽地址+状态码
 //#define	BascDataLen		4						//单元地址+层地址+槽地址+状态码
 //#define	HeadDataLen		8						//单元地址+层地址+槽地址+状态码
-#define	StartFrameLen 	8             		//RS485通讯起始帧长度
-#define	AckFrameLen		MinFrameLen			//应答帧长度
-#define	MinFrameLen		10				 	//最短帧长度要求---应答消息长度10
-#define	SelfBuffSize	10					//本地址需要处理的消息缓存大小(不需要转发给下一层的消息)
+#define	RS485StartFrameLen 	8             		//RS485通讯起始帧长度
+#define	RS485AckFrameLen		RS485MinFrameLen			//应答帧长度
+#define	RS485MinFrameLen		10				 	//最短帧长度要求---应答消息长度10
+
+
+#define	RS232StartFrameLen 	RS232MinFrameLen   	//RS485通讯起始帧长度
+#define	RS232AckFrameLen		RS232MinFrameLen		//应答帧长度
+#define	RS232MinFrameLen		7				 						//最短帧长度要求---应答消息长度10
+
 
 #define	CMDRead(n)		(n&0x80)			//最高位为1
 #define	CMDWrite(n)		(!(n&0x80))		//最高位为0
@@ -120,39 +127,30 @@ typedef enum
 	RES_FARME485,		// 9: 232格式数据
 	RES_LINK				// 9: 透传 例如升级使用，直接转发
 }HCResult;
-typedef enum
-{
-	FRAME_TYPE_DATA						=	0x01,		//帧类型--数据帧
-	FRAME_TYPE_ACK						=	0x02,		//帧类型--应答帧
-	FRAME_TYPE_INVALID				=	0x00		//帧类型--无效帧
-}FrameTypeDef;	//帧类型
-typedef enum _OrderState
-{
-	ORDER_STAT_IDLE						=	0,			//空闲状态
-	ORDER_STAT_WORK						=	1				//工作状态--忙状态
-}OrderStateDef;	//工作状态
+//typedef enum
+//{
+//	FRAME_TYPE_DATA						=	0x01,		//帧类型--数据帧
+//	FRAME_TYPE_ACK						=	0x02,		//帧类型--应答帧
+//	FRAME_TYPE_INVALID				=	0x00		//帧类型--无效帧
+//}FrameTypeDef;	//帧类型
+//typedef enum _OrderState
+//{
+//	ORDER_STAT_IDLE						=	0,			//空闲状态
+//	ORDER_STAT_WORK						=	1				//工作状态--忙状态
+//}OrderStateDef;	//工作状态
+//typedef struct	_Step
+//{
+//	unsigned char	IDLE:1;			//b0	空闲标志,					0-空闲，1-根据以下位的忙状态
+//	unsigned char	SendU:1;		//b1	往上级发送标志,		0-空闲，1-表示正在发送中
+//	unsigned char	WaitU:1;		//b2	等待上级响应标志,	0-空闲，1-表示等待下层板响应
+//	unsigned char	SendD:1;		//b3	往下级发送标志,		0-空闲，1-表示正在发送中
+//	unsigned char	WaitD:1;		//b4	等待下级响应标志,	0-空闲，1-表示等待下层板响应	
+//}StepDef;
 
 
-typedef struct	_RS232Fram
-{
-	unsigned short 	FarmLen;
-	unsigned char		Data[];
-}RS232FramDef;		//RS232消息帧格式(PC机通讯)
-typedef struct	_RS485Fram
-{
-	unsigned short 	FarmLen;
-	unsigned char		Data[];
-}RS485FramDef;		//RS485消息帧格式()
 
-typedef struct	_Step
-{
-	unsigned char	IDLE:1;			//b0	空闲标志,					0-空闲，1-根据以下位的忙状态
-	unsigned char	SendU:1;		//b1	往上级发送标志,		0-空闲，1-表示正在发送中
-	unsigned char	WaitU:1;		//b2	等待上级响应标志,	0-空闲，1-表示等待下层板响应
-	unsigned char	SendD:1;		//b3	往下级发送标志,		0-空闲，1-表示正在发送中
-	unsigned char	WaitD:1;		//b4	等待下级响应标志,	0-空闲，1-表示等待下层板响应
-	
-}StepDef;
+
+
 
 //-----------------------------------------------------------------------------------结构体
 typedef	struct	_Addr						//通讯地址结构体（下行时：Addr1,Addr2,Addr3都得有数据，上行时，柜地址为0x00）,如果下发消息到中间层，则此层后面的地址必须设定为0x00
@@ -169,16 +167,23 @@ typedef	struct	_RS232Head
 	CmdDef			  Cmd;		    //b4			命令号：0x12-获取指定IC卡号，0x13取药,上报命令也在此位
 	unsigned char	Bcc8;		    //b5			异或校验	//计算范围为从地址开始(计算长度DataLength)	
   unsigned char	UserCode;		//b6			用户码：不处理，原样返回
-	unsigned char	DataLength;	//b7			数据长度从地址开始计算长度--包含地址、数据和状态码
+	unsigned char	DataLength;	//b7			数据长度从地址开始计算长度--(3字节地址+1字节状态码+n字节数据）
 }RS232HeadDef;			//RS232帧格式
+
 typedef	struct	_RS232Frame
 {
-	RS232HeadDef	Head;				//b1-b7		RS232标准头文件
-	AddrDef			  Addr;				//b8-b10	通讯地址结构体（三级地址）
-	ErrCodeDef	  ErrCode;	  //b11			状态码/错误码	
+	RS232HeadDef	Start;				//b1-b7		RS232标准头文件
 	unsigned char	*data;	    //b12-n		数据长度为(DataLength-4)的数据起始地址	
-}RS232FrameDef;			//RS232帧格式
+}RS232FrameDef;			//RS232消息帧格式(PC机通讯)
 
+
+
+
+//typedef struct	_RS485Fram
+//{
+//	unsigned short 	FarmLen;
+//	unsigned char		Data[];
+//}RS485FramDef;		//RS485消息帧格式()
 typedef	struct	_RS485StartFrame  //485通讯消息帧结构体MessageFarme  
 {
 	unsigned char	HeadCode;		  //b1			识别符	0x7E  
@@ -216,22 +221,10 @@ typedef	struct	_RS485Frame			//485通讯消息帧结构体MessageFarme
 
 
 
-typedef	struct	_Trans		//485通讯消息帧结构体MessageFarme  
-{
-  unsigned short Length;    //待传输数据长度，数据不为0表示有数据,需要传送
-  struct
-  {
-    unsigned char Time;     //计时器-单位ms
-    unsigned char Retry;    //重试次数
-  }Retry;
-	unsigned char   data[BusDataSize+15];
-}TransDef;
-
 
 
 typedef	struct	_RS485Ack	  //485通讯消息帧结构体MessageFarme  
 {
-	unsigned char  FarmeLength; 	//Frame的总长度(data[BusDataSize]有效数据长度
 	unsigned char	HeadCode;		  //b1  识别符	0x7E  
 	unsigned char	TargetAddr;		//b2  目标地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址,如果地址为0xFF表示为广播地址
 	unsigned char	SourceAddr;		//b3  源地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址
@@ -244,6 +237,23 @@ typedef	struct	_RS485Ack	  //485通讯消息帧结构体MessageFarme
 	unsigned char	EndCode;		  //b10 结束符 0x7F
 }RS485AckDef;
 
+typedef	struct	_Ack	  //485通讯消息帧结构体MessageFarme  
+{
+	unsigned char	FarmeLength; 	//Frame的总长度(data[BusDataSize]有效数据长度
+	unsigned char Data[10];
+}AckDef;
+
+typedef	struct	_Trans		//485通讯消息帧结构体MessageFarme  
+{
+  unsigned short Length;    //待传输数据长度，数据不为0表示有数据,需要传送
+  struct
+  {
+    unsigned char Time;     //计时器-单位ms
+    unsigned char Retry;    //重试次数
+  }Retry;
+	unsigned char   data[BusDataSize+15];
+}TransDef;
+
 typedef	struct	_DataNode	  //485通讯消息帧结构体MessageFarme  
 {
 	unsigned short	Length;		//待传输数据长度，数据不为0表示有数据,需要传送
@@ -253,10 +263,10 @@ typedef	struct	_DataNode	  //485通讯消息帧结构体MessageFarme
 
 typedef	struct	_HCSYS
 {
-	unsigned char 	SwitchAddr;					//本板地址
-	unsigned char 	Layer;						//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
+	unsigned char	SwitchAddr;					//本板地址
+	unsigned char	Layer;						//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 	unsigned int	SerialNum;					//序列号
-	const	char	*Borad_Name;				//PCB板名
+	const	char		*Borad_Name;				//PCB板名
 	unsigned char	SubOnlineAddr[MaxNetPerLayer];	//下一级在线设备地址
 }HCSYSDef;
 
@@ -268,9 +278,18 @@ RS485FrameDef* RS485Step1FindData(const unsigned long *buffer,const unsigned sho
 HCResult RS485Step2AckProcess(const unsigned long *buffer,const unsigned short length);
 HCResult RS485Step3SaveData(const unsigned long *buffer,const unsigned short length);
 
+HCResult RS232ToRS485(const unsigned long *buffer,const unsigned short length);
+RS232FrameDef* RS232Step1FindData(const unsigned long *buffer,const unsigned short length);
+HCResult RS232Step2AckProcess(const unsigned long *buffer,const unsigned short length);
+HCResult RS232Step3SaveData(const unsigned long *buffer,const unsigned short length);
+
+
+unsigned short APIRS485GetUplinkData(unsigned char *buffer);
+unsigned short APIRS485GetdownlinkData(unsigned char *buffer);
+
 
 HCResult HCBoradSet(const unsigned char Layer,const unsigned char id);
-unsigned short GetAck(unsigned char *buffer,unsigned char flag);
+
 
 HCResult GetSubOnlineAddr(void);
 unsigned short GetDataProcess(unsigned char *buffer,const unsigned char UDflag);
