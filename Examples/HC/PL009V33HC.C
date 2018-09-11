@@ -93,8 +93,8 @@ CS5530Def CS5530CH1;
 CS5530Def CS5530CH2;
 u32	CS5530_Time	=	0;
 u32	CS5530_ADC_CMP			=	0;
-u32 CS5530_ADC_Value		=0xFFFFFFFF;
-u32 CS5530_ADC_Valuebac	=0xFFFFFFFF;
+u32 CS5530_ADC_Value		= 0xFFFFFFFF;
+u32 CS5530_ADC_Valuebac	= 0xFFFFFFFF;
 
 u32	WeigthARR[100]	=	{0};
 u8	DspFlg1	=	0;
@@ -122,6 +122,8 @@ u32 READ_GAIN	=	0;
 u8 WriteFlag	=	0;
 u16	row	=	1;
 unsigned short time	=	0;
+
+extern CommDef CommFun;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -159,7 +161,7 @@ void PL009V33HC_Configuration(void)
 //	IWDG_Configuration(2000);			//独立看门狗配置---参数单位ms	
 
 //	PWM_OUT(TIM2,PWM_OUTChannel1,2,500);	//PWM设定-20161127版本--运行指示灯
-	
+//	CommFun.GetDownlinkBusData  = RS485_ReadBufferIDLE;
 }
 /*******************************************************************************
 * 函数名		:	
@@ -345,7 +347,7 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 		u16 PenColor	=LCD565_RED;
 		
 		time	=	0;
-		res		=	APISetDataProcess(RevBuffe,length);
+		res		=	APISetDataProcess(RevBuffe,length,1);
 		length	=	APIRS485GetUplinkData(RevBuffe);				//获取需要上传的数据
 		if(length)
 		{
