@@ -75,58 +75,68 @@ void PC001V30HC_Server(void)
 	
 	IWDG_Feed();								//独立看门狗喂狗
 	
-  //======================================上行总线
+  //======================================接收
 	length	=	RS485_ReadBufferIDLE(&gRS485Bus,RS485BufferU);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(length)
 	{
 		HCResult	res;
 		time	=	0;
-		res	=	SetDataProcess(RS485BufferU,length,0);
+		res	=	APISetDataProcess(RS485BufferU,length);
 	}
-	length	=	GetAck(RS485BufferU,0);
+	length	=	RS485_ReadBufferIDLE(&gRS485lay,RS485BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(length)
+	{
+		HCResult	res;
+		time	=	0;
+		res	=	APISetDataProcess(RS485BufferD,length);
+	}
+	
+	
+  length	=	APIRS485GetUplinkAck(RS485BufferU);
 	if(length)
 	{
 		time	=	0;
 		RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
 	}
-  
-  
-  //======================================下行总线
-  length	=	RS485_ReadBufferIDLE(&gRS485lay,RS485BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-	if(length)
-	{
-		HCResult	res;
-		time	=	0;
-		res	=	SetDataProcess(RS485BufferD,length,1);
-	}
-	length	=	GetAck(RS485BufferD,1);
+	length	=	APIRS485GetDownlinkAck(RS485BufferD);
 	if(length)
 	{
 		time	=	0;
 		RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
 	}
-
-  
 	//======================================模拟程序
 	if(time++>50)
 	{
 		time	=	0;
-    length = GetDataProcess(RS485BufferU,0);
+		//======================================发送
+		length	=	APIRS485GetUplinkData(RS485BufferU);
 		if(length)
 		{
+			time	=	0;
 			RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
 		}
-    
-		length = GetDataProcess(RS485BufferD,1);
+		length	=	APIRS485GetDownlinkData(RS485BufferD);
 		if(length)
 		{
+			time	=	0;
 			RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
 		}
-		else if(0 == PowerFlag)
-		{
-			PowerFlag	=	1;
-			GetSubOnlineAddr();
-		}
+//    length = GetDataProcess(RS485BufferU,0);
+//		if(length)
+//		{
+//			RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
+//		}
+//    
+//		length = GetDataProcess(RS485BufferD,1);
+//		if(length)
+//		{
+//			RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
+//		}
+//		else if(0 == PowerFlag)
+//		{
+//			PowerFlag	=	1;
+//			GetSubOnlineAddr();
+//		}
 	}  
 }
 /*******************************************************************************

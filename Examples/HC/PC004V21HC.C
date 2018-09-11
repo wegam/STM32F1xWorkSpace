@@ -52,9 +52,9 @@ void PC004V21HC_Configuration(void)
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,800);	//PWM设定-20161127版本
 	
 //	RS485BufferD[1]	=	gSwitch.nSWITCHID;
-//	HCBoradSet(1,gSwitch.nSWITCHID);
+	HCBoradSet(1,gSwitch.nSWITCHID);
   
-  HCBoradSet(1,1);
+//  HCBoradSet(1,1);
 		
 //	IWDG_Configuration(2000);							//独立看门狗配置---参数单位ms
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
@@ -91,15 +91,27 @@ void PC004V21HC_Server(void)
 		res	=	APISetDataProcess(RS485BufferD,length);
 	}
 	
+	length	=	APIRS485GetUplinkAck(RS485BufferU);
+	if(length)
+	{
+		time	=	0;		
+		RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
+	}
+	length	=	APIRS485GetDownlinkAck(RS485BufferD);
+	if(length)
+	{
+		time	=	0;
+		RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
+	}
 	
 	  
 	//======================================模拟程序
 	if(time++>50)
 	{
 //		RS485_DMAPrintf(&gRS485Bus,"test");
-		time	=	0;
-    
-    APISetDataProcess(TestBuffer,15);
+//		time	=	0;
+//    
+//    APISetDataProcess(TestBuffer,15);
     
     
 		length	=	APIRS485GetUplinkData(RS485BufferU);
@@ -109,7 +121,7 @@ void PC004V21HC_Server(void)
 			
 			RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
 		}
-		length	=	APIRS485GetdownlinkData(RS485BufferD);
+		length	=	APIRS485GetDownlinkData(RS485BufferD);
 		if(length)
 		{
 			time	=	0;

@@ -63,7 +63,7 @@ u8 RxdBuffe[Rs485Size]={0};
 u8 RevBuffe[Rs485Size]={0};
 u8 TxdBuffe[Rs485Size]={0};
 u8 RxFlg=0;
-u16 RxNum=0;
+u16 length=0;
 u32	Rs485_Time	=	0;
 u8	SlaveID	=	0;
 u32 Rev_ADC	=	0;
@@ -176,6 +176,12 @@ void PL009V33HC_Server(void)
 //	LCD_Server();				//显示服务相关
 //	CS5530_Server();		//称重服务，AD值处理，获取稳定值
 	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
+	tmepr	=	APIReadData(TxdBuffe);
+	if(tmepr)
+	{
+		HX++;
+		LCD_Printf(0,210,16	,LCD565_RED,"接收计数:%0.8d",HX);		//待发药槽位，后边的省略号就是可变参数
+	}
 }
 /*******************************************************************************
 * 函数名		:	
@@ -331,14 +337,20 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 {
 	HCResult	res;
 #if Master			//主机
-	RxNum=RS485_ReadBufferIDLE(&RS485,RevBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-	if(		RxNum	)
+	
+	length=RS485_ReadBufferIDLE(&RS485,RevBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(		length	)
 	{
 		u16 temp	=	0;
 		u16 PenColor	=LCD565_RED;
 		
 		time	=	0;
-		
+		res		=	APISetDataProcess(RevBuffe,length);
+		length	=	APIRS485GetUplinkData(RevBuffe);				//获取需要上传的数据
+		if(length)
+		{
+			RS485_DMASend(&RS485,RevBuffe,length);	//RS485-DMA发送程序
+		}
 		if(0	!=	WriteFlag)
 		{
 			WriteFlag	=	0;
@@ -349,9 +361,6 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 			WriteFlag	=	1;
 			PenColor	=LCD565_GREEN;
 		}
-//		LCD_Fill(0,16,400,48,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
-//		LCD_ShowHex(0,16,16,PenColor,RxNum,8,RevBuffe);    //显示十六进制数据
-		
 		if(row>=240-100)
 		{
 			LCD_Fill(0,16,400,240-100,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
@@ -362,8 +371,8 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 			row=16;
 		}
 		
-		LCD_ShowHex(0,row,16,PenColor,RxNum,8,RevBuffe);                //显示十六进制数据
-		temp	=	8*3*RxNum;
+		LCD_ShowHex(0,row,16,PenColor,length,8,RevBuffe);                //显示十六进制数据
+		temp	=	8*3*length;
 		if(0<temp%400)
 		{
 			row	+=	(temp/400+1)*16;
@@ -372,22 +381,19 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 		{
 			row	+=	(temp/400)*16;
 		}
-		res		=	SetDataProcess(RevBuffe,RxNum,0);
-		RxNum	=	GetAck(RevBuffe,0);
-		if(RxNum)
-		{
-			RS485_DMASend(&RS485,RevBuffe,RxNum);	//RS485-DMA发送程序
-		}
+		
 	}
 	else if(time++>50)
 	{
 		time	=	0;
-		
-		RxNum	=	GetDataProcess(RevBuffe,0);				//获取需要上传的数据
-		if(RxNum)
+		length	=	APIRS485GetUplinkData(RevBuffe);
+		if(length)
 		{
-			RS485_DMASend(&RS485,RevBuffe,RxNum);	//RS485-DMA发送程序
+			time	=	0;
+			
+			RS485_DMASend(&RS485,RevBuffe,length);	//RS485-DMA发送程序
 		}
+		
 		
 	}
 //	if(Rs485_Time	++>5)

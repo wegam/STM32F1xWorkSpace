@@ -85,7 +85,7 @@ void InvertUint16(unsigned short *dBuf,unsigned short *srcBuf)
 } 
 /*******************************************************************************
 *函数名			:	function
-*功能描述		:	函数功能说明
+*功能描述		:	多项式x16+x12+x5+1（0x1021），初始值0x0000，低位在前，高位在后，结果与0x0000异或
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -116,8 +116,8 @@ unsigned short CRC16_CCITT(unsigned char *puchMsg, unsigned int usDataLen)
   return (wCRCin) ;
 }
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
+*函数名			:	CRC16_CCITT_FALSE
+*功能描述		:	多项式x16+x12+x5+1（0x1021），初始值0xFFFF，低位在后，高位在前，结果与0x0000异或
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -146,8 +146,8 @@ unsigned short CRC16_CCITT_FALSE(unsigned char *puchMsg, unsigned int usDataLen)
   return (wCRCin) ;
 }
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
+*函数名			:	CRC16_XMODEM
+*功能描述		:	多项式x16+x12+x5+1（0x1021），初始值0x0000，低位在后，高位在前，结果与0x0000异或
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -176,8 +176,8 @@ unsigned short CRC16_XMODEM(unsigned char *puchMsg, unsigned int usDataLen)
   return (wCRCin) ;
 }
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
+*函数名			:	CRC16_X25
+*功能描述		:	多项式x16+x12+x5+1（0x1021），初始值0x0000，低位在前，高位在后，结果与0xFFFF异或
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -211,8 +211,8 @@ unsigned short CRC16_X25(unsigned char *puchMsg, unsigned int usDataLen)
 //	*puchMsg++	=	wCRCin>>8&0XFF;
 }
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
+*函数名			:	CRC16_MODBUS
+*功能描述		:	多项式x16+x15+x5+1（0x8005），初始值0xFFFF，低位在前，高位在后，结果与0x0000异或
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -243,8 +243,8 @@ unsigned short CRC16_MODBUS(unsigned char *puchMsg, unsigned int usDataLen)
   return (wCRCin) ;
 }
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
+*函数名			:	CRC16_IBM
+*功能描述		:	多项式x16+x15+x5+1（0x8005），初始值0x0000，低位在前，高位在后，结果与0x0000异或
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -275,8 +275,8 @@ unsigned short CRC16_IBM(unsigned char *puchMsg, unsigned int usDataLen)
   return (wCRCin) ;
 }
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
+*函数名			:	CRC16_MAXIM
+*功能描述		:	多项式x16+x15+x5+1（0x8005），初始值0x0000，低位在前，高位在后，结果与0xFFFF异或
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -307,8 +307,8 @@ unsigned short CRC16_MAXIM(unsigned char *puchMsg, unsigned int usDataLen)
   return (wCRCin^0xFFFF) ;
 }
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	函数功能说明
+*函数名			:	CRC16_USB
+*功能描述		:	多项式x16+x15+x5+1（0x8005），初始值0xFFFF，低位在前，高位在后，结果与0xFFFF异或
 *输入				: 
 *返回值			:	无
 *修改时间		:	无

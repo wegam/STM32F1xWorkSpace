@@ -90,11 +90,7 @@ void PM001V20HC_Server(void)
 //		time	=	0;
 //		USART_DMASend(RS232ASerialPort,RS232Buffer,length);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
 //	}
-	length	=	APIRS485GetdownlinkData(BufferD);
-	if(length)
-	{
-		RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
-	}
+	
   
 //  //======================================下行总线
   length	=	RS485_ReadBufferIDLE(&gRS485Bus,BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
@@ -112,27 +108,21 @@ void PM001V20HC_Server(void)
 //	}
 
   
-//	//======================================模拟程序
-//	if(time++>50)
-//	{
-//		time	=	0;
-//    length = GetDataProcess(RS232Buffer,0);
-//		if(length)
-//		{
-//			USART_DMASend(RS232ASerialPort,RS232Buffer,length);	//RS485-DMA发送程序
-//		}
-//    
-//		length = GetDataProcess(RS485Buffer,1);
-//		if(length)
-//		{
-//			RS485_DMASend(&gRS485Bus,RS485Buffer,length);	//RS485-DMA发送程序
-//		}
-//		else if(0 == PowerFlag)
-//		{
-//			PowerFlag	=	1;
-//			GetSubOnlineAddr();
-//		}
-//	}  
+	//======================================模拟程序
+	if(time++>50)
+	{
+		time	=	0;
+		length	=	APIRS485GetDownlinkData(BufferD);
+		if(length)
+		{
+			RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
+		}
+		if(0 == PowerFlag)
+		{
+			PowerFlag	=	1;
+			GetSubOnlineAddr();
+		}
+	}  
 }
 /*******************************************************************************
 * 函数名			:	Communiction_Configuration
