@@ -81,24 +81,24 @@ void PC001V30HC_Server(void)
 	{
 		HCResult	res;
 		time	=	0;
-		res	=	APISetDataProcess(RS485BufferU,length);
+		res	=	APIRS485UplinkSetData(RS485BufferU,length);
 	}
 	length	=	RS485_ReadBufferIDLE(&gRS485lay,RS485BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(length)
 	{
 		HCResult	res;
 		time	=	0;
-		res	=	APISetDataProcess(RS485BufferD,length);
+		res	=	APIRS485DownlinkSetData(RS485BufferD,length);
 	}
 	
 	
-  length	=	APIRS485GetUplinkAck(RS485BufferU);
+  length	=	APIRS485UplinkGetAck(RS485BufferU);
 	if(length)
 	{
 		time	=	0;
 		RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
 	}
-	length	=	APIRS485GetDownlinkAck(RS485BufferD);
+	length	=	APIRS485DownlinkGetAck(RS485BufferD);
 	if(length)
 	{
 		time	=	0;
@@ -109,13 +109,13 @@ void PC001V30HC_Server(void)
 	{
 		time	=	0;
 		//======================================发送
-		length	=	APIRS485GetUplinkData(RS485BufferU);
+		length	=	APIRS485UplinkGetData(RS485BufferU);
 		if(length)
 		{
 			time	=	0;
 			RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
 		}
-		length	=	APIRS485GetDownlinkData(RS485BufferD);
+		length	=	APIRS485DownlinkGetData(RS485BufferD);
 		if(length)
 		{
 			time	=	0;

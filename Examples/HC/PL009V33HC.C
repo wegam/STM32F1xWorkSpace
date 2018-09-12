@@ -339,7 +339,7 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 {
 	HCResult	res;
 #if Master			//主机
-	
+	unsigned char sLeng;
 	length=RS485_ReadBufferIDLE(&RS485,RevBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(		length	)
 	{
@@ -347,11 +347,11 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 		u16 PenColor	=LCD565_RED;
 		
 		time	=	0;
-		res		=	APISetDataProcess(RevBuffe,length,1);
-		length	=	APIRS485GetUplinkData(RevBuffe);				//获取需要上传的数据
+		res		=	APIRS485UplinkSetData(RevBuffe,length);
+		sLeng	=	APIRS485UplinkGetAck(TxdBuffe);				//获取需要上传的数据
 		if(length)
 		{
-			RS485_DMASend(&RS485,RevBuffe,length);	//RS485-DMA发送程序
+			RS485_DMASend(&RS485,TxdBuffe,sLeng);	//RS485-DMA发送程序
 		}
 		if(0	!=	WriteFlag)
 		{
@@ -388,12 +388,12 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 	else if(time++>50)
 	{
 		time	=	0;
-		length	=	APIRS485GetUplinkData(RevBuffe);
+		length	=	APIRS485UplinkGetData(TxdBuffe);
 		if(length)
 		{
 			time	=	0;
 			
-			RS485_DMASend(&RS485,RevBuffe,length);	//RS485-DMA发送程序
+			RS485_DMASend(&RS485,TxdBuffe,length);	//RS485-DMA发送程序
 		}
 		
 		

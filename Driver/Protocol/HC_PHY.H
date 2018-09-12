@@ -15,9 +15,9 @@
 #define	RS232Head1			(unsigned char)0xFA				//RS232头标识符第一字节
 #define	RS232Head2			(unsigned char)0xF5				//RS232头标识符第二字节
 #define	RS485HeadCode		(unsigned char)0x7E				//RS485头标识符
-#define	RS485endCode		(unsigned char)0x7F				//RS485尾标识符
+#define	RS485EndCode		(unsigned char)0x7F				//RS485尾标识符
 
-#define	ReSendCount			1						//重发次数
+#define	ReSendCount			2						//重发次数
 
 #define	BusDataSize		128						//一条消息携带的最大数据个数
 #define	SelfBuffSize				10					//本地址需要处理的消息缓存大小(不需要转发给下一层的消息)
@@ -25,14 +25,14 @@
 //#define	BascDataLen		64					//单元地址+层地址+槽地址+状态码
 //#define	BascDataLen		4						//单元地址+层地址+槽地址+状态码
 //#define	HeadDataLen		8						//单元地址+层地址+槽地址+状态码
-#define	RS485StartFrameLen 	9             		//RS485通讯起始帧长度
+#define	RS485StartFrameLen 	8             		//RS485通讯起始帧长度
 #define	RS485AckFrameLen		6			  //应答帧长度
-#define	RS485MinFrameLen		10			//最短帧长度要求---应答消息长度10
+#define	RS485MinFrameLen		6				//最短帧长度要求---应答消息长度10
 
 
 #define	RS232StartFrameLen 	RS232MinFrameLen   	//RS485通讯起始帧长度
-#define	RS232AckFrameLen		RS232MinFrameLen		//应答帧长度
-#define	RS232MinFrameLen		7				 						//最短帧长度要求---应答消息长度10
+#define	RS232AckFrameLen		6			//应答帧长度
+#define	RS232MinFrameLen		6			//最短帧长度要求---应答消息长度10
 
 
 //#define	CMDRead(n)		(n&0x80)			//最高位为1
@@ -151,7 +151,7 @@ typedef	struct	_RS232Frame
 	unsigned char	*data;  			//b9	数据(如果Start中DataLength	不为0，则data前三字节代表地址，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
 }RS232FrameDef;			//RS232帧格式
 
-typedef	struct	_RS485Frame  //485通讯消息帧结构体MessageFarme  
+typedef	struct	_RS485TFrame  //485通讯消息帧结构体MessageFarme  
 {
 	unsigned char	HeadCode;		  //b1	识别符	0x7E
 	unsigned char	Bcc8;					//b2	从TargetAddr开始到帧尾
@@ -166,7 +166,21 @@ typedef	struct	_RS485Frame  //485通讯消息帧结构体MessageFarme
 	unsigned char	LayerAddr;		//b11	层地址
 	unsigned char	SlotAddr;			//b12	槽地址(终端地址)
 	unsigned char	*data;  			//b13	数据(如果Start中DataLength	不为0，则data前三字节代表地址，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
+}RS485TFrameDef;   						//RS485协议帧起始段(格式固定） 长度8字节
+
+typedef	struct	_RS485Frame  //485通讯消息帧结构体MessageFarme  
+{
+	unsigned char	HeadCode;		  //b1	识别符	0x7E
+	unsigned char	TargetAddr;		//b2	目标地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址,如果地址为0xFF表示为广播地址
+	unsigned char	SourceAddr;		//b3	源地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址
+	ErrCodeDef	  ErrCode;  		//b4	状态码/错误码	
+	unsigned char	CabinetAddr;	//b5	柜地址(单元柜号)
+	unsigned char	LayerAddr;		//b6	层地址
+	unsigned char	SlotAddr;			//b7	槽地址(终端地址)
+	unsigned char	DataLength;		//b8	data数据长度（地址长度+data长度)	--包含地址，如果DataLength为0，则地址和数据域都没有，尾部需要添加Bcc8校验和EndCode
+	unsigned char	*data;  			//b13	数据(如果Start中DataLength	不为0，则data前三字节代表地址，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
 }RS485FrameDef;   						//RS485协议帧起始段(格式固定） 长度8字节
+
 typedef	struct	_RS485AckFrame  //485通讯消息帧结构体MessageFarme  
 {
 	unsigned char	HeadCode;		  //b1	识别符	0x7E	
@@ -175,11 +189,11 @@ typedef	struct	_RS485AckFrame  //485通讯消息帧结构体MessageFarme
 	ErrCodeDef	  ErrCode;  		//b4	状态码/错误码
   unsigned char	Bcc8;					//b5	从TargetAddr开始到ErrCode
   unsigned char	EndCode;		  //b6	识别符	0x7F  
-}RS485AckDef;   						//RS485协议帧起始段(格式固定） 长度8字节
+}RS485AckDef;   							//RS485协议帧起始段(格式固定） 长度8字节
 typedef	struct	_Ack	  //485通讯消息帧结构体MessageFarme  
 {
 	unsigned char	FarmeLength; 	//Frame的总长度(data[BusDataSize]有效数据长度
-	unsigned char Data[16];
+	RS485AckDef		Ack;
 }AckDef;
 
 typedef	struct	_Trans		//485通讯消息帧结构体MessageFarme  
@@ -221,14 +235,15 @@ extern CommDef CommFun;
 
 HCResult HCBoradSet(const unsigned char Layer,const unsigned char id);
 
-HCResult APISetDataProcess(const unsigned char *buffer,const unsigned short length,unsigned char UDFlag);
+HCResult APIRS485UplinkSetData(const unsigned char *buffer,const unsigned short length);
+HCResult APIRS485DownlinkSetData(const unsigned char *buffer,const unsigned short length);
 
-unsigned short APIRS485GetUplinkAck(unsigned char *buffer);
-unsigned short APIRS485GetDownlinkAck(unsigned char *buffer);
+unsigned short APIRS485UplinkGetAck(unsigned char *buffer);
+unsigned short APIRS485DownlinkGetAck(unsigned char *buffer);
 
 
-unsigned short APIRS485GetUplinkData(unsigned char *buffer);
-unsigned short APIRS485GetDownlinkData(unsigned char *buffer);
+unsigned short APIRS485UplinkGetData(unsigned char *buffer);
+unsigned short APIRS485DownlinkGetData(unsigned char *buffer);
 
 unsigned short APIReadData(unsigned char *buffer);
 
@@ -240,7 +255,7 @@ HCResult APISendData(const unsigned char *buffer,const unsigned short length);
 
 
 //unsigned char FarmeCheck(const void *buffer,const unsigned short length);
-unsigned char FarmeCheck(const void *buffer,const unsigned short length,unsigned char UDFlag);
+unsigned char FarmeCheck(const void *buffer,const unsigned short length);
 HCResult RS485ToRS485(const void *buffer,const unsigned short length);
 RS485FrameDef* RS485Step1FarmeDataCheck(const void *buffer,const unsigned short length);		//查找RS485数据在buffer中的起始地址并校验数据
 HCResult RS485Step2AckProcess(const void *buffer,const unsigned short length);
