@@ -19,8 +19,8 @@
 
 #define	ReSendCount			2						//重发次数
 
-#define	BusDataSize		128						//一条消息携带的最大数据个数
-#define	SelfBuffSize				10					//本地址需要处理的消息缓存大小(不需要转发给下一层的消息)
+#define	BusDataSize		  32				  //一条消息携带的最大数据个数
+#define	SelfBuffSize				10		  //本地址需要处理的消息缓存大小(不需要转发给下一层的消息)
 
 //#define	BascDataLen		64					//单元地址+层地址+槽地址+状态码
 //#define	BascDataLen		4						//单元地址+层地址+槽地址+状态码
@@ -54,19 +54,6 @@ typedef enum
 	Err_TimeOut							=	0x0B,	//连接超时
 	Err_ACKMSG							=	0x0C	//此为应答消息
 }ErrCodeDef;	  //状态码/错误码
-//typedef enum		//状态码
-//{
-//	eNoErr		=	0x00,		//无错误
-//	eNoData		=	0x23,		//无药箱数据
-//	eBoxTout	=	0x24,		//取药箱超时
-//	eBoxOff		=	0x25,		//药箱取走
-//	eBoxBack	=	0x26,		//药箱取走后收回
-//	eReadErr	=	0x27,		//读卡器通讯异常
-//	eBoxTake	=	0x25,		//药箱被强制取走,原28
-//	eBoxBusy	=	0x28,		//当前板忙或者等待状态
-//	eBoxAck		=	0x29,		//此为应答消息
-//}StatusDef;
-
 typedef enum
 {  
 	CMD_WRITE_QTY				=	0x01,	//写入数量
@@ -85,18 +72,12 @@ typedef enum
 	CMD_GET_DATA				=	0x0F,	//获取数据/参数
 	CMD_GET_CTL					=	0x73,	//控制命令
 	CMD_GET_ADDR				=	0x74,	//控制命令
-	CMD_LINK					=	0x0E,	//透传传---如升级时使用
+	CMD_LINK					  =	0x0E,	//透传传---如升级时使用
 	
-	CMD_TEST					=	0xFF	//透传传---如升级时使用
+	CMD_TEST					  =	0xFF	//透传传---如升级时使用
 	
 }CmdDef;  //命令码
-//typedef struct
-//{
-//  CmdDef CMD        :5;     //命令体：
-//  unsigned char Ack :1;     //应答位：Ack == 0时，此条消息依据CMD处理；Ack == 1时，代表此消息为应答消息，CMD内容无效，根据DIR判断是上层应答还是下层往上应答
-//  unsigned char CD  :1;     //保留
-//  unsigned char DIR :1;     //方向：DIR  = 0代表此消息为上层下发消息，DIR  = 1代表此消息为下层上传消息
-//}CMDType;
+
 typedef enum
 {
 	SubCmd_WRITE_QTY				=	0x01,	//写入数量
@@ -125,7 +106,8 @@ typedef enum
 	RES_FARMERR,	  // 8: 帧格式错误
 	RES_FARME232,		// 9: 232格式数据
 	RES_FARME485,		// 9: 232格式数据
-	RES_LINK				// 9: 透传 例如升级使用，直接转发
+	RES_LINK,				// 9: 透传 例如升级使用，直接转发
+  RES_DataOF		  // 9: 数据长度超限，溢出
 }HCResult;
 
 //-----------------------------------------------------------------------------------结构体
@@ -245,9 +227,12 @@ unsigned short APIRS485DownlinkGetAck(unsigned char *buffer);
 unsigned short APIRS485UplinkGetData(unsigned char *buffer);
 unsigned short APIRS485DownlinkGetData(unsigned char *buffer);
 
-unsigned short APIReadData(unsigned char *buffer);
+HCResult APIRS485SendData(const unsigned char *buffer,const unsigned short length);
+unsigned short APIRS485ProcessData(unsigned char *buffer);
 
-HCResult APISendData(const unsigned char *buffer,const unsigned short length);
+
+
+
 
 
 
@@ -265,6 +250,8 @@ HCResult RS232ToRS485(const void *buffer,const unsigned short length);
 RS232FrameDef* RS232Step1FindData(const void *buffer,const unsigned short length);
 HCResult RS232Step2AckProcess(const void *buffer,const unsigned short length);
 HCResult RS232Step3SaveData(const void *buffer,const unsigned short length);
+
+
 
 
 

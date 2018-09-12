@@ -22,7 +22,8 @@ TransDef  TransD;     //向下传送缓冲区
 
 DataNodeDef	DataNodeU[MaxNetPerLayer+1];  //向上传输数据缓存队列
 DataNodeDef	DataNodeD[MaxNetPerLayer+1];  //向下传输数据缓存队列，DataNodeD[0]存储广播消息
-DataNodeDef SelfNode[SelfBuffSize];       //本地址需要处理的消息缓存(不需要转发给下一层的消息)
+DataNodeDef ProcessNode[SelfBuffSize];    //本地址需要处理的消息缓存(不需要转发给下一层的消息)
+DataNodeDef SendNode[SelfBuffSize];       //本地址需要上传的(不需要转发给下一层的消息)
 
 
 RS485FrameDef RunFrame;
@@ -200,10 +201,10 @@ HCResult APIRS485UplinkSetData(const unsigned char *buffer,const unsigned short 
 				unsigned char i	=	0;
 				for(i=0;i<SelfBuffSize;i++)
 				{
-					if(0	==	SelfNode[i].Length)
+					if(0	==	ProcessNode[i].Length)
 					{
-						memcpy(SelfNode[i].data,RS485Frame,RS485Frame->DataLength+RS485StartFrameLen+2);	//将源数据全部拷贝
-						SelfNode[i].Length	=	RS485Frame->DataLength+RS485StartFrameLen+2;
+						memcpy(ProcessNode[i].data,RS485Frame,RS485Frame->DataLength+RS485StartFrameLen+2);	//将源数据全部拷贝
+						ProcessNode[i].Length	=	RS485Frame->DataLength+RS485StartFrameLen+2;
 						break;
 					}
 				}
@@ -373,6 +374,360 @@ HCResult APIRS485DownlinkSetData(const unsigned char *buffer,const unsigned shor
 		}
 	}
 }
+
+/*******************************************************************************
+* 函数名			:	APIRS485SendData
+* 功能描述		:	发送数据(打包，存入发送缓冲区)
+* 输入			: buffer  输入的数据缓存地址
+              length  输入的数据长度
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+HCResult APIRS485SendData(const unsigned char *buffer,const unsigned short length)
+{
+  HCResult	res	=	RES_OK;
+	
+	RS485FrameDef *RS485Frame  	= NULL;
+//	unsigned long	*RS485EndCodeAddr		= NULL;
+	unsigned char	*pBuffer						=	0;
+	
+  unsigned char   i = 0;
+//	unsigned char		SourceBcc8  = 0;
+//  unsigned short	FarmeLen		=	0;
+//	unsigned short	DataLength	=	0;
+//	unsigned short 	ValidLength	= 0;    //buffer中有效数据长度(从RS485头标识符开始后的数据为有效数据)
+	
+  if(NULL ==  buffer) //空地址
+	{
+		return RES_PARERR;
+	}
+  //=========================================检查数据长度超限
+  if(length+RS485StartFrameLen+2>BusDataSize)
+  {
+    return RES_DataOF;
+  }
+  //=========================================查找空缓存
+  for(i=0;i<SelfBuffSize;i++)
+  {
+    if(0  ==  SendNode[i].Length) //空缓存
+    {
+      RS485Frame  = (RS485FrameDef*)SendNode[i].data;
+      pBuffer     = (unsigned char*)RS485Frame->data;
+      memcpy(pBuffer,buffer,length);
+      
+      RS485Frame->DataLength  = length;
+      RS485Frame->HeadCode    = RS485HeadCode;
+      RS485Frame->TargetAddr  = 0x00;
+      RS485Frame->SourceAddr  = HCSYS.SwitchAddr;
+      RS485Frame->ErrCode     = Err_None;
+      
+      pBuffer = (unsigned char*)&RS485Frame->CabinetAddr;
+      memset(pBuffer,0x00,3);
+      if(0<HCSYS.Layer)
+      {
+        pBuffer[HCSYS.Layer-1]  = HCSYS.SwitchAddr;
+      }
+      //---------------------------------计算校验
+      pBuffer = (unsigned char*)&RS485Frame->TargetAddr;
+      pBuffer[RS485Frame->DataLength+RS485StartFrameLen]	=	BCC8(pBuffer,RS485Frame->DataLength+RS485StartFrameLen-1);	//头标识符和尾标识符不参与校验
+      
+      SendNode[i].Length  = RS485Frame->DataLength+RS485StartFrameLen+2;
+      
+      break;
+    }
+  }
+  if(i>=SelfBuffSize)
+  {
+    return RES_NOTRDY;
+  }
+  return res;
+}
+/*******************************************************************************
+* 函数名			:	APIRS485ProcessData
+* 功能描述		:	获取需要处理的数据
+* 输入			: buffer  输入的数据缓存地址
+              length  输入的数据长度
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short APIRS485ProcessData(unsigned char *buffer)
+{
+  RS485FrameDef *RS485Frame  	= NULL;
+  unsigned char	*pBuffer		  =	0;
+  
+  unsigned char i = 0;
+  unsigned short	DataLength	=	0;
+  
+  if(NULL ==  buffer) //空地址
+	{
+		return 0;
+	}
+  for(i=0;i<SelfBuffSize;i++)
+  {
+    if(0  !=  ProcessNode[i].Length)
+    {
+      RS485Frame  = (RS485FrameDef*)ProcessNode[i].data;
+      
+      DataLength  = RS485Frame->DataLength;
+      
+      pBuffer = RS485Frame->data;
+      
+      memcpy(buffer,pBuffer,DataLength);
+      
+      ProcessNode[i].Length = 0;
+      
+      return DataLength;
+    }
+  }
+  return 0;
+}
+/*******************************************************************************
+* 函数名			:	GetUplinkData
+* 功能描述		:	获取需要往上层发送的数据
+							1-先检查应答缓存有无数据
+							2-应答缓存RS485ACKU无数据则检查TransU缓存
+							3-TransU无数据则扫描DataNodeU
+							4-如果DataNodeU有待传消息，将数据复制到TransU和buffer
+* 输入			: buffer  接收数据的缓存
+* 返回值			: FrameLength 需要发送的总字节数
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short APIRS485UplinkGetAck(unsigned char *buffer)
+{
+	unsigned char FrameLength	= 0;		//消息帧总长度，从HeadCode到EndCode的字节数
+//	unsigned char	i	=	0;
+	//=====================================接收缓存异常情况：空地址
+	if(NULL	==	buffer)
+	{
+		return 0;
+	}
+	//=====================================检查RS485ACKU缓存
+	FrameLength	=	ACKU.FarmeLength;
+	if(0	!=	FrameLength)
+	{
+		memcpy(buffer,&ACKU.Ack,FrameLength);
+		ACKU.FarmeLength	=	0;
+		return FrameLength;
+	}
+	return FrameLength;
+}
+/*******************************************************************************
+* 函数名			:	APIGetdownlinkData
+* 功能描述		:	获取需要往下层发送的数据
+							1-先检查应答缓存有无数据
+							2-应答缓存RS485ACKD无数据则检查TransD缓存
+							3-TransD无数据则扫描DataNoded
+							4-如果DataNodeD有待传消息，将数据复制到TransD和buffer
+* 输入			: buffer  接收数据的缓存
+* 返回值			: FrameLength 需要发送的总字节数
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short APIRS485DownlinkGetAck(unsigned char *buffer)
+{
+	unsigned char FrameLength	= 0;		//消息帧总长度，从HeadCode到EndCode的字节数
+	//=====================================接收缓存异常情况：空地址
+	if(NULL	==	buffer)
+	{
+		return 0;
+	}
+	//=====================================检查RS485ACKU缓存
+	FrameLength	=	ACKD.FarmeLength;
+	if(0	!=	FrameLength)
+	{
+		memcpy(buffer,&ACKD.Ack,FrameLength);
+		ACKD.FarmeLength	=	0;
+		return FrameLength;
+	}	
+	return FrameLength;
+}
+/*******************************************************************************
+* 函数名			:	GetUplinkData
+* 功能描述		:	获取需要往上层发送的数据
+							1-先检查应答缓存有无数据
+							2-应答缓存RS485ACKU无数据则检查TransU缓存
+							3-TransU无数据则扫描DataNodeU
+							4-如果DataNodeU有待传消息，将数据复制到TransU和buffer
+* 输入			: buffer  接收数据的缓存
+* 返回值			: FrameLength 需要发送的总字节数
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short APIRS485UplinkGetData(unsigned char *buffer)
+{
+	unsigned char FrameLength	= 0;		//消息帧总长度，从HeadCode到EndCode的字节数
+	unsigned char	i	=	0;
+	//=====================================接收缓存异常情况：空地址
+	if(NULL	==	buffer)
+	{
+		return 0;
+	}
+	//=====================================检查RS485ACKU缓存
+	FrameLength	=	ACKU.FarmeLength;
+	if(0	!=	FrameLength)
+	{
+		memcpy(buffer,&ACKU.Ack,FrameLength);
+		ACKU.FarmeLength	=	0;
+		return FrameLength;
+	}
+	//=====================================检查TransU缓存
+	FrameLength	=	TransU.Length;
+	if(0	!=	FrameLength)
+	{
+		memcpy(buffer,TransU.data,FrameLength);
+		if(++TransU.Retry.Retry>=ReSendCount)		//达到重发次数:释放缓存，放弃重发
+		{
+			TransU.Length	=	0;
+			TransU.Retry.Retry	=	0;
+			TransU.Length				=	0;
+		}
+		return FrameLength;
+	}
+  //=====================================检查SendNode缓存
+  for(i=0;i<SelfBuffSize;i++)
+  {
+    FrameLength	=	SendNode[i].Length;
+		if(0	!=	FrameLength)		//有数据
+		{
+			memcpy(TransU.data,SendNode[i].data,FrameLength);
+			memcpy(buffer,SendNode[i].data,FrameLength);
+			TransU.Length	=	FrameLength;
+			TransU.Retry.Retry	=	0;
+			TransU.Retry.Time		=	0;			
+			SendNode[i].Length	=	0;
+			return FrameLength;
+		}
+  }
+	//=====================================检查DataNodeU缓存
+	for(i	=	0;i<=MaxNetPerLayer;i++)
+	{
+		FrameLength	=	DataNodeU[i].Length;
+		if(0	!=	FrameLength)		//有数据
+		{
+			memcpy(TransU.data,DataNodeU[i].data,FrameLength);
+			memcpy(buffer,DataNodeU[i].data,FrameLength);
+			TransU.Length	=	FrameLength;
+			TransU.Retry.Retry	=	0;
+			TransU.Retry.Time		=	0;			
+			DataNodeU[i].Length	=	0;
+			return FrameLength;
+		}
+	}
+	return FrameLength;
+}
+/*******************************************************************************
+* 函数名			:	APIGetdownlinkData
+* 功能描述		:	获取需要往下层发送的数据
+							1-先检查应答缓存有无数据
+							2-应答缓存RS485ACKD无数据则检查TransD缓存
+							3-TransD无数据则扫描DataNoded
+							4-如果DataNodeD有待传消息，将数据复制到TransD和buffer
+* 输入			: buffer  接收数据的缓存
+* 返回值			: FrameLength 需要发送的总字节数
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short APIRS485DownlinkGetData(unsigned char *buffer)
+{
+	unsigned char FrameLength	= 0;		//消息帧总长度，从HeadCode到EndCode的字节数
+	unsigned char	i	=	0;
+	//=====================================接收缓存异常情况：空地址
+	if(NULL	==	buffer)
+	{
+		return 0;
+	}
+	//=====================================检查RS485ACKU缓存
+	FrameLength	=	ACKD.FarmeLength;
+	if(0	!=	FrameLength)
+	{
+		memcpy(buffer,&ACKD.Ack,FrameLength);
+		ACKD.FarmeLength	=	0;
+		return FrameLength;
+	}
+	//=====================================检查TransU缓存
+	FrameLength	=	TransD.Length;
+	if(0	!=	FrameLength)
+	{
+		memcpy(buffer,TransD.data,FrameLength);
+    TransD.Retry.Retry+=1;
+		if((TransD.Retry.Retry)>=ReSendCount)		//达到重发次数:释放缓存，放弃重发
+		{
+			TransD.Length	=	0;
+			TransD.Retry.Retry	=	0;
+			TransD.Length				=	0;
+		}
+		return FrameLength;
+	}
+	//=====================================检查DataNodeU缓存
+	for(i	=	0;i<=MaxNetPerLayer;i++)
+	{
+		FrameLength	=	DataNodeD[i].Length;
+		if(0	!=	FrameLength)		//有数据
+		{
+			memcpy(TransD.data,DataNodeD[i].data,FrameLength);
+			memcpy(buffer,DataNodeD[i].data,FrameLength);
+			TransD.Length	=	FrameLength;
+			TransD.Retry.Retry	=	0;
+			TransD.Retry.Time		=	0;			
+			DataNodeD[i].Length	=	0;
+			return FrameLength;
+		}
+	}
+	return FrameLength;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ///*******************************************************************************
 //* 函数名			:	function
 //* 功能描述		:	函数功能说明 
@@ -655,7 +1010,7 @@ HCResult RS485Step2AckProcess(const void *buffer,const unsigned short length)
 			res  = RES_NOTRDY;
 			for(i=0;i<SelfBuffSize;i++)
 			{
-				if(0	==	SelfNode[i].Length)
+				if(0	==	ProcessNode[i].Length)
 				{
 					ACK->ErrCode    = Err_None;
 					res  = RES_OK;
@@ -770,7 +1125,7 @@ HCResult RS485Step3SaveData(const void *buffer,const unsigned short length)
 			unsigned char i = 0;
       for(i=0;i<SelfBuffSize;i++)
       {
-        DataNode  =  &SelfNode[i];
+        DataNode  =  &ProcessNode[i];
         if(0  ==  DataNode->Length) //缓存空
         {
           NewFrame  = (RS485FrameDef*)DataNode->data;
@@ -1113,240 +1468,8 @@ HCResult RS232ToRS485(const void *buffer,const unsigned short length)
 	//-------------------------------------上层下发消息
 	return res;
 }
-/*******************************************************************************
-* 函数名			:	GetUplinkData
-* 功能描述		:	获取需要往上层发送的数据
-							1-先检查应答缓存有无数据
-							2-应答缓存RS485ACKU无数据则检查TransU缓存
-							3-TransU无数据则扫描DataNodeU
-							4-如果DataNodeU有待传消息，将数据复制到TransU和buffer
-* 输入			: buffer  接收数据的缓存
-* 返回值			: FrameLength 需要发送的总字节数
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-unsigned short APIRS485UplinkGetAck(unsigned char *buffer)
-{
-	unsigned char FrameLength	= 0;		//消息帧总长度，从HeadCode到EndCode的字节数
-//	unsigned char	i	=	0;
-	//=====================================接收缓存异常情况：空地址
-	if(NULL	==	buffer)
-	{
-		return 0;
-	}
-	//=====================================检查RS485ACKU缓存
-	FrameLength	=	ACKU.FarmeLength;
-	if(0	!=	FrameLength)
-	{
-		memcpy(buffer,&ACKU.Ack,FrameLength);
-		ACKU.FarmeLength	=	0;
-		return FrameLength;
-	}
-	return FrameLength;
-}
-/*******************************************************************************
-* 函数名			:	APIGetdownlinkData
-* 功能描述		:	获取需要往下层发送的数据
-							1-先检查应答缓存有无数据
-							2-应答缓存RS485ACKD无数据则检查TransD缓存
-							3-TransD无数据则扫描DataNoded
-							4-如果DataNodeD有待传消息，将数据复制到TransD和buffer
-* 输入			: buffer  接收数据的缓存
-* 返回值			: FrameLength 需要发送的总字节数
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-unsigned short APIRS485DownlinkGetAck(unsigned char *buffer)
-{
-	unsigned char FrameLength	= 0;		//消息帧总长度，从HeadCode到EndCode的字节数
-	//=====================================接收缓存异常情况：空地址
-	if(NULL	==	buffer)
-	{
-		return 0;
-	}
-	//=====================================检查RS485ACKU缓存
-	FrameLength	=	ACKD.FarmeLength;
-	if(0	!=	FrameLength)
-	{
-		memcpy(buffer,&ACKD.Ack,FrameLength);
-		ACKD.FarmeLength	=	0;
-		return FrameLength;
-	}	
-	return FrameLength;
-}
-/*******************************************************************************
-* 函数名			:	GetUplinkData
-* 功能描述		:	获取需要往上层发送的数据
-							1-先检查应答缓存有无数据
-							2-应答缓存RS485ACKU无数据则检查TransU缓存
-							3-TransU无数据则扫描DataNodeU
-							4-如果DataNodeU有待传消息，将数据复制到TransU和buffer
-* 输入			: buffer  接收数据的缓存
-* 返回值			: FrameLength 需要发送的总字节数
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-unsigned short APIRS485UplinkGetData(unsigned char *buffer)
-{
-	unsigned char FrameLength	= 0;		//消息帧总长度，从HeadCode到EndCode的字节数
-	unsigned char	i	=	0;
-	//=====================================接收缓存异常情况：空地址
-	if(NULL	==	buffer)
-	{
-		return 0;
-	}
-	//=====================================检查RS485ACKU缓存
-	FrameLength	=	ACKU.FarmeLength;
-	if(0	!=	FrameLength)
-	{
-		memcpy(buffer,&ACKU.Ack,FrameLength);
-		ACKU.FarmeLength	=	0;
-		return FrameLength;
-	}
-	//=====================================检查TransU缓存
-	FrameLength	=	TransU.Length;
-	if(0	!=	FrameLength)
-	{
-		memcpy(buffer,TransU.data,FrameLength);
-		if(++TransU.Retry.Retry>=ReSendCount)		//达到重发次数:释放缓存，放弃重发
-		{
-			TransU.Length	=	0;
-			TransU.Retry.Retry	=	0;
-			TransU.Length				=	0;
-		}
-		return FrameLength;
-	}
-	//=====================================检查DataNodeU缓存
-	for(i	=	0;i<=MaxNetPerLayer;i++)
-	{
-		FrameLength	=	DataNodeU[i].Length;
-		if(0	!=	FrameLength)		//有数据
-		{
-			memcpy(TransU.data,DataNodeU[i].data,FrameLength);
-			memcpy(buffer,DataNodeU[i].data,FrameLength);
-			TransU.Length	=	FrameLength;
-			TransU.Retry.Retry	=	0;
-			TransU.Retry.Time		=	0;			
-			DataNodeU[i].Length	=	0;
-			return FrameLength;
-		}
-	}
-	return FrameLength;
-}
-/*******************************************************************************
-* 函数名			:	APIGetdownlinkData
-* 功能描述		:	获取需要往下层发送的数据
-							1-先检查应答缓存有无数据
-							2-应答缓存RS485ACKD无数据则检查TransD缓存
-							3-TransD无数据则扫描DataNoded
-							4-如果DataNodeD有待传消息，将数据复制到TransD和buffer
-* 输入			: buffer  接收数据的缓存
-* 返回值			: FrameLength 需要发送的总字节数
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-unsigned short APIRS485DownlinkGetData(unsigned char *buffer)
-{
-	unsigned char FrameLength	= 0;		//消息帧总长度，从HeadCode到EndCode的字节数
-	unsigned char	i	=	0;
-	//=====================================接收缓存异常情况：空地址
-	if(NULL	==	buffer)
-	{
-		return 0;
-	}
-	//=====================================检查RS485ACKU缓存
-	FrameLength	=	ACKD.FarmeLength;
-	if(0	!=	FrameLength)
-	{
-		memcpy(buffer,&ACKD.Ack,FrameLength);
-		ACKD.FarmeLength	=	0;
-		return FrameLength;
-	}
-	//=====================================检查TransU缓存
-	FrameLength	=	TransD.Length;
-	if(0	!=	FrameLength)
-	{
-		memcpy(buffer,TransD.data,FrameLength);
-    TransD.Retry.Retry+=1;
-		if((TransD.Retry.Retry)>=ReSendCount)		//达到重发次数:释放缓存，放弃重发
-		{
-			TransD.Length	=	0;
-			TransD.Retry.Retry	=	0;
-			TransD.Length				=	0;
-		}
-		return FrameLength;
-	}
-	//=====================================检查DataNodeU缓存
-	for(i	=	0;i<=MaxNetPerLayer;i++)
-	{
-		FrameLength	=	DataNodeD[i].Length;
-		if(0	!=	FrameLength)		//有数据
-		{
-			memcpy(TransD.data,DataNodeD[i].data,FrameLength);
-			memcpy(buffer,DataNodeD[i].data,FrameLength);
-			TransD.Length	=	FrameLength;
-			TransD.Retry.Retry	=	0;
-			TransD.Retry.Time		=	0;			
-			DataNodeD[i].Length	=	0;
-			return FrameLength;
-		}
-	}
-	return FrameLength;
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-unsigned short APIReadData(unsigned char *buffer)
-{
-	unsigned char i	=	0;
-	unsigned short length=0;
-	if(NULL	==	buffer)
-	{
-		return 0;
-	}
-	for(i=0;i<SelfBuffSize;i++)
-	{
-		length	=	SelfNode[i].Length;
-		if(0	!=	length)
-		{
-			memcpy(buffer,SelfNode[i].data,length);
-			SelfNode[i].Length	=	0;
-			return length;
-		}
-	}
-	return 0;
-}
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-HCResult APISendData(const unsigned char *buffer,const unsigned short length)
-{
-	HCResult	res	=	RES_OK;
 
 
-
-	return res;
-}
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function

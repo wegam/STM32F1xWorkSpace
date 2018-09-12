@@ -178,11 +178,12 @@ void PL009V33HC_Server(void)
 //	LCD_Server();				//显示服务相关
 //	CS5530_Server();		//称重服务，AD值处理，获取稳定值
 	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
-	tmepr	=	APIReadData(TxdBuffe);
+	tmepr	=	APIRS485ProcessData(TxdBuffe);
 	if(tmepr)
 	{
 		HX++;
-		LCD_Printf(0,210,16	,LCD565_RED,"接收计数:%0.8d",HX);		//待发药槽位，后边的省略号就是可变参数
+    LCD_ShowHex(0,210,16,LCD565_RED,tmepr,8,RevBuffe);                //显示十六进制数据
+//		LCD_Printf(0,210,16	,LCD565_RED,"接收计数:%0.8d",HX);		//待发药槽位，后边的省略号就是可变参数
 	}
 }
 /*******************************************************************************
@@ -388,6 +389,8 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 	else if(time++>50)
 	{
 		time	=	0;
+    NuW++;
+    APIRS485SendData(&NuW,1);
 		length	=	APIRS485UplinkGetData(TxdBuffe);
 		if(length)
 		{
