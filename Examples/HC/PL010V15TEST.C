@@ -45,11 +45,11 @@ u16	DSPTime=0;
 
 
 
-GT32L32_Info_TypeDef 	GT32L32_Info;
+GT32L32Def 	GT32L32_Info;
 char	Char_Buffer[256];		//记录format内码
 
 
-RS485_TypeDef  RS485;
+RS485Def  RS485;
 #define	Rs485Size	256
 u8 RxdBuffe[Rs485Size]={0};
 u8 RevBuffe[Rs485Size]={0};
@@ -63,7 +63,7 @@ u8	Rev_ID	=	0;
 
 
 
-SWITCHID_CONF	SWITCHID;
+SwitchDef	SWITCHID;
 u8 SwitchID=0;	//拔码开关地址
 
 

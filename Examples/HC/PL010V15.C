@@ -51,7 +51,7 @@ u16 millisecond=0;
 //char	Char_Buffer[256];		//记录format内码
 
 
-RS485_TypeDef  RS485;
+RS485Def  RS485;
 #define	Rs485Size	256
 u8 RxdBuffe[Rs485Size]={0};
 u8 RevBuffe[Rs485Size]={0};
@@ -65,7 +65,7 @@ u8	Rev_ID	=	0;
 
 
 
-SWITCHID_CONF	SWITCHID;
+SwitchDef	SWITCHID;
 u8 SwitchID=0;	//拔码开关地址
 
 
@@ -212,7 +212,7 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
     {
       Antenna = 0;
     }
-    LCD_ShowAntenna(300,0,Antenna);   //显示12x12天线
+    LCD_ShowAntenna(300,0,Antenna,LCD565_RED);   //显示12x12天线
     return;
   }
   if(BatteryTime++>50)
@@ -233,7 +233,8 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
   
 //  LCD_Printf(0,160,24,0,"%0.2X %0.2X ",aaf[0],aaf[1]);		//后边的省略号就是可变参数
 //  LCD_Printf(0,190,24,0,"A8 E6");		//后边的省略号就是可变参数
-  LCD_ShowHex(0,160,16,8,8,(u8*)aaf);
+//  LCD_ShowHex(0,160,16,8,8,(u8*)aaf);
+  LCD_ShowHex(0,150,16,LCD565_RED,8,8,(u8*)aaf);    //显示十六进制数据
  
   return;
 #endif
