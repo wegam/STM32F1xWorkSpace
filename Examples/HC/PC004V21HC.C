@@ -104,27 +104,20 @@ void PC004V21HC_Server(void)
 	
 	  
 	//======================================模拟程序
-	if(time++>50)
+	if(time++>100)
 	{
-//		RS485_DMAPrintf(&gRS485Bus,"test");
-//		time	=	0;
-//    
-//    APISetDataProcess(TestBuffer,15);
-    
-    
+    time	=	0;
 		length	=	APIRS485UplinkGetData(RS485BufferU);
 		if(length)
 		{
-			time	=	0;
-			
 			RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
 		}
 		length	=	APIRS485DownlinkGetData(RS485BufferD);
 		if(length)
 		{
-			time	=	0;
 			RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
 		}
+		
 		if(0 == PowerFlag)
 		{
 			PowerFlag	=	1;

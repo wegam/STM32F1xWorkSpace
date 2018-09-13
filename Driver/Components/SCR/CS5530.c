@@ -283,9 +283,9 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 	
 	CS5530_Status=0x00;
 	
-//	CS5530_Status=CS5530_Status|0x82000;																	//6.25sps
+	CS5530_Status=CS5530_Status|0x82000;																	//6.25sps
 	
-	CS5530_Status=CS5530_Status|0x2000;																	//7.5sps
+//	CS5530_Status=CS5530_Status|0x2000;																	//7.5sps
 	
 //	CS5530_Status=CS5530_Status|0x1800;																	//15sps
 	

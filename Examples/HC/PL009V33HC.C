@@ -93,7 +93,8 @@ CS5530Def CS5530CH1;
 CS5530Def CS5530CH2;
 u32	CS5530_Time	=	0;
 u32	CS5530_ADC_CMP			=	0;
-u32 CS5530_ADC_Value		= 0xFFFFFFFF;
+u32 CS5530_ADC_Value1		= 0xFFFFFFFF;
+u32 CS5530_ADC_Value2		= 0xFFFFFFFF;
 u32 CS5530_ADC_Valuebac	= 0xFFFFFFFF;
 
 u32	WeigthARR[100]	=	{0};
@@ -147,7 +148,7 @@ void PL009V33HC_Configuration(void)
 	
 	USART_Configuration();
 	
-	SysTick_DeleymS(500);				//SysTick延时nmS
+	SysTick_DeleymS(100);				//SysTick延时nmS
 	
 	LCD_Configuration();
 	
@@ -176,14 +177,14 @@ void PL009V33HC_Server(void)
 	IWDG_Feed();				//独立看门狗喂狗
 	RS485_Server();		//通讯管理---负责信息的接收与发送
 //	LCD_Server();				//显示服务相关
-//	CS5530_Server();		//称重服务，AD值处理，获取稳定值
+	CS5530_Server();		//称重服务，AD值处理，获取稳定值
 	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
 	tmepr	=	APIRS485ProcessData(TxdBuffe);
 	if(tmepr)
 	{
 		HX++;
-    LCD_ShowHex(0,210,16,LCD565_RED,tmepr,8,RevBuffe);                //显示十六进制数据
-//		LCD_Printf(0,210,16	,LCD565_RED,"接收计数:%0.8d",HX);		//待发药槽位，后边的省略号就是可变参数
+    LCD_ShowHex(0,200,16,LCD565_RED,tmepr,8,TxdBuffe);                //显示十六进制数据
+		LCD_Printf(0,220,16	,LCD565_RED,"接收计数:%0.8d",HX);		//待发药槽位，后边的省略号就是可变参数
 	}
 }
 /*******************************************************************************
@@ -234,38 +235,46 @@ void TempSensor_Server(void)
 void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 {
 #if 1
-	
+	unsigned char pBuffer[5]	=	{0};
 	CS5530_Process(&CS5530CH1);
 	CS5530_Process(&CS5530CH2);
 	
-	CS5530_ADC_Value	=	0;
-	if((CS5530CH1.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530CH1.Data.WeighLive	!=CS5530_ADC_Value))
+//	CS5530_ADC_Value	=	0;
+	if((CS5530CH1.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530CH1.Data.WeighFilt	!=CS5530_ADC_Value1))
 	{
 		if(lineCH1>=230)
 			lineCH1	=	120;
-		CS5530_ADC_Value	=	CS5530CH1.Data.WeighLive>>0;
-		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>5);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
-		LCD_Printf(0		,lineCH1,16	,LCD565_RED,"AD1:%0.8d",CS5530_ADC_Value>>5);				//待发药槽位，后边的省略号就是可变参数
+		CS5530_ADC_Value1	=	CS5530CH1.Data.WeighFilt>>0;
+		pBuffer[0]=1;
+		memcpy(&pBuffer[1],&CS5530_ADC_Value1,4);
+		APIRS485SendData(pBuffer,5);
+//		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>5);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+//		LCD_Printf(0		,lineCH1,16	,LCD565_RED,"AD1:%0.8d",CS5530_ADC_Value>>5);				//待发药槽位，后边的省略号就是可变参数
 		
 		lineCH1+=16;
 		
-		CS5530CH1.Data.WeighLive	=0xFFFFFFFF;
-		SysTick_DeleymS(50);				//SysTick延时nmS
+//		CS5530CH1.Data.WeighLive	=0xFFFFFFFF;
+//		SysTick_DeleymS(50);				//SysTick延时nmS
 	}
-	CS5530_ADC_Value	=	0;
+//	CS5530_ADC_Value	=	0;
 	
-	if((CS5530CH2.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530CH2.Data.WeighLive	!=CS5530_ADC_Value))
+	if((CS5530CH2.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530CH2.Data.WeighFilt	!=CS5530_ADC_Value2))
 	{
+		
 		if(lineCH2>=230)
 			lineCH2	=	120;
-		CS5530_ADC_Value	=	CS5530CH2.Data.WeighLive>>0;
-		USART_DMAPrintf	(UART4,"CH2:%0.8X\r\n",CS5530_ADC_Value>>5);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
-		LCD_Printf(200		,lineCH2,16	,LCD565_GBLUE,"AD2:%0.8d",CS5530_ADC_Value>>5);				//待发药槽位，后边的省略号就是可变参数		
+		CS5530_ADC_Value2	=	CS5530CH2.Data.WeighFilt>>0;
+		
+		pBuffer[0]=2;
+		memcpy(&pBuffer[1],&CS5530_ADC_Value2,4);
+		APIRS485SendData(pBuffer,5);
+//		USART_DMAPrintf	(UART4,"CH2:%0.8X\r\n",CS5530_ADC_Value>>5);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+//		LCD_Printf(200		,lineCH2,16	,LCD565_GBLUE,"AD2:%0.8d",CS5530_ADC_Value>>5);				//待发药槽位，后边的省略号就是可变参数		
 		lineCH2+=16;	
 
-		CS5530CH2.Data.WeighLive	=0xFFFFFFFF;
+//		CS5530CH2.Data.WeighLive	=0xFFFFFFFF;
 		
-		SysTick_DeleymS(50);				//SysTick延时nmS
+//		SysTick_DeleymS(50);				//SysTick延时nmS
 	}
 	
 	return;
@@ -386,17 +395,22 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 		}
 		
 	}
-	else if(time++>50)
+	else if(time++>200)
 	{
 		time	=	0;
     NuW++;
-    APIRS485SendData(&NuW,1);
+//		sendDataLoop:
 		length	=	APIRS485UplinkGetData(TxdBuffe);
 		if(length)
 		{
 			time	=	0;
 			
 			RS485_DMASend(&RS485,TxdBuffe,length);	//RS485-DMA发送程序
+//			goto sendDataLoop;
+		}
+		else
+		{
+			return;
 		}
 		
 		

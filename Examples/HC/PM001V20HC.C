@@ -82,24 +82,35 @@ void PM001V20HC_Server(void)
 	{
 		HCResult	res;
 		time	=	0;
-		res	=	APISetDataProcess(BufferU,length);
+//		res	=	APISetDataProcess(BufferU,length);
+		RS485_DMASend(&gRS485Bus,BufferU,length);	//RS485-DMA发送程序
 	}
-//	length	=	GetAck(RS232Buffer,0);
-//	if(length)
-//	{
-//		time	=	0;
-//		USART_DMASend(RS232ASerialPort,RS232Buffer,length);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
-//	}
-	
-  
-//  //======================================下行总线
+	//======================================下行总线
   length	=	RS485_ReadBufferIDLE(&gRS485Bus,BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(length)
 	{
-		HCResult	res;
-		time	=	0;
-		res	=	APISetDataProcess(BufferD,length);
+		APIRS485DownlinkSetData(BufferD,length);		
 	}
+	length	=	APIRS485DownlinkGetAck(BufferD);				//获取需要上传的数据
+	if(length)
+	{
+		RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
+	}
+	
+	length	=	APIRS485UplinkGetData(BufferU);
+	if(length)
+	{
+		time	=	0;
+		USART_DMASend(RS232ASerialPort,BufferU,length);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+	}
+	
+	length	=	APIRS485DownlinkGetData(BufferD);				//获取需要上传的数据
+	if(length)
+	{
+		RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
+	}
+  
+ 
 //	length	=	APIRS485GetdownlinkData(BufferD);
 //	if(length)
 //	{
@@ -111,17 +122,17 @@ void PM001V20HC_Server(void)
 	//======================================模拟程序
 	if(time++>50)
 	{
-		time	=	0;
-		length	=	APIRS485GetDownlinkData(BufferD);
-		if(length)
-		{
-			RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
-		}
-		if(0 == PowerFlag)
-		{
-			PowerFlag	=	1;
-			GetSubOnlineAddr();
-		}
+//		time	=	0;
+//		length	=	APIRS485GetDownlinkData(BufferD);
+//		if(length)
+//		{
+//			RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
+//		}
+//		if(0 == PowerFlag)
+//		{
+//			PowerFlag	=	1;
+//			GetSubOnlineAddr();
+//		}
 	}  
 }
 /*******************************************************************************

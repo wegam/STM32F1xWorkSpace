@@ -105,7 +105,7 @@ void PC001V30HC_Server(void)
 		RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
 	}
 	//======================================模拟程序
-	if(time++>50)
+	if(time++>100)
 	{
 		time	=	0;
 		//======================================发送
