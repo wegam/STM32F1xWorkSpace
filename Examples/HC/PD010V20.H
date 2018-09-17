@@ -100,16 +100,16 @@ typedef struct	_Motor
 	
 }MotorDef;
 
-typedef struct	_RS485
-{
-	//____________Buffer
-	unsigned char 	RevBuffer[USARTBufferSize];				//数据处理缓存
-	unsigned char 	TxdBuffer[USARTBufferSize];				//DMA发送缓存	
-	
-	unsigned long		BaudRate;
-	unsigned long		Time;
-	RS485_TypeDef		RS485Cof;	
-}RS485Def;
+//typedef struct	_RS485
+//{
+//	//____________Buffer
+//	unsigned char 	RevBuffer[USARTBufferSize];				//数据处理缓存
+//	unsigned char 	TxdBuffer[USARTBufferSize];				//DMA发送缓存	
+//	
+//	unsigned long		BaudRate;
+//	unsigned long		Time;
+//	RS485_TypeDef		RS485Cof;	
+//}RS485Def;
 
 typedef struct	_RS232
 {
@@ -143,7 +143,7 @@ typedef struct	_Board
 typedef	struct _PD010
 {
 	SensorDef			Sensor;
-	SWITCHID_CONF Switch;
+	SwitchDef 		Switch;
 	PmosDef				Pmos;
 	MotorDef			Motor1;
 	MotorDef			Motor2;

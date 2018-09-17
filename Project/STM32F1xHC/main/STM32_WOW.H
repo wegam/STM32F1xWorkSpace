@@ -117,6 +117,10 @@
 #ifdef PD010V20
 	#include "PD010V20.H"
 #endif
+//*********************************PD010V20CAN*********************************//
+#ifdef PD010V20CAN
+	#include "PD010V20CAN.H"
+#endif
 
 //*********************************PD011V10*********************************//
 #ifdef PD011V10
@@ -514,7 +518,7 @@
 
 void WOW_Configuration(void);		//配置函数
 void WOW_Server(void);					//服务函数
-
+void MainServer(void);          //
 
 #endif
 

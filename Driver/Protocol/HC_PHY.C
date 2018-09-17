@@ -408,7 +408,6 @@ HCResult APIRS485DownlinkSetData(const unsigned char *buffer,const unsigned shor
 		}
 	}
 }
-
 /*******************************************************************************
 * 函数名			:	APIRS485SendData
 * 功能描述		:	发送数据(打包，存入发送缓冲区)

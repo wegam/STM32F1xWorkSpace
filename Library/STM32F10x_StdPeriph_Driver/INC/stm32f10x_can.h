@@ -256,7 +256,7 @@ u8 CAN_TransmitStatus(u8 TransmitMailbox);												//检查消息传输的状态
 void CAN_CancelTransmit(u8 Mailbox);															//取消一个传输请求
 void CAN_FIFORelease(u8 FIFONumber);															//释放一个FIFO
 u8 CAN_MessagePending(u8 FIFONumber);															//返回挂号的信息数量
-void CAN_Receive(u8 FIFONumber, CanRxMsg* RxMessage);							//接收一个消息
+void CAN_Receive(u8 FIFONumber, CanRxMsg* RxMessage);						//接收一个消息
 u8 CAN_Sleep(void);																								//使CAN进入低功耗模式
 u8 CAN_WakeUp(void);																							//将CAN唤醒
 FlagStatus CAN_GetFlagStatus(u32 CAN_FLAG);												//检查指定的CAN标志位被设置与否
