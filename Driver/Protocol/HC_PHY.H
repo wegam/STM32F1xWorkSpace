@@ -19,7 +19,7 @@
 
 #define	ReSendCount			2						//重发次数
 
-#define	BusDataSize		  32				  //一条消息携带的最大数据个数
+#define	BusDataSize		  64				  //一条消息携带的最大数据个数
 #define	SelfBuffSize				10		  //本地址需要处理的消息缓存大小(不需要转发给下一层的消息)
 
 //#define	BascDataLen		64					//单元地址+层地址+槽地址+状态码
@@ -133,22 +133,7 @@ typedef	struct	_RS232Frame
 	unsigned char	*data;  			//b9	数据(如果Start中DataLength	不为0，则data前三字节代表地址，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
 }RS232FrameDef;			//RS232帧格式
 
-typedef	struct	_RS485TFrame  //485通讯消息帧结构体MessageFarme  
-{
-	unsigned char	HeadCode;		  //b1	识别符	0x7E
-	unsigned char	Bcc8;					//b2	从TargetAddr开始到帧尾
-	unsigned char	TargetAddr;		//b3	目标地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址,如果地址为0xFF表示为广播地址
-	unsigned char	SourceAddr;		//b4	源地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址
-	unsigned char	Serial;		  	//b5	流水号 0x01~0x7D 每次使用后加1(为了不与起始符和结束符冲突，流水号最大值为0x7D)
-	CmdDef			  Cmd;		      //b6	命令号：0x12-获取指定IC卡号，0x13取药,上报命令也在此位
-	unsigned char	UserCode;	  	//b7	用户码：不处理，原样返回
-	ErrCodeDef	  ErrCode;  		//b8	状态码/错误码		
-	unsigned char	DataLength;		//b9	data数据长度（地址长度+data长度)	--包含地址，如果DataLength为0，则地址和数据域都没有，尾部需要添加Bcc8校验和EndCode
-	unsigned char	CabinetAddr;	//b10	柜地址(单元柜号)
-	unsigned char	LayerAddr;		//b11	层地址
-	unsigned char	SlotAddr;			//b12	槽地址(终端地址)
-	unsigned char	*data;  			//b13	数据(如果Start中DataLength	不为0，则data前三字节代表地址，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
-}RS485TFrameDef;   						//RS485协议帧起始段(格式固定） 长度8字节
+
 
 typedef	struct	_RS485Frame  //485通讯消息帧结构体MessageFarme  
 {
@@ -159,8 +144,8 @@ typedef	struct	_RS485Frame  //485通讯消息帧结构体MessageFarme
 	unsigned char	CabinetAddr;	//b5	柜地址(单元柜号)
 	unsigned char	LayerAddr;		//b6	层地址
 	unsigned char	SlotAddr;			//b7	槽地址(终端地址)
-	unsigned char	DataLength;		//b8	data数据长度（地址长度+data长度)	--包含地址，如果DataLength为0，则地址和数据域都没有，尾部需要添加Bcc8校验和EndCode
-	unsigned char	*data;  			//b13	数据(如果Start中DataLength	不为0，则data前三字节代表地址，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
+	unsigned char	DataLength;		//b8	data数据长度,不包含Bcc8校验和EndCode
+	unsigned char	*data;  			//b13	数据，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
 }RS485FrameDef;   						//RS485协议帧起始段(格式固定） 长度8字节
 
 typedef	struct	_RS485AckFrame  //485通讯消息帧结构体MessageFarme  
@@ -192,7 +177,7 @@ typedef	struct	_Trans		//485通讯消息帧结构体MessageFarme
 typedef	struct	_DataNode	  //485通讯消息帧结构体MessageFarme  
 {
 	unsigned short	Length;		//待传输数据长度，数据不为0表示有数据,需要传送
-	unsigned char		data[BusDataSize];
+	unsigned char		data[BusDataSize];		//第一字节为命令码，第二字节为用户码，之后为数据
 }DataNodeDef;
 
 
@@ -233,23 +218,32 @@ unsigned short APIRS485ProcessData(unsigned char *buffer);
 
 
 
+HCResult APIRS232UplinkSetData(const unsigned char *buffer,const unsigned short length);
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+////unsigned char FarmeCheck(const void *buffer,const unsigned short length);
 //unsigned char FarmeCheck(const void *buffer,const unsigned short length);
-unsigned char FarmeCheck(const void *buffer,const unsigned short length);
-HCResult RS485ToRS485(const void *buffer,const unsigned short length);
-RS485FrameDef* RS485Step1FarmeDataCheck(const void *buffer,const unsigned short length);		//查找RS485数据在buffer中的起始地址并校验数据
-HCResult RS485Step2AckProcess(const void *buffer,const unsigned short length);
-HCResult RS485Step3SaveData(const void *buffer,const unsigned short length);
+//HCResult RS485ToRS485(const void *buffer,const unsigned short length);
+//RS485FrameDef* RS485Step1FarmeDataCheck(const void *buffer,const unsigned short length);		//查找RS485数据在buffer中的起始地址并校验数据
+//HCResult RS485Step2AckProcess(const void *buffer,const unsigned short length);
+//HCResult RS485Step3SaveData(const void *buffer,const unsigned short length);
 
-HCResult RS232ToRS485(const void *buffer,const unsigned short length);
-RS232FrameDef* RS232Step1FindData(const void *buffer,const unsigned short length);
-HCResult RS232Step2AckProcess(const void *buffer,const unsigned short length);
-HCResult RS232Step3SaveData(const void *buffer,const unsigned short length);
+//HCResult RS232ToRS485(const void *buffer,const unsigned short length);
+//RS232FrameDef* RS232Step1FindData(const void *buffer,const unsigned short length);
+//HCResult RS232Step2AckProcess(const void *buffer,const unsigned short length);
+//HCResult RS232Step3SaveData(const void *buffer,const unsigned short length);
 
 
 

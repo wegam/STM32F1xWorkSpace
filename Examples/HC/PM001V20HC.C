@@ -83,8 +83,10 @@ void PM001V20HC_Server(void)
 		HCResult	res;
 		time	=	0;
 //		res	=	APISetDataProcess(BufferU,length);
-		RS485_DMASend(&gRS485Bus,BufferU,length);	//RS485-DMA发送程序
+		APIRS232UplinkSetData(BufferU,length);
+//		RS485_DMASend(&gRS485Bus,BufferU,length);	//RS485-DMA发送程序
 	}
+	
 	//======================================下行总线
   length	=	RS485_ReadBufferIDLE(&gRS485Bus,BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(length)
@@ -94,8 +96,11 @@ void PM001V20HC_Server(void)
 	length	=	APIRS485DownlinkGetAck(BufferD);				//获取需要上传的数据
 	if(length)
 	{
-		RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
+		RS485_DMASend(&gRS485Bus,BufferD,length);			//RS485-DMA发送程序
 	}
+	
+	
+	
 	
 	length	=	APIRS485UplinkGetData(BufferU);
 	if(length)

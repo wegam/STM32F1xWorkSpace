@@ -23,7 +23,7 @@
 //	#define	RS485layCtlPin			GPIO_Pin_1
 	//=============================DB9端口
 	#define	RS232ADataSize			1024			//RS485总线最大数据长度
-	#define	RS232ABaudRate			19200
+	#define	RS232ABaudRate			115200
 	#define	RS232ASerialPort		USART1
 
 

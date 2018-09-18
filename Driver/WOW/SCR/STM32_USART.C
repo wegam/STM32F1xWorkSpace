@@ -2530,7 +2530,8 @@ u16 RS485_DMASend(
 	}
 //	SysTick_DeleymS(1);				//SysTick延时nmS
 	RS485_TX_EN(pRS485);
-	USART_DMASend	(USARTx,(u8*)tx_buffer,BufferSize);		//串口DMA发送程序
+//	USART_DMASend	(USARTx,(u8*)tx_buffer,BufferSize);		//串口DMA发送程序
+	USART_DMASendList(USARTx,(u8*)tx_buffer,BufferSize);		//串口DMA发送程序
 	return 0;
 }
 
