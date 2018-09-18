@@ -22,7 +22,7 @@ u32 RunTime	=	0;
 
 unsigned short	TextSize	=	0;
 CanRxMsg RxMessage;
-
+u8 PowerFlag	=	0;
 u8 txBuffer[16]=0;
 u8 tem	=	0;
 u8 buff[20]={0};
@@ -119,9 +119,10 @@ void RS232_Server(void)
 void CAN_Server(void)
 {
 	unsigned char length	=	0;
+	
 	if(CAN_RX_DATA(&RxMessage))
 	{
-		RunTime	=	0;
+		
 		length	=	RxMessage.DLC;
 
 		txBuffer[0]=RxMessage.StdId&0XFF;
@@ -135,7 +136,17 @@ void CAN_Server(void)
 	else if(RunTime++>1000)
 	{
 		RunTime	=	0;
-		CAN_StdTX_DATA(0x08,8,test);			//CAN使用标准帧发送数据
+		if(0	==	PowerFlag)
+		{
+			PowerFlag	=	1;
+			memset(txBuffer,0xFF,16);
+//			USART_DMAPrintfList (USART1,"POWERFLAG");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+			USART_DMASendList   (USART1,txBuffer,16);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
+		}
+		
+//		USART_DMASendList   (USART1,txBuffer,20);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
+//		RunTime	=	0;
+//		CAN_StdTX_DATA(0x08,8,test);			//CAN使用标准帧发送数据
 	}
 }
 
