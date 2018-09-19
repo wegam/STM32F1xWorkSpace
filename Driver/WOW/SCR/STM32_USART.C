@@ -17,7 +17,7 @@
 #include "STM32_USART.H"
 
 #include "STM32_GPIO.H"
-#include "STM32_SYSTICK.H"
+//#include "STM32_SYSTICK.H"
 #include 	"LinkedList.H"
 
 #include "stm32f10x_dma.h"
@@ -747,32 +747,32 @@ void	USART_DMA_ConfigurationOD(
 	}
 
 	//5)**********DMA发送初始化，外设作为DMA的目的端
-	DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(&USARTx->DR);					//DMA外设源地址
-	DMA_Initstructure.DMA_MemoryBaseAddr     = (u32)RXDBuffer;							//DMA数据内存地址
-	DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralDST;											//DMA_DIR_PeripheralDST（外设作为DMA的目的端），DMA_DIR_PeripheralSRC（外设作为数据传输的来源）
-	DMA_Initstructure.DMA_BufferSize = BufferSize; 													//指定DMA通道的DMA缓存的大小
-	DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;				//DMA_PeripheralInc_Enable（外设地址寄存器递增），DMA_PeripheralInc_Disable（外设地址寄存器不变），
-	DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;									//DMA_MemoryInc_Enable（内存地址寄存器递增），DMA_MemoryInc_Disable（内存地址寄存器不变）
-	DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;	//外设数据宽度--DMA_PeripheralDataSize_Byte（数据宽度为8位），DMA_PeripheralDataSize_HalfWord（数据宽度为16位），DMA_PeripheralDataSize_Word（数据宽度为32位）
-	DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;					//内存数据宽度--DMA_MemoryDataSize_Byte（数据宽度为8位），DMA_MemoryDataSize_HalfWord（数据宽度为16位），DMA_MemoryDataSize_Word（数据宽度为32位）
-	DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;														//DMA工作模式--DMA_Mode_Normal（只传送一次）, DMA_Mode_Circular（不停地传送）
-	DMA_Initstructure.DMA_Priority = DMA_Priority_High; 										//DMA通道的转输优先级--DMA_Priority_VeryHigh（非常高）DMA_Priority_High（高)，DMA_Priority_Medium（中），DMA_Priority_Low（低）
-	DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;														//DMA通道的内存到内存传输--DMA_M2M_Enable(设置为内存到内存传输)，DMA_M2M_Disable（非内存到内存传输）
-	DMA_Init(DMAx_Channeltx,&DMA_Initstructure);														//初始化DMA
+	DMA_Initstructure.DMA_PeripheralBaseAddr 	=	(u32)(&USARTx->DR);					//DMA外设源地址
+	DMA_Initstructure.DMA_MemoryBaseAddr     	=	(u32)RXDBuffer;								//DMA数据内存地址
+	DMA_Initstructure.DMA_DIR 								= DMA_DIR_PeripheralDST;				//DMA_DIR_PeripheralDST（外设作为DMA的目的端），DMA_DIR_PeripheralSRC（外设作为数据传输的来源）
+	DMA_Initstructure.DMA_BufferSize 					= BufferSize; 									//指定DMA通道的DMA缓存的大小
+	DMA_Initstructure.DMA_PeripheralInc 			= DMA_PeripheralInc_Disable;		//DMA_PeripheralInc_Enable（外设地址寄存器递增），DMA_PeripheralInc_Disable（外设地址寄存器不变），
+	DMA_Initstructure.DMA_MemoryInc 					=	DMA_MemoryInc_Enable;					//DMA_MemoryInc_Enable（内存地址寄存器递增），DMA_MemoryInc_Disable（内存地址寄存器不变）
+	DMA_Initstructure.DMA_PeripheralDataSize 	= DMA_PeripheralDataSize_Byte;	//外设数据宽度--DMA_PeripheralDataSize_Byte（数据宽度为8位），DMA_PeripheralDataSize_HalfWord（数据宽度为16位），DMA_PeripheralDataSize_Word（数据宽度为32位）
+	DMA_Initstructure.DMA_MemoryDataSize 			= DMA_MemoryDataSize_Byte;			//内存数据宽度--DMA_MemoryDataSize_Byte（数据宽度为8位），DMA_MemoryDataSize_HalfWord（数据宽度为16位），DMA_MemoryDataSize_Word（数据宽度为32位）
+	DMA_Initstructure.DMA_Mode 								= DMA_Mode_Normal;							//DMA工作模式--DMA_Mode_Normal（只传送一次）, DMA_Mode_Circular（不停地传送）
+	DMA_Initstructure.DMA_Priority 						= DMA_Priority_High; 						//DMA通道的转输优先级--DMA_Priority_VeryHigh（非常高）DMA_Priority_High（高)，DMA_Priority_Medium（中），DMA_Priority_Low（低）
+	DMA_Initstructure.DMA_M2M 								= DMA_M2M_Disable;							//DMA通道的内存到内存传输--DMA_M2M_Enable(设置为内存到内存传输)，DMA_M2M_Disable（非内存到内存传输）
+	DMA_Init(DMAx_Channeltx,&DMA_Initstructure);															//初始化DMA
 
 	//6)**********DMA接收初始化，外设作为DMA的源端
-	DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(&USARTx->DR);					//DMA外设源地址
-	DMA_Initstructure.DMA_MemoryBaseAddr     = 	(u32)RXDBuffer;							//DMA数据内存地址
-	DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralSRC;											//DMA_DIR_PeripheralDST（外设作为DMA的目的端），DMA_DIR_PeripheralSRC（外设作为数据传输的来源）
-	DMA_Initstructure.DMA_BufferSize = BufferSize; 													//指定DMA通道的DMA缓存的大小
-	DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;				//DMA_PeripheralInc_Enable（外设地址寄存器递增），DMA_PeripheralInc_Disable（外设地址寄存器不变），
-	DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;									//DMA_MemoryInc_Enable（内存地址寄存器递增），DMA_MemoryInc_Disable（内存地址寄存器不变）
-	DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;	//外设数据宽度--DMA_PeripheralDataSize_Byte（数据宽度为8位），DMA_PeripheralDataSize_HalfWord（数据宽度为16位），DMA_PeripheralDataSize_Word（数据宽度为32位）
-	DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;					//内存数据宽度--DMA_MemoryDataSize_Byte（数据宽度为8位），DMA_MemoryDataSize_HalfWord（数据宽度为16位），DMA_MemoryDataSize_Word（数据宽度为32位）
-	DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;														//DMA工作模式--DMA_Mode_Normal（只传送一次）, DMA_Mode_Circular（不停地传送）
-	DMA_Initstructure.DMA_Priority = DMA_Priority_High; 										//DMA通道的转输优先级--DMA_Priority_VeryHigh（非常高）DMA_Priority_High（高)，DMA_Priority_Medium（中），DMA_Priority_Low（低）
-	DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;														//DMA通道的内存到内存传输--DMA_M2M_Enable(设置为内存到内存传输)，DMA_M2M_Disable（非内存到内存传输）
-	DMA_Init(DMAx_Channelrx,&DMA_Initstructure);														//初始化DMA	
+	DMA_Initstructure.DMA_PeripheralBaseAddr 	=	(u32)(&USARTx->DR);					//DMA外设源地址
+	DMA_Initstructure.DMA_MemoryBaseAddr     	=	(u32)RXDBuffer;								//DMA数据内存地址
+	DMA_Initstructure.DMA_DIR 								= DMA_DIR_PeripheralSRC;				//DMA_DIR_PeripheralDST（外设作为DMA的目的端），DMA_DIR_PeripheralSRC（外设作为数据传输的来源）
+	DMA_Initstructure.DMA_BufferSize 					= BufferSize; 									//指定DMA通道的DMA缓存的大小
+	DMA_Initstructure.DMA_PeripheralInc 			= DMA_PeripheralInc_Disable;		//DMA_PeripheralInc_Enable（外设地址寄存器递增），DMA_PeripheralInc_Disable（外设地址寄存器不变），
+	DMA_Initstructure.DMA_MemoryInc 					=	DMA_MemoryInc_Enable;					//DMA_MemoryInc_Enable（内存地址寄存器递增），DMA_MemoryInc_Disable（内存地址寄存器不变）
+	DMA_Initstructure.DMA_PeripheralDataSize 	= DMA_PeripheralDataSize_Byte;	//外设数据宽度--DMA_PeripheralDataSize_Byte（数据宽度为8位），DMA_PeripheralDataSize_HalfWord（数据宽度为16位），DMA_PeripheralDataSize_Word（数据宽度为32位）
+	DMA_Initstructure.DMA_MemoryDataSize 			= DMA_MemoryDataSize_Byte;			//内存数据宽度--DMA_MemoryDataSize_Byte（数据宽度为8位），DMA_MemoryDataSize_HalfWord（数据宽度为16位），DMA_MemoryDataSize_Word（数据宽度为32位）
+	DMA_Initstructure.DMA_Mode 								= DMA_Mode_Normal;							//DMA工作模式--DMA_Mode_Normal（只传送一次）, DMA_Mode_Circular（不停地传送）
+	DMA_Initstructure.DMA_Priority 						= DMA_Priority_High; 						//DMA通道的转输优先级--DMA_Priority_VeryHigh（非常高）DMA_Priority_High（高)，DMA_Priority_Medium（中），DMA_Priority_Low（低）
+	DMA_Initstructure.DMA_M2M 								= DMA_M2M_Disable;							//DMA通道的内存到内存传输--DMA_M2M_Enable(设置为内存到内存传输)，DMA_M2M_Disable（非内存到内存传输）
+	DMA_Init(DMAx_Channelrx,&DMA_Initstructure);															//初始化DMA	
 	
 	//8)**********配置相关中断
 	//8.1)**********串口接收中断配置

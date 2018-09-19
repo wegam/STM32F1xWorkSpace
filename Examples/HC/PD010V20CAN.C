@@ -23,10 +23,13 @@ u32 RunTime	=	0;
 unsigned short	TextSize	=	0;
 CanRxMsg RxMessage;
 u8 PowerFlag	=	0;
-u8 txBuffer[16]=0;
+u8 txBuffer[16]={0};
 u8 tem	=	0;
 u8 buff[20]={0};
 u8 test[8]={0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
+unsigned char arr	=	0;
+unsigned char Set	=	0;
+unsigned char arrBac	=	0;
 //===============================================================================
 //函数:	PD008V11_Configuration
 //描述:	缓存架主配置程序
@@ -122,6 +125,7 @@ void CAN_Server(void)
 	
 	if(CAN_RX_DATA(&RxMessage))
 	{
+		arr++;
 		
 		length	=	RxMessage.DLC;
 
@@ -129,19 +133,35 @@ void CAN_Server(void)
 		
 		memcpy(&txBuffer[1],&RxMessage.Data[0],length);
 		
-		USART_DMASendList   (USART1,txBuffer,length+1);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
-		USART_DMASendList   (USART2,txBuffer,length+1);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
-		USART_DMASendList   (USART3,txBuffer,length+1);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
+		Set	=	RxMessage.StdId&0XFF;
+//		arr++;
+		
+		USART_DMAPrintfList (USART1,"Arr:%0.2d--Set:%0.2d\r\n",arr,Set);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		
+//		USART_DMASendList   (USART1,txBuffer,length+1);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
+//		USART_DMASendList   (USART2,txBuffer,length+1);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
+//		USART_DMASendList   (USART3,txBuffer,length+1);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
 	}
-	else if(RunTime++>1000)
+	else if(RunTime++>8000)
 	{
 		RunTime	=	0;
+		if(arrBac==arr)
+		{
+			arrBac	=	0;
+			arr			=	0;
+		}
+		else
+		{
+			arrBac	=	arr;
+//			USART_DMAPrintfList (USART1,"Arr:%0.2d\r\n",arr);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		}
 		if(0	==	PowerFlag)
 		{
 			PowerFlag	=	1;
 			memset(txBuffer,0xFF,16);
 //			USART_DMAPrintfList (USART1,"POWERFLAG");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 			USART_DMASendList   (USART1,txBuffer,16);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
+//			USART_DMAPrintfList (USART1,"%0.2d--%0.2d",arr,Set);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 		}
 		
 //		USART_DMASendList   (USART1,txBuffer,20);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表

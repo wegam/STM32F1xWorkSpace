@@ -16,7 +16,7 @@
 //#define R2A15908SP
 //#define Usart_Test
 
-
+unsigned short MainTime	=	0;
 
 /*******************************************************************************
 * 函数名	:	WOW_Configuration
@@ -509,7 +509,7 @@ void WOW_Configuration(void)
 void WOW_Server(void)
 {
 //	IWDG_Feed();								//独立看门狗喂狗
-
+	MainServer();
 //***********************************数字调音板服务程序***********************************//
 #ifdef DEMO
 	DEMO_Server();
@@ -971,7 +971,11 @@ void WOW_Server(void)
 void MainServer(void)
 {
   IWDG_Feed();			  //独立看门狗喂狗
-  USART_Process();     //串口服务程序
+	if(MainTime++>10)
+	{
+		MainTime	=	0;
+		USART_Process();     //串口服务程序
+	}
 }
 
 

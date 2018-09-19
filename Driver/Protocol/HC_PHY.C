@@ -863,8 +863,6 @@ HCResult APIRS232UplinkSetData(const unsigned char *buffer,const unsigned short 
 					pT[1]	=	RS232Frame->UserCode;
 					pT[2]	=	RS232Frame->Serial;
 					
-
-					
 					memcpy(&pT[3],pTemp,RS485Frame->DataLength-3);
 					
 					pTemp	=	(unsigned char*)&RS485Frame->data[RS485Frame->DataLength+3];
@@ -885,8 +883,6 @@ HCResult APIRS232UplinkSetData(const unsigned char *buffer,const unsigned short 
 			}
 		}
 	}
-	
-
 }
 
 

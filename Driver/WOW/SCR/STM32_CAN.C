@@ -748,22 +748,26 @@ void CAN_ExtTX_DATA(
 *******************************************************************************/
 u8 CAN_RX_DATA(CanRxMsg *RxMessage)
 {
-	if(SET == CAN_GetITStatus(CAN_IT_FF0))
-	{
+//	if(SET == CAN_GetITStatus(CAN_IT_FF0))
+//	{
+//		CAN_ClearITPendingBit(CAN_IT_FF0);
+//		return 0;
+//	}
+//	else if(SET == CAN_GetITStatus(CAN_IT_FOV0))
+//	{
+//		CAN_ClearITPendingBit(CAN_IT_FOV0);
+//		return 0;
+//	}
+//	else
+//	{
 		CAN_ClearITPendingBit(CAN_IT_FF0);
-		return 0;
-	}
-	else if(SET == CAN_GetITStatus(CAN_IT_FOV0))
-	{
-		CAN_ClearITPendingBit(CAN_IT_FOV0);
-		return 0;
-	}
-	else
-	{
+		CAN_ClearITPendingBit(CAN_IT_FF0);
 		//========================检查收件箱0是否有数据
 		if(0	!=	(CAN->RF0R&0x03))	//FMP0[1:0]: FIFO 0 报文数目 (FIFO 0 message pending) FIFO 0报文数目这2位反映了当前接收FIFO 0中存放的报文数目。
 		{
+			
 			CAN_Receive(CAN_FIFO0, RxMessage);
+			
 			return 1;
 		}
 		//========================检查收件箱1是否有数据
@@ -772,7 +776,8 @@ u8 CAN_RX_DATA(CanRxMsg *RxMessage)
 			CAN_Receive(CAN_FIFO1, RxMessage);
 			return 1;
 		}
-	}
+//	}
+	
 	return 0;
 }
 
