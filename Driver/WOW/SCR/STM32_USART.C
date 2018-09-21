@@ -468,23 +468,23 @@ void	USART_DMA_ConfigurationEV(
 	}
 	//3)**********初始化串口
 	//3.1)**********初始化TXD引脚
-	GPIO_InitStructure.GPIO_Pin = TXD_Pin;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Pin 		= TXD_Pin;
+	GPIO_InitStructure.GPIO_Mode 		= GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed 	= GPIO_Speed_50MHz;
 	GPIO_Init(GPIO_TX,&GPIO_InitStructure);
 
 	//3.2)**********初始化RXD引脚
-	GPIO_InitStructure.GPIO_Pin = RXD_Pin;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;							//上拉输入
+	GPIO_InitStructure.GPIO_Pin 		= RXD_Pin;
+	GPIO_InitStructure.GPIO_Mode 		= GPIO_Mode_IPU;							//上拉输入
 	GPIO_Init(GPIO_RX,&GPIO_InitStructure);
 	
 	//3.3)**********初始化串口参数
 	USART_DeInit(USARTx);
-	USART_InitStructure.USART_BaudRate = USART_BaudRate; 					//波特率
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;		//数据位
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;				//停止位
-	USART_InitStructure.USART_Parity = USART_Parity_Even ; 				//偶校验
-	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	USART_InitStructure.USART_BaudRate 		= USART_BaudRate; 			//波特率
+	USART_InitStructure.USART_WordLength 	= USART_WordLength_8b;	//数据位
+	USART_InitStructure.USART_StopBits 		= USART_StopBits_1;			//停止位
+	USART_InitStructure.USART_Parity 			= USART_Parity_Even ; 	//偶校验
+	USART_InitStructure.USART_Mode				= USART_Mode_Rx | USART_Mode_Tx;
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//流控
 	USART_Init(USARTx, &USART_InitStructure);											//初始化串口
 	
@@ -1848,9 +1848,9 @@ u16 USART_DMASend(
 						||((DMA1_Channel4->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-//            if(NULL !=  uTx1Addr)
-//              free(uTx1Addr);
-//            uTx1Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+            if(NULL !=  uTx1Addr)
+              free(uTx1Addr);
+            uTx1Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
             if(NULL ==  uTx1Addr)   //内存申请失败
             {
               return 0;
@@ -1879,9 +1879,9 @@ u16 USART_DMASend(
 						||((DMA1_Channel7->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-//            if(NULL !=  uTx2Addr)
-//              free(uTx2Addr);
-//            uTx2Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+            if(NULL !=  uTx2Addr)
+              free(uTx2Addr);
+            uTx2Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
             if(NULL ==  uTx2Addr)   //内存申请失败
             {
               return 0;
@@ -1906,9 +1906,9 @@ u16 USART_DMASend(
 						||((DMA1_Channel2->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-//            if(NULL !=  uTx3Addr)
-//              free(uTx3Addr);
-//            uTx3Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+            if(NULL !=  uTx3Addr)
+              free(uTx3Addr);
+            uTx3Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
             if(NULL ==  uTx3Addr)   //内存申请失败
             {
               return 0;
@@ -1933,9 +1933,9 @@ u16 USART_DMASend(
 						||((DMA2_Channel5->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-//            if(NULL !=  uTx4Addr)
-//              free(uTx4Addr);
-//            uTx4Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
+            if(NULL !=  uTx4Addr)
+              free(uTx4Addr);
+            uTx4Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
             if(NULL ==  uTx4Addr)   //内存申请失败
             {
               return 0;

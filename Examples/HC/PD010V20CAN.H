@@ -30,6 +30,7 @@ void PD010V20CAN_Server(void);
 
 
 void RS232_Configuration(void);
+void RS485_Configuration(void);
 void CAN_Configuration(void);
 
 
@@ -37,6 +38,7 @@ void CAN_Configuration(void);
 
 
 void RS232_Server(void);
+void RS485_Server(void);
 void CAN_Server(void);
 
 #endif

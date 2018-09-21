@@ -18,6 +18,10 @@
 #include "PD010V20CAN.H"
 
 
+RS485Def RS485A;			//与上层总线接口(网关板)
+RS485Def RS485B;			//与下级总线接口(层板)	
+
+
 u32 RunTime	=	0;
 
 unsigned short	TextSize	=	0;
@@ -25,7 +29,7 @@ CanRxMsg RxMessage;
 u8 PowerFlag	=	0;
 u8 txBuffer[16]={0};
 u8 tem	=	0;
-u8 buff[20]={0};
+u8 buff[32]={0};
 u8 test[8]={0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
 unsigned char arr	=	0;
 unsigned char Set	=	0;
@@ -42,6 +46,7 @@ void PD010V20CAN_Configuration(void)
 	GPIO_DeInitAll();									//将所有的GPIO关闭----V20170605
 
 	RS232_Configuration();
+	 RS485_Configuration();
 	CAN_Configuration();
 
 	SysTick_Configuration(1000);			//系统嘀嗒时钟配置72MHz,单位为uS----软件运行以定时扫描模式,定时时间为SysTickTime	
@@ -56,8 +61,9 @@ void PD010V20CAN_Configuration(void)
 //===============================================================================
 void PD010V20CAN_Server(void)
 {
-	CAN_Server();
-	
+//	CAN_Server();
+	RS232_Server();
+	RS485_Server();
 }
 
 /*******************************************************************************
@@ -78,7 +84,29 @@ void RS232_Configuration(void)
 	USART_DMA_ConfigurationNR	(USART2,115200,32);	//USART_DMA配置--查询方式，不开中断
 	
 	//-------------------------RS232通道2配置
-	USART_DMA_ConfigurationNR	(USART3,115200,32);	//USART_DMA配置--查询方式，不开中断
+	USART_DMA_ConfigurationNR	(USART3,19200,32);	//USART_DMA配置--查询方式，不开中断
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void RS485_Configuration(void)
+{
+	//-------------------------RS485A配置
+	RS485A.USARTx	=	UART4;
+	RS485A.RS485_CTL_PORT	=	GPIOA;
+	RS485A.RS485_CTL_Pin	=	GPIO_Pin_15;
+	RS485_DMA_ConfigurationNR	(&RS485A,19200,64);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	//-------------------------RS485A配置
+	RS485B.USARTx	=	USART2;
+	RS485B.RS485_CTL_PORT	=	GPIOA;
+	RS485B.RS485_CTL_Pin	=	GPIO_Pin_1;
+	RS485_DMA_ConfigurationNR	(&RS485B,19200,64);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -106,9 +134,40 @@ void CAN_Configuration(void)
 *******************************************************************************/
 void RS232_Server(void)
 {
-
-
-
+	unsigned char len	=	0;
+	len	=	USART_ReadBufferIDLE(USART3,buff);
+	if(len)
+	{
+		USART_DMASendList(USART1,buff,len);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+	}
+	len	=	USART_ReadBufferIDLE(USART1,buff);
+	if(len)
+	{
+		USART_DMASendList(USART3,buff,len);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+	}	
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void RS485_Server(void)
+{
+	unsigned char len	=	0;
+	len	=	RS485_ReadBufferIDLE(&RS485A,buff);
+	if(len)
+	{
+		USART_DMASendList(USART1,buff,len);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+	}
+	len	=	RS485_ReadBufferIDLE(&RS485B,buff);
+	if(len)
+	{
+		USART_DMASendList(USART3,buff,len);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+	}	
 }
 /*******************************************************************************
 * 函数名			:	function

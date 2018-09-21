@@ -31,7 +31,7 @@ u8 CardReaderCmd_SetArea[14] =
 	0x44,  	/* CmdType 	*/			//命令类型
 	0x01,  	/* Sector 	*/			//扇区：0,1,其中0为只读，为卡信息
 	0x01,  	/* Block 	*/				//块号：0,1,2	//产品使用1
-	0x00,   /* KeyType	*/			//1字节密钥模式 KEYA（0x60）/KEYB(0x61) 00为关闭主动上传功能
+	0x60,   /* KeyType	*/			//1字节密钥模式 KEYA（0x60）/KEYB(0x61) 00为关闭主动上传功能
 	0xFF,   /* PassWord0 */			//6字节密码
 	0xFF,   /* PassWord1 */
 	0xFF,   /* PassWord2 */

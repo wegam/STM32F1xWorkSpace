@@ -6,7 +6,7 @@
 
 #include "CardReader.H"			//读卡器
 
-#include "STM32_TOOLS.H"		//异或校验工具
+//#include "STM32_TOOLS.H"		//异或校验工具
 #include "SWITCHID.H"
 #include "STM32_CRC.H"
 #include "STM32_USART.H"
