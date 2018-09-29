@@ -169,15 +169,29 @@ typedef	struct	_RS232Frame			//RS232通讯格式
 	unsigned char	*data;  			//b9	数据(如果Start中DataLength	不为0，则data前三字节代表地址，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
 }RS232FrameDef;			//RS232帧格式
 //-------------------------------------------------
+//typedef	struct	_RS485Frame  //485通讯消息帧结构体MessageFarme  
+//{
+//	//---------------------------起始段
+//	unsigned char				HeadCode;		  //b1	识别符	0x7E
+//	RS485FrameStartDef	HStart;
+//	DataStartDef				DStart;
+//	//---------------------------数据段:前三字节为用户标识，校验码及结束符不计入数据长度
+//	unsigned char	*data;  			//b13	数据，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
+//}RS485FrameDef;			//RS485协议帧起始段(格式固定） 长度8字节
+////-------------------------------------------------
 typedef	struct	_RS485Frame  //485通讯消息帧结构体MessageFarme  
 {
 	//---------------------------起始段
-	unsigned char				HeadCode;		  //b1	识别符	0x7E
-	RS485FrameStartDef	HStart;				//起始段
-	DataStartDef				DStart;				//数据起始段
-	unsigned char				Data[BusDataSize]; 	//b13	数据，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
+	unsigned char	HeadCode;		  //b1	识别符	0x7E
+	unsigned char	TargetAddr;		//b2	目标地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址,如果地址为0xFF表示为广播地址
+	unsigned char	SourceAddr;		//b3	源地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址		
+	unsigned char	CabinetAddr;	//b5	柜地址(单元柜号)
+	unsigned char	LayerAddr;		//b6	层地址
+	unsigned char	SlotAddr;			//b7	槽地址(终端地址)
+	ErrCodeDef	  ErrCode;  		//b4	状态码/错误码
+	unsigned char	DataLength;		//b8	data数据长度,不包含Bcc8校验和EndCode
 	//---------------------------数据段:前三字节为用户标识，校验码及结束符不计入数据长度
-//	unsigned char	*data;  			//b13	数据，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
+	unsigned char	*data;  			//b13	数据，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
 }RS485FrameDef;			//RS485协议帧起始段(格式固定） 长度8字节
 //-------------------------------------------------
 typedef	struct	_RS485AckFrame  //485通讯消息帧结构体MessageFarme  
@@ -236,7 +250,6 @@ HCResult HCBoradSet(const unsigned char Layer,const unsigned char id);
 
 HCResult APIRS485UplinkSetData(const unsigned char *buffer,const unsigned short length);
 HCResult APIRS485DownlinkSetData(const unsigned char *buffer,const unsigned short length);
-HCResult APIRS485DownlinkReceiveData(const unsigned char *buffer,const unsigned short length);
 
 unsigned short APIRS485UplinkGetAck(unsigned char *buffer);
 unsigned short APIRS485DownlinkGetAck(unsigned char *buffer);

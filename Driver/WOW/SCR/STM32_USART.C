@@ -2225,9 +2225,9 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
           //还在接收中
 					else
 					{
-						RemaDmaSize.nUSART1	=	BufferSize;       //更新
-            Status.USART_IDLESTD  = 1;             //非空闲
-            Status.USART_ReceSTD  = 1;              //正在接收中
+						RemaDmaSize.nUSART1		=	BufferSize;   	//更新
+            Status.USART_IDLESTD  = 1;             	//非空闲
+            Status.USART_ReceSTD  = 1;           		//正在接收中
 					}					
 				}
 				//发送状态检查

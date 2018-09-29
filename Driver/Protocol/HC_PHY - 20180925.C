@@ -63,49 +63,49 @@ HCResult APIRS485UplinkSetData(const unsigned char *buffer,const unsigned short 
 //	HCResult	res	=	RES_OK;
 	
 	RS485FrameDef *RS485Frame  				= NULL;
-	AddrDef				*Addr								=	NULL;
 	unsigned long	*RS485EndCodeAddr		= NULL;
 	unsigned char	*pBuffer						=	0;
 	
-	unsigned char		TargetAddr	=	0;
 	unsigned char		SourceBcc8  = 0;
   unsigned short	FarmeLen		=	0;
-	
+	unsigned short	DataLength	=	0;
 	unsigned short 	ValidLength	= 0;    //buffer中有效数据长度(从RS485头标识符开始后的数据为有效数据)
 	
   if(NULL ==  buffer) //空地址
 	{
 		return RES_PARERR;
 	}
-  //=========================================数据有效性检查：
+  //=========================================查找RS485HeadCode头标识符
 	pBuffer			=	(unsigned char*)buffer;
 	ValidLength	=	length;
-	//-----------------------------------------查找头标识和结束标识
+	//-----------------------------------------查找头标识
 	CheckFarm:
-	RS485Frame 				=	(RS485FrameDef*)memchr(pBuffer,RS485HeadCode,ValidLength);		//查找RS485HeadCode头标识符
-	RS485EndCodeAddr	=	(unsigned long*)memchr(RS485Frame,RS485EndCode,length);			//查找RS485EndCode尾标识符----从头标识符后开始查找	
-	if(NULL==RS485Frame||NULL==RS485EndCodeAddr)
+	RS485Frame 				=	(RS485FrameDef*)memchr(pBuffer,RS485HeadCode,ValidLength);							//查找RS485HeadCode头标识符	
+	if(NULL==RS485Frame)
 	{
 		return RES_PARERR;
-	}	
-	ValidLength	=	ValidLength-((unsigned long)RS485Frame-(unsigned long)pBuffer);		//更新剩余数据长度
-	pBuffer	=	(unsigned char*)RS485Frame;			//更新起始地址
+	}
+	ValidLength				=	ValidLength-((unsigned long)RS485Frame-(unsigned long)pBuffer);		//剩余数据长度
+	RS485EndCodeAddr	=	(unsigned long*)memchr(RS485Frame,RS485EndCode,length);		//查找RS485EndCode尾标识符----从头标识符后开始查找
+	if(NULL==RS485EndCodeAddr)
+	{
+		return RES_PARERR;
+	}
 	//-----------------------------------------地址判断:上层下发，识别目标地址是否为本地址或者广播地址0xFF
-	TargetAddr	=	RS485Frame->HStart.TargetAddr;
-	if((HCSYS.SwitchAddr!=TargetAddr)&&(0xFF!=TargetAddr))
+	pBuffer	=	(unsigned char*)RS485Frame;
+	if((HCSYS.SwitchAddr!=RS485Frame->TargetAddr)&&(0xFF!=RS485Frame->TargetAddr))
 	{		
 		pBuffer	=	&pBuffer[1];
 		goto CheckFarm;
 	}
-	//-----------------------------------------帧长度检查
+	//-----------------------------------------帧长度判断
 	FarmeLen		=	(unsigned long)RS485EndCodeAddr-(unsigned long)RS485Frame+1;	
-	if(sizeof(RS485AckDef)>FarmeLen)
+	if(RS485MinFrameLen>FarmeLen)
 	{
-		pBuffer	=	&pBuffer[1];
 		goto CheckFarm;
-	}	
-	//=========================================应答帧判断
-	if(sizeof(RS485AckDef)==FarmeLen)		//应答帧
+	}
+	//-----------------------------------------应答帧判断
+	if(RS485AckFrameLen==FarmeLen)		//应答帧
 	{
 		//---------------------------------------校验判断
 		SourceBcc8	=	BCC8(&pBuffer[1],3);
@@ -122,21 +122,18 @@ HCResult APIRS485UplinkSetData(const unsigned char *buffer,const unsigned short 
 			goto CheckFarm;
 		}
 	}
-	
-	
-	//=========================================消息帧判断
+	//-----------------------------------------消息帧判断
 	else
 	{
-		unsigned short	DataLength	=	0;
-		DataLength	=	RS485Frame->HStart.DataLength;	
-		if(ValidLength<DataLength+sizeof(RS485FrameStartDef)+3)	//3为起始符，结束符和BCC8，DataLength包含DataStartDef长度
+		if(ValidLength<RS485Frame->DataLength+RS485StartFrameLen+2)
 		{
 			pBuffer	=	&pBuffer[1];
 			goto CheckFarm;
 		}
+		DataLength	=	RS485Frame->DataLength;
 		//---------------------------------------校验判断
-		SourceBcc8	=	BCC8(&RS485Frame->HStart.TargetAddr,DataLength+sizeof(RS485FrameStartDef));
-		if(SourceBcc8	!=	pBuffer[DataLength+sizeof(RS485FrameStartDef)+1])		//1为跨过起始标识符
+		SourceBcc8	=	BCC8(&pBuffer[1],RS485StartFrameLen+DataLength-1);
+		if(SourceBcc8	!=	pBuffer[RS485StartFrameLen+DataLength])
 		{
 			pBuffer	=	&pBuffer[1];
 			goto CheckFarm;
@@ -149,7 +146,7 @@ HCResult APIRS485UplinkSetData(const unsigned char *buffer,const unsigned short 
 			unsigned char	*Addr			=	NULL;
 			unsigned char	*pTemp		=	NULL;
 			
-			Addr	=	&RS485Frame->DStart.Addr.CabinetAddr;
+			Addr	=	&RS485Frame->CabinetAddr;
 			//---------------------------------------中间级
 			if(HCSYS.Layer<3)		//非最终端设备
 			{
@@ -157,45 +154,43 @@ HCResult APIRS485UplinkSetData(const unsigned char *buffer,const unsigned short 
 				if(0xFF	==	NextAddr)
 				{
 					NextAddr	=	0;
-					if(DataNodeD[0].NodeLength)
+					if(DataNodeD[0].Length)
 					{
 						ACKU.Ack.ErrCode		=	Err_FAULT_BUSY;
 					}
 					else
 					{
-						memcpy(DataNodeD[0].data,RS485Frame,DataLength+sizeof(RS485FrameStartDef));						
-						DataNodeD[0].NodeLength	=	DataLength+sizeof(RS485FrameStartDef)+3;	//3为起始符，结束符和BCC8，DataLength包含DataStartDef长度					
-						RS485Frame	=	(RS485FrameDef*)DataNodeD[0].data;						
+						memcpy(DataNodeD[0].data,RS485Frame,RS485Frame->DataLength+RS485StartFrameLen);						
+						DataNodeD[0].Length	=	RS485Frame->DataLength+RS485StartFrameLen+2;						
+						RS485Frame	=	(RS485FrameDef*)DataNodeD[0].data;
+						pTemp	=	(unsigned char*)DataNodeD[0].data;
 						//------------------------修改目的地址和源地址
-						RS485Frame->HStart.TargetAddr	=	0xFF;
-						RS485Frame->HStart.SourceAddr	=	0x00;
-						
-						pTemp	=	(unsigned char*)&RS485Frame->HStart.TargetAddr;
+						RS485Frame->TargetAddr	=	0xFF;
+						RS485Frame->SourceAddr	=	0x00;
 						//------------------------校验
-						pTemp[DataLength+sizeof(RS485FrameStartDef)]	=	BCC8(pTemp,DataLength+sizeof(RS485FrameStartDef));	//头标识符和尾标识符不参与校验
-						pTemp[DataLength+sizeof(RS485FrameStartDef)+1]	=	RS485EndCode;
+						pTemp[RS485Frame->DataLength+RS485StartFrameLen]	=	BCC8(&pTemp[1],RS485Frame->DataLength+RS485StartFrameLen-1);	//头标识符和尾标识符不参与校验
+						pTemp[RS485Frame->DataLength+RS485StartFrameLen+1]	=	RS485EndCode;
 						ACKU.Ack.ErrCode		=	Err_None;
 					}
 				}
 				else
 				{
-					if(DataNodeD[NextAddr].NodeLength)
+					if(DataNodeD[NextAddr].Length)
 					{
 						ACKU.Ack.ErrCode		=	Err_FAULT_BUSY;
 					}
 					else
 					{
-						memcpy(DataNodeD[NextAddr].data,RS485Frame,DataLength+sizeof(RS485FrameStartDef));
-						DataNodeD[NextAddr].NodeLength	=	DataLength+sizeof(RS485FrameStartDef)+3;	//3为起始符，结束符和BCC8，DataLength包含DataStartDef长度	
-						RS485Frame	=	(RS485FrameDef*)DataNodeD[NextAddr].data;						
+						memcpy(DataNodeD[NextAddr].data,RS485Frame,RS485Frame->DataLength+RS485StartFrameLen);
+						DataNodeD[NextAddr].Length	=	RS485Frame->DataLength+RS485StartFrameLen+2;
+						RS485Frame	=	(RS485FrameDef*)DataNodeD[NextAddr].data;
+						pTemp	=	(unsigned char*)DataNodeD[NextAddr].data;
 						//------------------------修改目的地址和源地址
-						RS485Frame->HStart.TargetAddr	=	NextAddr;
-						RS485Frame->HStart.SourceAddr	=	0x00;
-						
-						pTemp	=	(unsigned char*)&RS485Frame->HStart.TargetAddr;
+						RS485Frame->TargetAddr	=	NextAddr;
+						RS485Frame->SourceAddr	=	0x00;
 						//------------------------校验
-						pTemp[DataLength+sizeof(RS485FrameStartDef)]	=	BCC8(pTemp,DataLength+sizeof(RS485FrameStartDef));	//头标识符和尾标识符不参与校验
-						pTemp[DataLength+sizeof(RS485FrameStartDef)+1]	=	RS485EndCode;
+						pTemp[RS485Frame->DataLength+RS485StartFrameLen]	=	BCC8(&pTemp[1],RS485Frame->DataLength+RS485StartFrameLen-1);	//头标识符和尾标识符不参与校验
+						pTemp[RS485Frame->DataLength+RS485StartFrameLen+1]	=	RS485EndCode;
 						ACKU.Ack.ErrCode		=	Err_None;
 					}						
 				}				
@@ -206,14 +201,14 @@ HCResult APIRS485UplinkSetData(const unsigned char *buffer,const unsigned short 
 				unsigned char i	=	0;
 				for(i=0;i<SelfBuffSize;i++)
 				{
-					if(0	==	ProcessNode[i].NodeLength)
+					if(0	==	ProcessNode[i].Length)
 					{
-						memcpy(ProcessNode[i].data,RS485Frame,DataLength+sizeof(RS485FrameStartDef));
-						ProcessNode[i].NodeLength	=	DataLength+sizeof(RS485FrameStartDef)+3;	//3为起始符，结束符和BCC8，DataLength包含DataStartDef长度
-						RS485Frame	=	(RS485FrameDef*)ProcessNode[i].data;
-						
+						unsigned char *pTemp	=	NULL;
 						pTemp	=	(unsigned char*)RS485Frame;
 						pTemp	=	&pTemp[RS485StartFrameLen];
+//						memcpy(ProcessNode[i].data,RS485Frame,RS485Frame->DataLength+RS485StartFrameLen+2);	//将源数据全部拷贝
+						memcpy(ProcessNode[i].data,pTemp,RS485Frame->DataLength);	//将源数据全部拷贝
+						ProcessNode[i].Length	=	RS485Frame->DataLength;
 						break;
 					}
 				}
@@ -241,7 +236,7 @@ HCResult APIRS485UplinkSetData(const unsigned char *buffer,const unsigned short 
 }
 /*******************************************************************************
 * 函数名			:	APIRS485SetDownlinkData
-* 功能描述		:	下端接口
+* 功能描述		:	下端接口 
 * 输入			: buffer  输入的数据缓存地址
               length  输入的数据长度
 * 返回值			: void
@@ -257,11 +252,9 @@ HCResult APIRS485DownlinkSetData(const unsigned char *buffer,const unsigned shor
 	unsigned long	*RS485EndCodeAddr		= NULL;
 	unsigned char	*pBuffer						=	0;
 	
-	unsigned char		TargetAddr	=	0;
-	unsigned char		SourceAddr	=	0;
-	unsigned char		SourceBcc8  =	0;
+	unsigned char		SourceBcc8  = 0;
   unsigned short	FarmeLen		=	0;
-//	unsigned short	DataLength	=	0;
+	unsigned short	DataLength	=	0;
 	unsigned short 	ValidLength	= 0;    //buffer中有效数据长度(从RS485头标识符开始后的数据为有效数据)
 	
   if(NULL ==  buffer) //空地址
@@ -273,32 +266,32 @@ HCResult APIRS485DownlinkSetData(const unsigned char *buffer,const unsigned shor
 	ValidLength	=	length;
 	//-----------------------------------------查找头标识
 	CheckFarm:
-	RS485Frame 				=	(RS485FrameDef*)memchr(pBuffer,RS485HeadCode,length);			//查找RS485HeadCode头标识符
-	RS485EndCodeAddr	=	(unsigned long*)memchr(RS485Frame,RS485EndCode,length);		//查找RS485EndCode尾标识符----从头标识符后开始查找	
-	if(NULL==RS485Frame||NULL==RS485EndCodeAddr)
+	RS485Frame 				=	(RS485FrameDef*)memchr(pBuffer,RS485HeadCode,length);							//查找RS485HeadCode头标识符	
+	if(NULL==RS485Frame)
 	{
 		return RES_PARERR;
 	}
 	ValidLength				=	ValidLength-((unsigned long)RS485Frame-(unsigned long)pBuffer);		//剩余数据长度
-	pBuffer	=	(unsigned char*)RS485Frame;			//更新起始地址
+	RS485EndCodeAddr	=	(unsigned long*)memchr(RS485Frame,RS485EndCode,length);		//查找RS485EndCode尾标识符----从头标识符后开始查找
+	if(NULL==RS485EndCodeAddr)
+	{
+		return RES_PARERR;
+	}
 	//-----------------------------------------地址判断:下层上传，目标地址为0，原地址为上传的地址
 	pBuffer	=	(unsigned char*)RS485Frame;
-	TargetAddr	=	RS485Frame->HStart.TargetAddr;
-	SourceAddr	=	RS485Frame->HStart.SourceAddr;
-	if((0x00!=TargetAddr)||(0x00==SourceAddr))
+	if((0x00!=RS485Frame->TargetAddr)||(0x00==RS485Frame->SourceAddr))
 	{		
 		pBuffer	=	&pBuffer[1];
 		goto CheckFarm;
 	}
 	//-----------------------------------------帧长度判断
 	FarmeLen		=	(unsigned long)RS485EndCodeAddr-(unsigned long)RS485Frame+1;	
-	if(sizeof(RS485AckDef)>FarmeLen)
+	if(RS485MinFrameLen>FarmeLen)
 	{
-		pBuffer	=	&pBuffer[1];
 		goto CheckFarm;
 	}
 	//-----------------------------------------应答帧判断
-	if(sizeof(RS485AckDef)==FarmeLen)		//应答帧
+	if(RS485AckFrameLen==FarmeLen)		//应答帧
 	{
 		//---------------------------------------校验判断
 		SourceBcc8	=	BCC8(&pBuffer[1],3);
@@ -318,16 +311,15 @@ HCResult APIRS485DownlinkSetData(const unsigned char *buffer,const unsigned shor
 	//-----------------------------------------消息帧判断
 	else
 	{
-		unsigned short	DataLength	=	0;
-		DataLength	=	RS485Frame->HStart.DataLength;	
-		if(ValidLength<DataLength+sizeof(RS485FrameStartDef)+3)	//3为起始符，结束符和BCC8，DataLength包含DataStartDef长度
+		if(ValidLength<RS485Frame->DataLength+RS485StartFrameLen+2)
 		{
 			pBuffer	=	&pBuffer[1];
 			goto CheckFarm;
 		}
+		DataLength	=	RS485Frame->DataLength;
 		//---------------------------------------校验判断
-		SourceBcc8	=	BCC8(&RS485Frame->HStart.TargetAddr,DataLength+sizeof(RS485FrameStartDef));
-		if(SourceBcc8	!=	pBuffer[DataLength+sizeof(RS485FrameStartDef)+1])		//1为跨过起始标识符
+		SourceBcc8	=	BCC8(&pBuffer[1],RS485StartFrameLen+DataLength-1);
+		if(SourceBcc8	!=	pBuffer[RS485StartFrameLen+DataLength])
 		{
 			pBuffer	=	&pBuffer[1];
 			goto CheckFarm;
@@ -336,70 +328,70 @@ HCResult APIRS485DownlinkSetData(const unsigned char *buffer,const unsigned shor
 		else
 		{	
 			//本地数据缓存大小SelfBuffSize
-//			unsigned char SourceAddr	=	0;			//下一层地址			
+			unsigned char SourceAddr	=	0;			//下一层地址			
 			unsigned char	*Addr			=	NULL;
 			unsigned char	*pTemp		=	NULL;
 			unsigned char Layer			=	HCSYS.Layer;
 			
 			
 //			SourceAddr	=	Addr[HCSYS.Layer];
-//			SourceAddr	=	RS485Frame->SourceAddr;
+			SourceAddr	=	RS485Frame->SourceAddr;
 			//---------------------------------------中间级
 			if(HCSYS.Layer>0)		//非最终端设备--最顶层
 			{
 				Layer	=	Layer-1;
 //				SourceAddr	=	Addr[HCSYS.Layer];
 
-				if(DataNodeU[SourceAddr].NodeLength)
+				if(DataNodeU[SourceAddr].Length)
 				{
-					ACKD.Ack.TargetAddr	=	SourceAddr;
+					ACKD.Ack.TargetAddr	=	RS485Frame->SourceAddr;
 					ACKD.Ack.ErrCode		=	Err_FAULT_BUSY;
 				}
 				else
 				{
-					ACKD.Ack.TargetAddr	=	SourceAddr;					
+					ACKD.Ack.TargetAddr	=	RS485Frame->SourceAddr;					
 					
-					memcpy(DataNodeU[SourceAddr].data,RS485Frame,DataLength+sizeof(RS485FrameStartDef));
+					memcpy(DataNodeU[SourceAddr].data,RS485Frame,RS485Frame->DataLength+RS485StartFrameLen);
 					
-					DataNodeU[SourceAddr].NodeLength	=	DataLength+sizeof(RS485FrameStartDef)+2;
+					DataNodeU[SourceAddr].Length	=	RS485Frame->DataLength+RS485StartFrameLen+2;
 					
 					RS485Frame	=	(RS485FrameDef*)DataNodeU[SourceAddr].data;
-					Addr	=	&RS485Frame->DStart.Addr.CabinetAddr;
+					Addr	=	&RS485Frame->CabinetAddr;
 					
 					pTemp	=	(unsigned char*)DataNodeU[SourceAddr].data;
 					//------------------------修改目的地址和源地址
-					RS485Frame->HStart.TargetAddr	=	0x00;
-					RS485Frame->HStart.SourceAddr	=	HCSYS.SwitchAddr;
+					RS485Frame->TargetAddr	=	0x00;
+					RS485Frame->SourceAddr	=	HCSYS.SwitchAddr;
 					Addr[Layer]				=	HCSYS.SwitchAddr;
 					//------------------------校验
-					pTemp[DataLength+sizeof(RS485FrameStartDef)]	=	BCC8(&pTemp[1],DataLength+sizeof(RS485FrameStartDef)-1);	//头标识符和尾标识符不参与校验
-					pTemp[DataLength+sizeof(RS485FrameStartDef)+1]	=	RS485EndCode;
+					pTemp[RS485Frame->DataLength+RS485StartFrameLen]	=	BCC8(&pTemp[1],RS485Frame->DataLength+RS485StartFrameLen-1);	//头标识符和尾标识符不参与校验
+					pTemp[RS485Frame->DataLength+RS485StartFrameLen+1]	=	RS485EndCode;
 					ACKD.Ack.ErrCode		=	Err_None;
 				}						
 			}
 			//---------------------------------------终端级--最顶层：转485
 			else
 			{	
-				if(DataNodeU[SourceAddr].NodeLength)
+				if(DataNodeU[SourceAddr].Length)
 				{
-					ACKD.Ack.TargetAddr	=	RS485Frame->HStart.SourceAddr;
+					ACKD.Ack.TargetAddr	=	RS485Frame->SourceAddr;
 					ACKD.Ack.ErrCode		=	Err_FAULT_BUSY;
 				}
 				else
 				{
-					ACKD.Ack.TargetAddr	=	RS485Frame->HStart.SourceAddr;
-					memcpy(DataNodeU[SourceAddr].data,RS485Frame,DataLength+sizeof(RS485FrameStartDef));
+					ACKD.Ack.TargetAddr	=	RS485Frame->SourceAddr;
+					memcpy(DataNodeU[SourceAddr].data,RS485Frame,RS485Frame->DataLength+RS485StartFrameLen);
 					
-					DataNodeU[SourceAddr].NodeLength	=	DataLength+sizeof(RS485FrameStartDef)+2;
+					DataNodeU[SourceAddr].Length	=	RS485Frame->DataLength+RS485StartFrameLen+2;
 					RS485Frame	=	(RS485FrameDef*)DataNodeU[SourceAddr].data;
 					pTemp	=	(unsigned char*)DataNodeU[SourceAddr].data;
 					//------------------------修改目的地址和源地址
-					RS485Frame->HStart.TargetAddr	=	0x00;
-					RS485Frame->HStart.SourceAddr	=	HCSYS.SwitchAddr;
+					RS485Frame->TargetAddr	=	0x00;
+					RS485Frame->SourceAddr	=	HCSYS.SwitchAddr;
 //					Addr[HCSYS.Layer]				=	HCSYS.SwitchAddr;
 					//------------------------校验
-					pTemp[DataLength+sizeof(RS485FrameStartDef)]	=	BCC8(&pTemp[1],DataLength+sizeof(RS485FrameStartDef)-1);	//头标识符和尾标识符不参与校验
-					pTemp[DataLength+sizeof(RS485FrameStartDef)+1]	=	RS485EndCode;
+					pTemp[RS485Frame->DataLength+RS485StartFrameLen]	=	BCC8(&pTemp[1],RS485Frame->DataLength+RS485StartFrameLen-1);	//头标识符和尾标识符不参与校验
+					pTemp[RS485Frame->DataLength+RS485StartFrameLen+1]	=	RS485EndCode;
 					
 					ACKD.Ack.ErrCode		=	Err_None;
 				}
@@ -437,7 +429,7 @@ HCResult APIRS485SendData(const unsigned char *buffer,const unsigned short lengt
   unsigned char   i = 0;
 //	unsigned char		SourceBcc8  = 0;
 //  unsigned short	FarmeLen		=	0;
-	unsigned short	DataLength	=	0;
+//	unsigned short	DataLength	=	0;
 //	unsigned short 	ValidLength	= 0;    //buffer中有效数据长度(从RS485头标识符开始后的数据为有效数据)
 	
   if(NULL ==  buffer) //空地址
@@ -452,7 +444,7 @@ HCResult APIRS485SendData(const unsigned char *buffer,const unsigned short lengt
   //=========================================查找空缓存
   for(i=0;i<SelfBuffSize;i++)
   {
-    if(0  ==  SendNode[i].NodeLength) //空缓存
+    if(0  ==  SendNode[i].Length) //空缓存
     {
       RS485Frame  = (RS485FrameDef*)SendNode[i].data;
 //      pBuffer     = (unsigned char*)RS485Frame->data;
@@ -460,24 +452,23 @@ HCResult APIRS485SendData(const unsigned char *buffer,const unsigned short lengt
 			pBuffer			=	&pBuffer[RS485StartFrameLen];
       memcpy(pBuffer,buffer,length);
       
-      RS485Frame->HStart.DataLength  = length;
+      RS485Frame->DataLength  = length;
       RS485Frame->HeadCode    = RS485HeadCode;
-      RS485Frame->HStart.TargetAddr  = 0x00;
-      RS485Frame->HStart.SourceAddr  = HCSYS.SwitchAddr;
-      RS485Frame->DStart.ErrCode     = Err_None;
+      RS485Frame->TargetAddr  = 0x00;
+      RS485Frame->SourceAddr  = HCSYS.SwitchAddr;
+      RS485Frame->ErrCode     = Err_None;
       
-      pBuffer = (unsigned char*)&RS485Frame->DStart.Addr.CabinetAddr;
+      pBuffer = (unsigned char*)&RS485Frame->CabinetAddr;
       memset(pBuffer,0x00,3);
       if(0<HCSYS.Layer)
       {
         pBuffer[HCSYS.Layer-1]  = HCSYS.SwitchAddr;
       }
       //---------------------------------计算校验
-			DataLength	=	RS485Frame->HStart.DataLength;
-      pBuffer = (unsigned char*)&RS485Frame->HStart.TargetAddr;
-      pBuffer[DataLength+sizeof(RS485FrameStartDef)-1]	=	BCC8(pBuffer,DataLength+sizeof(RS485FrameStartDef)-1);	//头标识符和尾标识符不参与校验
-      pBuffer[DataLength+sizeof(RS485FrameStartDef)]	=	RS485EndCode;	
-      SendNode[i].NodeLength  = DataLength+sizeof(RS485FrameStartDef)+2;
+      pBuffer = (unsigned char*)&RS485Frame->TargetAddr;
+      pBuffer[RS485Frame->DataLength+RS485StartFrameLen-1]	=	BCC8(pBuffer,RS485Frame->DataLength+RS485StartFrameLen-1);	//头标识符和尾标识符不参与校验
+      pBuffer[RS485Frame->DataLength+RS485StartFrameLen]	=	RS485EndCode;	
+      SendNode[i].Length  = RS485Frame->DataLength+RS485StartFrameLen+2;
       
       break;
     }
@@ -512,7 +503,7 @@ unsigned short APIRS485ProcessData(unsigned char *buffer)
 	}
   for(i=0;i<SelfBuffSize;i++)
   {
-		DataLength  = ProcessNode[i].NodeLength;
+		DataLength  = ProcessNode[i].Length;
 		
     if(0  !=  DataLength)
     {
@@ -520,7 +511,7 @@ unsigned short APIRS485ProcessData(unsigned char *buffer)
       
       memcpy(buffer,pBuffer,DataLength);
       
-      ProcessNode[i].NodeLength = 0;
+      ProcessNode[i].Length = 0;
       
       return DataLength;
     }
@@ -638,7 +629,7 @@ unsigned short APIRS485UplinkGetData(unsigned char *buffer)
   //=====================================检查SendNode缓存
   for(i=0;i<SelfBuffSize;i++)
   {
-    FrameLength	=	SendNode[i].NodeLength;
+    FrameLength	=	SendNode[i].Length;
 		if(0	!=	FrameLength)		//有数据
 		{
 			memcpy(TransU.data,SendNode[i].data,FrameLength);
@@ -646,14 +637,14 @@ unsigned short APIRS485UplinkGetData(unsigned char *buffer)
 			TransU.Length	=	FrameLength;
 			TransU.Retry.Retry	=	0;
 			TransU.Retry.Time		=	0;			
-			SendNode[i].NodeLength	=	0;
+			SendNode[i].Length	=	0;
 			return FrameLength;
 		}
   }
 	//=====================================检查DataNodeU缓存
 	for(i	=	0;i<=MaxNetPerLayer;i++)
 	{
-		FrameLength	=	DataNodeU[i].NodeLength;
+		FrameLength	=	DataNodeU[i].Length;
 		if(0	!=	FrameLength)		//有数据
 		{
 			memcpy(TransU.data,DataNodeU[i].data,FrameLength);
@@ -661,7 +652,7 @@ unsigned short APIRS485UplinkGetData(unsigned char *buffer)
 			TransU.Length	=	FrameLength;
 			TransU.Retry.Retry	=	0;
 			TransU.Retry.Time		=	0;			
-			DataNodeU[i].NodeLength	=	0;
+			DataNodeU[i].Length	=	0;
 			return FrameLength;
 		}
 	}
@@ -716,7 +707,7 @@ unsigned short APIRS485DownlinkGetData(unsigned char *buffer)
 	//=====================================检查DataNodeU缓存
 	for(i	=	0;i<=MaxNetPerLayer;i++)
 	{
-		FrameLength	=	DataNodeD[i].NodeLength;
+		FrameLength	=	DataNodeD[i].Length;
 		if(0	!=	FrameLength)		//有数据
 		{
 			memcpy(TransD.data,DataNodeD[i].data,FrameLength);
@@ -724,12 +715,13 @@ unsigned short APIRS485DownlinkGetData(unsigned char *buffer)
 			TransD.Length	=	FrameLength;
 			TransD.Retry.Retry	=	0;
 			TransD.Retry.Time		=	0;			
-			DataNodeD[i].NodeLength	=	0;
+			DataNodeD[i].Length	=	0;
 			return FrameLength;
 		}
 	}
 	return FrameLength;
 }
+
 
 /*******************************************************************************
 * 函数名			:	APIRS232UplinkSetData
@@ -742,8 +734,8 @@ unsigned short APIRS485DownlinkGetData(unsigned char *buffer)
 *******************************************************************************/
 HCResult APIRS232UplinkSetData(const unsigned char *buffer,const unsigned short length)
 {
-	
-//	CmdDef		CmdTemp;
+	AddrDef		AddrTemp;
+	CmdDef		CmdTemp;
 	
 	RS232FrameDef *RS232Frame 	= NULL;
 	RS485FrameDef *RS485Frame 	= NULL;
@@ -781,15 +773,12 @@ HCResult APIRS232UplinkSetData(const unsigned char *buffer,const unsigned short 
 	}
 	RS232Frame	=	(RS232FrameDef*)Head1Addr;		//头地址
 	ValidLength	=	ValidLength-((unsigned long)RS232Frame-(unsigned long)pBuffer);		//剩余数据长度
-	if(ValidLength>0)
-	{
-		ValidLength	=	ValidLength	-	1;		//去除RS232Head1长度
-	}
 	SourceBcc8	=	RS232Frame->Bcc8;
 	DataLength	=	RS232Frame->DataLength;
 	UserCode		=	RS232Frame->UserCode;
+	CmdTemp			=	RS232Frame->Cmd;	
 	//=========================================应答帧判断(数据长度为0，校验码为0):如果为应答消息，则把发送缓存标志清除
-	if(0	==	DataLength)				//应答类型
+	if(0	==	DataLength)			//应答类型
 	{
 		//---------------------------------------校验判断
 		if(0!=SourceBcc8)
@@ -806,81 +795,64 @@ HCResult APIRS232UplinkSetData(const unsigned char *buffer,const unsigned short 
 		}
 	}
 	//=========================================数据帧
-	else			//网关板下一级为单元板
-	{	
-		AddrDef		AddrTemp;						//地址
+	if(0	!=	DataLength)			//网关板下一级为单元板
+	{		
 		unsigned char *pTemp		=0;
 		unsigned char Bcc8Temp	=0;
 		unsigned char i					=0;		
-		//----------------------------------------获取地址数据
+		
 		pTemp	=	&RS232Frame->DataLength;
 		pTemp	=	&pTemp[1];
-		memcpy(&AddrTemp,pTemp,3);		//拷贝地址	
-		//----------------------------------------数据校验
+		memcpy(&AddrTemp,pTemp,3);
+		TargetAddr	=	AddrTemp.CabinetAddr;
+
 		Bcc8Temp	=	BCC8(pTemp,DataLength);
 		if(SourceBcc8	!=	Bcc8Temp)
 		{
-			pBuffer	=	&pBuffer[1];			//地址加1，返回继续检查
+			pBuffer	=	&pBuffer[1];		//地址加1，返回继续检查
 			goto CheckFarm;
 		}
-		//========================================数据处理
-		//----------------------------------------判断是本层数据还是需要转发的数据(柜地址为0表示此为网关板数据)
-		TargetAddr	=	AddrTemp.CabinetAddr;
+		//=========================================拷贝相关数据
 		//-----------------------------------------本地消息：单元板地址为0
-		if(0==AddrTemp.CabinetAddr)		//单元柜地址为0
+		if((0==AddrTemp.CabinetAddr)&&(DataLength<BusDataSize))
 		{
-			//--------------------------------------查找空缓存存储数据待处理(按485格式存储)
 			for(i=0;i<SelfBuffSize;i++)
 			{
-				if(0	==	ProcessNode[i].NodeLength)
+				if(0	==	ProcessNode[i].Length)
 				{
-					RS485Frame	=	(RS485FrameDef*)&ProcessNode[i].data[0];
-					//------------------头两字节为命令号和用户码
-					RS485Frame->HeadCode		=	RS485HeadCode;
-					RS485Frame->HStart.TargetAddr	=	0x00;
-					RS485Frame->HStart.SourceAddr	=	0x00;
-					RS485Frame->DStart.ErrCode			=	RS232Frame->ErrCode;
-					RS485Frame->DStart.Addr.CabinetAddr	=	RS232Frame->CabinetAddr;
-					RS485Frame->DStart.Addr.LayerAddr		=	RS232Frame->LayerAddr;
-					RS485Frame->DStart.Addr.SlotAddr		=	RS232Frame->SlotAddr;
-					RS485Frame->HStart.DataLength	=	RS232Frame->DataLength-4+3;
-					
-//					DataType->Cmd				=	RS232Frame->Cmd;
-//					DataType->UserCode	=	RS232Frame->UserCode;
-					
+					ProcessNode[i].data[0]	=	CmdTemp;
+					ProcessNode[i].data[1]	=	UserCode;
 					memcpy(&ProcessNode[i].data[2],pTemp,DataLength);
-					ProcessNode[i].NodeLength	=	DataLength+2;
+					ProcessNode[i].Length	=	DataLength+2;
 				}
 			}
-			//--------------------------------------创建应答
-			if(i<SelfBuffSize)		//存储成功
+			if(i<SelfBuffSize)
 			{
 				ACKU.Ack.ErrCode		=	Err_None;
 			}
-			else									//无空缓存，设备忙状态
+			else
 			{
 				ACKU.Ack.ErrCode		=	Err_FAULT_BUSY;
 			}
 		}
-		//(DataLength<BusDataSize))		//数据长度小于最大缓存空间
 		//-----------------------------------------转换为RS485协议包
 		else
 		{
 			unsigned char	*pT	=	NULL;
 			for(i=0;i<MaxNetPerLayer;i++)
 			{
-				if(0	==	DataNodeD[i].NodeLength)
+				if(0	==	DataNodeD[i].Length)
 				{
 					RS485Frame	=	(RS485FrameDef*)&DataNodeD[i].data[0];
 					
 					RS485Frame->HeadCode		=	RS485HeadCode;
-					RS485Frame->HStart.TargetAddr				=	RS232Frame->CabinetAddr;
-					RS485Frame->HStart.SourceAddr				=	0x00;
-					RS485Frame->DStart.ErrCode					=	RS232Frame->ErrCode;
-					RS485Frame->DStart.Addr.CabinetAddr	=	RS232Frame->CabinetAddr;
-					RS485Frame->DStart.Addr.LayerAddr		=	RS232Frame->LayerAddr;
-					RS485Frame->DStart.Addr.SlotAddr		=	RS232Frame->SlotAddr;
-					RS485Frame->HStart.DataLength				=	RS232Frame->DataLength-4+3;
+					RS485Frame->TargetAddr	=	RS232Frame->CabinetAddr;
+					RS485Frame->SourceAddr	=	0x00;
+					RS485Frame->ErrCode			=	RS232Frame->ErrCode;
+					RS485Frame->CabinetAddr	=	RS232Frame->CabinetAddr;
+					RS485Frame->LayerAddr		=	RS232Frame->LayerAddr;
+					RS485Frame->SlotAddr		=	RS232Frame->SlotAddr;
+					RS485Frame->DataLength	=	RS232Frame->DataLength-4+3;
 					//---------------获取数据地址
 					pTemp	=	(unsigned char*)&RS232Frame->ErrCode;
 					pTemp++;
@@ -890,15 +862,13 @@ HCResult APIRS232UplinkSetData(const unsigned char *buffer,const unsigned short 
 					pT[1]	=	RS232Frame->UserCode;
 					pT[2]	=	RS232Frame->Serial;
 					
-					DataLength	=	RS485Frame->HStart.DataLength;
+					memcpy(&pT[3],pTemp,RS485Frame->DataLength-3);
 					
-					memcpy(&pT[3],pTemp,DataLength-3);
+					pTemp	=	(unsigned char*)&RS485Frame->data[RS485Frame->DataLength+3];
 					
-					pTemp	=	(unsigned char*)&RS485Frame->Data[DataLength+3];
-					
-					pT[DataLength]		=	BCC8(&RS485Frame->HStart.TargetAddr,DataLength+sizeof(RS485FrameStartDef)-1);
-					pT[DataLength+1]	=	RS485EndCode;
-					DataNodeD[i].NodeLength	=	DataLength+sizeof(RS485FrameStartDef)+3;
+					pT[RS485Frame->DataLength]		=	BCC8(&RS485Frame->TargetAddr,RS485StartFrameLen+RS485Frame->DataLength-1);
+					pT[RS485Frame->DataLength+1]	=	RS485EndCode;
+					DataNodeD[i].Length	=	RS485StartFrameLen+RS485Frame->DataLength+3;
 					break;
 				}
 			}
@@ -914,198 +884,6 @@ HCResult APIRS232UplinkSetData(const unsigned char *buffer,const unsigned short 
 	}
 	return RES_OK;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///*******************************************************************************
-//* 函数名			:	APIRS232UplinkSetData
-//* 功能描述		:	函数功能说明 
-//* 输入			: void
-//* 返回值			: void
-//* 修改时间		: 无
-//* 修改内容		: 无
-//* 其它			: wegam@sina.com
-//*******************************************************************************/
-//HCResult APIRS232UplinkSetData(const unsigned char *buffer,const unsigned short length)
-//{
-//	
-////	CmdDef		CmdTemp;
-//	
-//	RS232FrameDef *RS232Frame 	= NULL;
-//	RS485FrameDef *RS485Frame 	= NULL;
-//	unsigned char	*pBuffer			=	0;
-//	unsigned char	*Head1Addr		=	0;
-//	unsigned char	*Head2Addr		=	0;
-//	
-//	unsigned char		UserCode  	=	0;
-//	unsigned char		SourceBcc8  =	0;
-//	unsigned char		TargetAddr	=	0;
-//  unsigned short	FarmeLen		=	0;
-//	unsigned short	DataLength	=	0;
-//	unsigned short 	ValidLength	= 0;    //buffer中有效数据长度(从RS485头标识符开始后的数据为有效数据)
-//	
-//  if(NULL ==  buffer) //空地址
-//	{
-//		return RES_PARERR;
-//	}
-//  //=========================================查找RS485HeadCode头标识符
-//	pBuffer			=	(unsigned char*)buffer;
-//	ValidLength	=	length;
-//	//-----------------------------------------查找头标识(0xFA 0xF5)
-//	CheckFarm:
-//	Head1Addr		=	(unsigned char*)memchr(pBuffer,RS232Head1,ValidLength);							//查找RS485HeadCode头标识符
-//	Head2Addr 	=	(unsigned char*)memchr(pBuffer,RS232Head2,ValidLength);							//查找RS485HeadCode头标识符
-//	
-//	if((NULL==Head1Addr)||(NULL==Head2Addr))		//标识未找到或者不完整
-//	{
-//		return RES_PARERR;
-//	}
-//	if(Head2Addr	!=Head1Addr+1)		//0xFA,0xF5不相邻（0xFA在前,0xF5在后)
-//	{
-//		pBuffer	=	&pBuffer[1];				//地址加1，返回继续检查
-//		goto CheckFarm;
-//	}
-//	RS232Frame	=	(RS232FrameDef*)Head1Addr;		//头地址
-//	ValidLength	=	ValidLength-((unsigned long)RS232Frame-(unsigned long)pBuffer);		//剩余数据长度
-//	SourceBcc8	=	RS232Frame->Bcc8;
-//	DataLength	=	RS232Frame->DataLength;
-//	UserCode		=	RS232Frame->UserCode;
-//	//=========================================应答帧判断(数据长度为0，校验码为0):如果为应答消息，则把发送缓存标志清除
-//	if(0	==	DataLength)			//应答类型
-//	{
-//		//---------------------------------------校验判断
-//		if(0!=SourceBcc8)
-//		{
-//			pBuffer	=	&pBuffer[1];	//地址加1，返回继续检查
-//			goto CheckFarm;					//校验不对
-//		}
-//		//---------------------------------------应答帧:释放上传缓存
-//		else
-//		{
-//			TransU.Length	=	0;			//清除发送缓存
-//			pBuffer	=	&pBuffer[1];	//地址加1，返回继续检查剩余数据
-//			goto CheckFarm;
-//		}
-//	}
-//	//=========================================数据帧
-//	else			//网关板下一级为单元板
-//	{	
-//		AddrDef		AddrTemp;						//地址
-//		unsigned char *pTemp		=0;
-//		unsigned char Bcc8Temp	=0;
-//		unsigned char i					=0;		
-//		//----------------------------------------获取地址数据
-//		pTemp	=	&RS232Frame->DataLength;
-//		pTemp	=	&pTemp[1];
-//		memcpy(&AddrTemp,pTemp,3);		//拷贝地址	
-//		//----------------------------------------数据校验
-//		Bcc8Temp	=	BCC8(pTemp,DataLength);
-//		if(SourceBcc8	!=	Bcc8Temp)
-//		{
-//			pBuffer	=	&pBuffer[1];			//地址加1，返回继续检查
-//			goto CheckFarm;
-//		}
-//		//========================================数据处理
-//		//----------------------------------------判断是本层数据还是需要转发的数据(柜地址为0表示此为网关板数据)
-//		TargetAddr	=	AddrTemp.CabinetAddr;
-//		//-----------------------------------------本地消息：单元板地址为0
-//		if(0==AddrTemp.CabinetAddr)		//单元柜地址为0
-//		{
-//			//--------------------------------------查找空缓存存储数据待处理
-//			for(i=0;i<SelfBuffSize;i++)
-//			{
-//				if(0	==	ProcessNode[i].NodeLength)
-//				{
-//					DataTypeDef	*DataType	=	(DataTypeDef*)ProcessNode;
-//					//------------------头两字节为命令号和用户码
-//					DataType->Cmd				=	RS232Frame->Cmd;
-//					DataType->UserCode	=	RS232Frame->UserCode;
-//					
-//					memcpy(&ProcessNode[i].data[2],pTemp,DataLength);
-//					ProcessNode[i].NodeLength	=	DataLength+2;
-//				}
-//			}
-//			//--------------------------------------创建应答
-//			if(i<SelfBuffSize)		//存储成功
-//			{
-//				ACKU.Ack.ErrCode		=	Err_None;
-//			}
-//			else									//无空缓存，设备忙状态
-//			{
-//				ACKU.Ack.ErrCode		=	Err_FAULT_BUSY;
-//			}
-//		}
-//		//(DataLength<BusDataSize))		//数据长度小于最大缓存空间
-//		//-----------------------------------------转换为RS485协议包
-//		else
-//		{
-//			unsigned char	*pT	=	NULL;
-//			for(i=0;i<MaxNetPerLayer;i++)
-//			{
-//				if(0	==	DataNodeD[i].NodeLength)
-//				{
-//					RS485Frame	=	(RS485FrameDef*)&DataNodeD[i].data[0];
-//					
-//					RS485Frame->HeadCode		=	RS485HeadCode;
-//					RS485Frame->TargetAddr	=	RS232Frame->CabinetAddr;
-//					RS485Frame->SourceAddr	=	0x00;
-//					RS485Frame->ErrCode			=	RS232Frame->ErrCode;
-//					RS485Frame->CabinetAddr	=	RS232Frame->CabinetAddr;
-//					RS485Frame->LayerAddr		=	RS232Frame->LayerAddr;
-//					RS485Frame->SlotAddr		=	RS232Frame->SlotAddr;
-//					RS485Frame->DataLength	=	RS232Frame->DataLength-4+3;
-//					//---------------获取数据地址
-//					pTemp	=	(unsigned char*)&RS232Frame->ErrCode;
-//					pTemp++;
-//					
-//					pT	=	&DataNodeD[i].data[RS485StartFrameLen];
-//					pT[0]	=	RS232Frame->Cmd;
-//					pT[1]	=	RS232Frame->UserCode;
-//					pT[2]	=	RS232Frame->Serial;
-//					
-//					memcpy(&pT[3],pTemp,RS485Frame->DataLength-3);
-//					
-//					pTemp	=	(unsigned char*)&RS485Frame->data[RS485Frame->DataLength+3];
-//					
-//					pT[RS485Frame->DataLength]		=	BCC8(&RS485Frame->TargetAddr,RS485StartFrameLen+RS485Frame->DataLength-1);
-//					pT[RS485Frame->DataLength+1]	=	RS485EndCode;
-//					DataNodeD[i].NodeLength	=	RS485StartFrameLen+RS485Frame->DataLength+3;
-//					break;
-//				}
-//			}
-//			if(i<MaxNetPerLayer)
-//			{
-//				ACKU.Ack.ErrCode		=	Err_None;
-//			}
-//			else
-//			{
-//				ACKU.Ack.ErrCode		=	Err_FAULT_BUSY;
-//			}
-//		}
-//	}
-//	return RES_OK;
-//}
 
 
 

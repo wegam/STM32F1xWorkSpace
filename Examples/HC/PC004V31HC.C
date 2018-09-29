@@ -1,6 +1,6 @@
-#ifdef PC004V21HC				//单元控制板
+#ifdef PC004V31HC				//单元控制板
 
-#include "PC004V21HC.H"
+#include "PC004V31HC.H"
 #include "STM32F10x_BitBand.H"
 #include "STM32_GPIO.H"
 #include "STM32_SYS.H"
@@ -30,15 +30,15 @@ unsigned char PowerFlag	=	0;
 unsigned short time	=	0;
 unsigned char RS485BufferU[1024]={0};		//与上层通讯相关数据缓存
 unsigned char RS485BufferD[1024]={0};		//与下层通讯相关数据缓存
-unsigned char TestBuffer[]={0x7E,0x01,0x00,0x04,0x04,0x0E,0x00,0x05,0x01,0x02,0x01,0x00,0x00,0x76,0x7F};
+unsigned char TestBuffer[]={0x7E,0x01,0x00,0x05,0x04,0x0D,0x06,0x01,0x02,0x01,0x00,0x00,0x00,0x09,0x7F};
 /*******************************************************************************
-* 函数名		:
-* 功能描述	:
-* 输入		:
+* 函数名		:	
+* 功能描述	:	 
+* 输入		:	
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PC004V21HC_Configuration(void)
+void PC004V31HC_Configuration(void)
 {
 	
 	SYS_Configuration();							//系统配置---打开系统时钟 STM32_SYS.H	
@@ -49,13 +49,13 @@ void PC004V21HC_Configuration(void)
 	Lock_Configuration();							//锁端口配置
 	
 	
-	PWM_OUT(TIM2,PWM_OUTChannel1,1,800);	//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,5,995);	//PWM设定-20161127版本
 
 	HCBoradSet(1,gSwitch.nSWITCHID);
   
 //  HCBoradSet(1,1);
 		
-//	IWDG_Configuration(2000);						//独立看门狗配置---参数单位ms
+//	IWDG_Configuration(2000);							//独立看门狗配置---参数单位ms
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
 	
 }
@@ -66,7 +66,7 @@ void PC004V21HC_Configuration(void)
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PC004V21HC_Server(void)
+void PC004V31HC_Server(void)
 {
 //  u8 *buffer;
 	unsigned short length;
@@ -126,18 +126,23 @@ void PC004V21HC_Server(void)
 		}
 	} 
 	PC004Test:
-	length	=	RS485_ReadBufferIDLE(&gRS485Bus,RS485BufferU);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-	if(length)
+	if(time++>500)
 	{
-		RS485_DMASend(&gRS485lay,RS485BufferU,length);	//RS485-DMA发送程序
-		USART_DMASendList(USART1,RS485BufferU,length);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
+		time	=	0;
+		RS485_DMASend(&gRS485Bus,TestBuffer,sizeof(TestBuffer));	//RS485-DMA发送程序
 	}
-	length	=	RS485_ReadBufferIDLE(&gRS485lay,RS485BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-	if(length)
-	{
-		RS485_DMASend(&gRS485Bus,RS485BufferD,length);	//RS485-DMA发送程序
-		USART_DMASendList(USART1,RS485BufferD,length);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
-	}
+//	length	=	RS485_ReadBufferIDLE(&gRS485Bus,RS485BufferU);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+//	if(length)
+//	{
+//		RS485_DMASend(&gRS485lay,RS485BufferU,length);	//RS485-DMA发送程序
+//		USART_DMASendList(USART1,RS485BufferU,length);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
+//	}
+//	length	=	RS485_ReadBufferIDLE(&gRS485lay,RS485BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+//	if(length)
+//	{
+//		RS485_DMASend(&gRS485Bus,RS485BufferD,length);	//RS485-DMA发送程序
+//		USART_DMASendList(USART1,RS485BufferD,length);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
+//	}
 }
 /*******************************************************************************
 * 函数名			:	Communiction_Configuration

@@ -117,40 +117,18 @@ typedef	struct	_Addr						//Í¨Ñ¶µØÖ·½á¹¹Ìå£¨ÏÂĞĞÊ±£ºAddr1,Addr2,Addr3¶¼µÃÓĞÊı¾İ£
 	unsigned char 	LayerAddr;		//²ãµØÖ·
 	unsigned char	  SlotAddr;			//²ÛµØÖ·(ÖÕ¶ËµØÖ·)
 }AddrDef;
-//-------------------------------------------------
-typedef	struct	_DataType					//ÓÃ»§Êı¾İ±êÊ¶
+
+typedef	struct	_UserF					//ÓÃ»§Êı¾İ±êÊ¶
 {
-//	unsigned char	  Serial;				//Á÷Ë®ºÅ	
+	unsigned char	  Serial;				//Á÷Ë®ºÅ	
 	CmdDef 					Cmd;					//ÃüÁîºÅ
-	unsigned char 	UserCode;			//ÓÃ»§Âë
-	unsigned char		*Data;				//Êı¾İ
-}DataTypeDef;
-//-------------------------------------------------
-typedef struct
-{
-	unsigned char Serial;
-	CmdDef				Cmd;
-	unsigned char Bcc8;
-	unsigned char UserCode;
-	unsigned char DataLength;	
-}RS232FrameStartDef;
-//-------------------------------------------------
-typedef struct
-{
-	unsigned char TargetAddr;		//Ä¿±êµØÖ·£ºÉÏ²ãÏÂ·¢£¬Ä¿±êµØÖ·Îª±¾µØÖ·£¬Ô´µØÖ·ÎŞĞ§£¬ÏÂ²ãÉÏ·¢£¬Ä¿±êµØÖ·±ØĞëÎª0£¬Ô´µØÖ·Îª·¢ËÍµØÖ·,Èç¹ûµØÖ·Îª0xFF±íÊ¾Îª¹ã²¥µØÖ·
-	unsigned char SourceAddr;		//Ô´µØÖ·£ºÉÏ²ãÏÂ·¢£¬Ä¿±êµØÖ·Îª±¾µØÖ·£¬Ô´µØÖ·ÎŞĞ§£¬ÏÂ²ãÉÏ·¢£¬Ä¿±êµØÖ·±ØĞëÎª0£¬Ô´µØÖ·Îª·¢ËÍµØÖ·	
-	unsigned char Serial;				//Á÷Ë®ºÅ 0x01~0x7D Ã¿´ÎÊ¹ÓÃºó¼Ó1(ÎªÁË²»ÓëÆğÊ¼·ûºÍ½áÊø·û³åÍ»£¬Á÷Ë®ºÅ×î´óÖµÎª0x7D)
-	CmdDef				Cmd;					//ÃüÁîºÅ
-	unsigned char UserCode;			//ÓÃ»§Âë£º²»´¦Àí£¬Ô­Ñù·µ»Ø
-	unsigned char DataLength;		//Êı¾İ³¤¶È´ÓµØÖ·¿ªÊ¼¼ÆËã³¤¶È--(3×Ö½ÚµØÖ·+1×Ö½Ú×´Ì¬Âë+n×Ö½ÚÊı¾İ£©
-}RS485FrameStartDef;
-//-------------------------------------------------
+	unsigned char 	UserCode;			//ÓÃ»§Âë	
+}UserFDef;
 typedef struct _DataHead
 {
 	AddrDef				Addr;					//µØÖ·	
 	ErrCodeDef	  ErrCode;  		//×´Ì¬Âë/´íÎóÂë	
-}DataStartDef;
-//-------------------------------------------------
+}	DataHeadDef;
 typedef	struct	_RS232Frame			//RS232Í¨Ñ¶¸ñÊ½
 {
 	//---------------------------ÆğÊ¼¶Î£º°üº¬Á½×Ö½ÚÍ·±êÊ¶(0xFA 0xF5)
@@ -162,24 +140,55 @@ typedef	struct	_RS232Frame			//RS232Í¨Ñ¶¸ñÊ½
   unsigned char	UserCode;			//b6	ÓÃ»§Âë£º²»´¦Àí£¬Ô­Ñù·µ»Ø
 	unsigned char	DataLength;		//b7	Êı¾İ³¤¶È´ÓµØÖ·¿ªÊ¼¼ÆËã³¤¶È--(3×Ö½ÚµØÖ·+1×Ö½Ú×´Ì¬Âë+n×Ö½ÚÊı¾İ£©
 	//---------------------------Êı¾İ¶Î£º
-	unsigned char	CabinetAddr;	//b8	¹ñµØÖ·(µ¥Ôª¹ñºÅ)
-	unsigned char	LayerAddr;		//b9	²ãµØÖ·
-	unsigned char	SlotAddr;			//b10	²ÛµØÖ·(ÖÕ¶ËµØÖ·)
-	ErrCodeDef	  ErrCode;  		//b8	×´Ì¬Âë/´íÎóÂë
+	DataHeadDef		DataHead;
 	unsigned char	*data;  			//b9	Êı¾İ(Èç¹ûStartÖĞDataLength	²»Îª0£¬ÔòdataÇ°Èı×Ö½Ú´ú±íµØÖ·£¬µ¹ÊıµÚ¶ş×Ö½ÚÎªBCCĞ£ÑéÂë£¬×îºóÒ»×Ö½ÚÎªEndCode(0x7F)
 }RS232FrameDef;			//RS232Ö¡¸ñÊ½
-//-------------------------------------------------
-typedef	struct	_RS485Frame  //485Í¨Ñ¶ÏûÏ¢Ö¡½á¹¹ÌåMessageFarme  
+typedef	struct	_RS485Frame  	//485Í¨Ñ¶ÏûÏ¢Ö¡½á¹¹ÌåMessageFarme  
 {
 	//---------------------------ÆğÊ¼¶Î
-	unsigned char				HeadCode;		  //b1	Ê¶±ğ·û	0x7E
-	RS485FrameStartDef	HStart;				//ÆğÊ¼¶Î
-	DataStartDef				DStart;				//Êı¾İÆğÊ¼¶Î
-	unsigned char				Data[BusDataSize]; 	//b13	Êı¾İ£¬µ¹ÊıµÚ¶ş×Ö½ÚÎªBCCĞ£ÑéÂë£¬×îºóÒ»×Ö½ÚÎªEndCode(0x7F)
+	unsigned char	HeadCode;		  //b1	Ê¶±ğ·û	0x7E
+	unsigned char	TargetAddr;		//b2	Ä¿±êµØÖ·£ºÉÏ²ãÏÂ·¢£¬Ä¿±êµØÖ·Îª±¾µØÖ·£¬Ô´µØÖ·ÎŞĞ§£¬ÏÂ²ãÉÏ·¢£¬Ä¿±êµØÖ·±ØĞëÎª0£¬Ô´µØÖ·Îª·¢ËÍµØÖ·,Èç¹ûµØÖ·Îª0xFF±íÊ¾Îª¹ã²¥µØÖ·
+	unsigned char	SourceAddr;		//b3	Ô´µØÖ·£ºÉÏ²ãÏÂ·¢£¬Ä¿±êµØÖ·Îª±¾µØÖ·£¬Ô´µØÖ·ÎŞĞ§£¬ÏÂ²ãÉÏ·¢£¬Ä¿±êµØÖ·±ØĞëÎª0£¬Ô´µØÖ·Îª·¢ËÍµØÖ·		
+	unsigned char	CabinetAddr;	//b5	¹ñµØÖ·(µ¥Ôª¹ñºÅ)
+	unsigned char	LayerAddr;		//b6	²ãµØÖ·
+	unsigned char	SlotAddr;			//b7	²ÛµØÖ·(ÖÕ¶ËµØÖ·)
+	ErrCodeDef	  ErrCode;  		//b4	×´Ì¬Âë/´íÎóÂë
+	unsigned char	DataLength;		//b8	dataÊı¾İ³¤¶È,²»°üº¬Bcc8Ğ£ÑéºÍEndCode
 	//---------------------------Êı¾İ¶Î:Ç°Èı×Ö½ÚÎªÓÃ»§±êÊ¶£¬Ğ£ÑéÂë¼°½áÊø·û²»¼ÆÈëÊı¾İ³¤¶È
-//	unsigned char	*data;  			//b13	Êı¾İ£¬µ¹ÊıµÚ¶ş×Ö½ÚÎªBCCĞ£ÑéÂë£¬×îºóÒ»×Ö½ÚÎªEndCode(0x7F)
+	DataHeadDef		DataHead;
+	UserFDef			UserF;				//ÓÃ»§±êÊ¶
+	unsigned char	*data;  			//b13	Êı¾İ£¬µ¹ÊıµÚ¶ş×Ö½ÚÎªBCCĞ£ÑéÂë£¬×îºóÒ»×Ö½ÚÎªEndCode(0x7F)
 }RS485FrameDef;			//RS485Ğ­ÒéÖ¡ÆğÊ¼¶Î(¸ñÊ½¹Ì¶¨£© ³¤¶È8×Ö½Ú
-//-------------------------------------------------
+//typedef	struct	_RS232Frame			//RS232Í¨Ñ¶¸ñÊ½
+//{
+//	//---------------------------ÆğÊ¼¶Î£º°üº¬Á½×Ö½ÚÍ·±êÊ¶(0xFA 0xF5)
+//	unsigned char	Head1;		  	//b1	0xFA
+//	unsigned char	Head2;		  	//b2	0xF5
+//	unsigned char	Serial;		  	//b3	Á÷Ë®ºÅ 0x01~0x7D Ã¿´ÎÊ¹ÓÃºó¼Ó1(ÎªÁË²»ÓëÆğÊ¼·ûºÍ½áÊø·û³åÍ»£¬Á÷Ë®ºÅ×î´óÖµÎª0x7D)
+//	CmdDef			  Cmd;		    	//b4	ÃüÁîºÅ£º0x12-»ñÈ¡Ö¸¶¨IC¿¨ºÅ£¬0x13È¡Ò©,ÉÏ±¨ÃüÁîÒ²ÔÚ´ËÎ»
+//	unsigned char	Bcc8;		    	//b5	Òì»òĞ£Ñé	//¼ÆËã·¶Î§Îª´ÓµØÖ·¿ªÊ¼(¼ÆËã³¤¶ÈDataLength)	
+//  unsigned char	UserCode;			//b6	ÓÃ»§Âë£º²»´¦Àí£¬Ô­Ñù·µ»Ø
+//	unsigned char	DataLength;		//b7	Êı¾İ³¤¶È´ÓµØÖ·¿ªÊ¼¼ÆËã³¤¶È--(3×Ö½ÚµØÖ·+1×Ö½Ú×´Ì¬Âë+n×Ö½ÚÊı¾İ£©
+//	//---------------------------Êı¾İ¶Î£º
+//	DataHeadDef		DataHead;
+//	unsigned char	*data;  			//b9	Êı¾İ(Èç¹ûStartÖĞDataLength	²»Îª0£¬ÔòdataÇ°Èı×Ö½Ú´ú±íµØÖ·£¬µ¹ÊıµÚ¶ş×Ö½ÚÎªBCCĞ£ÑéÂë£¬×îºóÒ»×Ö½ÚÎªEndCode(0x7F)
+//}RS232FrameDef;			//RS232Ö¡¸ñÊ½
+//typedef	struct	_RS485Frame  	//485Í¨Ñ¶ÏûÏ¢Ö¡½á¹¹ÌåMessageFarme  
+//{
+//	//---------------------------ÆğÊ¼¶Î
+//	unsigned char	HeadCode;		  //b1	Ê¶±ğ·û	0x7E
+//	unsigned char	TargetAddr;		//b2	Ä¿±êµØÖ·£ºÉÏ²ãÏÂ·¢£¬Ä¿±êµØÖ·Îª±¾µØÖ·£¬Ô´µØÖ·ÎŞĞ§£¬ÏÂ²ãÉÏ·¢£¬Ä¿±êµØÖ·±ØĞëÎª0£¬Ô´µØÖ·Îª·¢ËÍµØÖ·,Èç¹ûµØÖ·Îª0xFF±íÊ¾Îª¹ã²¥µØÖ·
+//	unsigned char	SourceAddr;		//b3	Ô´µØÖ·£ºÉÏ²ãÏÂ·¢£¬Ä¿±êµØÖ·Îª±¾µØÖ·£¬Ô´µØÖ·ÎŞĞ§£¬ÏÂ²ãÉÏ·¢£¬Ä¿±êµØÖ·±ØĞëÎª0£¬Ô´µØÖ·Îª·¢ËÍµØÖ·		
+//	unsigned char	CabinetAddr;	//b5	¹ñµØÖ·(µ¥Ôª¹ñºÅ)
+//	unsigned char	LayerAddr;		//b6	²ãµØÖ·
+//	unsigned char	SlotAddr;			//b7	²ÛµØÖ·(ÖÕ¶ËµØÖ·)
+//	ErrCodeDef	  ErrCode;  		//b4	×´Ì¬Âë/´íÎóÂë
+//	unsigned char	DataLength;		//b8	dataÊı¾İ³¤¶È,²»°üº¬Bcc8Ğ£ÑéºÍEndCode
+//	//---------------------------Êı¾İ¶Î:Ç°Èı×Ö½ÚÎªÓÃ»§±êÊ¶£¬Ğ£ÑéÂë¼°½áÊø·û²»¼ÆÈëÊı¾İ³¤¶È
+//	UserFDef			UserF;				//ÓÃ»§±êÊ¶
+//	unsigned char	*data;  			//b13	Êı¾İ£¬µ¹ÊıµÚ¶ş×Ö½ÚÎªBCCĞ£ÑéÂë£¬×îºóÒ»×Ö½ÚÎªEndCode(0x7F)
+//}RS485FrameDef;			//RS485Ğ­ÒéÖ¡ÆğÊ¼¶Î(¸ñÊ½¹Ì¶¨£© ³¤¶È8×Ö½Ú
+
 typedef	struct	_RS485AckFrame  //485Í¨Ñ¶ÏûÏ¢Ö¡½á¹¹ÌåMessageFarme  
 {
 	unsigned char	HeadCode;		  //b1	Ê¶±ğ·û	0x7E	
@@ -189,13 +198,12 @@ typedef	struct	_RS485AckFrame  //485Í¨Ñ¶ÏûÏ¢Ö¡½á¹¹ÌåMessageFarme
   unsigned char	Bcc8;					//b5	´ÓTargetAddr¿ªÊ¼µ½ErrCode
   unsigned char	EndCode;		  //b6	Ê¶±ğ·û	0x7F  
 }RS485AckDef;   							//RS485Ğ­ÒéÖ¡ÆğÊ¼¶Î(¸ñÊ½¹Ì¶¨£© ³¤¶È8×Ö½Ú
-//-------------------------------------------------
 typedef	struct	_Ack	  //485Í¨Ñ¶ÏûÏ¢Ö¡½á¹¹ÌåMessageFarme  
 {
 	unsigned char	FarmeLength; 	//FrameµÄ×Ü³¤¶È(data[BusDataSize]ÓĞĞ§Êı¾İ³¤¶È
 	RS485AckDef		Ack;
 }AckDef;
-//-------------------------------------------------
+
 typedef	struct	_Trans		//485Í¨Ñ¶ÏûÏ¢Ö¡½á¹¹ÌåMessageFarme  
 {
   unsigned short Length;    //´ı´«ÊäÊı¾İ³¤¶È£¬Êı¾İ²»Îª0±íÊ¾ÓĞÊı¾İ,ĞèÒª´«ËÍ
@@ -206,22 +214,23 @@ typedef	struct	_Trans		//485Í¨Ñ¶ÏûÏ¢Ö¡½á¹¹ÌåMessageFarme
   }Retry;
 	unsigned char   data[BusDataSize+15];
 }TransDef;
-//-------------------------------------------------
+
 typedef	struct	_DataNode	  //485Í¨Ñ¶ÏûÏ¢Ö¡½á¹¹ÌåMessageFarme  
 {
-	unsigned short	NodeLength;		//´ı´«ÊäÊı¾İ³¤¶È£¬Êı¾İ²»Îª0±íÊ¾ÓĞÊı¾İ,ĞèÒª´«ËÍ
+	unsigned short	Length;		//´ı´«ÊäÊı¾İ³¤¶È£¬Êı¾İ²»Îª0±íÊ¾ÓĞÊı¾İ,ĞèÒª´«ËÍ
 	unsigned char		data[BusDataSize];		//µÚÒ»×Ö½ÚÎªÃüÁîÂë£¬µÚ¶ş×Ö½ÚÎªÓÃ»§Âë£¬Ö®ºóÎªÊı¾İ
 }DataNodeDef;
-//-------------------------------------------------
+
+
 typedef	struct	_HCSYS
 {
 	unsigned char	SwitchAddr;					//±¾°åµØÖ·
-	unsigned char	Layer;							//±¾°åËùÔÚ²ã¼¶£º0-Íø¹Ø²ã£¬1-µ¥Ôª°å²ãCabinetAddr£¬2-²ã¿ØÖÆ°å²ãLayerAddr£¬3,-Çı¶¯²ãSlotAddr
+	unsigned char	Layer;						//±¾°åËùÔÚ²ã¼¶£º0-Íø¹Ø²ã£¬1-µ¥Ôª°å²ãCabinetAddr£¬2-²ã¿ØÖÆ°å²ãLayerAddr£¬3,-Çı¶¯²ãSlotAddr
 	unsigned int	SerialNum;					//ĞòÁĞºÅ
 	const	char		*Borad_Name;				//PCB°åÃû
 	unsigned char	SubOnlineAddr[MaxNetPerLayer];	//ÏÂÒ»¼¶ÔÚÏßÉè±¸µØÖ·
 }HCSYSDef;
-//-------------------------------------------------
+
 typedef struct
 {
   unsigned short (*GetUplinkBusData)(unsigned char *buffer);
@@ -236,7 +245,6 @@ HCResult HCBoradSet(const unsigned char Layer,const unsigned char id);
 
 HCResult APIRS485UplinkSetData(const unsigned char *buffer,const unsigned short length);
 HCResult APIRS485DownlinkSetData(const unsigned char *buffer,const unsigned short length);
-HCResult APIRS485DownlinkReceiveData(const unsigned char *buffer,const unsigned short length);
 
 unsigned short APIRS485UplinkGetAck(unsigned char *buffer);
 unsigned short APIRS485DownlinkGetAck(unsigned char *buffer);

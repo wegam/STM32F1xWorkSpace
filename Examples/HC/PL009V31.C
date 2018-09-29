@@ -127,7 +127,7 @@ void PL009V31_Configuration(void)
 	
 //	RS485_Configuration();
 	
-//	LCD_Configuration();	
+	LCD_Configuration();	
 	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
@@ -159,9 +159,9 @@ void PL009V31_Server(void)
 //	GPIO_Toggle	(GPIOB,	GPIO_Pin_3);		//将GPIO相应管脚输出翻转----V20170605
 //	IWDG_Feed();				//独立看门狗喂狗
 //	RS485_Server();			//通讯管理---负责信息的接收与发送
-//	LCD_Server();				//显示服务相关
+	LCD_Server();				//显示服务相关
 //	USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-	CS5530_Server();	//称重服务，AD值处理，获取稳定值
+//	CS5530_Server();	//称重服务，AD值处理，获取稳定值
 //	SwitchID_Server();	//拔码开关处理--动态更新拨码地址
 }
 /*******************************************************************************

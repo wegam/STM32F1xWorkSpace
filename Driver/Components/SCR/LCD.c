@@ -594,7 +594,7 @@ void LCD_ShowWord(
 	u8 temp;
 	u8 i=0,j=0;
 	unsigned short x1=0,x2=0,y1=0,y2=0;
-	unsigned short LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色
+//	unsigned short LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色
 	x1	=	x;
 	y1	=	y;
   
@@ -780,7 +780,7 @@ void LCD_ShowHex(
       //=============================8位显示方式      
       unsigned char dst=(((u32)Buffer[i]>>(Cril-1)*4)&0x0F);
       //1=====================转换为ASSIC码
-      if((0<=dst)&&(9>=dst))
+      if(dst<=9)
       {
         dst+=0x30;
       }

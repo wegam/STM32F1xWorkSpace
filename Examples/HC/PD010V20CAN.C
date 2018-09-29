@@ -27,9 +27,9 @@ u32 RunTime	=	0;
 unsigned short	TextSize	=	0;
 CanRxMsg RxMessage;
 u8 PowerFlag	=	0;
-u8 txBuffer[16]={0};
+u8 txBuffer[128]={0};
 u8 tem	=	0;
-u8 buff[32]={0};
+u8 buff[128]={0};
 u8 test[8]={0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
 unsigned char arr	=	0;
 unsigned char Set	=	0;
@@ -143,6 +143,8 @@ void RS232_Server(void)
 	len	=	USART_ReadBufferIDLE(USART1,buff);
 	if(len)
 	{
+		RS485_DMASend	(&RS485A,buff,len);	//RS485-DMA发送程序
+		RS485_DMASend	(&RS485B,buff,len);	//RS485-DMA发送程序
 		USART_DMASendList(USART3,buff,len);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 	}	
 }
@@ -166,7 +168,8 @@ void RS485_Server(void)
 	len	=	RS485_ReadBufferIDLE(&RS485B,buff);
 	if(len)
 	{
-		USART_DMASendList(USART3,buff,len);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+		USART_DMASendList(USART1,buff,len);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+//		USART_DMASendList(USART3,buff,len);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 	}	
 }
 /*******************************************************************************
