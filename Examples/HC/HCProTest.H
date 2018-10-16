@@ -1,5 +1,5 @@
-#ifndef __PM001V20HC_H
-#define __PM001V20HC_H
+#ifndef __HCProTest_H
+#define __HCProTest_H
 
 #include "stm32f10x_type.h"
 #include "HC_PHY.H"
@@ -73,8 +73,8 @@
 
 
 
-void PM001V20HC_Configuration(void);
-void PM001V20HC_Server(void);
+void HCProTest_Configuration(void);
+void HCProTest_Server(void);
 
 
 

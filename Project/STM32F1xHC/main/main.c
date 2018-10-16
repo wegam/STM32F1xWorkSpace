@@ -52,8 +52,8 @@ int main(void)
 	WOW_Configuration();					//ÅäÖÃº¯Êı
 
 #ifdef test_warning
-#warning: "¾¯¸æ
-#error: "´íÎó
+#warning: "¾¯¸æ"
+#error: "´íÎó"
 #endif
 
   while (1)

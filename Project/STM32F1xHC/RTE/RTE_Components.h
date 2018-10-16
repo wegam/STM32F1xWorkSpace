@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xHC' 
- * Target:  'PC016V20Com' 
+ * Target:  'HCProTest' 
  */
 
 #ifndef RTE_COMPONENTS_H

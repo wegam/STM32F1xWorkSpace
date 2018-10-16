@@ -24,6 +24,10 @@
 	#include "DEMO.H"
 #endif
 
+//***********************************HCProTest***********************************//
+#ifdef	HCProTest
+	#include "HCProTest.H"
+#endif
 
 
 

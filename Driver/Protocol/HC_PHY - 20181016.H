@@ -1,6 +1,8 @@
 #ifndef __HC_PHY_H
 #define __HC_PHY_H
 
+
+
 #define	MaxNetPerLayer	8					//每个结点所连接的最大支点数为64
 //#define	TargetLayer			LALayer		//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	MBLayer					0					//网关板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
@@ -53,8 +55,7 @@ typedef enum
 	Err_ACKMSG							=	0x0C	//此为应答消息
 }ErrCodeDef;	  //状态码/错误码
 typedef enum
-{ 
-	CMD_None						=	0x00,	
+{  
 	CMD_WRITE_QTY				=	0x01,	//写入数量
 	CMD_UNLOCK					=	0x02,	//解锁
 	CMD_ADD_MTRL				=	0x04,	//加料
@@ -137,15 +138,19 @@ typedef struct
 //-------------------------------------------------
 typedef struct
 {
-	unsigned char		HeadCode;			//头标识符
-	unsigned char 	TargetAddr;		//目标地址：上层下发，目标地址为接收地址，下层上发，目标地址必须为0，源地址为发送地址,如果地址为0xFF表示为广播地址
-	unsigned char 	layer;				//层级号
-	unsigned short	Length;				//data长度
-	unsigned char 	Data[512];		//数据			//长度不定
-	unsigned char 	Bcc8;					//校验码
-	unsigned char		EndCode;			//结束符
-}RS485FrameTDef;
-
+	unsigned char TargetAddr;		//目标地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址,如果地址为0xFF表示为广播地址
+	unsigned char SourceAddr;		//源地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址	
+	unsigned char Serial;				//流水号 0x01~0x7D 每次使用后加1(为了不与起始符和结束符冲突，流水号最大值为0x7D)
+	CmdDef				Cmd;					//命令号
+	unsigned char UserCode;			//用户码：不处理，原样返回
+	unsigned char DataLength;		//数据长度从地址开始计算长度--(3字节地址+1字节状态码+n字节数据）
+}RS485FrameStartDef;
+//-------------------------------------------------
+typedef struct _DataHead
+{
+	AddrDef				Addr;					//地址	
+	ErrCodeDef	  ErrCode;  		//状态码/错误码	
+}DataStartDef;
 //-------------------------------------------------
 typedef	struct	_RS232Frame			//RS232通讯格式
 {
@@ -165,33 +170,16 @@ typedef	struct	_RS232Frame			//RS232通讯格式
 	unsigned char	*data;  			//b9	数据(如果Start中DataLength	不为0，则data前三字节代表地址，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
 }RS232FrameDef;			//RS232帧格式
 //-------------------------------------------------
-typedef struct
-{
-	unsigned char TargetAddr;		//目标地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址,如果地址为0xFF表示为广播地址
-	unsigned char SourceAddr;		//源地址：上层下发，目标地址为本地址，源地址无效，下层上发，目标地址必须为0，源地址为发送地址
-	AddrDef				Addr;					//地址
-}RS485FrameStartDef;
-//-------------------------------------------------
-typedef struct _DataHead
-{	
-	unsigned char 	Serial;				//流水号 0x01~0x7D 每次使用后加1(为了不与起始符和结束符冲突，流水号最大值为0x7D)	
-	unsigned char 	UserCode;			//用户码：不处理，原样返回
-	CmdDef					Cmd;					//命令号
-	ErrCodeDef	  	ErrCode;  		//状态码/错误码
-	unsigned short	DataLength;		//数据长度从地址开始计算长度--(3字节地址+1字节状态码+n字节数据）
-}RS485DataStartDef;
-//-------------------------------------------------
 typedef	struct	_RS485Frame  //485通讯消息帧结构体MessageFarme  
 {
 	//---------------------------起始段
 	unsigned char				HeadCode;		  //b1	识别符	0x7E
 	RS485FrameStartDef	HStart;				//起始段
-	RS485DataStartDef		DStart;				//数据起始段
+	DataStartDef				DStart;				//数据起始段
 	unsigned char				Data[BusDataSize]; 	//b13	数据，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
 	//---------------------------数据段:前三字节为用户标识，校验码及结束符不计入数据长度
 //	unsigned char	*data;  			//b13	数据，倒数第二字节为BCC校验码，最后一字节为EndCode(0x7F)
 }RS485FrameDef;			//RS485协议帧起始段(格式固定） 长度8字节
-
 //-------------------------------------------------
 typedef	struct	_RS485AckFrame  //485通讯消息帧结构体MessageFarme  
 {
@@ -242,13 +230,6 @@ typedef struct
   HCResult(*SendUplinkData)(unsigned char *buffer,unsigned short length);
   HCResult(*SendDownlinkData)(unsigned char *buffer,unsigned short length);
 }CommDef;
-
-
-
-
-
-
-
 
 extern CommDef CommFun;
 

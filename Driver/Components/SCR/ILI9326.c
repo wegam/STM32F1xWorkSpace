@@ -64,11 +64,12 @@ void ILI9326_Initialize(LCDDef *pInfo)
 *返回值		:	无
 *例程			:
 *******************************************************************************/
-void ILI9326_BackLightOn(void)
-{
-	if(0	!=	sILI9326)
-	 sILI9326->Port.sBL_PORT->BSRR  = sILI9326->Port.sBL_Pin;
-}
+//void ILI9326_BackLightOn(void)
+//{
+//	LCD_BL_ON;
+////	if(0	!=	sILI9326)
+////	 sILI9326->Port.sBL_PORT->BSRR  = sILI9326->Port.sBL_Pin;
+//}
 /*******************************************************************************
 *函数名		:	SSD1963_BackLightOff
 *功能描述	:	关背光
@@ -77,19 +78,20 @@ void ILI9326_BackLightOn(void)
 *返回值		:	无
 *例程			:
 *******************************************************************************/
-void ILI9326_BackLightOff(void)
-{
-	if(0	!=	sILI9326)
-		sILI9326->Port.sBL_PORT->BRR  = sILI9326->Port.sBL_Pin;
-}
+//void ILI9326_BackLightOff(void)
+//{
+//	if(0	!=	sILI9326)
+//		sILI9326->Port.sBL_PORT->BRR  = sILI9326->Port.sBL_Pin;
+//}
 /**************************************************************************************************
 * [Function] LCD_PowerOff:  关闭LCD 电源
 * [No param]
 **************************************************************************************************/
 void ILI9326_PowerOff( void )
 {
+	LCD_BL_OFF;		//关背光
 	LCD_WriteCommand( ILI9326_R009_DC3, 0 );
-	ILI9326_BackLightOff();
+	
 }
 
 
@@ -112,7 +114,11 @@ void ILI9326_PowerOn( void )
 	void(*ILI9326_WriteCMD)(unsigned short Index,unsigned short Command);//LcdDisplay.WriteCommand	
 	ILI9326_WriteCMD	=	LCD_WriteCommand;
 	
-	ILI9326_BackLightOff();
+	LCD_BL_OFF;		//关背光
+	LCD_Delay( dtime );
+	LCD_Delay( dtime );
+	LCD_Delay( dtime );
+	LCD_Delay( dtime );
 //	LCD_CS_LOW;
 	LCD_RST_HIGH;
 	LCD_Delay( dtime );
@@ -227,7 +233,7 @@ void ILI9326_PowerOn( void )
 
 	ILI9326_WriteCMD( ILI9326_R007_DC1, 0x0173 );LCD_Delay( dtime ); /* 262K color and display ON */
 	
-	ILI9326_BackLightOn();			//打开背光
+	LCD_BL_ON;			//打开背光
 }
 /**************************************************************************************************
 * [Function] LCD_SetDrawWindow:  LCD 屏显示扫描方式

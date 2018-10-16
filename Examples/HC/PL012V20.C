@@ -113,8 +113,8 @@ void PL012V20_Configuration(void)
 	
 
 	
-//	R61509V_Configuration();
-	ILI9326_Configuration();
+	R61509V_Configuration();
+//	ILI9326_Configuration();
 	
 
 	
@@ -140,7 +140,7 @@ void PL012V20_Configuration(void)
 	
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--指示灯
-	PWM_OUT(TIM3,PWM_OUTChannel3,500,500);		//PWM设定-20161127版本--背光
+	PWM_OUT(TIM3,PWM_OUTChannel3,2000,1500);		//PWM设定-20161127版本--背光
 	memset(TxdBuffe,0xA5,128);
 //	PD014Test_Server();
 }
@@ -586,6 +586,8 @@ void R61509V_Configuration(void)
 	sLCD.GT32L32.SPI.Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
 
 	R61509V_Initialize(&sLCD);
+	
+	SysTick_DeleymS(1000);				//SysTick延时nmS
 }
 /*******************************************************************************
 * 函数名			:	function

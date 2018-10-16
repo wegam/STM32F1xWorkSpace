@@ -44,6 +44,11 @@ void WOW_Configuration(void)
 #ifdef DEMO	
 	DEMO_Configuration();
 #endif
+//***********************************HCProTest***********************************//
+#ifdef HCProTest	
+	HCProTest_Configuration();
+#endif	
+	
 //***********************************TEST***********************************//
 #ifdef TEST	
 	TEST_Configuration();
@@ -521,6 +526,10 @@ void WOW_Server(void)
 //***********************************数字调音板服务程序***********************************//
 #ifdef DEMO
 	DEMO_Server();
+#endif
+//***********************************HCProTest***********************************//
+#ifdef HCProTest
+	HCProTest_Server();
 #endif
 	
 //***********************************数字调音板服务程序***********************************//
