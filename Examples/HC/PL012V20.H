@@ -33,8 +33,9 @@ void PL012V20_Server(void);
 
 void SwitchID_Configuration(void);
 
-void R61509V_Configuration(void);
-void ILI9326_Configuration(void);
+void LCD_Configuration(void);
+//void R61509V_Configuration(void);
+//void ILI9326_Configuration(void);
 
 
 void RS485_Configuration(void);

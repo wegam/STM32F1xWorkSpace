@@ -27,6 +27,9 @@ RS485Def gRS485Bus;			//与上层总线接口(网关板)
 //RS485Def gRS485lay;			//与下级总线接口(层板)	
 
 SwitchDef gSwitch;
+unsigned char ReSendTime	=	0;
+unsigned char Recc=0;
+unsigned short len	=	0;
 unsigned char PowerFlag	=	0;
 //extern RS485FrameDef	*RS485Node;
 unsigned short time	=	0;
@@ -53,7 +56,7 @@ void HCProTest_Configuration(void)
 	/* Enable CRC clock */
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
 	
-	PWM_OUT(TIM2,PWM_OUTChannel1,1,800);	//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,2,800);	//PWM设定-20161127版本
 	
 //	RS232Buffer[1]	=	gSwitch.nSWITCHID;
 	HCBoradSet(0,0);
@@ -73,7 +76,7 @@ void HCProTest_Server(void)
 {
 //  u8 *buffer;
 	
-	
+	USARTStatusDef	Status;
 	IWDG_Feed();								//独立看门狗喂狗
 	
   //======================================上行总线
@@ -82,6 +85,8 @@ void HCProTest_Server(void)
 	{
 		HCResult	res;
 		time	=	0;
+		Recc++;
+		len	=	length;
 //		res	=	APISetDataProcess(BufferU,length);
 		APIRS232UplinkSetData(BufferU,length);
 //		RS485_DMASend(&gRS485Bus,BufferU,length);	//RS485-DMA发送程序
@@ -109,10 +114,23 @@ void HCProTest_Server(void)
 		USART_DMASend(RS232ASerialPort,BufferU,length);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
 	}
 	
-	length	=	APIRS485DownlinkGetData(BufferD);				//获取需要上传的数据
-	if(length)
+	Status	=	USART_Status(gRS485Bus.USARTx);		//串口状态检查
+	if(0	==	Status.USART_IDLESTD)
 	{
-		RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
+		if(ReSendTime++>50)
+		{
+			ReSendTime	=	0;
+			length	=	APIRS485DownlinkGetData(BufferD);				//获取需要上传的数据
+			if(length)
+			{
+				
+				RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
+			}
+		}
+	}
+	else
+	{
+		ReSendTime	=	0;
 	}
   
  

@@ -7,7 +7,7 @@
 *     xlyan        $(Date)   1.0.0    创建文件
 **************************************************************************************************/
 #include "R61509V.h"
-
+//#include "LCD.H"
 
 LCDDef	*pR61509V	=	NULL;		//内部驱动使用，不可删除
 
@@ -32,7 +32,7 @@ void R61509V_Initialize(LCDDef *pInfo)
 	pR61509V->Display.PowerOn					=	R61509V_PowerOn;
 	pR61509V->Display.DispOff					=	R61509V_PowerOff;
 	
-	LCD_Initialize(pR61509V);
+//	LCD_Initialize(pR61509V);
 //	pR61509V	=	NULL;	
 }
 /*******************************************************************************

@@ -15,6 +15,8 @@
 
 #include "STM32_PWM.H"
 
+#define	R61509ID	(unsigned short)0xB509
+#define	ILI9326ID	(unsigned short)0x9326
 //#define	LCD_H 240		//水平方向点数，从左到右+
 //#define LCD_V 400		//垂直方向点数，从上到下+
 
@@ -110,17 +112,21 @@ extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 
 #define LCD_CS_HIGH					(pLcdPort->sCS_PORT->BSRR		= pLcdPort->sCS_Pin)
 #define LCD_CS_LOW					(pLcdPort->sCS_PORT->BRR 		= pLcdPort->sCS_Pin)
-#define LCD_DC_HIGH					(pLcdPort->sDC_PORT->BSRR 	= pLcdPort->sDC_Pin)
+#define LCD_DC_HIGH					(pLcdPort->sDC_PORT->BSRR 		= pLcdPort->sDC_Pin)
 #define LCD_DC_LOW					(pLcdPort->sDC_PORT->BRR 		= pLcdPort->sDC_Pin)
-#define LCD_WR_HIGH					(pLcdPort->sWR_PORT->BSRR 	= pLcdPort->sWR_Pin)
+#define LCD_WR_HIGH					(pLcdPort->sWR_PORT->BSRR 		= pLcdPort->sWR_Pin)
 #define LCD_WR_LOW					(pLcdPort->sWR_PORT->BRR 		= pLcdPort->sWR_Pin)
-#define LCD_RD_HIGH					(pLcdPort->sRD_PORT->BSRR 	= pLcdPort->sRD_Pin)
+#define LCD_RD_HIGH					(pLcdPort->sRD_PORT->BSRR 		= pLcdPort->sRD_Pin)
 #define LCD_RD_LOW					(pLcdPort->sRD_PORT->BRR 		= pLcdPort->sRD_Pin)
 #define LCD_RST_HIGH				(pLcdPort->sREST_PORT->BSRR	= pLcdPort->sREST_Pin)
 #define LCD_RST_LOW					(pLcdPort->sREST_PORT->BRR 	= pLcdPort->sREST_Pin)
-#define LCD_TE_HIGH					(pLcdPort->sTE_PORT->BSRR 	= pLcdPort->sTE_Pin)
+#define LCD_TE_HIGH					(pLcdPort->sTE_PORT->BSRR 		= pLcdPort->sTE_Pin)
 #define LCD_TE_LOW					(pLcdPort->sTE_PORT->BRR 		= pLcdPort->sTE_Pin)
 #define LCD_DATABUS_PORT		(pLcdPort->sDATABUS_PORT)
+#define LCD_DATABUS_Pin			(pLcdPort->sDATABUS_Pin)
+
+#define LCD_RS_HIGH					LCD_DC_HIGH
+#define LCD_RS_LOW					LCD_DC_LOW
 
 #if 0
 	#define LCD_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel4,2000,1800)	//(R61509V_BL_PORT->BSRR = R61509V_BL_PIN)
@@ -250,13 +256,14 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...);  
 void LCD_ShowBMP(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 Length,u8 *RGBBuffer);    //显示十六进制数据
 
 //======================================内部函数
+void LCD_Reset(void);
 void LCD_WriteIndexStart( void );
 void LCD_WriteIndexEnd( void );
 void LCD_WriteIndex( unsigned short Index );
 void LCD_WriteDataStart( void );
 void LCD_WriteDataEnd( void );
 void LCD_WriteData(u16 Data);
-u16 LCD_ReadData( void );
+u16 LCD_ReadData( unsigned short Index );
 void LCD_WriteCommand(unsigned short index,unsigned short Command);	//写完整控制命令
 
 void LCD_Clean(u16 COLOR);	//清除屏幕函数

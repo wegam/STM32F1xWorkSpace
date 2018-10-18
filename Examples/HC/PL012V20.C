@@ -18,10 +18,11 @@
 #include "PL012V20.H"
 
 //#include "R61509V.h"
-#include "ILI9326.h"
+//#include "ILI9326.h"
 
 #include "CS5530.H"
 
+#include "LCD.H"
 #include "GT32L32M0180.H"
 #include "STM32F10x_BitBand.H"
 #include "STM32_GPIO.H"
@@ -93,7 +94,8 @@ u8 	Serial	=	0;
 u8 	Addr	=	0;
 u16 Time	=	0;
 u8 GetAdd	=	0;
-
+u16 DspTime	=	0;
+//unsigned short ID	=	0;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -112,8 +114,8 @@ void PL012V20_Configuration(void)
 	
 	
 
-	
-	R61509V_Configuration();
+	LCD_Configuration();
+//	R61509V_Configuration();
 //	ILI9326_Configuration();
 	
 
@@ -135,12 +137,12 @@ void PL012V20_Configuration(void)
 //  LCD_ShowBattery(360,0,2,LCD565_RED);   //显示12x12电池
 //  LCD_ShowBattery(380,0,3,LCD565_RED);   //显示12x12电池
 	
-	LCD_Printf(0,font*9,24,LCD565_RED,"获取地址......");		//后边的省略号就是可变参数
+	LCD_Printf(0,font*9,24,LCD565_BROWN,"获取地址......");		//后边的省略号就是可变参数
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--指示灯
-	PWM_OUT(TIM3,PWM_OUTChannel3,2000,1500);		//PWM设定-20161127版本--背光
+	PWM_OUT(TIM3,PWM_OUTChannel3,2000,1000);		//PWM设定-20161127版本--背光
 	memset(TxdBuffe,0xA5,128);
 //	PD014Test_Server();
 }
@@ -156,6 +158,8 @@ void PL012V20_Server(void)
 	
 	IWDG_Feed();								//独立看门狗喂狗
 	
+//	ID	=	LCD_ReadData(LCD_R000_IR);
+	
 //	LCD_Fill(10,10,50,50,LCD565_WHITE);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	
 //	LCD_ShowBattery(360,0,2,LCD565_RED);   //显示12x12电池
@@ -166,6 +170,9 @@ void PL012V20_Server(void)
 //	LCD_Display();
 //	return;
 	PD014Test_Server();
+	
+	
+	
 //	return;
 //	RS485_Server();
 	return;
@@ -219,7 +226,11 @@ void PD014Test_Server(void)
 {
 	u8 Num	=	0;
 	
+	
 	Pd014AckFarmDef	RecAck;
+	
+	DspTime++;
+	
 //	PD014Test_GetAdd();
 	
 //	RS485_Server();
@@ -233,6 +244,16 @@ void PD014Test_Server(void)
 //			GetAdd	=	1;			
 //			LCD_Printf(0,font*11,24,LCD565_RED,"获取到地址%0.2X",Addr);		//后边的省略号就是可变参数
 //		}		
+	}
+	//=================================运行指示
+	if(DspTime==500)
+	{
+		LCD_Fill(390,230,395,235,LCD565_CYAN);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	}
+	else if(DspTime==1000)
+	{
+		DspTime	=	0;
+		LCD_Fill(390,230,395,235,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 }
 /*******************************************************************************
@@ -545,9 +566,8 @@ void SwitchID_Server(void)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-void R61509V_Configuration(void)
-{
-
+void LCD_Configuration(void)
+{	
 	//=======================LCD端口
 	LCDPortDef	*LcdPort	=	&sLCD.Port;
 	
@@ -584,63 +604,11 @@ void R61509V_Configuration(void)
 	sLCD.GT32L32.SPI.Port.CS_PORT	=	GPIOA;
 	sLCD.GT32L32.SPI.Port.CS_Pin		=	GPIO_Pin_4;
 	sLCD.GT32L32.SPI.Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
-
-	R61509V_Initialize(&sLCD);
 	
+	LCD_Initialize(&sLCD);
+
 	SysTick_DeleymS(1000);				//SysTick延时nmS
 }
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-void ILI9326_Configuration(void)
-{
-
-	//=======================LCD端口
-	LCDPortDef	*LcdPort	=	&sLCD.Port;
-	
-	LcdPort->sCS_PORT		=	GPIOB;
-	LcdPort->sCS_Pin		=	GPIO_Pin_7;
-
-	LcdPort->sDC_PORT		=	GPIOB;
-	LcdPort->sDC_Pin		=	GPIO_Pin_6;
-	
-	LcdPort->sWR_PORT		=	GPIOB;
-	LcdPort->sWR_Pin		=	GPIO_Pin_8;
-	
-	LcdPort->sRD_PORT		=	GPIOB;
-	LcdPort->sRD_Pin		=	GPIO_Pin_5;
-	
-	LcdPort->sREST_PORT	=	GPIOB;
-	LcdPort->sREST_Pin	=	GPIO_Pin_9;
-	
-	LcdPort->sBL_PORT		=	GPIOB;
-	LcdPort->sBL_Pin		=	GPIO_Pin_0;
-	
-	LcdPort->sTE_PORT		=	GPIOB;
-	LcdPort->sTE_Pin		=	GPIO_Pin_4;
-	
-	LcdPort->sDATABUS_PORT	=	GPIOC;
-	LcdPort->sDATABUS_Pin		=	GPIO_Pin_All;
-	
-	sLCD.Data.BColor	=	LCD565_BLACK;
-	sLCD.Data.PColor	=	LCD565_RED;
-	sLCD.Flag.Rotate	=	Draw_Rotate_90D;
-	
-	//=======================字库端口
-	sLCD.GT32L32.SPI.Port.SPIx			=	SPI1;
-	sLCD.GT32L32.SPI.Port.CS_PORT		=	GPIOA;
-	sLCD.GT32L32.SPI.Port.CS_Pin		=	GPIO_Pin_4;
-	sLCD.GT32L32.SPI.Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_8;
-
-	ILI9326_Initialize(&sLCD);
-}
-
 
 /*******************************************************************************
 * 函数名			:	function
@@ -813,13 +781,13 @@ void LCD_PowerUp(void)
 *******************************************************************************/
 void LCD_Display(void)
 {
-	LCD_Printf(0		,0	,32	,0,"显示测试!!@#$%^&*");				//错误状态
-	LCD_Printf(0		,32	,32	,0,"显示测试!!@#$%^&*");				//错误状态
-	LCD_Printf(0		,64	,32	,0,"显示测试!!@#$%^&*");				//错误状态
-	LCD_Printf(0		,96	,32	,0,"显示测试!!@#$%^&*");				//错误状态
-	LCD_Printf(0		,128,32	,0,"显示测试!!@#$%^&*");				//错误状态
+//	LCD_Printf(0		,0	,32	,0,"显示测试!!@#$%^&*");				//错误状态
+//	LCD_Printf(0		,32	,32	,0,"显示测试!!@#$%^&*");				//错误状态
+//	LCD_Printf(0		,64	,32	,0,"显示测试!!@#$%^&*");				//错误状态
+//	LCD_Printf(0		,96	,32	,0,"显示测试!!@#$%^&*");				//错误状态
+//	LCD_Printf(0		,128,32	,0,"显示测试!!@#$%^&*");				//错误状态
 	
-#if 0
+#if 1
 	DSPTime++;
 	if(DSPTime>500)
 		DSPTime=0;
@@ -830,24 +798,25 @@ void LCD_Display(void)
 	}
 	if(DSPTime%500==100)
 	{
-		LCD_Clean(LCD565_BLUE);			//清除屏幕函数------
+		LCD_Clean(LCD565_GREEN);			//清除屏幕函数------
+//		DSPTime	=	0;
 //		LCD_Printf(0		,120	,32	,0,"显示测试!!！！！！@#$%^&*");				//错误状态
 	}
-	if(DSPTime%500==200)
-	{
-		LCD_Clean(LCD565_BLACK);			//清除屏幕函数------
-//		LCD_Printf(0		,120	,32	,0,"显示测试!!！！！！@#$%^&*");				//错误状态
-	}
-	if(DSPTime%500==300)
-	{
-		LCD_Clean(LCD565_LGRAY);			//清除屏幕函数------
-//		LCD_Printf(0		,120	,32	,0,"显示测试!!！！！！@#$%^&*");				//错误状态	
-	}
-	if(DSPTime%500==400)
-	{
-		LCD_Clean(LCD565_WHITE);			//清除屏幕函数------
-//		LCD_Printf(0		,120	,32	,0,"显示测试!!！！！！@#$%^&*");				//错误状态
-	}
+//	if(DSPTime%500==200)
+//	{
+//		LCD_Clean(LCD565_BLACK);			//清除屏幕函数------
+////		LCD_Printf(0		,120	,32	,0,"显示测试!!！！！！@#$%^&*");				//错误状态
+//	}
+//	if(DSPTime%500==300)
+//	{
+//		LCD_Clean(LCD565_LGRAY);			//清除屏幕函数------
+////		LCD_Printf(0		,120	,32	,0,"显示测试!!！！！！@#$%^&*");				//错误状态	
+//	}
+//	if(DSPTime%500==400)
+//	{
+//		LCD_Clean(LCD565_WHITE);			//清除屏幕函数------
+////		LCD_Printf(0		,120	,32	,0,"显示测试!!！！！！@#$%^&*");				//错误状态
+//	}
 
 #endif
 	
