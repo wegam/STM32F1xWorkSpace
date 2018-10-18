@@ -13,14 +13,14 @@ LCDDef *sILI9326=0;					//内部驱动使用，不可删除
 
 //#ifdef LCD_61509_EN
 
-t_LcdCfg g_ILI9326Cfg;
+//t_LcdCfg g_ILI9326Cfg;
 
-u16 ILI9326_Rotate=SCREEN_ROTATE_270D;			//屏方向
+//u16 ILI9326_Rotate=SCREEN_ROTATE_270D;			//屏方向
 
 
 
-u16 ILI9326_BACK_COLOR	=	ILI9326_WHITE;		//背景色
-u16 ILI9326_POINT_COLOR	=	ILI9326_BLACK;   	//画笔色
+//u16 ILI9326_BACK_COLOR	=	ILI9326_WHITE;		//背景色
+//u16 ILI9326_POINT_COLOR	=	ILI9326_BLACK;   	//画笔色
 
 ///*******************************************************************************
 //* 函数名			:	function
@@ -53,7 +53,7 @@ void ILI9326_Initialize(LCDDef *pInfo)
 	sILI9326->Display.PowerOn					=	ILI9326_PowerOn;
 	sILI9326->Display.DispOff					=	ILI9326_PowerOff;
 	
-	LCD_Initialize(sILI9326);
+//	LCD_Initialize(sILI9326);
 
 }
 /*******************************************************************************

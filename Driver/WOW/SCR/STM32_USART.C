@@ -2258,7 +2258,7 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 					if(RemaDmaSize.nUSART2	== BufferSize)
 					{
 						RetryCount.nUSART2++;
-						if(RetryCount.nUSART2>=5)
+						if(RetryCount.nUSART2>=2)
 						{
 							RetryCount.nUSART2	=	0;
 							Status.USART_IDLESTD  = 0;        //空闲
@@ -2269,6 +2269,7 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 						RemaDmaSize.nUSART2	=	BufferSize;
 						Status.USART_IDLESTD  = 1;        //非空闲
             Status.USART_ReceSTD  = 1;        //正在接收中
+						return Status;
 					}
 				}
 				//发送状态检查
@@ -2287,7 +2288,8 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
           }
           else
           {
-            Status.USART_IDLESTD  = 0;        //空闲
+						Status.USART_SendSTD	=	0;
+            Status.USART_IDLESTD  =	0;        //空闲
           }
 				}
 				break;
@@ -2310,6 +2312,7 @@ USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//串口状态检查
 						RemaDmaSize.nUSART3	=	BufferSize;
 						Status.USART_IDLESTD  = 1;        //非空闲
             Status.USART_ReceSTD  = 1;        //正在接收中
+						return Status;
 					}
 				}
 				//发送状态检查

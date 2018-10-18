@@ -18,6 +18,9 @@
 #include "stdarg.h"				//串和内存操作函数头文件
 #include "stdio.h"				//串和内存操作函数头文件
 
+//#include "R61509V.h"
+//#include "ILI9326.h"
+
 LCDDef 			*LCDSYS	=	NULL;	//内部驱动使用，不可删除
 unsigned short PenColor		=	0;		//画笔颜色
 unsigned short BackColor	=	0;		//背景颜色
@@ -30,11 +33,12 @@ unsigned short VAsize	=	0;		//输入大小
 *******************************************************************************/
 void LCD_Initialize(LCDDef *pInfo)
 {
+	unsigned short	DeviceCode	=	0;
+	
   LCDPortDef  *Port;
 	LCDSYS	  =	pInfo;		//指针指向
   
-  Port	=	&(pInfo->Port);
-	
+  Port	=	&(pInfo->Port);	
 	
 	//==========================GPIO配置
 	GPIO_Configuration_OPP50	(Port->sBL_PORT,				Port->sBL_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
@@ -45,6 +49,23 @@ void LCD_Initialize(LCDDef *pInfo)
 	GPIO_Configuration_OPP50	(Port->sCS_PORT,				Port->sCS_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sTE_PORT,				Port->sTE_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sDATABUS_PORT,		Port->sDATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+	
+	//==========================驱动芯片检测
+	LCD_Reset();
+	DeviceCode	=	LCD_ReadData(LCD_R000_IR);
+	
+	if(R61509ID	==	DeviceCode)
+	{
+		R61509V_Initialize(pInfo);
+	}
+	else if(ILI9326ID	==	DeviceCode)
+	{
+		ILI9326_Initialize(pInfo);
+	}
+	else
+	{
+		while(1);
+	}
   //==========================检查背景色与画笔色是否相同
 	if(pInfo->Data.PColor	==	pInfo->Data.BColor)
 	{
@@ -57,7 +78,24 @@ void LCD_Initialize(LCDDef *pInfo)
 	//==========================字库配置
 	GT32L32_Initialize(&pInfo->GT32L32.SPI);				//普通SPI通讯方式配置	
 }
-
+/*******************************************************************************
+* 函数名			:	LCD_Reset
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void LCD_Reset(void)
+{
+	LCD_RST_HIGH;
+	SysTick_DeleymS(5);				//SysTick延时nmS
+	LCD_RST_LOW;
+	SysTick_DeleymS(5);				//SysTick延时nmS
+	LCD_RST_HIGH;
+	SysTick_DeleymS(10);				//SysTick延时nmS
+}
 /**************************************************************************************************
 * [Function] R61509V_DispOff:  关闭R61509V显示( 黑屏?)
 * [No param]
@@ -126,19 +164,44 @@ void LCD_WriteData(u16 Data)
 * [Function] R61509V_ReadData:  从R61509V读取数据
 * [No param][return]u16: 返回数据
 **************************************************************************************************/
-u16 LCD_ReadData( void )
+u16 LCD_ReadData( unsigned short Index )
 {
-	u16 Dat;
+	u16 Data;
+	//==================写地址
+//	LCD_WriteIndexStart();		
+//	LCD_WriteData(Index);
+//	LCD_WriteIndexEnd();
 
+//	LCD_CS_LOW;
+//	LCD_WR_HIGH;
+//	LCD_DC_HIGH;
+//	GPIO_Configuration_IPU	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
+//	Dat = LCD_DATABUS_PORT->IDR;
+//	LCD_RD_LOW;
+//	LCD_RD_HIGH;
+//	LCD_CS_HIGH;
+//	GPIO_Configuration_OPP50	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	return(Dat);
+	
+	GPIO_Configuration_OPP50	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+	
+	LCD_RD_HIGH;
 	LCD_CS_LOW;
+	LCD_RS_LOW;
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Index;
 	LCD_WR_HIGH;
-	LCD_DC_HIGH;
-	Dat = LCD_DATABUS_PORT->IDR;
+	LCD_RS_HIGH;
+	
+	GPIO_Configuration_IPU	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
 	LCD_RD_LOW;
+	Data = LCD_DATABUS_PORT->IDR;
 	LCD_RD_HIGH;
 	LCD_CS_HIGH;
-
-	return(Dat);
+	
+	GPIO_Configuration_OPP50	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+	return Data;
+	
 }
 #else
 /*******************************************************************************
