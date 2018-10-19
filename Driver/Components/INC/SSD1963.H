@@ -14,7 +14,7 @@
 //#include	"stdarg.h"			//用于获取不确定个数的参数
 //#include	"stdlib.h"			//malloc动态申请内存空间
 
-#include "LCD.H"
+//#include "LCD.H"
 
 
 
@@ -195,7 +195,7 @@ enum SSD1963REG
 
 
 
-void SSD1963_Initialize(LCDDef *pInfo);
+void SSD1963_Initialize(void*	pInfo);
 void SSD1963_BackLightOn(void);
 void SSD1963_BackLightOff(void);
 void SSD1963_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);

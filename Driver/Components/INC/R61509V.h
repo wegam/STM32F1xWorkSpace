@@ -13,7 +13,7 @@
 #include "stm32f10x_type.h"
 #include "stm32f10x_gpio.h"
 
-#include "LCD.H"
+//#include "LCD.H"
 
 #define	R61509V_H 240		//水平方向点数，从左到右+
 #define R61509V_V 400		//垂直方向点数，从上到下+
@@ -84,7 +84,7 @@
 
 
 
-void R61509V_Initialize(LCDDef *pInfo);
+void R61509V_Initialize(void*	pInfo);
 
 
 static void R61509V_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址

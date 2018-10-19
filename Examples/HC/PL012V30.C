@@ -17,8 +17,7 @@
 
 #include "PL012V30.H"
 
-#include "R61509V.h"
-//#include "ILI9326.h"
+#include "LCD.H"
 
 
 #include "STM32_GPIO.H"
@@ -35,12 +34,15 @@
 
 
 LCDDef	sLCD;
-RS485_TypeDef RS485;
+RS485Def RS485;
 unsigned char RxdBuffe[128]={0};
 unsigned short time	=	0;
 
 char tep[1]={'A'};
 
+unsigned char Version[]="PL012V3.0 RF智能耗材管理柜";
+unsigned char DataStr[]=__DATE__;
+unsigned char	TimeStr[]=__TIME__;
 //SWITCHID_CONF	SWITCHID;
 //u8 SwitchID=0;	//拔码开关地址
 
@@ -71,12 +73,19 @@ void PL012V30_Configuration(void)
 //	
 //	SwitchID_Configuration();
 //	
-
+	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+	LCD_Printf(0,160,16,LCD565_RED,"项目编号:%s",Version);		//编译日期
+	LCD_Printf(0,180,16,LCD565_RED,"编译日期:%s",__DATE__);		//编译日期
+	LCD_Printf(0,200,16,LCD565_RED,"编译时间:%s",__TIME__); 	//编译时间 
+	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
-//	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--指示灯
-//	PWM_OUT(TIM3,PWM_OUTChannel3,500,200);		//PWM设定-20161127版本--背光
+	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--指示灯
+	
+//	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+	
+//	PWM_OUT(TIM2,PWM_OUTChannel3,500,200);		//PWM设定-20161127版本--背光
 //	memset(TxdBuffe,0xA5,128);
 //	LCD_Printf(0,0,32,"后边的省略号就是可变参数喂狗");		//后边的省略号就是可变参数
 }
@@ -171,11 +180,13 @@ void LCD_Configuration(void)
 	
 	sLCD.Flag.Rotate			=	Draw_Rotate_90D;
 	
-	sLCD.Data.BColor			=	LCD565_BLACK;
+	sLCD.Data.BColor			=	LCD565_YELLOW;
 	sLCD.Data.PColor			=	LCD565_RED;
 	
 	//==================初始化
-	R61509V_Initialize(&sLCD);
+	LCD_Initialize(&sLCD);
+	
+//	R61509V_Initialize(&sLCD);
 	
 }
 /*******************************************************************************

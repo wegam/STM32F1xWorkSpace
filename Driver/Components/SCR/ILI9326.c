@@ -7,9 +7,9 @@
 *     xlyan        $(Date)   1.0.0    创建文件
 **************************************************************************************************/
 #include "ILI9326.h"
+#include "LCD.H"
 
-
-LCDDef *sILI9326=0;					//内部驱动使用，不可删除
+LCDDef *sILI9326=NULL;					//内部驱动使用，不可删除
 
 //#ifdef LCD_61509_EN
 
@@ -38,23 +38,17 @@ LCDDef *sILI9326=0;					//内部驱动使用，不可删除
 * 输入			: void
 * 返回值			: void
 *******************************************************************************/
-void ILI9326_Initialize(LCDDef *pInfo)
+void ILI9326_Initialize(void*	pInfo)
 {
-	sILI9326		=	pInfo;		//指针指向
+	sILI9326		=	(LCDDef*)pInfo;		//指针指向
 	
 	
 	sILI9326->Data.MaxH	=	ILI9326_H;					//最大水平宽度
 	sILI9326->Data.MaxV	=	ILI9326_V;					//最大垂直高度	
-//	pR61509V->Data.BColor	=	LCD565_GBLUE;			//背景色
-//	pR61509V->Data.PColor	=	LCD565_RED;				//画笔色
-	
 	
 	sILI9326->Display.WriteAddress		=	ILI9326_SetWindowAddress;
 	sILI9326->Display.PowerOn					=	ILI9326_PowerOn;
 	sILI9326->Display.DispOff					=	ILI9326_PowerOff;
-	
-//	LCD_Initialize(sILI9326);
-
 }
 /*******************************************************************************
 *函数名		:	SSD1963_BackLightOn
@@ -114,21 +108,11 @@ void ILI9326_PowerOn( void )
 	void(*ILI9326_WriteCMD)(unsigned short Index,unsigned short Command);//LcdDisplay.WriteCommand	
 	ILI9326_WriteCMD	=	LCD_WriteCommand;
 	
+	
+	
 	LCD_BL_OFF;		//关背光
-	LCD_Delay( dtime );
-	LCD_Delay( dtime );
-	LCD_Delay( dtime );
-	LCD_Delay( dtime );
-//	LCD_CS_LOW;
-	LCD_RST_HIGH;
-	LCD_Delay( dtime );
-	LCD_RST_LOW;
-	LCD_Delay( dtime );
-	LCD_RST_HIGH;
-	LCD_Delay( dtime );
-	LCD_Delay( dtime );
-	LCD_Delay( dtime );
-	LCD_Delay( dtime );
+	
+	LCD_Reset();
 
 /************** Start Initial Sequence ********** // */
 	ILI9326_WriteCMD( ILI9326_R702_SIT1, 	0x3008 );LCD_Delay( dtime ); /* Set internal timing, don’t change this value */
@@ -147,49 +131,21 @@ void ILI9326_PowerOn( void )
 	ILI9326_WriteCMD( ILI9326_R100_PC1, 	0x0000 );LCD_Delay( dtime ); /* SAP, BT[3:0], AP, DSTB, SLP, STB */
 	ILI9326_WriteCMD( ILI9326_R102_PC3, 	0x0000 );LCD_Delay( dtime ); /* VREG1OUT voltage */
 	ILI9326_WriteCMD( ILI9326_R103_PC4, 	0x0000 );LCD_Delay( dtime ); /* VDV[4:0] for VCOM amplitude */
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );                /* Dis-charge capacitor power voltage */
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
+	
+	LCD_Delay( 50000 );
 	
 	ILI9326_WriteCMD( ILI9326_R100_PC1, 	0x1190 ); /* SAP, BT[3:0], AP, DSTB, SLP, STB */
 	ILI9326_WriteCMD( ILI9326_R101_PC2, 	0x0227 ); /* DC1[2:0], DC0[2:0], VC[2:0] */
 	
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );                /* Dis-charge capacitor power voltage */
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
+	LCD_Delay( 50000 );
 	
 	ILI9326_WriteCMD( ILI9326_R102_PC3, 	0x01BD ); /* VREG1OUT voltage */
 	
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );                /* Dis-charge capacitor power voltage */
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
+	LCD_Delay( 50000 );
 	
 	ILI9326_WriteCMD( ILI9326_R103_PC4,		0x2D00 );LCD_Delay( dtime ); /* VDV[4:0] for VCOM amplitude */
 	ILI9326_WriteCMD( ILI9326_R281_VHV, 	0x000E );LCD_Delay( dtime ); /* VCM[5:0] for VCOMH */
 	
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );                /* Dis-charge capacitor power voltage */
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
-	LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );LCD_Delay( dtime );
 	
 	ILI9326_WriteCMD( ILI9326_R200_HA, 		0x0000 );LCD_Delay( dtime ); /* GRAM horizontal Address */
 	ILI9326_WriteCMD( ILI9326_R201_VA, 		0x0000 );LCD_Delay( dtime ); /* GRAM Vertical Address */
@@ -269,19 +225,14 @@ void ILI9326_SetWindowAddress(
 					Model	=	0x5030;
 			break;
 		case 	Draw_Rotate_90D:
-//					sILI9326->Data.HSX	=	y1;
-//					sILI9326->Data.HEX	=	y2;	
-//					sILI9326->Data.VSY	=	MaxV	-	x2	-	1;
-//					sILI9326->Data.VEY	=	MaxV	-	x1	-	1;	
-//					sILI9326->Data.HXA	=	sILI9326->Data.HSX;
-//					sILI9326->Data.VYA	=	sILI9326->Data.VEY;
-						sILI9326->Data.HSX	=	y1;
-						sILI9326->Data.HEX	=	y2;	
-						sILI9326->Data.VSY	=	MaxV	-	x2	-	1;
-						sILI9326->Data.VEY	=	MaxV	-	x1	-	1;	
-						sILI9326->Data.HXA	=	sILI9326->Data.HSX;
-						sILI9326->Data.VYA	=	sILI9326->Data.VEY;
-					Model	=	0X0098;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
+					sILI9326->Data.HSX	=	y1;
+					sILI9326->Data.HEX	=	y2;	
+					sILI9326->Data.VSY	=	MaxV	-	x2	-	1;
+					sILI9326->Data.VEY	=	MaxV	-	x1	-	1;	
+					sILI9326->Data.HXA	=	sILI9326->Data.HSX;
+					sILI9326->Data.VYA	=	sILI9326->Data.VEY;
+					Model	=	0X5098;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
+//					Model	=	0X5091;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
 			break;
 		case 	Draw_Rotate_180D:
 					sILI9326->Data.HSX	=	MaxH	-	x2	-	1;

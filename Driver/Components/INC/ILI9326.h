@@ -12,7 +12,7 @@
 #include "stm32f10x_type.h"
 #include "stm32f10x_gpio.h"
 
-#include "LCD.H"
+//#include "LCD.H"
 
 #define	ILI9326_H 240		//水平方向点数，从左到右+
 #define ILI9326_V 400		//垂直方向点数，从上到下+
@@ -336,7 +336,7 @@ typedef struct
 
 
 //void ILI9326_Delay(u16 xms);
-void ILI9326_Initialize(LCDDef *pInfo);
+void ILI9326_Initialize(void*	pInfo);
 
 void ILI9326_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
 void ILI9326_PowerOn( void );			//LCD 上电并初始化相关寄存器

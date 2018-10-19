@@ -17,7 +17,7 @@
 #include	"string.h"			//用于printf
 #include	"stdarg.h"			//用于获取不确定个数的参数
 #include	"stdlib.h"			//malloc动态申请内存空间
-//#include "LCD.H"
+#include "LCD.H"
 //#include <reg51.h>
 //#include "intrins.h"
 //#include "font\font.h"
@@ -33,24 +33,19 @@ LCDDef	*pSSD1963	=	0;		//内部驱动使用，不可删除
 *输入				: 
 *返回值			:	无
 *******************************************************************************/
-void SSD1963_Initialize(LCDDef *pInfo)
+void SSD1963_Initialize(void*	pInfo)
 {
 	
 	pSSD1963		=	pInfo;		//指针指向	
 	
 	pSSD1963->Data.MaxH	=	SSD1963_H;					//最大水平宽度
 	pSSD1963->Data.MaxV	=	SSD1963_V;					//最大垂直高度	
-//	pSSD1963->Data.BColor	=	LCD565_RED;				//背景色
-//	pSSD1963->Data.PColor	=	LCD565_YELLOW;		//画笔色
-	
 	
 	pSSD1963->Display.WriteAddress		=	SSD1963_SetWindowAddress;
 	pSSD1963->Display.PowerOn					=	SSD1963_PowerOn;
 	pSSD1963->Display.DispOff					=	SSD1963_PowerOn;		//临时引用函数地址
   pSSD1963->Display.BackLightOn     = SSD1963_BackLightOn;
   pSSD1963->Display.BackLightOff    = SSD1963_BackLightOff;
-	
-	LCD_Initialize(pSSD1963);
 }
 /*******************************************************************************
 *函数名		:	SSD1963_BackLightOn

@@ -95,6 +95,28 @@ u8 	Addr	=	0;
 u16 Time	=	0;
 u8 GetAdd	=	0;
 u16 DspTime	=	0;
+u16 color	=	0;
+
+
+unsigned char Version[]="PL012V2.0RF智能耗材管理柜";
+//unsigned char DataStr[]=__DATE__;
+//unsigned char	TimeStr[]=__TIME__;
+
+typedef struct
+{
+ u16 year; 
+ u8 month;
+ u8 day;
+ u8 hour;
+ u8 minute;
+ u8 second;
+}t_SysTime;
+
+t_SysTime SysTime;
+
+
+
+
 //unsigned short ID	=	0;
 /*******************************************************************************
 * 函数名		:	
@@ -137,13 +159,25 @@ void PL012V20_Configuration(void)
 //  LCD_ShowBattery(360,0,2,LCD565_RED);   //显示12x12电池
 //  LCD_ShowBattery(380,0,3,LCD565_RED);   //显示12x12电池
 	
-	LCD_Printf(0,font*9,24,LCD565_BROWN,"获取地址......");		//后边的省略号就是可变参数
+	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
-	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--指示灯
-	PWM_OUT(TIM3,PWM_OUTChannel3,2000,1000);		//PWM设定-20161127版本--背光
+	PWM_OUT(TIM2,PWM_OUTChannel1,2,900);	//PWM设定-20161127版本--指示灯
+	PWM_OUT(TIM3,PWM_OUTChannel3,1000,900);		//PWM设定-20161127版本--背光
 	memset(TxdBuffe,0xA5,128);
+	
+	LCD_ShowAntenna(380,0,3,LCD565_RED);   //显示12x12电池
+	
+//	LCD_Printf(0,font*9,32,LCD565_RED,"获取地址......");		//后边的省略号就是可变参数
+	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+	LCD_Printf(0,160,16,LCD565_RED,"项目编号:%s",Version);		//编译日期
+//	LCD_Printf(0,180,16,LCD565_RED,"编译日期:%s",__DATE__);		//编译日期
+//	LCD_Printf(0,180,16,LCD565_RED,"编译日期:%4d",GetBuildYear());		//编译日期
+	LCD_Printf(0,180,16,LCD565_RED,"编译日期:%4d-%0.2d-%0.2d-%s",GetBuildYear(),GetBuildMonth(),GetBuildDay(),__TIME__);		//编译日期
+//	LCD_Printf(0,200,16,LCD565_RED,"编译时间:%s",__TIME__); 	//编译时间
+LCD_Printf(0,200,16,LCD565_RED,"编译时间:%0.2d:%0.2d:%0.2d",GetBuildHour(),GetBuildMinute(),GetBuildSecond()); 	//编译时间
+	
 //	PD014Test_Server();
 }
 /*******************************************************************************
@@ -157,6 +191,21 @@ void PL012V20_Server(void)
 {	
 	
 	IWDG_Feed();								//独立看门狗喂狗
+	Time++;
+	if(Time%1000	==0)
+	{
+		Time	=	0;
+//		if(WriteFlag	==	0)
+//		{
+//			WriteFlag	=	1;
+//			LCD_Clean(LCD565_YELLOW);
+//		}
+//		else
+//		{
+//			WriteFlag	=	0;
+//			LCD_Clean(LCD565_RED);
+//		}
+	}
 	
 //	ID	=	LCD_ReadData(LCD_R000_IR);
 	
@@ -248,12 +297,12 @@ void PD014Test_Server(void)
 	//=================================运行指示
 	if(DspTime==500)
 	{
-		LCD_Fill(390,230,395,235,LCD565_CYAN);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(380,220,395,235,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 	else if(DspTime==1000)
 	{
 		DspTime	=	0;
-		LCD_Fill(390,230,395,235,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(380,220,395,235,LCD565_LIGHTGREEN);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 }
 /*******************************************************************************
@@ -595,7 +644,7 @@ void LCD_Configuration(void)
 	LcdPort->sDATABUS_PORT	=	GPIOC;
 	LcdPort->sDATABUS_Pin		=	GPIO_Pin_All;
 	
-	sLCD.Data.BColor	=	LCD565_BLACK;
+	sLCD.Data.BColor	=	LCD565_YELLOW;
 	sLCD.Data.PColor	=	LCD565_WHITE;
 	sLCD.Flag.Rotate	=	Draw_Rotate_90D;
 	

@@ -4,7 +4,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_type.h"
 
-
+unsigned short GetBuildYear(void);
+unsigned char GetBuildMonth(void);
+unsigned char GetBuildDay(void);
+unsigned char GetBuildHour(void);
+unsigned char GetBuildMinute(void);
+unsigned char GetBuildSecond(void);
 
 unsigned char BCC8(const unsigned char *buffer,unsigned short num);		//异或校验
 unsigned char CRC8(const unsigned char *buffer);						//循环冗余校验

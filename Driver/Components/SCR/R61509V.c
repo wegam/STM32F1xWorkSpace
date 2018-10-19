@@ -7,9 +7,9 @@
 *     xlyan        $(Date)   1.0.0    创建文件
 **************************************************************************************************/
 #include "R61509V.h"
-//#include "LCD.H"
+#include "LCD.H"
 
-LCDDef	*pR61509V	=	NULL;		//内部驱动使用，不可删除
+static LCDDef	*pR61509V	=	NULL;		//内部驱动使用，不可删除
 
 /*******************************************************************************
 * 函数名			:	function
@@ -17,23 +17,16 @@ LCDDef	*pR61509V	=	NULL;		//内部驱动使用，不可删除
 * 输入			: void
 * 返回值			: void
 *******************************************************************************/
-void R61509V_Initialize(LCDDef *pInfo)
+void R61509V_Initialize(void*	pInfo)
 {
-	pR61509V		=	pInfo;		//指针指向
-	
+	pR61509V		=	(LCDDef*)pInfo;		//指针指向	
 	
 	pR61509V->Data.MaxH	=	R61509V_H;					//最大水平宽度
 	pR61509V->Data.MaxV	=	R61509V_V;					//最大垂直高度	
-//	pR61509V->Data.BColor	=	LCD565_GBLUE;			//背景色
-//	pR61509V->Data.PColor	=	LCD565_RED;				//画笔色
-	
 	
 	pR61509V->Display.WriteAddress		=	R61509V_SetWindowAddress;
 	pR61509V->Display.PowerOn					=	R61509V_PowerOn;
 	pR61509V->Display.DispOff					=	R61509V_PowerOff;
-	
-//	LCD_Initialize(pR61509V);
-//	pR61509V	=	NULL;	
 }
 /*******************************************************************************
 *函数名			:	R61509V_SetWindowAddress
@@ -125,18 +118,8 @@ static void R61509V_PowerOn(void)			//按照主控芯片R61509V的power supply on seque
 	void(*Command)(unsigned short Index,unsigned short Command);//LcdDisplay.WriteCommand	
 	Command	=	LCD_WriteCommand;
 	
-	LCD_CS_LOW;
-	LCD_WR_HIGH;
-	LCD_RD_HIGH;
-	LCD_RST_HIGH;
-	LCD_Delay(dtime);
-	LCD_RST_LOW;
-	LCD_Delay(dtime);
-	LCD_RST_HIGH;	
-	LCD_Delay(dtime);		//复位后1ms内部晶振启动
-	LCD_Delay(dtime);		//复位后1ms内部晶振启动
-	LCD_Delay(dtime);		//复位后1ms内部晶振启动
-	dtime=500;
+	LCD_Reset();
+	dtime=10;
 	
 	Command(R61509V_R000_IR		,	0x0000);		LCD_Delay(dtime); //四次写0x00
 	Command(R61509V_R000_IR		,	0x0000);		LCD_Delay(dtime); //四次写0x00

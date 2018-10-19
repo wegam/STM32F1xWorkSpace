@@ -65,6 +65,8 @@ void GT32L32_Initialize(SPIDef *SpiPort)
 {
   pSPI  = SpiPort;
   SPI_Initialize(pSPI);				//普通SPI通讯方式配置
+	SPI_CS_LOW(pSPI);
+	SPI_CS_HIGH(pSPI);
 }
 
 /*************************************************************************************************** 

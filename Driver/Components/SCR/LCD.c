@@ -18,8 +18,8 @@
 #include "stdarg.h"				//串和内存操作函数头文件
 #include "stdio.h"				//串和内存操作函数头文件
 
-//#include "R61509V.h"
-//#include "ILI9326.h"
+#include "R61509V.h"
+#include "ILI9326.h"
 
 LCDDef 			*LCDSYS	=	NULL;	//内部驱动使用，不可删除
 unsigned short PenColor		=	0;		//画笔颜色
@@ -33,7 +33,7 @@ unsigned short VAsize	=	0;		//输入大小
 *******************************************************************************/
 void LCD_Initialize(LCDDef *pInfo)
 {
-	unsigned short	DeviceCode	=	0;
+	static unsigned short	DeviceCode	=	0;
 	
   LCDPortDef  *Port;
 	LCDSYS	  =	pInfo;		//指针指向
@@ -75,8 +75,10 @@ void LCD_Initialize(LCDDef *pInfo)
 	LCDSYS->Display.PowerOn();						//LCD上电/初始化配置
 	//==========================以背景色清除屏幕
 	LCD_Clean(pInfo->Data.BColor);				//按背景色清除屏幕函数
+	//==========================开背光
+	LCD_BL_ON;
 	//==========================字库配置
-	GT32L32_Initialize(&pInfo->GT32L32.SPI);				//普通SPI通讯方式配置	
+	GT32L32_Initialize(&pInfo->GT32L32.SPI);				//普通SPI通讯方式配置
 }
 /*******************************************************************************
 * 函数名			:	LCD_Reset
@@ -290,7 +292,7 @@ void LCD_Clean(u16 Color)	//清除屏幕函数
 			break;			
 	}
 	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);		//写入地址区域
-	LCD_WriteDataStart();									//写数据使能
+	LCD_WriteDataStart();									//写数据使能	
 	for(x=0;x<MaxH;x++)
 	{
 		for(y=0;y<MaxV;y++)

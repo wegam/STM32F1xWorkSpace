@@ -38,6 +38,119 @@ int n; /*结点总数 */
 
 /////////////////////////////////CRC//////////////////////////////////////////
 /*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short GetBuildYear(void)
+{
+	unsigned	short Year	=	0;
+	unsigned	char DataStr[]=__DATE__;
+
+	Year	=	(unsigned short)((DataStr[7]-'0')*1000+(DataStr[8]-'0')*100+(DataStr[9]-'0')*10+(DataStr[10]-'0'));
+	return	Year;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned char GetBuildMonth(void)
+{
+	unsigned	char Month	=	0;
+	unsigned	char DataStr[]=__DATE__;
+	Month	=	(DataStr[2] == 'c' ? 0\
+					:DataStr[2] == 'b' ? 1\
+					:DataStr[2] == 'r' ? (__DATE__ [0] == 'M' ? 2 : 3) \
+					:DataStr[2] == 'y' ? 4 \
+					:DataStr[2] == 'n' ? 5 \
+					:DataStr[2] == 'l' ? 6 \
+					:DataStr[2] == 'g' ? 7 \
+					:DataStr[2] == 'p' ? 8 \
+					:DataStr[2] == 't' ? 9 \
+					:DataStr[2] == 'v' ? 10 : 11)+1;
+//	Month	=	(unsigned char)((DataStr[7]-'0')*1000+(DataStr[8]-'0')*100+(DataStr[9]-'0')*10+(DataStr[10]-'0'));
+	return	Month;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned char GetBuildDay(void)
+{
+	unsigned	char Day	=	0;
+	unsigned	char DataStr[]=__DATE__;
+
+	Day	=	(unsigned char)((DataStr[4] == ' ' ? 0 : DataStr[4] - '0') * 10+ (DataStr[5] - '0'));
+
+	return	Day;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned char GetBuildHour(void)
+{
+	unsigned	char Hour	=	0;
+	unsigned	char TimeStr[]=__TIME__;
+
+	Hour	=	(unsigned char)((TimeStr[0]-'0')*10+(TimeStr[1]-'0'));
+	return	Hour;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned char GetBuildMinute(void)
+{
+	unsigned	char Minute	=	0;
+	unsigned	char TimeStr[]=__TIME__;
+
+	Minute	=	(unsigned char)((TimeStr[0]-'0')*10+(TimeStr[1]-'0'));
+	return	Minute;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned char GetBuildSecond(void)
+{
+	unsigned	char Second	=	0;
+	unsigned	char TimeStr[]=__TIME__;
+
+	Second	=	(unsigned char)((TimeStr[0]-'0')*10+(TimeStr[1]-'0'));
+	return	Second;
+}
+  
+/*******************************************************************************
 * 函数名		:	8位异或校验
 * 功能描述	: 
 * 输入			: buffer计算的数据缓存起始地址
