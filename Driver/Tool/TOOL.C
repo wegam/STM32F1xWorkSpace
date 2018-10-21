@@ -129,7 +129,7 @@ unsigned char GetBuildMinute(void)
 	unsigned	char Minute	=	0;
 	unsigned	char TimeStr[]=__TIME__;
 
-	Minute	=	(unsigned char)((TimeStr[0]-'0')*10+(TimeStr[1]-'0'));
+	Minute	=	(unsigned char)((TimeStr[3]-'0')*10+(TimeStr[4]-'0'));
 	return	Minute;
 }
 /*******************************************************************************
@@ -146,7 +146,7 @@ unsigned char GetBuildSecond(void)
 	unsigned	char Second	=	0;
 	unsigned	char TimeStr[]=__TIME__;
 
-	Second	=	(unsigned char)((TimeStr[0]-'0')*10+(TimeStr[1]-'0'));
+	Second	=	(unsigned char)((TimeStr[6]-'0')*10+(TimeStr[7]-'0'));
 	return	Second;
 }
   

@@ -29,7 +29,7 @@ typedef struct _Pd014AckFarm
 
 void PL012V20_Configuration(void);
 void PL012V20_Server(void);
-
+void ClockServer(void);
 
 void SwitchID_Configuration(void);
 

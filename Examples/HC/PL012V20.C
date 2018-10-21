@@ -64,7 +64,7 @@ u8	Onlinede=0;		//待发药槽位
 
 
 //t_Point point;
-u8 zimo[720]="R61509V_DrawRectangle(11,11,229,389,0X07FF)";
+//u8 zimo[720]="R61509V_DrawRectangle(11,11,229,389,0X07FF)";
 
 RS485Def  RS485;
 u8 RS485FLG	=	0;
@@ -97,22 +97,28 @@ u8 GetAdd	=	0;
 u16 DspTime	=	0;
 u16 color	=	0;
 
-
-unsigned char Version[]="PL012V2.0RF智能耗材管理柜";
-//unsigned char DataStr[]=__DATE__;
-//unsigned char	TimeStr[]=__TIME__;
-
-typedef struct
-{
  u16 year; 
  u8 month;
  u8 day;
  u8 hour;
  u8 minute;
  u8 second;
-}t_SysTime;
 
-t_SysTime SysTime;
+unsigned char Version[]="PL012V2.0RF智能耗材管理柜";
+//unsigned char DataStr[]=__DATE__;
+//unsigned char	TimeStr[]=__TIME__;
+
+//typedef struct
+//{
+// u16 year; 
+// u8 month;
+// u8 day;
+// u8 hour;
+// u8 minute;
+// u8 second;
+//}t_SysTime;
+
+//t_SysTime SysTime;
 
 
 
@@ -130,37 +136,15 @@ void PL012V20_Configuration(void)
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
 	
 	GPIO_DeInitAll();							//将所有的GPIO关闭----V20170605
-	
-	
-	
-	
-	
-
 	LCD_Configuration();
 //	R61509V_Configuration();
 //	ILI9326_Configuration();
-	
-
-	
 	RS485_Configuration();
 	
 //	LCD_Printf(0		,0	,32	,0,"序号：");				//待发药槽位，后边的省略号就是可变参数
 	
 	SwitchID_Configuration();
-	
-//	LCD_ShowAntenna(220,0,0,LCD565_RED);   //显示12x12天线
-//  LCD_ShowAntenna(240,0,1,LCD565_RED);   //显示12x12天线
-//  LCD_ShowAntenna(260,0,2,LCD565_RED);   //显示12x12天线
-//  LCD_ShowAntenna(280,0,3,LCD565_RED);   //显示12x12天线
-//  LCD_ShowAntenna(300,0,4,LCD565_RED);   //显示12x12天线
-//  
-//  LCD_ShowBattery(320,0,0,LCD565_RED);   //显示12x12电池
-//  LCD_ShowBattery(340,0,1,LCD565_RED);   //显示12x12电池
-//  LCD_ShowBattery(360,0,2,LCD565_RED);   //显示12x12电池
-//  LCD_ShowBattery(380,0,3,LCD565_RED);   //显示12x12电池
-	
-	
-	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
+//	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	PWM_OUT(TIM2,PWM_OUTChannel1,2,900);	//PWM设定-20161127版本--指示灯
@@ -176,9 +160,22 @@ void PL012V20_Configuration(void)
 //	LCD_Printf(0,180,16,LCD565_RED,"编译日期:%4d",GetBuildYear());		//编译日期
 	LCD_Printf(0,180,16,LCD565_RED,"编译日期:%4d-%0.2d-%0.2d-%s",GetBuildYear(),GetBuildMonth(),GetBuildDay(),__TIME__);		//编译日期
 //	LCD_Printf(0,200,16,LCD565_RED,"编译时间:%s",__TIME__); 	//编译时间
-LCD_Printf(0,200,16,LCD565_RED,"编译时间:%0.2d:%0.2d:%0.2d",GetBuildHour(),GetBuildMinute(),GetBuildSecond()); 	//编译时间
-	
+  LCD_Printf(0,200,16,LCD565_RED,"编译时间:%0.2d:%0.2d:%0.2d",GetBuildHour(),GetBuildMinute(),GetBuildSecond()); 	//编译时间
+	LCD_Printf(0,220,16,LCD565_RED,"编译日期:%4d-%0.2d-%0.2d//%s",GetBuildYear(),GetBuildMonth(),GetBuildDay(),__TIME__);		//编译日期
 //	PD014Test_Server();
+
+  year  = GetBuildYear();
+  month = GetBuildMonth();
+  day   = GetBuildDay();
+  hour  = GetBuildHour();
+  minute  = GetBuildMinute();
+  second  = GetBuildSecond();
+  
+  LCD_Printf(0,0,32,LCD565_RED,"%0.2d:",hour);		//编译日期
+  LCD_Printf(16*3,0,32,LCD565_RED,"%0.2d:",minute);		//编译日期
+  LCD_Printf(16*6,0,32,LCD565_RED,"%0.2d",second);		//编译日期
+  
+  SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 }
 /*******************************************************************************
 * 函数名		:	
@@ -191,10 +188,12 @@ void PL012V20_Server(void)
 {	
 	
 	IWDG_Feed();								//独立看门狗喂狗
-	Time++;
-	if(Time%1000	==0)
+//	Time++;
+//  ClockServer();
+	if(Time++>999)
 	{
 		Time	=	0;
+    ClockServer();
 //		if(WriteFlag	==	0)
 //		{
 //			WriteFlag	=	1;
@@ -262,6 +261,34 @@ void PL012V20_Server(void)
 	
 
 }
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void ClockServer(void)
+{
+  if(++second>59)
+  {    
+    second  = 0;
+    if(++minute>59)
+    {  
+      minute  = 0;
+      if(++hour>=24)
+      { 
+        hour = 0;
+      }
+      LCD_Printf(0,0,32,LCD565_RED,"%0.2d",hour);		//编译日期      
+    }
+    LCD_Printf(16*3,0,32,LCD565_RED,"%0.2d",minute);		//编译日期    
+  }
+  LCD_Printf(16*6,0,32,LCD565_RED,"%0.2d",second);		//编译日期
+}
+
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
