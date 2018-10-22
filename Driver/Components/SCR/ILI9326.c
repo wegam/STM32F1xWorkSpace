@@ -115,79 +115,79 @@ void ILI9326_PowerOn( void )
 	LCD_Reset();
 
 /************** Start Initial Sequence ********** // */
-	ILI9326_WriteCMD( ILI9326_R702_SIT1, 	0x3008 );LCD_Delay( dtime ); /* Set internal timing, don¡¯t change this value */
-	ILI9326_WriteCMD( ILI9326_R705_SIT2, 	0x0036 );LCD_Delay( dtime ); /* Set internal timing, don¡¯t change this value */
-	ILI9326_WriteCMD( ILI9326_R70B_SIT3, 	0x1213 );LCD_Delay( dtime ); /* Set internal timing, don¡¯t change this value */
+	ILI9326_WriteCMD( ILI9326_R702_SIT1, 	0x3008 );/* Set internal timing, don¡¯t change this value */
+	ILI9326_WriteCMD( ILI9326_R705_SIT2, 	0x0036 );/* Set internal timing, don¡¯t change this value */
+	ILI9326_WriteCMD( ILI9326_R70B_SIT3, 	0x1213 );/* Set internal timing, don¡¯t change this value */
 
-	ILI9326_WriteCMD( ILI9326_R001_DOC, 	0x0100 );LCD_Delay( dtime ); /* set SS and SM bit */
-	ILI9326_WriteCMD( ILI9326_R002_DWC, 	0x0100 );LCD_Delay( dtime ); /* set 1 line inversion */
-	ILI9326_WriteCMD( ILI9326_R003_EM, 		0x1030 );LCD_Delay( dtime ); /* set GRAM write direction and BGR=1. */
-	ILI9326_WriteCMD( ILI9326_R008_DC2, 	0x0202 );LCD_Delay( dtime );	 /* set the back porch and front porch */
-	ILI9326_WriteCMD( ILI9326_R009_DC3, 	0x0000 );LCD_Delay( dtime ); /* set non-display area refresh cycle ISC[3:0] */
-	ILI9326_WriteCMD( ILI9326_R00C_EDIC1,	0x0000 );LCD_Delay( dtime ); /* RGB interface setting */
-	ILI9326_WriteCMD( ILI9326_R00F_EDIC2,	0x0000 );LCD_Delay( dtime ); /* RGB interface polarity */
+	ILI9326_WriteCMD( ILI9326_R001_DOC, 	0x0100 );/* set SS and SM bit */
+	ILI9326_WriteCMD( ILI9326_R002_DWC, 	0x0100 );/* set 1 line inversion */
+	ILI9326_WriteCMD( ILI9326_R003_EM, 		0x1030 );/* set GRAM write direction and BGR=1. */
+	ILI9326_WriteCMD( ILI9326_R008_DC2, 	0x0202 );/* set the back porch and front porch */
+	ILI9326_WriteCMD( ILI9326_R009_DC3, 	0x0000 );/* set non-display area refresh cycle ISC[3:0] */
+	ILI9326_WriteCMD( ILI9326_R00C_EDIC1,	0x0000 );/* RGB interface setting */
+	ILI9326_WriteCMD( ILI9326_R00F_EDIC2,	0x0000 );/* RGB interface polarity */
 
 	/**************Power On sequence **************** // */
-	ILI9326_WriteCMD( ILI9326_R100_PC1, 	0x0000 );LCD_Delay( dtime ); /* SAP, BT[3:0], AP, DSTB, SLP, STB */
-	ILI9326_WriteCMD( ILI9326_R102_PC3, 	0x0000 );LCD_Delay( dtime ); /* VREG1OUT voltage */
-	ILI9326_WriteCMD( ILI9326_R103_PC4, 	0x0000 );LCD_Delay( dtime ); /* VDV[4:0] for VCOM amplitude */
+	ILI9326_WriteCMD( ILI9326_R100_PC1, 	0x0000 );/* SAP, BT[3:0], AP, DSTB, SLP, STB */
+	ILI9326_WriteCMD( ILI9326_R102_PC3, 	0x0000 );/* VREG1OUT voltage */
+	ILI9326_WriteCMD( ILI9326_R103_PC4, 	0x0000 );/* VDV[4:0] for VCOM amplitude */
 	
-	LCD_Delay( 50000 );
+	LCD_DelaymS( 100 );
 	
 	ILI9326_WriteCMD( ILI9326_R100_PC1, 	0x1190 ); /* SAP, BT[3:0], AP, DSTB, SLP, STB */
 	ILI9326_WriteCMD( ILI9326_R101_PC2, 	0x0227 ); /* DC1[2:0], DC0[2:0], VC[2:0] */
 	
-	LCD_Delay( 50000 );
+	LCD_DelaymS( 100 );
 	
 	ILI9326_WriteCMD( ILI9326_R102_PC3, 	0x01BD ); /* VREG1OUT voltage */
 	
-	LCD_Delay( 50000 );
+	LCD_DelaymS( 100 );
 	
-	ILI9326_WriteCMD( ILI9326_R103_PC4,		0x2D00 );LCD_Delay( dtime ); /* VDV[4:0] for VCOM amplitude */
-	ILI9326_WriteCMD( ILI9326_R281_VHV, 	0x000E );LCD_Delay( dtime ); /* VCM[5:0] for VCOMH */
+	ILI9326_WriteCMD( ILI9326_R103_PC4,		0x2D00 );/* VDV[4:0] for VCOM amplitude */
+	ILI9326_WriteCMD( ILI9326_R281_VHV, 	0x000E );/* VCM[5:0] for VCOMH */
 	
 	
-	ILI9326_WriteCMD( ILI9326_R200_HA, 		0x0000 );LCD_Delay( dtime ); /* GRAM horizontal Address */
-	ILI9326_WriteCMD( ILI9326_R201_VA, 		0x0000 );LCD_Delay( dtime ); /* GRAM Vertical Address */
+	ILI9326_WriteCMD( ILI9326_R200_HA, 		0x0000 );/* GRAM horizontal Address */
+	ILI9326_WriteCMD( ILI9326_R201_VA, 		0x0000 );/* GRAM Vertical Address */
 
 	/* ----------- Adjust the Gamma    Curve ----------// */
-	ILI9326_WriteCMD( ILI9326_R300_YC1,		0x0000 );LCD_Delay( dtime );
-	ILI9326_WriteCMD( ILI9326_R301_YC2, 	0x0707 );LCD_Delay( dtime );
-	ILI9326_WriteCMD( ILI9326_R302_YC3, 	0x0606 );LCD_Delay( dtime );
-	ILI9326_WriteCMD( ILI9326_R303_YC4, 	0x0000 );LCD_Delay( dtime );
-	ILI9326_WriteCMD( ILI9326_R304_YC5, 	0x0D00 );LCD_Delay( dtime );
-	ILI9326_WriteCMD( ILI9326_R305_YC6, 	0x0706 );LCD_Delay( dtime );
-	ILI9326_WriteCMD( ILI9326_R306_YC7, 	0x0005 );LCD_Delay( dtime );
-	ILI9326_WriteCMD( ILI9326_R307_YC8, 	0x0007 );LCD_Delay( dtime );
+	ILI9326_WriteCMD( ILI9326_R300_YC1,		0x0000 );
+	ILI9326_WriteCMD( ILI9326_R301_YC2, 	0x0707 );
+	ILI9326_WriteCMD( ILI9326_R302_YC3, 	0x0606 );
+	ILI9326_WriteCMD( ILI9326_R303_YC4, 	0x0000 );
+	ILI9326_WriteCMD( ILI9326_R304_YC5, 	0x0D00 );
+	ILI9326_WriteCMD( ILI9326_R305_YC6, 	0x0706 );
+	ILI9326_WriteCMD( ILI9326_R306_YC7, 	0x0005 );
+	ILI9326_WriteCMD( ILI9326_R307_YC8, 	0x0007 );
 
-	ILI9326_WriteCMD( ILI9326_R308_YC9, 	0x0000 );LCD_Delay( dtime );
-	ILI9326_WriteCMD( ILI9326_R309_YC10, 	0x000A );LCD_Delay( dtime );
+	ILI9326_WriteCMD( ILI9326_R308_YC9, 	0x0000 );
+	ILI9326_WriteCMD( ILI9326_R309_YC10, 	0x000A );
 
 	/*------------------ Set GRAM area ---------------// */
-	ILI9326_WriteCMD( ILI9326_R210_HSA, 	0x0000 );LCD_Delay( dtime ); /* Horizontal GRAM Start Address */
-	ILI9326_WriteCMD( ILI9326_R211_HEA, 	0x00EF );LCD_Delay( dtime ); /* Horizontal GRAM End Address */
-	ILI9326_WriteCMD( ILI9326_R212_VSA, 	0x0000 );LCD_Delay( dtime ); /* Vertical GRAM Start Address */
-	ILI9326_WriteCMD( ILI9326_R400_BINL, 	0x3100 );LCD_Delay( dtime ); /*    / * Gate Scan Line 400 lines * / */
-	ILI9326_WriteCMD( ILI9326_R401_BIDC, 	0x0001 );LCD_Delay( dtime ); /* NDL,VLE, REV */
-	ILI9326_WriteCMD( ILI9326_R404_BIVSC, 0x0000 );LCD_Delay( dtime ); /* set scrolling line */
+	ILI9326_WriteCMD( ILI9326_R210_HSA, 	0x0000 );/* Horizontal GRAM Start Address */
+	ILI9326_WriteCMD( ILI9326_R211_HEA, 	0x00EF );/* Horizontal GRAM End Address */
+	ILI9326_WriteCMD( ILI9326_R212_VSA, 	0x0000 );/* Vertical GRAM Start Address */
+	ILI9326_WriteCMD( ILI9326_R400_BINL, 	0x3100 );/*    / * Gate Scan Line 400 lines * / */
+	ILI9326_WriteCMD( ILI9326_R401_BIDC, 	0x0001 );/* NDL,VLE, REV */
+	ILI9326_WriteCMD( ILI9326_R404_BIVSC, 0x0000 );/* set scrolling line */
 
 
 /*-------------- Partial Display Control ---------// */
-	ILI9326_WriteCMD( ILI9326_R500_PTDP, 0x0000 );LCD_Delay( dtime ); /*Partial Image 1 Display Position */
-	ILI9326_WriteCMD( ILI9326_R501_PTSA, 0x0000 );LCD_Delay( dtime ); /*Partial Image 1 RAM Start/End Address */
-	ILI9326_WriteCMD( ILI9326_R502_PTEA, 0x0000 );LCD_Delay( dtime ); /*Partial Image 1 RAM Start/End Address */
-	ILI9326_WriteCMD( ILI9326_R503_PIDP, 0x0000 );LCD_Delay( dtime ); /*Partial Image 2 Display Position */
-	ILI9326_WriteCMD( ILI9326_R504_PIRS, 0x0000 );LCD_Delay( dtime ); /*Partial Image 2 RAM Start/End Address */
-	ILI9326_WriteCMD( ILI9326_R505_PIRE, 0x0000 );LCD_Delay( dtime ); /*Partial Image 2 RAM Start/End Address */
+	ILI9326_WriteCMD( ILI9326_R500_PTDP, 0x0000 );/*Partial Image 1 Display Position */
+	ILI9326_WriteCMD( ILI9326_R501_PTSA, 0x0000 );/*Partial Image 1 RAM Start/End Address */
+	ILI9326_WriteCMD( ILI9326_R502_PTEA, 0x0000 );/*Partial Image 1 RAM Start/End Address */
+	ILI9326_WriteCMD( ILI9326_R503_PIDP, 0x0000 );/*Partial Image 2 Display Position */
+	ILI9326_WriteCMD( ILI9326_R504_PIRS, 0x0000 );/*Partial Image 2 RAM Start/End Address */
+	ILI9326_WriteCMD( ILI9326_R505_PIRE, 0x0000 );/*Partial Image 2 RAM Start/End Address */
 
 
 
 /*-------------- Panel Control -------------------// */
-	ILI9326_WriteCMD( ILI9326_R010_PIC1, 0x0010 );LCD_Delay( dtime ); /*DIVI[1:0];RTNI[4:0] */
-	ILI9326_WriteCMD( ILI9326_R011_PIC2, 0x0600 );LCD_Delay( dtime ); /*NOWI[2:0];SDTI[2:0] */
-	ILI9326_WriteCMD( ILI9326_R013_PIC4, 0x0002 );LCD_Delay( dtime ); /*DIVE[1:0];RTNE[5:0] */
+	ILI9326_WriteCMD( ILI9326_R010_PIC1, 0x0010 );/*DIVI[1:0];RTNI[4:0] */
+	ILI9326_WriteCMD( ILI9326_R011_PIC2, 0x0600 );/*NOWI[2:0];SDTI[2:0] */
+	ILI9326_WriteCMD( ILI9326_R013_PIC4, 0x0002 );/*DIVE[1:0];RTNE[5:0] */
 
-	ILI9326_WriteCMD( ILI9326_R007_DC1, 0x0173 );LCD_Delay( dtime ); /* 262K color and display ON */
+	ILI9326_WriteCMD( ILI9326_R007_DC1, 0x0173 );/* 262K color and display ON */
 	
 	LCD_BL_ON;			//´ò¿ª±³¹â
 }

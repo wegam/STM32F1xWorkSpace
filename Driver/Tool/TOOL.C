@@ -46,11 +46,34 @@ int n; /*结点总数 */
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-unsigned short GetBuildYear(void)
+BuildTimeDef GetBuildTime(void* pDate, void*	pTime)
+{
+	static BuildTimeDef	BuildTime;
+	//=============================================转换日期
+	BuildTime.year		=	GetBuildYear((char*)pDate);
+	BuildTime.month		=	GetBuildMonth((char*)pDate);
+	BuildTime.day			=	GetBuildDay((char*)pDate);
+	//=============================================转换时间
+	BuildTime.hour		=	GetBuildHour((char*)pTime);
+	BuildTime.minute	=	GetBuildMinute((char*)pTime);
+	BuildTime.second	=	GetBuildSecond((char*)pTime);
+	return BuildTime;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short GetBuildYear(const char* DataStr)
 {
 	unsigned	short Year	=	0;
-	unsigned	char DataStr[]=__DATE__;
-
+//	unsigned	char DataStr[]=__DATE__;
+	if(NULL	==DataStr)
+		return 0;
 	Year	=	(unsigned short)((DataStr[7]-'0')*1000+(DataStr[8]-'0')*100+(DataStr[9]-'0')*10+(DataStr[10]-'0'));
 	return	Year;
 }
@@ -63,10 +86,11 @@ unsigned short GetBuildYear(void)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-unsigned char GetBuildMonth(void)
+unsigned char GetBuildMonth(const char* DataStr)
 {
 	unsigned	char Month	=	0;
-	unsigned	char DataStr[]=__DATE__;
+	if(NULL	==DataStr)
+		return 0;
 	Month	=	(DataStr[2] == 'c' ? 0\
 					:DataStr[2] == 'b' ? 1\
 					:DataStr[2] == 'r' ? (__DATE__ [0] == 'M' ? 2 : 3) \
@@ -89,10 +113,11 @@ unsigned char GetBuildMonth(void)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-unsigned char GetBuildDay(void)
+unsigned char GetBuildDay(const char* DataStr)
 {
 	unsigned	char Day	=	0;
-	unsigned	char DataStr[]=__DATE__;
+	if(NULL	==DataStr)
+		return 0;
 
 	Day	=	(unsigned char)((DataStr[4] == ' ' ? 0 : DataStr[4] - '0') * 10+ (DataStr[5] - '0'));
 
@@ -107,10 +132,12 @@ unsigned char GetBuildDay(void)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-unsigned char GetBuildHour(void)
+unsigned char GetBuildHour(const char* TimeStr)
 {
 	unsigned	char Hour	=	0;
-	unsigned	char TimeStr[]=__TIME__;
+
+	if(NULL	==TimeStr)
+		return 0;
 
 	Hour	=	(unsigned char)((TimeStr[0]-'0')*10+(TimeStr[1]-'0'));
 	return	Hour;
@@ -124,10 +151,11 @@ unsigned char GetBuildHour(void)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-unsigned char GetBuildMinute(void)
+unsigned char GetBuildMinute(const char* TimeStr)
 {
 	unsigned	char Minute	=	0;
-	unsigned	char TimeStr[]=__TIME__;
+	if(NULL	==TimeStr)
+		return 0;
 
 	Minute	=	(unsigned char)((TimeStr[3]-'0')*10+(TimeStr[4]-'0'));
 	return	Minute;
@@ -141,11 +169,11 @@ unsigned char GetBuildMinute(void)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-unsigned char GetBuildSecond(void)
+unsigned char GetBuildSecond(const char* TimeStr)
 {
 	unsigned	char Second	=	0;
-	unsigned	char TimeStr[]=__TIME__;
-
+	if(NULL	==TimeStr)
+		return 0;
 	Second	=	(unsigned char)((TimeStr[6]-'0')*10+(TimeStr[7]-'0'));
 	return	Second;
 }

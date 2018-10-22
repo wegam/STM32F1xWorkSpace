@@ -33,6 +33,7 @@
 #include "STM32_USART.H"
 
 
+
 #include "SWITCHID.H"
 #include 	"TOOL.H"
 
@@ -57,10 +58,6 @@ u16 SumFed[8]={0};		//总共已发药数量
 u16	SumFQ[8]={0};			//总共发药请求数量
 u8	NumFW=0;		//待发药槽位
 u8	Onlinede=0;		//待发药槽位
-
-
-
-
 
 
 //t_Point point;
@@ -104,7 +101,7 @@ u16 color	=	0;
  u8 minute;
  u8 second;
 
-unsigned char Version[]="PL012V2.0RF智能耗材管理柜";
+unsigned char Version[]="PL012V2.0 RF智能耗材管理柜";
 //unsigned char DataStr[]=__DATE__;
 //unsigned char	TimeStr[]=__TIME__;
 
@@ -123,7 +120,7 @@ unsigned char Version[]="PL012V2.0RF智能耗材管理柜";
 
 
 
-//unsigned short ID	=	0;
+void GetTime(void);
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -149,33 +146,42 @@ void PL012V20_Configuration(void)
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	PWM_OUT(TIM2,PWM_OUTChannel1,2,900);	//PWM设定-20161127版本--指示灯
 	PWM_OUT(TIM3,PWM_OUTChannel3,1000,900);		//PWM设定-20161127版本--背光
-	memset(TxdBuffe,0xA5,128);
+	
+	GetTime();	
 	
 	LCD_ShowAntenna(380,0,3,LCD565_RED);   //显示12x12电池
 	
-//	LCD_Printf(0,font*9,32,LCD565_RED,"获取地址......");		//后边的省略号就是可变参数
+	
 	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
-	LCD_Printf(0,160,16,LCD565_RED,"项目编号:%s",Version);		//编译日期
-//	LCD_Printf(0,180,16,LCD565_RED,"编译日期:%s",__DATE__);		//编译日期
-//	LCD_Printf(0,180,16,LCD565_RED,"编译日期:%4d",GetBuildYear());		//编译日期
-	LCD_Printf(0,180,16,LCD565_RED,"编译日期:%4d-%0.2d-%0.2d-%s",GetBuildYear(),GetBuildMonth(),GetBuildDay(),__TIME__);		//编译日期
-//	LCD_Printf(0,200,16,LCD565_RED,"编译时间:%s",__TIME__); 	//编译时间
-  LCD_Printf(0,200,16,LCD565_RED,"编译时间:%0.2d:%0.2d:%0.2d",GetBuildHour(),GetBuildMinute(),GetBuildSecond()); 	//编译时间
-	LCD_Printf(0,220,16,LCD565_RED,"编译日期:%4d-%0.2d-%0.2d//%s",GetBuildYear(),GetBuildMonth(),GetBuildDay(),__TIME__);		//编译日期
-//	PD014Test_Server();
-
-  year  = GetBuildYear();
-  month = GetBuildMonth();
-  day   = GetBuildDay();
-  hour  = GetBuildHour();
-  minute  = GetBuildMinute();
-  second  = GetBuildSecond();
-  
+	LCD_Printf(0,160,16,LCD565_RED,"项目编号:%s",Version);		//项目编号
+  LCD_Printf(0,220,16,LCD565_RED,"编译时间:%4d-%0.2d-%0.2d-%s",year,month,day,__TIME__); 	//编译时间
   LCD_Printf(0,0,32,LCD565_RED,"%0.2d:",hour);		//编译日期
   LCD_Printf(16*3,0,32,LCD565_RED,"%0.2d:",minute);		//编译日期
   LCD_Printf(16*6,0,32,LCD565_RED,"%0.2d",second);		//编译日期
   
   SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
+}
+
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void GetTime(void)
+{
+	BuildTimeDef*	BuildTime	=	&GetBuildTime(__DATE__,__TIME__);
+	
+  year  	= BuildTime->year;
+  month 	= BuildTime->month;
+  day   	= BuildTime->day;
+  hour  	= BuildTime->hour;
+  minute  = BuildTime->minute;
+	
+  second  = BuildTime->second;
 }
 /*******************************************************************************
 * 函数名		:	
@@ -329,7 +335,7 @@ void PD014Test_Server(void)
 	else if(DspTime==1000)
 	{
 		DspTime	=	0;
-		LCD_Fill(380,220,395,235,LCD565_LIGHTGREEN);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(380,220,395,235,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 }
 /*******************************************************************************

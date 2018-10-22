@@ -283,6 +283,8 @@ void LCD_ShowWord(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //¸ßÍ¨×Ö¿â
 
 
 
-void LCD_Delay(u32 xms);
+void LCD_DelayuS(u32 xuS);
+void LCD_DelaymS(u32 xmS);
+void LCD_DelayS(u32 xS);
 #endif//_BSP_LCDLCD_H_2016_
 /************************************** The End Of FILE **************************************/

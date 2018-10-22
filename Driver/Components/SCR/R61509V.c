@@ -99,9 +99,10 @@ static void R61509V_SetWindowAddress(			//设置窗口地址
 	//======================================设置写入模式
 	LCD_WriteCommand(R61509V_R003_EM,Model);						//RAM Address Set (Vertical Address) (R201h)
 	//======================================启动写入
-	LCD_WriteIndexStart();	
-	LCD_WriteData(R61509V_R202_GDRW);		//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
-	LCD_WriteIndexEnd();
+	LCD_WriteIndex(R61509V_R202_GDRW);		//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
+//	LCD_WriteIndexStart();	
+//	LCD_WriteData(R61509V_R202_GDRW);		//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
+//	LCD_WriteIndexEnd();
 }
 
 
@@ -121,60 +122,60 @@ static void R61509V_PowerOn(void)			//按照主控芯片R61509V的power supply on seque
 	LCD_Reset();
 	dtime=10;
 	
-	Command(R61509V_R000_IR		,	0x0000);		LCD_Delay(dtime); //四次写0x00
-	Command(R61509V_R000_IR		,	0x0000);		LCD_Delay(dtime); //四次写0x00
-	Command(R61509V_R000_IR		,	0x0000);		LCD_Delay(dtime); //四次写0x00
-	Command(R61509V_R000_IR		,	0x0000);		LCD_Delay(dtime); //四次写0x00
+	Command(R61509V_R000_IR		,	0x0000);	//四次写0x00
+	Command(R61509V_R000_IR		,	0x0000);	//四次写0x00
+	Command(R61509V_R000_IR		,	0x0000);	//四次写0x00
+	Command(R61509V_R000_IR		,	0x0000);	//四次写0x00
 	
-	Command(R61509V_R001_DOC	,	0x0300);		LCD_Delay(dtime); //--------显示方向控制When SS = “1” and BGR = “1”, RGB dots are assigned one to one from S720 to S1.
-	Command(R61509V_R002_DWC	,	0x0100);		LCD_Delay(dtime); //--------	
-	Command(R61509V_R003_EM		,	0X5030);		LCD_Delay(dtime); //--------RGB设为5-6-5模式------------0X5030
-	Command(R61509V_R007_DC1	,	0x0100);		LCD_Delay(dtime); //--------测试显示控制base image的关与开
-	Command(R61509V_R008_DC2	,	0X0808);		LCD_Delay(dtime); //--------
-	Command(R61509V_R009_DC3	,	0x0001);		LCD_Delay(dtime); //--------	
+	Command(R61509V_R001_DOC	,	0x0300);	//--------显示方向控制When SS = “1” and BGR = “1”, RGB dots are assigned one to one from S720 to S1.
+	Command(R61509V_R002_DWC	,	0x0100);	//--------	
+	Command(R61509V_R003_EM		,	0X5030);	//--------RGB设为5-6-5模式------------0X5030
+	Command(R61509V_R007_DC1	,	0x0100);	//--------测试显示控制base image的关与开
+	Command(R61509V_R008_DC2	,	0X0808);	//--------
+	Command(R61509V_R009_DC3	,	0x0001);	//--------	
 	
-	Command(R61509V_R00B_ECC		,	0x0001);		LCD_Delay(dtime); //--------
-	Command(R61509V_R00C_EDIC1	,	0x0000);		LCD_Delay(dtime); //--------
-	Command(R61509V_R00F_EDIC2	,	0x0000);		LCD_Delay(dtime); //--------
+	Command(R61509V_R00B_ECC		,	0x0001);	//--------
+	Command(R61509V_R00C_EDIC1	,	0x0000);	//--------
+	Command(R61509V_R00F_EDIC2	,	0x0000);	//--------
 	
-	Command(R61509V_R010_PIC1	,	0x0019);		LCD_Delay(dtime); //--------面板频率--0x19
-	Command(R61509V_R011_PIC2	,	0x0101);		LCD_Delay(dtime); //--------		Panel Interface Control 2 (R011h)
-	Command(R61509V_R012_PIC3	,	0x0000);		LCD_Delay(dtime); //--------
-	Command(R61509V_R013_PIC4	,	0x0001);		LCD_Delay(dtime); //--------
-	Command(R61509V_R014_PIC5	,	0x0055);		LCD_Delay(dtime); //--------
-	Command(R61509V_R020_PIC6	,	0x0010);		LCD_Delay(dtime); //--------
-	Command(R61509V_R021_PIC7	,	0x0101);		LCD_Delay(dtime); //--------
-	Command(R61509V_R022_PIC8	,	0x0000);		LCD_Delay(dtime); //--------
-	Command(R61509V_R023_PIC9	,	0x0001);		LCD_Delay(dtime); //--------	
+	Command(R61509V_R010_PIC1	,	0x0019);	//--------面板频率--0x19
+	Command(R61509V_R011_PIC2	,	0x0101);	//--------		Panel Interface Control 2 (R011h)
+	Command(R61509V_R012_PIC3	,	0x0000);	//--------
+	Command(R61509V_R013_PIC4	,	0x0001);	//--------
+	Command(R61509V_R014_PIC5	,	0x0055);	//--------
+	Command(R61509V_R020_PIC6	,	0x0010);	//--------
+	Command(R61509V_R021_PIC7	,	0x0101);	//--------
+	Command(R61509V_R022_PIC8	,	0x0000);	//--------
+	Command(R61509V_R023_PIC9	,	0x0001);	//--------	
 	
-	Command(R61509V_R090_FMC		,	0x8000);		LCD_Delay(dtime); //--------窗特征控制，FMARK interface
+	Command(R61509V_R090_FMC		,	0x8000);	//--------窗特征控制，FMARK interface
 	
-	Command(R61509V_R100_PC1		,	0x0330);		LCD_Delay(dtime); //--------设置电源控制，平衡显示与电消耗
-	Command(R61509V_R101_PC2		,	0x0227);		LCD_Delay(dtime); //--------Power Control 2
-	Command(R61509V_R102_PC3		,	0xC1B0);		LCD_Delay(dtime); //--------PSON,PON 都设为1，电源供应打开
-	Command(R61509V_R103_PC4		,	0x0D00);		LCD_Delay(dtime); //--------	
+	Command(R61509V_R100_PC1		,	0x0330);	//--------设置电源控制，平衡显示与电消耗
+	Command(R61509V_R101_PC2		,	0x0227);	//--------Power Control 2
+	Command(R61509V_R102_PC3		,	0xC1B0);	//--------PSON,PON 都设为1，电源供应打开
+	Command(R61509V_R103_PC4		,	0x0D00);	//--------	
 	
-	Command(R61509V_R200_HA			,	0x0000);		LCD_Delay(dtime);	//--------RAM address 设置
-	Command(R61509V_R201_VA			,	0x0000);		LCD_Delay(dtime);	//--------
+	Command(R61509V_R200_HA			,	0x0000);	//--------RAM address 设置
+	Command(R61509V_R201_VA			,	0x0000);	//--------
 	
-	Command(R61509V_R280_NVM		,	0xB000);		LCD_Delay(dtime);	//--------VCM
+	Command(R61509V_R280_NVM		,	0xB000);	//--------VCM
 	
-	Command(R61509V_R300_YC1		,	0x0C00);		LCD_Delay(dtime); //--------
-	Command(R61509V_R301_YC2		,	0x5A0B);		LCD_Delay(dtime); //--------
-	Command(R61509V_R302_YC3		,	0x0906);		LCD_Delay(dtime); //--------
-	Command(R61509V_R303_YC4		,	0x1017);		LCD_Delay(dtime); //--------
-	Command(R61509V_R304_YC5		,	0x2300);		LCD_Delay(dtime); //--------
-	Command(R61509V_R305_YC6		,	0x1700);		LCD_Delay(dtime); //--------
-	Command(R61509V_R306_YC7		,	0x6309);		LCD_Delay(dtime); //--------
-	Command(R61509V_R307_YC8		,	0x0C09);		LCD_Delay(dtime); //--------
-	Command(R61509V_R308_YC9		,	0x100C);		LCD_Delay(dtime); //--------
-	Command(R61509V_R309_YC10		,	0x2232);		LCD_Delay(dtime); //--------
+	Command(R61509V_R300_YC1		,	0x0C00);	//--------
+	Command(R61509V_R301_YC2		,	0x5A0B);	//--------
+	Command(R61509V_R302_YC3		,	0x0906);	//--------
+	Command(R61509V_R303_YC4		,	0x1017);	//--------
+	Command(R61509V_R304_YC5		,	0x2300);	//--------
+	Command(R61509V_R305_YC6		,	0x1700);	//--------
+	Command(R61509V_R306_YC7		,	0x6309);	//--------
+	Command(R61509V_R307_YC8		,	0x0C09);	//--------
+	Command(R61509V_R308_YC9		,	0x100C);	//--------
+	Command(R61509V_R309_YC10		,	0x2232);	//--------
 	
-	Command(R61509V_R400_BINL		,	0X6400);		LCD_Delay(dtime); //base image 设置 400线
-	Command(R61509V_R401_BIDC		,	0x0004);		LCD_Delay(dtime); //--------设置base image 滚动模式，开启滚动(颜色反相设置）
-	Command(R61509V_R404_BIVSC	,	0x0000);		LCD_Delay(dtime);	//--------从0线开始滚屏
+	Command(R61509V_R400_BINL		,	0X6400);	//base image 设置 400线
+	Command(R61509V_R401_BIDC		,	0x0004);	//--------设置base image 滚动模式，开启滚动(颜色反相设置）
+	Command(R61509V_R404_BIVSC	,	0x0000);	//--------从0线开始滚屏
 	
-	Command(R61509V_R502_PTEA		,	0x005f);		LCD_Delay(dtime);
+	Command(R61509V_R502_PTEA		,	0x005f);
 	LCD_BL_ON;		//开背光
 }
 

@@ -169,24 +169,10 @@ void LCD_WriteData(u16 Data)
 u16 LCD_ReadData( unsigned short Index )
 {
 	u16 Data;
-	//==================写地址
-//	LCD_WriteIndexStart();		
-//	LCD_WriteData(Index);
-//	LCD_WriteIndexEnd();
-
-//	LCD_CS_LOW;
-//	LCD_WR_HIGH;
-//	LCD_DC_HIGH;
-//	GPIO_Configuration_IPU	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
-//	Dat = LCD_DATABUS_PORT->IDR;
-//	LCD_RD_LOW;
-//	LCD_RD_HIGH;
-//	LCD_CS_HIGH;
-//	GPIO_Configuration_OPP50	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-//	return(Dat);
 	
 	GPIO_Configuration_OPP50	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	
+	//==================写地址
 	LCD_RD_HIGH;
 	LCD_CS_LOW;
 	LCD_RS_LOW;
@@ -202,8 +188,7 @@ u16 LCD_ReadData( unsigned short Index )
 	LCD_CS_HIGH;
 	
 	GPIO_Configuration_OPP50	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-	return Data;
-	
+	return Data;	
 }
 #else
 /*******************************************************************************
@@ -238,7 +223,7 @@ void LCD_WriteCommand(												//写完整控制命令
 											)	//写完整控制命令
 {
 	//==================写地址
-	LCD_WriteIndexStart();		
+	LCD_WriteIndexStart();	
 	LCD_WriteData(Index);
 	LCD_WriteIndexEnd();
 	
@@ -746,6 +731,7 @@ void LCD_Show(
 	{
 		unsigned char GetBufferLength	=	0;
 		unsigned char dst=Buffer[i];
+		
 		//A=====================双字节--汉字
 		if(dst>0x80)
 		{
@@ -789,6 +775,12 @@ void LCD_Show(
       }
       //B3=====================读取点阵数据
 			GetBufferLength	=	GT32L32_ReadCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
+			//=======================水平制表符按空格显示(部分字库会当0xFF输出)
+			if(	('	'	==	(char)dst)		//水平制表符
+				||(' '	==	(char)dst))		//空格
+			{
+				memset(CodeBuffer,0x00,GetBufferLength);
+			}
 			//B4=====================写入屏幕
 			LCD_ShowChar(x,y,font,PenColor,GetBufferLength,CodeBuffer);
 			//B5=====================水平显示地址增加
@@ -871,12 +863,7 @@ void LCD_ShowHex(
       //5=====================显示地址增加
       x+=font/2;
     }
-    //========================插入空格
-    //3=====================读取点阵数据
-//    GetBufferLength	=	GT32L32_ReadCode(font,' ',CodeBuffer);		//从字库中读数据并返回数据长度
-    //4=====================写入屏幕
-//    LCD_ShowChar(x,y,font,GetBufferLength,CodeBuffer,0);
-    //5=====================显示地址增加
+    //5=====================显示地址增加(增加空格位)
     x+=font/2;
 		if(x>MaxH-font)
 		{
@@ -947,7 +934,7 @@ void LCD_ShowBMP(
 	{
     RGB565  =   (RGBBuffer[j+2]>>3);
     RGB565  <<= 5;
-    RGB565  |=  (RGBBuffer[j+1]>>3);
+    RGB565  |=  (RGBBuffer[j+1]>>3);		//取5位
     RGB565  <<= 6;
     RGB565  |=  (RGBBuffer[j+0]>>3);
     LCD_WriteData(RGB565);
@@ -968,16 +955,35 @@ void LCD_DrawPixelEx( u16 x, u16 y, u16 color )
 	LCD_DrawDot(x,y,color);		//画点
 }
 /*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
+* 函数名			:	LCD_DelayuS
+* 功能描述		:	延时x微秒
 * 输入			: void
 * 返回值			: void
 *******************************************************************************/
-void LCD_Delay(u32 xms)
+void LCD_DelayuS(u32 xuS)
 {
-	while(xms--);
+	SysTick_DeleyuS(xuS);				//SysTick延时nmS;
 }
-
+/*******************************************************************************
+* 函数名			:	LCD_DelaymS
+* 功能描述		:	延时x毫秒
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void LCD_DelaymS(u32 xms)
+{
+	SysTick_DeleymS(xms);				//SysTick延时nmS;
+}
+/*******************************************************************************
+* 函数名			:	LCD_DelayS
+* 功能描述		:	延时x秒
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void LCD_DelayS(u32 xS)
+{
+	SysTick_DeleyS(xS);				//SysTick延时nmS;
+}
 //#endif//LCD_61509_EN
 /************************************** The End Of FILE **************************************/
 
