@@ -152,12 +152,12 @@ void PL012V20_Configuration(void)
 	LCD_ShowAntenna(380,0,3,LCD565_RED);   //显示12x12电池
 	
 	
-	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
-	LCD_Printf(0,160,16,LCD565_RED,"项目编号:%s",Version);		//项目编号
-  LCD_Printf(0,220,16,LCD565_RED,"编译时间:%4d-%0.2d-%0.2d-%s",year,month,day,__TIME__); 	//编译时间
-  LCD_Printf(0,0,32,LCD565_RED,"%0.2d:",hour);		//编译日期
-  LCD_Printf(16*3,0,32,LCD565_RED,"%0.2d:",minute);		//编译日期
-  LCD_Printf(16*6,0,32,LCD565_RED,"%0.2d",second);		//编译日期
+//	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+//	LCD_Printf(0,160,16,LCD565_RED,"项目编号:%s",Version);		//项目编号
+//  LCD_Printf(0,220,16,LCD565_RED,"编译时间:%4d-%0.2d-%0.2d-%s",year,month,day,__TIME__); 	//编译时间
+  LCD_Printf(0,220,16,LCD565_RED,"%0.2d:",hour);		//编译日期
+  LCD_Printf(8*3,220,16,LCD565_RED,"%0.2d:",minute);		//编译日期
+  LCD_Printf(8*6,220,16,LCD565_RED,"%0.2d",second);		//编译日期
   
   SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 }
@@ -173,7 +173,7 @@ void PL012V20_Configuration(void)
 *******************************************************************************/
 void GetTime(void)
 {
-	BuildTimeDef*	BuildTime	=	&GetBuildTime(__DATE__,__TIME__);
+	BuildTimeDef*	BuildTime	=	GetBuildTime(__DATE__,__TIME__);
 	
   year  	= BuildTime->year;
   month 	= BuildTime->month;
@@ -288,11 +288,11 @@ void ClockServer(void)
       { 
         hour = 0;
       }
-      LCD_Printf(0,0,32,LCD565_RED,"%0.2d",hour);		//编译日期      
+      LCD_Printf(0,220,16,LCD565_RED,"%0.2d",hour);		//编译日期      
     }
-    LCD_Printf(16*3,0,32,LCD565_RED,"%0.2d",minute);		//编译日期    
+    LCD_Printf(8*3,220,16,LCD565_RED,"%0.2d",minute);		//编译日期    
   }
-  LCD_Printf(16*6,0,32,LCD565_RED,"%0.2d",second);		//编译日期
+  LCD_Printf(8*6,220,16,LCD565_RED,"%0.2d",second);		//编译日期
 }
 
 /*******************************************************************************
@@ -396,7 +396,7 @@ void PD014Test_Display(u8* buffer,u8 RxNum)
 	else
 	{
 		WriteFlag	=	1;
-		PenColor	=LCD565_GREEN;
+		PenColor	=LCD565_RED;
 	}
 	temp	=	font/2*3*RxNum;
 	if(0<temp%400)
@@ -407,7 +407,8 @@ void PD014Test_Display(u8* buffer,u8 RxNum)
 	{
 		temp	=	(temp/400)*font;
 	}
-	if(240-font*5<=temp+row)
+	
+	if(220-font*5<=temp+row)
 	{
 		LCD_Clean(LCD565_BLACK); 					//清除屏幕函数
 		row	=	0;
@@ -677,8 +678,8 @@ void LCD_Configuration(void)
 	LcdPort->sDATABUS_PORT	=	GPIOC;
 	LcdPort->sDATABUS_Pin		=	GPIO_Pin_All;
 	
-	sLCD.Data.BColor	=	LCD565_YELLOW;
-	sLCD.Data.PColor	=	LCD565_WHITE;
+	sLCD.Data.BColor	=	LCD565_BLACK;
+	sLCD.Data.PColor	=	LCD565_RED;
 	sLCD.Flag.Rotate	=	Draw_Rotate_90D;
 	
 	//=======================字库端口

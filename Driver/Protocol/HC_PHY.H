@@ -1,6 +1,9 @@
 #ifndef __HC_PHY_H
 #define __HC_PHY_H
 
+
+#define	CheckCodeUseCRC16	1
+
 #define	MaxNetPerLayer	8					//每个结点所连接的最大支点数为64
 //#define	TargetLayer			LALayer		//本板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
 #define	MBLayer					0					//网关板所在层级：0-网关层，1-单元板层CabinetAddr，2-层控制板层LayerAddr，3,-驱动层SlotAddr
@@ -95,12 +98,12 @@ typedef enum
 typedef enum
 {
 	RES_OK = 0,			/* 0: Successful */
-	RES_Err,				//错误
-	RES_READ,				/* 1: 读数据 */
-	RES_WRITE,			/* 2: 写数据 */
-	RES_NotReady,		/* 3: 未准备好 */
-	RES_PARERR,			/* 4: Invalid Parameter */
-	RES_ACKMSG,		  /* 5: 应答消息 */
+	RES_Err,				/*	错误 */
+	RES_Invalid,		/*	无效或者不支持 */
+	RES_READ,				/*	读数据 */
+	RES_WRITE,			/*	写数据 */
+	RES_NotReady,		/*	未准备好 */
+	RES_ACKMSG,		  /*	应答消息 */
 	RES_UNKNOW,			/* 6: 未识别 */
 	RES_NODATA,			/* 7: 无数据 */
 	RES_FARMERR,	  // 8: 帧格式错误
@@ -251,7 +254,7 @@ unsigned short APIRS485DownlinkGetAck(unsigned char *buffer);
 
 
 unsigned short APIRS485UplinkGetData(unsigned char *buffer);
-unsigned short APIRS485DownlinkGetData(unsigned char *buffer);
+unsigned short APIRS485DownlinkGetData(unsigned char *buffer);				//获取需要往下层发送的数据--如果有数据，则根据最新流水号计算BCC
 
 HCResult APIRS485SendData(const unsigned char *buffer,const unsigned short length);
 unsigned short APIRS485ProcessData(unsigned char *buffer);
@@ -312,19 +315,20 @@ HCResult GetSubOnlineAddr(void);
 //======================================================内部子函数
 //------------------------------------------------------公共子函数
 unsigned char bspGetBcc8(const unsigned char *HeadAddr,const unsigned short length);
+unsigned short bspGetCrc16(const unsigned char *HeadAddr,const unsigned short length);
 HCResult bspSetAck(const unsigned char*	buffer,unsigned short length);			//设置应答数据
 //------------------------------------------------------RS232子函数
 unsigned char* bspRS232GetFrmeAddr(const unsigned char*	buffer,unsigned short* length);				//获取RS232帧头地址
 HCResult bspRS232Bcc8Check(const unsigned char*	buffer,unsigned short length);								//校验
 HCResult bspRS232AckFrameCheck(const unsigned char*	buffer,unsigned short length);						//检查是否为应答
-HCResult bspRS232DataCheck(const unsigned char*	buffer,unsigned short length);								//检查是否为本地址数据
-HCResult bspRS232ToRS485(const unsigned char*	buffer,unsigned short length);
+HCResult bspRS232DataSave(const unsigned char*	buffer,unsigned short length);								//检查是否为本地址数据
+HCResult bspRS232ToRS485(const unsigned char*	buffer,unsigned short length);									//RS232协议转换为RS485协议
 
 
 HCResult bspRS232ReleaseTxBuffer(void);
 //------------------------------------------------------RS485子函数
-
-
+unsigned short bspRS485SetCheckCode(const unsigned char *FrameAddr,const unsigned short Framelength);
+HCResult bspRS485GetCheckCode(const unsigned char *FrameAddr,const unsigned short Framelength);
 
 
 

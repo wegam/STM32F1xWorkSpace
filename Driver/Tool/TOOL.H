@@ -16,7 +16,7 @@ typedef struct
 }BuildTimeDef;
 
 
-BuildTimeDef GetBuildTime(void* pDate, void*	pTime);
+BuildTimeDef* GetBuildTime(void* pDate, void*	pTime);
 unsigned short GetBuildYear(const char* DataStr);
 unsigned char GetBuildMonth(const char* DataStr);
 unsigned char GetBuildDay(const char* DataStr);

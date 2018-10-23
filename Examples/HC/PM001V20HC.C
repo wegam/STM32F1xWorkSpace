@@ -59,6 +59,7 @@ void PM001V20HC_Configuration(void)
 	HCBoradSet(0,0);
 		
 //	IWDG_Configuration(2000);							//独立看门狗配置---参数单位ms
+	GPIO_Configuration_OPP50(GPIOC,GPIO_Pin_0);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
 	
 }
@@ -73,8 +74,14 @@ void PM001V20HC_Server(void)
 {
 //  u8 *buffer;
 	
+	static	unsigned short SysLedTime=	0;
 	
 	IWDG_Feed();								//独立看门狗喂狗
+	if(SysLedTime++==500)
+	{
+		SysLedTime	=	0;
+		GPIO_Toggle(GPIOC,GPIO_Pin_0);	
+	}
 	
   //======================================上行总线
 	length	=	USART_ReadBufferIDLE(RS232ASerialPort,BufferU);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数
@@ -109,7 +116,7 @@ void PM001V20HC_Server(void)
 		USART_DMASend(RS232ASerialPort,BufferU,length);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
 	}
 	
-	length	=	APIRS485DownlinkGetData(BufferD);				//获取需要上传的数据
+	length	=	APIRS485DownlinkGetData(BufferD);						//获取需要往下层发送的数据--如果有数据，则根据最新流水号计算BCC
 	if(length)
 	{
 		RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序

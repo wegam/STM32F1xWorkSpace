@@ -19,7 +19,10 @@ static LCDDef	*pR61509V	=	NULL;		//内部驱动使用，不可删除
 *******************************************************************************/
 void R61509V_Initialize(void*	pInfo)
 {
-	pR61509V		=	(LCDDef*)pInfo;		//指针指向	
+	if(NULL==	pInfo)
+		return;
+	
+	pR61509V		=	(LCDDef*)pInfo;		//指针指向
 	
 	pR61509V->Data.MaxH	=	R61509V_H;					//最大水平宽度
 	pR61509V->Data.MaxV	=	R61509V_V;					//最大垂直高度	

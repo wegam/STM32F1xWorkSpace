@@ -17,10 +17,10 @@
 *******************************************************************************/
 #include 	"CRC.H"
 
-#include	"stdio.h"				//用于printf
-#include	"string.h"			//用于printf
-#include	"stdarg.h"			//用于获取不确定个数的参数
-#include	"stdlib.h"			//malloc动态申请内存空间
+//#include	"stdio.h"				//用于printf
+//#include	"string.h"			//用于printf
+//#include	"stdarg.h"			//用于获取不确定个数的参数
+//#include	"stdlib.h"			//malloc动态申请内存空间
 
 
 //CRC16常见的标准有以下几种，被用在各个规范中，其算法原理基本一致，就是在数据的输入和输出有所差异，下边把这些标准的差异列出，并给出C语言的算法实现。

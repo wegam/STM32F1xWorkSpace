@@ -1,7 +1,8 @@
 
 
-#include "HC_PHY.H"
-#include "TOOL.H"		//数据校验工具
+#include	"HC_PHY.H"
+#include	"TOOL.H"		//数据校验工具
+#include	"CRC.H"		//
 
 #include	"stdio.h"			//用于printf
 #include	"string.h"		//用于printf
@@ -32,6 +33,7 @@ static HCSYSDef	HCSYS;
 
 
 unsigned short 	gValidLength	= 0;	//buffer中有效数据长度(从RS485头标识符开始后的数据为有效数据)
+
 
 
 /*******************************************************************************
@@ -253,7 +255,7 @@ unsigned short APIRS485UplinkGetData(unsigned char *buffer)
 }
 /*******************************************************************************
 * 函数名			:	APIGetdownlinkData
-* 功能描述		:	获取需要往下层发送的数据
+* 功能描述		:	获取需要往下层发送的数据--如果有数据，则根据最新流水号计算BCC
 							1-先检查应答缓存有无数据
 							2-应答缓存RS485ACKD无数据则检查TransD缓存
 							3-TransD无数据则扫描DataNoded
@@ -314,14 +316,15 @@ unsigned short APIRS485DownlinkGetData(unsigned char *buffer)
 			unsigned short	Len	=	0;
 			DataAddr		=	DataNodeD[i].data;
 			
+			//-------------------------------------------更新流水号
 			RS485Frame	=	(RS485FrameDef*)DataNodeD[i].data;
-			RS485Frame->HStart.Serial	=	SerialD++;
-			
-			Len		=	FrameLength-3;	//3为头尾标识和校验位长度
-			DataAddr[FrameLength-2]	=	bspGetBcc8(&DataAddr[1],Len);
-			
+			RS485Frame->HStart.Serial	=	SerialD++;							//更新流水号
+			//-------------------------------------------获取校验码和新消息帧长度(CRC16比BCC8数据长度多一字节)
+			FrameLength	=	bspRS485SetCheckCode(DataAddr,FrameLength);		//计算校验码并返回新数据长度
+			//-------------------------------------------将数据放置到发送缓冲区
 			memcpy(TransD.data,DataNodeD[i].data,FrameLength);
 			memcpy(buffer,DataNodeD[i].data,FrameLength);
+			
 			TransD.Length	=	FrameLength;
 			TransD.Retry.Retry	=	0;
 			TransD.Retry.Time		=	0;			
@@ -388,11 +391,40 @@ HCResult APIRS232UplinkSetData(const unsigned char *buffer,const unsigned short 
 		ValidLength	=	ValidLength-1;
 		goto Start;		//重新检查剩余数据
 	}
-	//---------------------------------------------数据类型检查
-	Result	=	bspRS232DataCheck(pBuffer,ValidLength);
-	if(RES_OK	!=	Result)
+	//---------------------------------------------如果此消息是针对本地消息，则保存数据否则转发
+	Result	=	bspRS232DataSave(pBuffer,ValidLength);
+	if(RES_OK	==	Result)
 	{
-		return RES_Err;			//校验错误
+		bspSetAck(pBuffer,ValidLength);					//设置应答数据
+	}	
+	else if(RES_NotReady	==	Result)					//未准备好或者缓存满
+	{
+		bspSetAck(pBuffer,ValidLength);					//设置应答数据
+		
+		pBuffer	=	&pBuffer[1];
+		ValidLength	=	ValidLength-1;
+		goto Start;		//重新检查剩余数据
+	}
+	else if(RES_Invalid	==	Result)						//非本层数据---转发
+	{		
+		Result	=	bspRS232ToRS485(pBuffer,length);		//RS232协议转换为RS485协议
+		if(RES_OK	==	Result)
+		{			
+			bspSetAck(pBuffer,ValidLength);					//设置应答数据
+			
+			pBuffer	=	&pBuffer[1];
+			ValidLength	=	ValidLength-1;
+			goto Start;		//重新检查剩余数据			
+		}
+		else if(RES_NotReady	==	Result)
+		{
+			bspSetAck(pBuffer,ValidLength);					//设置应答数据
+		}
+		
+	}
+	else
+	{
+		return Result;			//错误帧
 	}
 	return RES_OK;			//错误帧
 }
@@ -547,16 +579,18 @@ HCResult bspRS232AckFrameCheck(const unsigned char*	buffer,unsigned short length
 }
 
 /*******************************************************************************
-* 函数名			:	bspRS232DataCheck
-* 功能描述		:	检查数据是否为针对本层还是需要转发到下一层：
-							本层数据：下一级地址为0,否则是需要转发到下一层的数据
+* 函数名			:	bspRS232DataSave
+* 功能描述		:	如果此消息是针对本地消息，则保存数据
 * 输入			: void
-* 返回值			: void
+* 返回值			: RES_OK	执行正常
+							RES_Err	数据错误
+							RES_Invalid	无效或者不支持--非本地消息
+							RES_NotReady	缓存满
 * 修改时间		: 无
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-HCResult bspRS232DataCheck(const unsigned char*	buffer,unsigned short length)
+HCResult bspRS232DataSave(const unsigned char*	buffer,unsigned short length)
 {
 	HCResult	Result	=	RES_OK;
 	
@@ -606,20 +640,18 @@ HCResult bspRS232DataCheck(const unsigned char*	buffer,unsigned short length)
 		if(i<SelfBuffSize)
 			return RES_OK;
 		else
-			return RES_NotReady;		
+			return RES_NotReady;			//缓存满
 	}
 	//---------------------------------------------需要转发的数据
 	else
 	{
-		Result	=	bspRS232ToRS485(pBuffer,length);
-		bspSetAck(pBuffer,length);
-		return	Result;
+		return	RES_Invalid;				//无效或者不支持：非本地消息
 	}
 	return RES_OK;
 }
 /*******************************************************************************
-* 函数名			:	APIRS232UplinkSetData
-* 功能描述		:	函数功能说明 
+* 函数名			:	bspRS232ToRS485
+* 功能描述		:	RS232协议转换为RS485协议
 * 输入			: void
 * 返回值			: void
 * 修改时间		: 无
@@ -660,34 +692,35 @@ HCResult bspRS232ToRS485(const unsigned char*	buffer,unsigned short length)
 	
 	RS485Frame	=	(RS485FrameDef*)DataNodeD[TargetAddr].data;
 	
-	RS485Frame->HStart.HeadCode		=	RS485HeadCode;
-	RS485Frame->HStart.TargetAddr	=	TargetAddr;
-	RS485Frame->HStart.SourceAddr	=	0x00;
+	RS485Frame->HStart.HeadCode		=	RS485HeadCode;														//头标识符
+	RS485Frame->HStart.TargetAddr	=	TargetAddr;																//目的地址
+	RS485Frame->HStart.SourceAddr	=	0x00;																			//源地址---下发时源地址必须为0
 	
-	RS485Frame->HStart.Cmd				=	RS232Frame->HStart.Cmd;
-	RS485Frame->HStart.UserCode		=	RS232Frame->HStart.UserCode;
+	RS485Frame->HStart.Cmd				=	RS232Frame->HStart.Cmd;										//命令号
+	RS485Frame->HStart.UserCode		=	RS232Frame->HStart.UserCode;							//用户码
 	
+	//------------------------------------------地址域
 	RS485Frame->DStart.Addr.CabinetAddr	=	RS232Frame->DStart.Addr.CabinetAddr;
 	RS485Frame->DStart.Addr.LayerAddr		=	RS232Frame->DStart.Addr.LayerAddr;
 	RS485Frame->DStart.Addr.SlotAddr		=	RS232Frame->DStart.Addr.SlotAddr;
-	RS485Frame->DStart.ErrCode					=	RS232Frame->DStart.ErrCode;
 	
-	RS485Frame->HStart.DataLength				=	RS232Frame->HStart.DataLength;
+	RS485Frame->DStart.ErrCode					=	RS232Frame->DStart.ErrCode;					//错误码/状态码
+	RS485Frame->HStart.DataLength				=	RS232Frame->HStart.DataLength;			//数据长度
 	
-	pRS232Data	=	(unsigned char*)&RS232Frame->DStart.ErrCode;
-	pRS232Data	=	&pRS232Data[1];
+	pRS232Data	=	(unsigned char*)&RS232Frame->DStart.ErrCode;								//RS232错误码地址---下一地址为数据起始地址
+	pRS232Data	=	&pRS232Data[1];																							//RS232数据起始地址
 	
-	pRS485Data	=	(unsigned char*)&RS485Frame->DStart.ErrCode;
-	pRS485Data	=	&pRS485Data[1];
+	pRS485Data	=	(unsigned char*)&RS485Frame->DStart.ErrCode;								//RS485错误码地址---下一地址为数据起始地址
+	pRS485Data	=	&pRS485Data[1];																							//RS485数据起始地址
 	
 	RS485Frame->Data	=	pRS485Data;
 	
-	DataLength	=	RS485Frame->HStart.DataLength	-sizeof(AddrDef)-sizeof(ErrCodeDef);		//数据长度：不包换地址和错误码
+	DataLength	=	RS485Frame->HStart.DataLength	-sizeof(AddrDef)-sizeof(ErrCodeDef);		//RS485数据长度转换：不包括地址和错误码
 	
-	memcpy(pRS485Data,pRS232Data,DataLength);
+	memcpy(pRS485Data,pRS232Data,DataLength);		//拷贝数据
 	
-//	Bcc8	=	bspGetBcc8(&RS485Frame->DStart.Addr.CabinetAddr,RS485Frame->DStart.DataLength);		//从地址开始校验
-//	
+	//------------------------------------------校验码在此不计算：在发送时根据最新流水号重新计算校验码
+//	Bcc8	=	bspGetBcc8(&RS485Frame->DStart.Addr.CabinetAddr,RS485Frame->DStart.DataLength);		//从地址开始校验//	
 //	pRS485Data	=	&pRS485Data[DataLength];		//Bcc8地址
 //	*pRS485Data	=	Bcc8;
 	
@@ -934,6 +967,133 @@ unsigned char bspGetBcc8(const unsigned char *HeadAddr,const unsigned short leng
 		Bcc8=Bcc8^pBuffer[i];
 	}	
 	return Bcc8;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short bspGetCrc16(const unsigned char *HeadAddr,const unsigned short length)
+{
+	unsigned char		*pBuffer		=	0;			//数据处理buffer
+
+	unsigned	short Crc16	=	0;
+	
+	pBuffer	=	(unsigned char*)HeadAddr;
+	if(NULL==pBuffer||0==length)
+		return	0;
+	//=================================================================================导入数据:输入为const类型
+	Crc16	=	CRC16_MODBUS(pBuffer,length);				//多项式x16+x15+x5+1（0x8005），初始值0xFFFF，低位在前，高位在后，结果与0x0000异或
+	return Crc16;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short bspRS485SetCheckCode(const unsigned char *FrameAddr,const unsigned short Framelength)
+{
+	RS485FrameDef*	RS485Frame			=	NULL;
+	
+	unsigned	char*	pBuffer		=	NULL;			//数据处理buffer
+	
+	
+	unsigned	short	NewFrameLength	= 0;		//消息帧总长度，从HeadCode到EndCode的字节数	
+	unsigned	short	Len	=	0;
+	
+	RS485Frame	=	(RS485FrameDef*)FrameAddr;
+	NewFrameLength	=	Framelength;
+	if(NULL==RS485Frame||0==NewFrameLength)
+		return	0;
+	//=================================================================================导入数据:输入为const类型
+
+	pBuffer		=	(unsigned	char*)RS485Frame;	
+	Len		=	NewFrameLength-3;	//3为头尾标识和校验位长度
+	
+#if(CheckCodeUseCRC16)		//使用CRC16校验
+	{
+	//-----------------------------------------使用CRC16校验
+	unsigned	short Crc16	=	0;
+	Crc16	=	bspGetCrc16(&pBuffer[1],Len);				//多项式x16+x15+x5+1（0x8005），初始值0xFFFF，低位在前，高位在后，结果与0x0000异或
+	pBuffer[NewFrameLength-2]	=	Crc16>>8&0xFF;		//高8位在前
+	pBuffer[NewFrameLength-1]	=	Crc16&0xFF;
+	pBuffer[NewFrameLength]		=	RS485EndCode;
+	RS485Frame->HStart.DataLength	=	RS485Frame->HStart.DataLength+1;	//CRC16时数据段会多一字节
+	NewFrameLength+=1;						//用CRC16时帧长度需要增加一字节
+	}
+#else			//使用BCC8校验
+	{
+	//-----------------------------------------使用BCC8校验
+	DataAddr[FrameLength-2]	=	bspGetBcc8(&DataAddr[1],Len);
+	}
+#endif
+	return NewFrameLength;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+HCResult bspRS485GetCheckCode(const unsigned char *FrameAddr,const unsigned short Framelength)
+{
+	RS485FrameDef*	RS485Frame			=	NULL;
+	
+	unsigned	char*	pBuffer		=	NULL;			//数据处理buffer
+	
+	
+	unsigned	short	NewFrameLength	= 0;		//消息帧总长度，从HeadCode到EndCode的字节数	
+	unsigned	short	Len	=	0;
+	
+	RS485Frame	=	(RS485FrameDef*)FrameAddr;
+	NewFrameLength	=	Framelength;
+	if(NULL==RS485Frame||0==NewFrameLength)
+		return	RES_Err;
+	//=================================================================================导入数据:输入为const类型
+
+	pBuffer		=	(unsigned	char*)RS485Frame;	
+	Len		=	NewFrameLength-3;	//3为头尾标识和校验位长度
+	
+#if(CheckCodeUseCRC16)		//使用CRC16校验
+{	
+	//-----------------------------------------使用CRC16校验
+	unsigned	short Crc16				=	0;		//计算出的CRC16
+	unsigned	short SoureCrc16	=	0;		//数据帧中的CRC16
+	SoureCrc16	=	(((unsigned short)pBuffer[NewFrameLength-2])<<8)&0xFF00;
+	SoureCrc16	|=pBuffer[NewFrameLength-1];
+	
+	Crc16	=	bspGetCrc16(&pBuffer[1],Len);				//多项式x16+x15+x5+1（0x8005），初始值0xFFFF，低位在前，高位在后，结果与0x0000异或
+	
+	if(SoureCrc16	==	Crc16)
+		return	RES_OK;		//校验正确
+	else
+		return	RES_Err;	//校验错误
+}
+#else			//使用BCC8校验
+{
+	//-----------------------------------------使用BCC8校验
+	unsigned	char	BCC8	=	0;				//计算出的BCC8
+	unsigned	char	SoureBCC8	=	0;		//原BCC8
+	SoureBCC8	=	DataAddr[FrameLength-1];
+	BCC8	=	bspGetBcc8(&DataAddr[1],Len);
+	if(SoureBCC8	==	BCC8)
+		return	RES_OK;		//校验正确
+	else
+		return	RES_Err;	//校验错误
+}
+#endif
+	return RES_OK;
 }
 /*******************************************************************************
 * 函数名			:	bspSetAck

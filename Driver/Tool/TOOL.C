@@ -46,7 +46,7 @@ int n; /*结点总数 */
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-BuildTimeDef GetBuildTime(void* pDate, void*	pTime)
+BuildTimeDef* GetBuildTime(void* pDate, void*	pTime)
 {
 	static BuildTimeDef	BuildTime;
 	//=============================================转换日期
@@ -57,7 +57,7 @@ BuildTimeDef GetBuildTime(void* pDate, void*	pTime)
 	BuildTime.hour		=	GetBuildHour((char*)pTime);
 	BuildTime.minute	=	GetBuildMinute((char*)pTime);
 	BuildTime.second	=	GetBuildSecond((char*)pTime);
-	return BuildTime;
+	return &BuildTime;
 }
 /*******************************************************************************
 * 函数名			:	function
