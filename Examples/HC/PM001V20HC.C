@@ -33,6 +33,8 @@ unsigned short time	=	0;
 unsigned char BufferU[1024]={0};		//与上层通讯相关数据缓存
 unsigned char BufferD[1024]={0};		//与下层通讯相关数据缓存
 unsigned short length;
+unsigned	short	CRCTETE=	0;
+unsigned	char ttt[3]={0x00,0x01,0x00};
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -61,7 +63,7 @@ void PM001V20HC_Configuration(void)
 //	IWDG_Configuration(2000);							//独立看门狗配置---参数单位ms
 	GPIO_Configuration_OPP50(GPIOC,GPIO_Pin_0);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
-	
+	CRCTETE	=	CRC16_MODBUS(ttt,3);
 }
 /*******************************************************************************
 * 函数名		:	
@@ -75,6 +77,8 @@ void PM001V20HC_Server(void)
 //  u8 *buffer;
 	
 	static	unsigned short SysLedTime=	0;
+	static	USARTStatusDef	Status;
+	static	LoopTime;
 	
 	IWDG_Feed();								//独立看门狗喂狗
 	if(SysLedTime++==500)
@@ -84,51 +88,60 @@ void PM001V20HC_Server(void)
 	}
 	
   //======================================上行总线
+	//--------------------------------------接收
 	length	=	USART_ReadBufferIDLE(RS232ASerialPort,BufferU);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数
 	if(length)
 	{
-		HCResult	res;
 		time	=	0;
-//		res	=	APISetDataProcess(BufferU,length);
-		APIRS232UplinkSetData(BufferU,length);
-//		RS485_DMASend(&gRS485Bus,BufferU,length);	//RS485-DMA发送程序
+		APIUplinkReceiveDataProcess(BufferU,length);
+	}
+	//--------------------------------------发送
+	Status	=	USART_Status(RS232ASerialPort);		//串口状态检查
+	if(0	==	Status.USART_IDLESTD)
+	{
+		length	=	APIUplinkGetData(BufferU);
+		if(length)
+		{
+			time	=	0;
+			USART_DMASend(RS232ASerialPort,BufferU,length);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+		}
 	}
 	
+	
+	
+	
+	
+	
+	
+	
 	//======================================下行总线
+	//--------------------------------------接收
   length	=	RS485_ReadBufferIDLE(&gRS485Bus,BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(length)
 	{
-		APIRS485DownlinkSetData(BufferD,length);		
+		APIDownlinkReceiveDataProcess(BufferD,length);		
 	}
-	length	=	APIRS485DownlinkGetAck(BufferD);				//获取需要上传的数据
-	if(length)
+	//--------------------------------------发送
+	Status	=	USART_Status(gRS485Bus.USARTx);		//串口状态检查
+	if(0	==	Status.USART_IDLESTD)
 	{
-		RS485_DMASend(&gRS485Bus,BufferD,length);			//RS485-DMA发送程序
-	}
-	
-	
-	
-	
-	length	=	APIRS485UplinkGetData(BufferU);
-	if(length)
-	{
-		time	=	0;
-		USART_DMASend(RS232ASerialPort,BufferU,length);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
-	}
-	
-	length	=	APIRS485DownlinkGetData(BufferD);						//获取需要往下层发送的数据--如果有数据，则根据最新流水号计算BCC
-	if(length)
-	{
-		RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
+//		if(LoopTime++<10)
+//		{
+//			return;
+//		}
+//		else
+//		{
+//			LoopTime	=	0;
+//		}
+		length	=	APIDownlinkGetData(BufferD);						//获取需要往下层发送的数据--如果有数据，则根据最新流水号计算BCC
+		if(length)
+		{
+			RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
+		}
 	}
   
  
-//	length	=	APIRS485GetdownlinkData(BufferD);
-//	if(length)
-//	{
-//		time	=	0;
-//		RS485_DMASend(&gRS485Bus,BufferD,length);	//RS485-DMA发送程序
-//	}
+
 
   
 	//======================================模拟程序

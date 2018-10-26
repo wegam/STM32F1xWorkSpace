@@ -26,6 +26,7 @@ RS485Def gRS485lay;			//与下级总线接口(层板)
 
 SwitchDef gSwitch;
 unsigned char PowerFlag	=	0;
+HCResult	Result;
 //extern RS485FrameDef	*RS485Node;
 unsigned short time	=	0;
 unsigned char RS485BufferU[1024]={0};		//与上层通讯相关数据缓存
@@ -53,7 +54,7 @@ void PC004V21HC_Configuration(void)
 
 	HCBoradSet(1,gSwitch.nSWITCHID);
   
-//  HCBoradSet(1,1);
+  HCBoradSet(1,1);
 		
 //	IWDG_Configuration(2000);						//独立看门狗配置---参数单位ms
 	SysTick_Configuration(1000);					//系统嘀嗒时钟配置72MHz,单位为uS
@@ -70,61 +71,60 @@ void PC004V21HC_Server(void)
 {
 //  u8 *buffer;
 	unsigned short length;
+	static	USARTStatusDef	Status;
 	
 	IWDG_Feed();								//独立看门狗喂狗
 	
-	goto PC004Test;
+//	goto PC004Test;
 	
   //======================================上行总线
+	//--------------------------------------接收
 	length	=	RS485_ReadBufferIDLE(&gRS485Bus,RS485BufferU);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(length)
 	{
 		time	=	0;
-		APIRS485UplinkSetData(RS485BufferU,length);
+		Result	=	APIUplinkReceiveDataProcess(RS485BufferU,length);
 	}
+	//--------------------------------------发送
+	Status	=	USART_Status(gRS485Bus.USARTx);		//串口状态检查
+	if(0	==	Status.USART_IDLESTD)
+	{
+		length	=	APIUplinkGetData(RS485BufferU);
+		if(length)
+		{
+			time	=	0;
+			RS485_DMASend(&gRS485Bus,RS485BufferU,length);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+		}
+	}	
+	
+	
+	
+	
+	
 	//======================================下行总线
+	//--------------------------------------接收
   length	=	RS485_ReadBufferIDLE(&gRS485lay,RS485BufferD);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(length)
 	{
 		time	=	0;
-		APIRS485DownlinkSetData(RS485BufferD,length);
+		Result	=	APIDownlinkReceiveDataProcess(RS485BufferD,length);
 	}
-	
-	length	=	APIRS485UplinkGetAck(RS485BufferU);
-	if(length)
+	//--------------------------------------发送
+	Status	=	USART_Status(gRS485lay.USARTx);		//串口状态检查
+	if(0	==	Status.USART_IDLESTD)
 	{
-		time	=	0;		
-		RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
-	}
-	length	=	APIRS485DownlinkGetAck(RS485BufferD);
-	if(length)
-	{
-		time	=	0;
-		RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
-	}
-	
-	  
-	//======================================模拟程序
-	if(time++>100)
-	{
-    time	=	0;
-		length	=	APIRS485UplinkGetData(RS485BufferU);
+		length	=	APIDownlinkGetData(RS485BufferD);
 		if(length)
 		{
-			RS485_DMASend(&gRS485Bus,RS485BufferU,length);	//RS485-DMA发送程序
+			time	=	0;
+			RS485_DMASend(&gRS485lay,RS485BufferD,length);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
 		}
-		length	=	APIRS485DownlinkGetData(RS485BufferD);
-		if(length)
-		{
-			RS485_DMASend(&gRS485lay,RS485BufferD,length);	//RS485-DMA发送程序
-		}
-		
-		if(0 == PowerFlag)
-		{
-			PowerFlag	=	1;
-//			GetSubOnlineAddr();
-		}
-	} 
+	}
+
+	
+	
+	
+	return; 	
 	PC004Test:
 	length	=	RS485_ReadBufferIDLE(&gRS485Bus,RS485BufferU);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(length)

@@ -55,6 +55,7 @@ typedef struct
 //---------------------------串口
 //*****************USART_DMA初始化
 void	USART_DMA_ConfigurationNR	(USART_TypeDef* USARTx,u32 USART_BaudRate,u16 BufferSize);	//USART_DMA配置--查询方式，不开中断
+void	USART_DMA_ConfigurationIDLEIT	(USART_TypeDef* USARTx,u32 USART_BaudRate,u16 BufferSize);	//USART_DMA配置--空闲中断
 void 	USART_DMA_ConfigurationEV	(USART_TypeDef* USARTx,u32 USART_BaudRate,u16 BufferSize);	//USART_DMA配置--查询方式，不开中断--偶校验
 void 	USART_DMA_ConfigurationOD	(USART_TypeDef* USARTx,u32 USART_BaudRate,u16 BufferSize);	//USART_DMA配置--查询方式，不开中断--奇校验
 
