@@ -20,6 +20,7 @@
 
 #include "R61509V.h"
 #include "ILI9326.h"
+#include "SSD1963.H"
 
 LCDDef 			*LCDSYS	=	NULL;	//内部驱动使用，不可删除
 unsigned short PenColor		=	0;		//画笔颜色
@@ -64,7 +65,7 @@ void LCD_Initialize(LCDDef *pInfo)
 	}
 	else
 	{
-		while(1);
+    SSD1963_Initialize(pInfo);
 	}
   //==========================检查背景色与画笔色是否相同
 	if(pInfo->Data.PColor	==	pInfo->Data.BColor)
@@ -92,11 +93,11 @@ void LCD_Initialize(LCDDef *pInfo)
 void LCD_Reset(void)
 {
 	LCD_RST_HIGH;
-	SysTick_DeleymS(5);				//SysTick延时nmS
+	LCD_DelaymS(10);				//SysTick延时nmS
 	LCD_RST_LOW;
-	SysTick_DeleymS(5);				//SysTick延时nmS
+	LCD_DelaymS(10);				//SysTick延时nmS
 	LCD_RST_HIGH;
-	SysTick_DeleymS(10);				//SysTick延时nmS
+	LCD_DelaymS(10);				//SysTick延时nmS
 }
 /**************************************************************************************************
 * [Function] R61509V_DispOff:  关闭R61509V显示( 黑屏?)
@@ -180,9 +181,11 @@ u16 LCD_ReadData( unsigned short Index )
 	LCD_DATABUS_PORT->ODR = Index;
 	LCD_WR_HIGH;
 	LCD_RS_HIGH;
-	
+	LCD_DelaymS(10);
 	GPIO_Configuration_IPU	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
+  
 	LCD_RD_LOW;
+  LCD_DelaymS(10);
 	Data = LCD_DATABUS_PORT->IDR;
 	LCD_RD_HIGH;
 	LCD_CS_HIGH;

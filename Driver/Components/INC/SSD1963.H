@@ -3,7 +3,7 @@
 
 
 //#include "stm32f10x_type.h"
-#include "stm32f10x_gpio.h"
+//#include "stm32f10x_gpio.h"
 //#include "stm32f10x_rcc.h"
 //#include "stm32f10x_type.h"
 //#include "STM32_GPIO.H"

@@ -17,7 +17,7 @@
 
 #include "PL010V15.H"
 
-#include "R61509V.h"
+#include "LCD.H"
 #include "CS5530.H"
 
 #include "GT32L32M0180.H"
@@ -792,7 +792,7 @@ void LCD_Configuration(void)
 	
   sLCD.Data.BColor  = LCD565_BLACK;
   sLCD.Data.PColor  = LCD565_WHITE;
-	R61509V_Initialize(&sLCD);
+	LCD_Initialize(&sLCD);
 }
 /*******************************************************************************
 * º¯ÊýÃû			:	function
