@@ -256,7 +256,7 @@ void LCD_Show(u16 x,u16 y,u8 font,u16 PenColor,u8 num,u8 *Buffer);
 void LCD_ShowHex(u16 x,u16 y,u8 font,u16 color,u8 num,u8 bitnum,u8 *Buffer);    //显示十六进制数据
 unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...);  //后边的省略号就是可变参数
 void LCD_ShowBMP(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 Length,u8 *RGBBuffer);    //显示十六进制数据
-
+unsigned  short RGB888toRGB565(u8 *RGB888);
 //======================================内部函数
 void LCD_Reset(void);
 void LCD_WriteIndexStart( void );

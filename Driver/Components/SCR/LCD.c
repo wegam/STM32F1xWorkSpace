@@ -935,18 +935,45 @@ void LCD_ShowBMP(
   LCD_WriteDataStart();
 	for(i=0;i<Length;)
 	{
-    RGB565  =   (RGBBuffer[j+2]>>3);
-    RGB565  <<= 5;
-    RGB565  |=  (RGBBuffer[j+1]>>3);		//取5位
-    RGB565  <<= 6;
-    RGB565  |=  (RGBBuffer[j+0]>>3);
+//    RGB565  =   (RGBBuffer[j+2]>>3);
+//    RGB565  <<= 5;
+//    RGB565  |=  (RGBBuffer[j+1]>>3);		//取5位
+//    RGB565  <<= 6;
+//    RGB565  |=  (RGBBuffer[j+0]>>3);
+//    LCD_WriteData(RGB565);
+//    j+=3;
+//    i+=3;
+    RGB565  = RGB888toRGB565(&RGBBuffer[i]);
     LCD_WriteData(RGB565);
-    j+=3;
     i+=3;
 	}
   LCD_WriteDataEnd();
   LCDSYS->Flag.Rotate  =  Rotate;
 }
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned  short RGB888toRGB565(u8 *RGB888)
+{
+  unsigned  short RGB565  = 0;
+  //-----------------Red:取5位
+  RGB565  = RGB888[2]>>3;
+  RGB565<<=5;
+  //-----------------Green：取5位
+  RGB565  |= RGB888[1]>>3;
+  RGB565<<=6;
+  //-----------------Blue：取5位
+  RGB565  |= RGB888[0]>>3;
+
+  return  RGB565;
+}
+
 /**************************************************************************************************
 * [Function] LCD_DrawPixelEx:  函数功能、注意事项等的描述
 * [param01]u16 x: description

@@ -40,12 +40,13 @@ void SSD1963_Initialize(void*	pInfo)
 	
 	pSSD1963->Data.MaxH	=	SSD1963_H;					//最大水平宽度
 	pSSD1963->Data.MaxV	=	SSD1963_V;					//最大垂直高度	
+  
+  pSSD1963->Data.BColor = LCD565_BLACK;
+  pSSD1963->Data.PColor = LCD565_WHITE;
 	
-	pSSD1963->Display.WriteAddress		=	SSD1963_SetWindowAddress;
-	pSSD1963->Display.PowerOn					=	SSD1963_PowerOn;
-	pSSD1963->Display.DispOff					=	SSD1963_PowerOn;		//临时引用函数地址
-  pSSD1963->Display.BackLightOn     = SSD1963_BackLightOn;
-  pSSD1963->Display.BackLightOff    = SSD1963_BackLightOff;
+	pSSD1963->Display.WriteAddress    =	SSD1963_SetWindowAddress;
+	pSSD1963->Display.PowerOn         =	SSD1963_PowerOn;
+	pSSD1963->Display.DispOff         =	SSD1963_PowerOn;		//临时引用函数地址
 }
 /*******************************************************************************
 *函数名		:	SSD1963_BackLightOn
@@ -174,14 +175,14 @@ void SSD1963_PowerOn(void)
 //	SSD1963_BACKLIGHT_OFF;	//关背光
 //	LCD_REST();
 	LCD_RST_LOW;
-//	delayms(10);
 	LCD_RST_HIGH;
 	while(temp--);			//等待晶振启动
 	//2）——————————复位
 	LCD_CS_HIGH;			//先取消片选
 	LCD_RD_HIGH;
 	LCD_WR_LOW;				//总线功能为写数据
-	LCD_CS_LOW;  		//使能	
+	LCD_CS_LOW;  		//使能
+  LCD_DelaymS(10);
 	//3）——————————设置系统时钟  晶振频率 10MHz  250MHz < VCO < 800MHz
 	LCD_WriteIndex(0x00E2);						//PLL multiplier, set PLL clock to 120M Start the PLL. Before the start, the system was operated with the crystal oscillator or clock input
 	LCD_WriteData(0x0023);	    				//设置倍频 N=0x36 for 6.5M, 0x23 for 10M crystal
@@ -193,9 +194,9 @@ void SSD1963_PowerOn(void)
 	
 	LCD_WriteIndex(0x00E0);
 	LCD_WriteData(0x0003);
+  LCD_DelaymS(10);
 	//5）——————————软件复位
 	LCD_WriteIndex(0x0001);  					//software reset
-//	delayms(5000);
 	//6）——————————设置扫描频率
 	LCD_WriteIndex(0x00E6);						//PLL setting for PCLK, depends on resolution
 	LCD_WriteData(0x0003);
@@ -246,22 +247,21 @@ void SSD1963_PowerOn(void)
 	LCD_WriteIndex(0x00F0); //pixel data interface
 	LCD_WriteData(0x0003);
 	
-//	delayms(5000);
 	//14）——————————设置垂直期
 	LCD_WriteIndex(0x0029); //display on
 	//15）——————————设置垂直期
 	LCD_WriteIndex(0x00d0); 
 	LCD_WriteData(0x000D);
 	
-	temp=time;
-	while(temp--);			//等待晶振启动
-	LCD_Clean(LCDSYS->Data.BColor);	//以背景色清屏
+//	temp=time;
+//	while(temp--);			//等待晶振启动
+//	LCD_Clean(LCDSYS->Data.BColor);	//以背景色清屏
 	
-	SSD1963_BackLightOn();    //开背光
-  
-  for(time=0xFFFF;time>0;time--)
-  {
-  }
+////	SSD1963_BackLightOn();    //开背光
+//  
+//  for(time=0xFFFF;time>0;time--)
+//  {
+//  }
 }
 
 ///*******************************************************************************

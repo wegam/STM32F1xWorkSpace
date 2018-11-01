@@ -5,7 +5,7 @@
 //#include "string.h"				//串和内存操作函数头文件
 //#include "stm32f10x_dma.h"
 
-#include "SSD1963.H"
+#include "LCD.H"
 
 
 #include "STM32F10x_BitBand.H"
@@ -99,7 +99,7 @@ void MmcSDTest_Configuration(void)
   
 	SysTick_Configuration(1000);											//系统嘀嗒时钟配置72MHz,单位为uS
 	
-//	IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
+	IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
 	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,10);						//PWM设定-20161127版本
 	
@@ -333,7 +333,7 @@ void LCD_Configuration(void)
 	SPI->Port.CS_Pin	=	GPIO_Pin_14;
 	SPI->Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_128;
 	
-	SSD1963_Initialize(&sLCD);
+	LCD_Initialize(&sLCD);
 }
 
 /*******************************************************************************
