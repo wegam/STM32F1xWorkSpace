@@ -145,19 +145,19 @@ void PL012V20_Configuration(void)
 	
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	PWM_OUT(TIM2,PWM_OUTChannel1,2,900);	//PWM设定-20161127版本--指示灯
-	PWM_OUT(TIM3,PWM_OUTChannel3,1000,900);		//PWM设定-20161127版本--背光
+	PWM_OUT(TIM3,PWM_OUTChannel3,1000,990);		//PWM设定-20161127版本--背光
 	
 	GetTime();	
 	
-	LCD_ShowAntenna(380,0,3,LCD565_RED);   //显示12x12电池
+	LCD_ShowAntenna(380,0,3,LCD565_WHITE);   //显示12x12电池
 	
 	
 //	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
-//	LCD_Printf(0,160,16,LCD565_RED,"项目编号:%s",Version);		//项目编号
+	LCD_Printf(0,0,16,LCD565_YELLOW,"项目编号:%s",Version);		//项目编号
 //  LCD_Printf(0,220,16,LCD565_RED,"编译时间:%4d-%0.2d-%0.2d-%s",year,month,day,__TIME__); 	//编译时间
-  LCD_Printf(0,220,16,LCD565_RED,"%0.2d:",hour);		//编译日期
-  LCD_Printf(8*3,220,16,LCD565_RED,"%0.2d:",minute);		//编译日期
-  LCD_Printf(8*6,220,16,LCD565_RED,"%0.2d",second);		//编译日期
+  LCD_Printf(0,220,16,LCD565_WHITE,"%0.2d:",hour);		//编译日期
+  LCD_Printf(8*3,220,16,LCD565_WHITE,"%0.2d:",minute);		//编译日期
+  LCD_Printf(8*6,220,16,LCD565_WHITE,"%0.2d",second);		//编译日期
   
   SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 }
@@ -288,11 +288,11 @@ void ClockServer(void)
       { 
         hour = 0;
       }
-      LCD_Printf(0,220,16,LCD565_RED,"%0.2d",hour);		//编译日期      
+      LCD_Printf(0,220,16,LCD565_WHITE,"%0.2d",hour);		//编译日期      
     }
-    LCD_Printf(8*3,220,16,LCD565_RED,"%0.2d",minute);		//编译日期    
+    LCD_Printf(8*3,220,16,LCD565_WHITE,"%0.2d",minute);		//编译日期    
   }
-  LCD_Printf(8*6,220,16,LCD565_RED,"%0.2d",second);		//编译日期
+  LCD_Printf(8*6,220,16,LCD565_WHITE,"%0.2d",second);		//编译日期
 }
 
 /*******************************************************************************
@@ -330,7 +330,7 @@ void PD014Test_Server(void)
 	//=================================运行指示
 	if(DspTime==500)
 	{
-		LCD_Fill(380,220,395,235,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(380,220,395,235,LCD565_WHITE);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 	else if(DspTime==1000)
 	{
@@ -690,7 +690,7 @@ void LCD_Configuration(void)
 	
 	LCD_Initialize(&sLCD);
 
-	SysTick_DeleymS(1000);				//SysTick延时nmS
+//	SysTick_DeleymS(1000);				//SysTick延时nmS
 }
 
 /*******************************************************************************
