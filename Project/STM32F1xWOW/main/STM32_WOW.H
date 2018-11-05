@@ -193,6 +193,10 @@
 	#include "MmcSDTest.H"
 #endif
 
+//*********************************FSMCTest*********************************//
+#ifdef FSMCTest
+	#include "FSMCTest.H"
+#endif
 
 
 

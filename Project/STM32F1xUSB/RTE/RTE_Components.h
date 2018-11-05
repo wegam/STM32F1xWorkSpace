@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xUSB' 
- * Target:  'Audio_Speaker_WOW' 
+ * Target:  'Virtual_COM_Port' 
  */
 
 #ifndef RTE_COMPONENTS_H

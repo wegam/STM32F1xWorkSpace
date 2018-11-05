@@ -410,6 +410,10 @@ void WOW_Configuration(void)
 #ifdef MmcSDTest
 	MmcSDTest_Configuration();
 #endif
+//*********************************FSMCTest*********************************//
+#ifdef FSMCTest
+	FSMCTest_Configuration();
+#endif
 
 }
 
@@ -811,6 +815,11 @@ void WOW_Server(void)
 #ifdef MmcSDTest
 	MmcSDTest_Server();
 #endif
+//*********************************FSMCTest*********************************//
+#ifdef FSMCTest
+	FSMCTest_Server();
+#endif
+
 //IWDG_Feed();								//∂¿¡¢ø¥√≈π∑Œππ∑
 
 }

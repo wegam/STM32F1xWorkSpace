@@ -42,13 +42,16 @@
  #define GPIOC_ODR_Addr    (GPIOC_BASE+12) //0x4001100C
  #define GPIOD_ODR_Addr    (GPIOD_BASE+12) //0x4001140C
  #define GPIOE_ODR_Addr    (GPIOE_BASE+12) //0x4001180C
-
+ #define GPIOF_ODR_Addr    (GPIOF_BASE+12) //0x4001180C
+ #define GPIOG_ODR_Addr    (GPIOG_BASE+12) //0x4001180C
+  
  #define GPIOA_IDR_Addr    (GPIOA_BASE+8) //0x40010808
  #define GPIOB_IDR_Addr    (GPIOB_BASE+8) //0x40010C08
  #define GPIOC_IDR_Addr    (GPIOC_BASE+8) //0x40011008
  #define GPIOD_IDR_Addr    (GPIOD_BASE+8) //0x40011408
  #define GPIOE_IDR_Addr    (GPIOE_BASE+8) //0x40011808
-
+ #define GPIOF_IDR_Addr    (GPIOF_BASE+8) //0x40011808
+ #define GPIOG_IDR_Addr    (GPIOG_BASE+8) //0x40011808
 //-----------------------------------------------------
  //-----------------------------------------------------
  //使用方法：连接字符串			##
@@ -60,12 +63,16 @@
 #define PCO(n)	PC##n
 #define PDO(n)	PD##n
 #define PEO(n)	PE##n
+#define PFO(n)	PF##n
+#define PGO(n)	PG##n
 //**********输入
 #define PAI(n)	PA##n
 #define PBI(n)	PB##n
 #define PCI(n)	PC##n
 #define PDI(n)	PD##n
 #define PEI(n)	PE##n
+#define PFI(n)	PF##n
+#define PGI(n)	PG##n
  //**********GPIO配置时使用
 #define CPA(x)	(GPIO_TypeDef*)GPIOA,(u16)GPIO_Pin_##x
 #define CPB(x)	(GPIO_TypeDef*)GPIOB,(u16)GPIO_Pin_##x
@@ -89,6 +96,10 @@
 #define PDin(n) 	BITBAND(GPIOD_IDR_Addr,n)
 #define PEout(n) 	BITBAND(GPIOE_ODR_Addr,n)
 #define PEin(n) 	BITBAND(GPIOE_IDR_Addr,n)
+#define PFout(n) 	BITBAND(GPIOF_ODR_Addr,n)
+#define PFin(n) 	BITBAND(GPIOF_IDR_Addr,n)
+#define PGout(n) 	BITBAND(GPIOG_ODR_Addr,n)
+#define PGin(n) 	BITBAND(GPIOG_IDR_Addr,n)
 //-----------------------------------------------------
  //-----------------------------------------------------
  //使用方法：
@@ -266,6 +277,41 @@
  #define PE13in  BIT_ADDR(GPIOE_IDR_Addr, 13) //输入
  #define PE14in  BIT_ADDR(GPIOE_IDR_Addr, 14) //输入
  #define PE15in  BIT_ADDR(GPIOE_IDR_Addr, 15) //输入
+ 
+  //----------------------------------------------------
+ #define PF0   BIT_ADDR(GPIOF_ODR_Addr, 0)  //输出
+ #define PF1   BIT_ADDR(GPIOF_ODR_Addr, 1)  //输出
+ #define PF2   BIT_ADDR(GPIOF_ODR_Addr, 2)  //输出
+ #define PF3   BIT_ADDR(GPIOF_ODR_Addr, 3)  //输出
+ #define PF4   BIT_ADDR(GPIOF_ODR_Addr, 4)  //输出
+ #define PF5   BIT_ADDR(GPIOF_ODR_Addr, 5)  //输出
+ #define PF6   BIT_ADDR(GPIOF_ODR_Addr, 6)  //输出
+ #define PF7   BIT_ADDR(GPIOF_ODR_Addr, 7)  //输出
+ #define PF8   BIT_ADDR(GPIOF_ODR_Addr, 8)  //输出
+ #define PF9   BIT_ADDR(GPIOF_ODR_Addr, 9)  //输出
+ #define PF10  BIT_ADDR(GPIOF_ODR_Addr, 10) //输出
+ #define PF11  BIT_ADDR(GPIOF_ODR_Addr, 11) //输出
+ #define PF12  BIT_ADDR(GPIOF_ODR_Addr, 12) //输出
+ #define PF13  BIT_ADDR(GPIOF_ODR_Addr, 13) //输出
+ #define PF14  BIT_ADDR(GPIOF_ODR_Addr, 14) //输出
+ #define PF15  BIT_ADDR(GPIOF_ODR_Addr, 15) //输出
+
+ #define PF0in   BIT_ADDR(GPIOF_IDR_Addr, 0)  //输入
+ #define PF1in   BIT_ADDR(GPIOF_IDR_Addr, 1)  //输入
+ #define PF2in   BIT_ADDR(GPIOF_IDR_Addr, 2)  //输入
+ #define PF3in   BIT_ADDR(GPIOF_IDR_Addr, 3)  //输入
+ #define PF4in   BIT_ADDR(GPIOF_IDR_Addr, 4)  //输入
+ #define PF5in   BIT_ADDR(GPIOF_IDR_Addr, 5)  //输入
+ #define PF6in   BIT_ADDR(GPIOF_IDR_Addr, 6)  //输入
+ #define PF7in   BIT_ADDR(GPIOF_IDR_Addr, 7)  //输入
+ #define PF8in   BIT_ADDR(GPIOF_IDR_Addr, 8)  //输入
+ #define PF9in   BIT_ADDR(GPIOF_IDR_Addr, 9)  //输入
+ #define PF10in  BIT_ADDR(GPIOF_IDR_Addr, 10) //输入
+ #define PF11in  BIT_ADDR(GPIOF_IDR_Addr, 11) //输入
+ #define PF12in  BIT_ADDR(GPIOF_IDR_Addr, 12) //输入
+ #define PF13in  BIT_ADDR(GPIOF_IDR_Addr, 13) //输入
+ #define PF14in  BIT_ADDR(GPIOF_IDR_Addr, 14) //输入
+ #define PF15in  BIT_ADDR(GPIOF_IDR_Addr, 15) //输入
 
 					 
 #endif /* __STM32F10x_BitBand_H */
