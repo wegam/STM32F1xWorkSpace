@@ -114,25 +114,11 @@ extern void FSMCTest_Server(void);
 void Power_Configuration(void);
 void Power_Server(void);
 void LCD_Server(void);			//显示服务相关
-//void STM32_LCD_PinConf(void);
-void TM1618_PinSet(void);
-////void SSD1963_PinSet(void);
-void TM1618_DIS(void);
+
 
 void SD_Configuration(void);
 void LCD_Configuration(void);
+void SSD1963_Init(void);
+void LCDCLER(unsigned short color);
 
-//extern void STM32_LCD_SPI_Configuration(char Speed);		//SPI接口配置
-//extern void STM32_SD_CS(char Status);						//SD_CS脚控制
-//extern void STM32_SD_SendByte(u16 Data);					//发送一字节数据
-//extern unsigned char STM32_SD_ReceiveByte(void);
-//extern void STM32_SD_SendData(unsigned int BufferSize);		//DMA方式向SD写入数据，开启DMA发送和接收 
-//extern unsigned char STM32_SD_Command(STM32_SD_CMD_Typedef CMD,u32 arg,u8 crc);
-////unsigned char STM32_SD_Command(unsigned char *STM32_LCD_SD_CMD);
-//extern void STM32_SD_GetCID(void);			//获取CID信息，返回128位，16字节
-//extern u8 STM32_SD_GetCSD(void);			//获取CSD信息，返回128位，16字节
-//extern u32 STM32_SD_GetCapacity(void);	//获取SD卡的容量
-//extern u8 STM32_SD_ReadSingleBlock(u32 sector);//读SD卡的一个block
-//extern unsigned char STM32_SD_Init(void);
-//unsigned int LCD_PrintfString(u16 x,u16 y,u8 font,const char *format,...);			//后边的省略号就是可变参数
 #endif
