@@ -39,9 +39,9 @@ void FSMC_Initialize(void)
   /*-- FSMC Configuration ------------------------------------------------------*/
   /*----------------------- SRAM Bank 4 ----------------------------------------*/
   /* FSMC_Bank1_NORSRAM4 configuration */
-  FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 0;
+  FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 1;
   FSMC_NORSRAMTimingInitStructure.FSMC_AddressHoldTime = 0;
-  FSMC_NORSRAMTimingInitStructure.FSMC_DataSetupTime = 1;
+  FSMC_NORSRAMTimingInitStructure.FSMC_DataSetupTime = 2;
   FSMC_NORSRAMTimingInitStructure.FSMC_BusTurnAroundDuration = 0;
   FSMC_NORSRAMTimingInitStructure.FSMC_CLKDivision = 0;
   FSMC_NORSRAMTimingInitStructure.FSMC_DataLatency = 0;

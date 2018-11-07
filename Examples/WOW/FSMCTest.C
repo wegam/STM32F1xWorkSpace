@@ -5,7 +5,7 @@
 //#include "string.h"				//串和内存操作函数头文件
 //#include "stm32f10x_dma.h"
 
-//#include "LCD.H"
+#include "LCD.H"
 
 
 #include "STM32F10x_BitBand.H"
@@ -19,6 +19,7 @@
 //#include "STM32_PWM.H"
 //#include "STM32_GPIO.H"
 #include "STM32_USART.H"
+//#include	"image.h"
 //#include "STM32_DMA.H"
 
 //#include 	"Image.H"
@@ -81,6 +82,10 @@ UINT br, bw;          //文件读/写字节计数
 u16 xh=0,yv=0;
 char Key = 0;
 unsigned  short color = 0;
+unsigned	short	Rait	=	0;
+unsigned	long	ImageAr	=	0;
+
+
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
 //->功能描述	:	 
@@ -91,13 +96,13 @@ unsigned  short color = 0;
 void FSMCTest_Configuration(void)
 {	
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	
-	GPIO_DeInitAll();							//将所有的GPIO关闭----V20170605
   Power_Configuration();
   LCD_Configuration();
   FSMC_Initialize();
   SSD1963_Init(); 
-  SSD1963_Init();  
-  tee:
+	
+//  SSD1963_Init();  
+//  tee:
 //  SSD1963_Init();
   LCDCLER(0x5FFF);
 //  goto tee;
@@ -112,13 +117,21 @@ void FSMCTest_Configuration(void)
   
 //  LCD_Printf (300,0,32,LCD565_GREEN,"图片显示测试");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
   
-	SysTick_Configuration(1000);											//系统嘀嗒时钟配置72MHz,单位为uS
+//	SysTick_Configuration(1000);											//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
-	
-//	PWM_OUT(TIM2,PWM_OUTChannel1,1000,990);						//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,2000,400);						//PWM设定-20161127版本
+	while(1)
+	{
+		LCDCLER(LCD565_BLACK);SysTick_DeleymS(500);
+		LCDCLER(LCD565_WHITE);SysTick_DeleymS(500);	
+		LCDCLER(LCD565_BLUE);SysTick_DeleymS(500);
+//		LCDCLER(LCD565_BRED);SysTick_DeleymS(500);
+//		LCDCLER(LCD565_GRED);SysTick_DeleymS(500);
+	}
 	
 }
+
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
 //->功能描述	:	 
@@ -131,9 +144,19 @@ void FSMCTest_Server(void)
 //  unsigned  short i = 0;
 //  for(i=0;i<0xFFFF;i++)
 //  {
-//    LCDCLER((u16)(color++));
+//    LCDCLER((u16)(i));
 //    i+=89;
 //  }
+	LCDCLER(LCD565_BLACK);SysTick_DeleymS(1000);
+	LCDCLER(LCD565_WHITE);SysTick_DeleymS(1000);	
+	LCDCLER(LCD565_BLUE);SysTick_DeleymS(1000);
+	LCDCLER(LCD565_BRED);SysTick_DeleymS(1000);
+	LCDCLER(LCD565_GRED);SysTick_DeleymS(1000);
+	LCDCLER(LCD565_RED);SysTick_DeleymS(1000);
+//	NVIC_GenerateCoreReset();
+//	LCDCLER(LCD565_GRAY);SysTick_DeleymS(1000);
+//	LCDCLER(LCD565_LIGHTGREEN);SysTick_DeleymS(1000);
+//	LCDCLER(LCD565_MAGENTA);SysTick_DeleymS(1000);
   
 //  Power_Server();
 //  for(mm=0;mm<800;mm++)
@@ -172,6 +195,7 @@ void Power_Configuration(void)
   GPIO_Configuration_OPP50(GPIOF,GPIO_Pin_10);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
   restart:
   PF10 = 1;
+	SysTick_DeleymS(1000);					//SysTick延时nS
 //  while(0  ==  PB4in)
 //  {
 //    SysTick_DeleymS(1);					//SysTick延时nS
@@ -333,11 +357,11 @@ void LCD_Configuration(void)
 
   GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-//  //打开NE4设置
+  //打开NE4设置
 
-//  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
 
-//  GPIO_Init(GPIOG, &GPIO_InitStructure);
+  GPIO_Init(GPIOG, &GPIO_InitStructure);
 
   //打开RS设置
 
@@ -363,30 +387,30 @@ void LCD_Configuration(void)
 
   //背光LIGHT=1
 
-  GPIO_SetBits(GPIOA, GPIO_Pin_0);
+//  GPIO_SetBits(GPIOA, GPIO_Pin_0);
   
   //NE4=0
   GPIO_ResetBits(GPIOG, GPIO_Pin_12);
-  SysTick_DeleymS(20);
+  SysTick_DeleymS(100);
   
-  //打开NE4设置
+//  //打开NE4设置
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+//  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
 
-  GPIO_Init(GPIOG, &GPIO_InitStructure);
+//  GPIO_Init(GPIOG, &GPIO_InitStructure);
 }
 
 //LCD写寄存器地址函数
 
 void LCD_WriteAddr1(u16 index)
 {
-  *(unsigned short*)(Bank1_LCD_Reg) = index;
+  *(vu16*)(Bank1_LCD_Reg) = index;
 }
 //LCD写数据函数
 
 void LCD_WriteData1(u16 val)
 {
-  *(unsigned short*)(Bank1_LCD_Data) = val; 
+  *(vu16*)(Bank1_LCD_Data) = val; 
 }
 
 //LCD写寄存器命令函数，先将命令地址写到Reg中，然后再将命令的数值写到Data中
@@ -424,7 +448,7 @@ void SSD1963_Init(void)
 //	LCD_RD_HIGH;
 //	LCD_WR_LOW;				//总线功能为写数据
 //	LCD_CS_LOW;  		//使能
-  SysTick_DeleymS(50);
+  SysTick_DeleymS(100);
 	//3）——————————设置系统时钟  晶振频率 10MHz  250MHz < VCO < 800MHz
 	LCD_WriteAddr1(0x00E2);						//PLL multiplier, set PLL clock to 120M Start the PLL. Before the start, the system was operated with the crystal oscillator or clock input
 	LCD_WriteData1(0x0023);	    				//设置倍频 N=0x36 for 6.5M, 0x23 for 10M crystal
@@ -531,8 +555,47 @@ void LCDCLER(unsigned short color)
     for(j=0;j<=(ye-ys);j++)
       LCD_WriteData1(color);
   }
-
 }
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void ImageDisp(unsigned char* buffer,unsigned long len)
+{
+	unsigned  long i = 0;
+  unsigned  short xs = 0,xe =800;
+  unsigned  short ys = 0,ye =480;
+	unsigned	short	P	=	0;
+  //======================================区域设置
+	LCD_WriteAddr1(0x002A);			//设置列地址
+	LCD_WriteData1(xs>>8);		//起始地址高8位
+	LCD_WriteData1(xs);			//起始地址低8位
+	LCD_WriteData1(xe>>8);		//结束地址高8位
+	LCD_WriteData1(xe);			//行结束地址低8位
+	
+	LCD_WriteAddr1(0x002b);			//设置页地址	
+	LCD_WriteData1(ys>>8);
+	LCD_WriteData1(ys);
+	LCD_WriteData1(ye>>8);
+	LCD_WriteData1(ye);
+	
+	LCD_WriteAddr1(0x0036);			//设置页地址
+	LCD_WriteData1(0XA0);       //显示模式
 
+	LCD_WriteAddr1(0x002c);			//写内存起始地址 
+  for(i=0;i<=len;)
+  {
+		P=buffer[i];
+		P=P<<8;
+		P|=buffer[i+1];
+      LCD_WriteData1(P);
+			i+=2;
+  }
+}
 
 #endif

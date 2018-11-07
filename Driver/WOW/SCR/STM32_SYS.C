@@ -49,12 +49,18 @@ void SYS_Configuration(void)
 *******************************************************************************/
 void RCC_Configuration_HSE(void)
 {
+	unsigned	short	retry	=	0;
+	unsigned	long	time	=	0;
 	ErrorStatus HSEStartUpStatus;
 	/* RCC system reset(for debug purpose) */
 	RCC_DeInit();																	//复位系统时钟
 	
 	/* Enable HSE */
 	RCC_HSEConfig(RCC_HSE_ON);										//打开外部高速时钟
+	
+	while(time++<0xFFFF);
+	
+	Restart:
 	
 	/* Wait till HSE is ready */
 	HSEStartUpStatus = RCC_WaitForHSEStartUp();		//等待外部高速时钟启动
@@ -95,7 +101,11 @@ void RCC_Configuration_HSE(void)
 		{
 		}
 	}
-	GPIO_DeInitAll();				//将所有的GPIO关闭----V20170605
+	else if(retry++<2000)
+	{
+		goto Restart;
+	}
+//	GPIO_DeInitAll();				//将所有的GPIO关闭----V20170605
 }
 /*******************************************************************************
 * 函数名		:	RCC_Configuration
