@@ -73,19 +73,5 @@ void FSMC_Initialize(void)
   FSMC_NORSRAMInit(&FSMC_NORSRAMInitStructure);
 
   /* - BANK 3 (of NOR/SRAM Bank 0~3) is enabled */
-  FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM4, ENABLE);
-
-
-  
+  FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM4, ENABLE);  
 }
-
-
-
-
-
-
-
-
-
-
-

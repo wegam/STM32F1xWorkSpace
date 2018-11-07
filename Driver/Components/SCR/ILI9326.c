@@ -84,10 +84,8 @@ void ILI9326_Initialize(void*	pInfo)
 void ILI9326_PowerOff( void )
 {
 	LCD_BL_OFF;		//关背光
-	LCD_WriteCommand( ILI9326_R009_DC3, 0 );
-	
+	sILI9326->Display.WriteCommand( ILI9326_R009_DC3, 0 );	
 }
-
 
 /**************************************************************************************************
 * [Function] LCD_DispOff:  关闭LCD显示( 黑屏?)
@@ -95,7 +93,7 @@ void ILI9326_PowerOff( void )
 **************************************************************************************************/
 void ILI9326_DispOff( void )
 {
-	LCD_WriteCommand( ILI9326_R007_DC1, 0x0000 );
+	sILI9326->Display.WriteCommand( ILI9326_R007_DC1, 0x0000 );
 }
 /**************************************************************************************************
 * [Function] LCD_PowerOn: LCD 上电并初始化相关寄存器
@@ -105,12 +103,10 @@ void ILI9326_PowerOn( void )
 {
 	u32 dtime=5000;
 	
-	void(*ILI9326_WriteCMD)(unsigned short Index,unsigned short Command);//LcdDisplay.WriteCommand	
-	ILI9326_WriteCMD	=	LCD_WriteCommand;
-	
-	
-	
-	LCD_BL_OFF;		//关背光
+	void(*ILI9326_WriteCMD)(unsigned short Index,unsigned short Command)	=	sILI9326->Display.WriteCommand;//LcdDisplay.WriteCommand
+  void(*DelaymS)(unsigned long xms) = LCD_DelaymS;
+//  LCDSYS->Display.DelaymS
+//	ILI9326_WriteCMD	=	sILI9326->Display.WriteCommand;
 	
 	LCD_Reset();
 
@@ -132,16 +128,16 @@ void ILI9326_PowerOn( void )
 	ILI9326_WriteCMD( ILI9326_R102_PC3, 	0x0000 );/* VREG1OUT voltage */
 	ILI9326_WriteCMD( ILI9326_R103_PC4, 	0x0000 );/* VDV[4:0] for VCOM amplitude */
 	
-	LCD_DelaymS( 100 );
+	DelaymS( 100 );
 	
 	ILI9326_WriteCMD( ILI9326_R100_PC1, 	0x1190 ); /* SAP, BT[3:0], AP, DSTB, SLP, STB */
 	ILI9326_WriteCMD( ILI9326_R101_PC2, 	0x0227 ); /* DC1[2:0], DC0[2:0], VC[2:0] */
 	
-	LCD_DelaymS( 100 );
+	DelaymS( 100 );
 	
 	ILI9326_WriteCMD( ILI9326_R102_PC3, 	0x01BD ); /* VREG1OUT voltage */
 	
-	LCD_DelaymS( 100 );
+	DelaymS( 100 );
 	
 	ILI9326_WriteCMD( ILI9326_R103_PC4,		0x2D00 );/* VDV[4:0] for VCOM amplitude */
 	ILI9326_WriteCMD( ILI9326_R281_VHV, 	0x000E );/* VCM[5:0] for VCOMH */
@@ -171,7 +167,6 @@ void ILI9326_PowerOn( void )
 	ILI9326_WriteCMD( ILI9326_R401_BIDC, 	0x0001 );/* NDL,VLE, REV */
 	ILI9326_WriteCMD( ILI9326_R404_BIVSC, 0x0000 );/* set scrolling line */
 
-
 /*-------------- Partial Display Control ---------// */
 	ILI9326_WriteCMD( ILI9326_R500_PTDP, 0x0000 );/*Partial Image 1 Display Position */
 	ILI9326_WriteCMD( ILI9326_R501_PTSA, 0x0000 );/*Partial Image 1 RAM Start/End Address */
@@ -180,16 +175,12 @@ void ILI9326_PowerOn( void )
 	ILI9326_WriteCMD( ILI9326_R504_PIRS, 0x0000 );/*Partial Image 2 RAM Start/End Address */
 	ILI9326_WriteCMD( ILI9326_R505_PIRE, 0x0000 );/*Partial Image 2 RAM Start/End Address */
 
-
-
 /*-------------- Panel Control -------------------// */
 	ILI9326_WriteCMD( ILI9326_R010_PIC1, 0x0010 );/*DIVI[1:0];RTNI[4:0] */
 	ILI9326_WriteCMD( ILI9326_R011_PIC2, 0x0600 );/*NOWI[2:0];SDTI[2:0] */
 	ILI9326_WriteCMD( ILI9326_R013_PIC4, 0x0002 );/*DIVE[1:0];RTNE[5:0] */
 
 	ILI9326_WriteCMD( ILI9326_R007_DC1, 0x0173 );/* 262K color and display ON */
-	
-	LCD_BL_ON;			//打开背光
 }
 /**************************************************************************************************
 * [Function] LCD_SetDrawWindow:  LCD 屏显示扫描方式
@@ -205,6 +196,7 @@ void ILI9326_SetWindowAddress(
 															unsigned short y2			//垂直终止点
 															)
 {
+  void(*ILI9326_WriteCMD)(unsigned short Index,unsigned short Command)	=	sILI9326->Display.WriteCommand;//LcdDisplay.WriteCommand
 	unsigned short MaxH,MaxV;
 	unsigned short Model	=	0x5030;
 
@@ -254,19 +246,19 @@ void ILI9326_SetWindowAddress(
 			break;
 	}
 	//======================================区域设置
-	LCD_WriteCommand(ILI9326_R210_HSA,sILI9326->Data.HSX);		//Window Horizontal RAM Address Start(R210h)		//水平
-	LCD_WriteCommand(ILI9326_R211_HEA,sILI9326->Data.HEX);		//Window Horizontal RAM Address End(R211h)			//水平
-	LCD_WriteCommand(ILI9326_R212_VSA,sILI9326->Data.VSY);		//Window Vertical RAM Address Start (R212h)			//垂直
-	LCD_WriteCommand(ILI9326_R213_VEA,sILI9326->Data.VEY);		//Window Vertical RAM Address End (R213h)				//垂直
+	ILI9326_WriteCMD(ILI9326_R210_HSA,sILI9326->Data.HSX);		//Window Horizontal RAM Address Start(R210h)		//水平
+	ILI9326_WriteCMD(ILI9326_R211_HEA,sILI9326->Data.HEX);		//Window Horizontal RAM Address End(R211h)			//水平
+	ILI9326_WriteCMD(ILI9326_R212_VSA,sILI9326->Data.VSY);		//Window Vertical RAM Address Start (R212h)			//垂直
+	ILI9326_WriteCMD(ILI9326_R213_VEA,sILI9326->Data.VEY);		//Window Vertical RAM Address End (R213h)				//垂直
 	//======================================设置起始点
-	LCD_WriteCommand( ILI9326_R200_HA, sILI9326->Data.HSX );
-	LCD_WriteCommand( ILI9326_R201_VA, sILI9326->Data.VSY );
+	ILI9326_WriteCMD( ILI9326_R200_HA, sILI9326->Data.HSX );
+	ILI9326_WriteCMD( ILI9326_R201_VA, sILI9326->Data.VSY );
 	//======================================设置写入模式
-	LCD_WriteCommand( ILI9326_R003_EM, Model);
+	ILI9326_WriteCMD( ILI9326_R003_EM, Model);
 	//======================================启动写入
-	LCD_WriteIndexStart();
-	LCD_WriteData( ILI9326_R202_GDRW );
-	LCD_WriteIndexEnd();
+//	LCD_WriteIndex();
+	LCD_WriteIndex( ILI9326_R202_GDRW );
+//	LCD_WriteIndexEnd();
 }
 //#endif//LCD_61509_EN
 /************************************** The End Of FILE **************************************/

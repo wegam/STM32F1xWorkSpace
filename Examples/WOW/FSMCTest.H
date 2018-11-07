@@ -119,7 +119,7 @@ void LCD_Server(void);			//显示服务相关
 void SD_Configuration(void);
 void LCD_Configuration(void);
 void SSD1963_Init(void);
-void LCDCLER(unsigned short color);
+
 void ImageDisp(unsigned char* buffer,unsigned long len);
 
 #endif

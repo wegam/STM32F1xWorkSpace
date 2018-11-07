@@ -160,73 +160,73 @@ void SSD1963_PowerOn(void)
 //  LCD_DelaymS(10);
 	//3）——————————设置系统时钟  晶振频率 10MHz  250MHz < VCO < 800MHz
 	pSSD1963->Display.WriteIndex(0x00E2);						//PLL multiplier, set PLL clock to 120M Start the PLL. Before the start, the system was operated with the crystal oscillator or clock input
-	pSSD1963->Display.WriteData(0x0023);	    				//设置倍频 N=0x36 for 6.5M, 0x23 for 10M crystal
-	pSSD1963->Display.WriteData(0x0001);							//设置分频
-	pSSD1963->Display.WriteData(0x0004);							//完成设置
+	LCD_WriteData(0x0023);	    				//设置倍频 N=0x36 for 6.5M, 0x23 for 10M crystal
+	LCD_WriteData(0x0001);							//设置分频
+	LCD_WriteData(0x0004);							//完成设置
 	//4）——————————使能PLL
 	pSSD1963->Display.WriteIndex(0x00E0);  					//PLL enable
-	pSSD1963->Display.WriteData(0x0001);
+	LCD_WriteData(0x0001);
 	
 	pSSD1963->Display.WriteIndex(0x00E0);
-	pSSD1963->Display.WriteData(0x0003);
+	LCD_WriteData(0x0003);
   LCD_DelaymS(10);
 	//5）——————————软件复位
 	pSSD1963->Display.WriteIndex(0x0001);  					//software reset
 	//6）——————————设置扫描频率
 	pSSD1963->Display.WriteIndex(0x00E6);						//PLL setting for PCLK, depends on resolution
-	pSSD1963->Display.WriteData(0x0003);
-	pSSD1963->Display.WriteData(0x00FF);
-	pSSD1963->Display.WriteData(0x00FF);
+	LCD_WriteData(0x0003);
+	LCD_WriteData(0x00FF);
+	LCD_WriteData(0x00FF);
 	//7）——————————设置LCD面板模式 Set the LCD panel mode (RGB TFT or TTL)
 	pSSD1963->Display.WriteIndex(0x00B0);						//LCD SPECIFICATION
-	pSSD1963->Display.WriteData(0x0000);
-	pSSD1963->Display.WriteData(0x0000);
-	pSSD1963->Display.WriteData((LCD_HDP>>8)&0X00FF);  		//设置水平像素点个数高8位		Set HDP 
-	pSSD1963->Display.WriteData(LCD_HDP&0X00FF);					//设置水平像素点个数低8位
-	pSSD1963->Display.WriteData((LCD_VDP>>8)&0X00FF);  		//设置垂直像素点个数高8位		Set VDP
-	pSSD1963->Display.WriteData(LCD_VDP&0X00FF);					//设置垂直像素点个数低8位
-	pSSD1963->Display.WriteData(0x0000);									//设置奇偶行RGB顺序，默认0，Even line RGB sequence&Odd line RGB sequence
+	LCD_WriteData(0x0000);
+	LCD_WriteData(0x0000);
+	LCD_WriteData((LCD_HDP>>8)&0X00FF);  		//设置水平像素点个数高8位		Set HDP 
+	LCD_WriteData(LCD_HDP&0X00FF);					//设置水平像素点个数低8位
+	LCD_WriteData((LCD_VDP>>8)&0X00FF);  		//设置垂直像素点个数高8位		Set VDP
+	LCD_WriteData(LCD_VDP&0X00FF);					//设置垂直像素点个数低8位
+	LCD_WriteData(0x0000);									//设置奇偶行RGB顺序，默认0，Even line RGB sequence&Odd line RGB sequence
 	//8）——————————设置水平期 Set Horizontal Period
 	pSSD1963->Display.WriteIndex(0x00B4);							//HSYNC
-	pSSD1963->Display.WriteData((LCD_HT>>8)&0X00FF);  	//High byte of horizontal total period
-	pSSD1963->Display.WriteData(LCD_HT&0X00FF);					//Low byte of the horizontal total period (display + non-display) in pixel clock (POR = 10101111)
+	LCD_WriteData((LCD_HT>>8)&0X00FF);  	//High byte of horizontal total period
+	LCD_WriteData(LCD_HT&0X00FF);					//Low byte of the horizontal total period (display + non-display) in pixel clock (POR = 10101111)
 																			//Horizontal total period = (HT + 1) pixels
-	pSSD1963->Display.WriteData((LCD_HPS>>8)&0X00FF);  	//High byte of the non-display period between the start of the horizontal sync (LLINE) signal and the first
+	LCD_WriteData((LCD_HPS>>8)&0X00FF);  	//High byte of the non-display period between the start of the horizontal sync (LLINE) signal and the first
 																			//display data. (POR = 000)
-	pSSD1963->Display.WriteData(LCD_HPS&0X00FF);
-	pSSD1963->Display.WriteData(LCD_HPW);			   //Set HPW
-	pSSD1963->Display.WriteData((LCD_LPS>>8)&0X00FF);  //Set HPS
-	pSSD1963->Display.WriteData(LCD_LPS&0X00FF);
-	pSSD1963->Display.WriteData(0x0000);
+	LCD_WriteData(LCD_HPS&0X00FF);
+	LCD_WriteData(LCD_HPW);			   //Set HPW
+	LCD_WriteData((LCD_LPS>>8)&0X00FF);  //Set HPS
+	LCD_WriteData(LCD_LPS&0X00FF);
+	LCD_WriteData(0x0000);
 	//9）——————————设置垂直期	Set Vertical Period
 	pSSD1963->Display.WriteIndex(0x00B6);							//VSYNC
-	pSSD1963->Display.WriteData((LCD_VT>>8)&0X00FF);   //Set VT
-	pSSD1963->Display.WriteData(LCD_VT&0X00FF);
-	pSSD1963->Display.WriteData((LCD_VPS>>8)&0X00FF);  //Set VPS
-	pSSD1963->Display.WriteData(LCD_VPS&0X00FF);
-	pSSD1963->Display.WriteData(LCD_VPW);			   //Set VPW
-	pSSD1963->Display.WriteData((LCD_FPS>>8)&0X00FF);  //Set FPS
-	pSSD1963->Display.WriteData(LCD_FPS&0X00FF);	
+	LCD_WriteData((LCD_VT>>8)&0X00FF);   //Set VT
+	LCD_WriteData(LCD_VT&0X00FF);
+	LCD_WriteData((LCD_VPS>>8)&0X00FF);  //Set VPS
+	LCD_WriteData(LCD_VPS&0X00FF);
+	LCD_WriteData(LCD_VPW);			   //Set VPW
+	LCD_WriteData((LCD_FPS>>8)&0X00FF);  //Set FPS
+	LCD_WriteData(LCD_FPS&0X00FF);	
 	//10）——————————配置GPIO
 	pSSD1963->Display.WriteIndex(0x00B8);
-	pSSD1963->Display.WriteData(0x0007);    //GPIO3=input, GPIO[2:0]=output //输出模式
-	pSSD1963->Display.WriteData(0x0001);   	//0 GPIO0 is used to control the panel power with Enter Sleep Mode 0x10 or Exit Sleep Mode 0x11.
+	LCD_WriteData(0x0007);    //GPIO3=input, GPIO[2:0]=output //输出模式
+	LCD_WriteData(0x0001);   	//0 GPIO0 is used to control the panel power with Enter Sleep Mode 0x10 or Exit Sleep Mode 0x11.
 													//1 GPIO0 is used as normal GPIO
 	//11）——————————设置GPIO（设置扫描方向） Set GPIO value for GPIO configured as output
 	pSSD1963->Display.WriteIndex(0x00BA);
-	pSSD1963->Display.WriteData((LCD_LR&0XFF)|(LCD_UD&0XFF));    //GPIO[3:0] out 1
+	LCD_WriteData((LCD_LR&0XFF)|(LCD_UD&0XFF));    //GPIO[3:0] out 1
 	//12）——————————设置地址模式	Set Address Mode
 	pSSD1963->Display.WriteIndex(0x0036); //rotation
-	pSSD1963->Display.WriteData(0x0000);
+	LCD_WriteData(0x0000);
 	//13）——————————设置数据接口 Set Pixel Data Interface/Pixel Data Interface Format
 	pSSD1963->Display.WriteIndex(0x00F0); //pixel data interface
-	pSSD1963->Display.WriteData(0x0003);
+	LCD_WriteData(0x0003);
 	
 	//14）——————————设置垂直期
 	pSSD1963->Display.WriteIndex(0x0029); //display on
 	//15）——————————设置垂直期
 	pSSD1963->Display.WriteIndex(0x00d0); 
-	pSSD1963->Display.WriteData(0x000D);
+	LCD_WriteData(0x000D);
 }
 
 

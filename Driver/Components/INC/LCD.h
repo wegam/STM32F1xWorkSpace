@@ -80,6 +80,8 @@ typedef struct	_LCDData
 	unsigned short 	VYA;						//RAM Address Set (Vertical Address) (R201h)
 	unsigned short 	PColor;					//画笔颜色
 	unsigned short 	BColor;					//背景颜色
+  unsigned long   FsmcDataAddr;  //FSMC写数据地址
+  unsigned long   FsmcRegAddr;   //FSMC写寄存器地址
 }LCDDataDef;
 typedef struct	_LCDFlag		//0为无标识
 {
@@ -88,7 +90,9 @@ typedef struct	_LCDFlag		//0为无标识
 typedef struct _DisplayDriver
 {
 	void ( *WriteAddress )( unsigned short HSX,unsigned short HSY,unsigned short HEX,unsigned short HEY);
-	
+	void ( *WriteIndex)(unsigned short Index);
+  void ( *WriteData)(unsigned short Data);
+  void ( *WriteCommand)(unsigned short Index,unsigned short Command);
 	void ( *PowerOn )(void);
 	void ( *PowerOff )(void);
 	void ( *DispOff )(void);
@@ -250,6 +254,7 @@ extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 
 //======================================外部接口
 void LCD_Initialize(LCDDef *pInfo);
+void LCDFsmc_Initialize(LCDDef *pInfo);
 void LCD_ShowAntenna(u16 x,u16 y,u8 Num,u16 PenColor);   //显示12x12天线
 void LCD_ShowBattery(u16 x,u16 y,u8 Num,u16 PenColor);   //显示12x12电池
 void LCD_Show(u16 x,u16 y,u8 font,u16 PenColor,u8 num,u8 *Buffer);	
@@ -267,6 +272,11 @@ void LCD_WriteDataEnd( void );
 void LCD_WriteData(u16 Data);
 u16 LCD_ReadData( unsigned short Index );
 void LCD_WriteCommand(unsigned short index,unsigned short Command);	//写完整控制命令
+//======================================FSMC基础函数
+void LCDFsmc_WriteIndex(unsigned short Index);
+void LCDFsmc_WriteData(unsigned short Data);
+void LCDFsmc_WriteCommand(unsigned short index,unsigned short Command);	//写完整控
+
 
 void LCD_Clean(u16 COLOR);	//清除屏幕函数
 void LCD_DrawDot(unsigned short HSX,unsigned short HSY,unsigned short color);		//画点

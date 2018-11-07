@@ -8,6 +8,7 @@
 **************************************************************************************************/
 #include "LCD.H"
 
+#include "stm32f10x_fsmc.h"
 
 #include "STM32_GPIO.H"
 #include "STM32_PWM.H"
@@ -50,7 +51,10 @@ void LCD_Initialize(LCDDef *pInfo)
 	GPIO_Configuration_OPP50	(Port->sCS_PORT,				Port->sCS_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sTE_PORT,				Port->sTE_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sDATABUS_PORT,		Port->sDATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-	
+	//===========================函数地址
+  LCDSYS->Display.WriteIndex    = LCD_WriteIndex;
+  LCDSYS->Display.WriteData     = LCD_WriteData;
+  LCDSYS->Display.WriteCommand  = LCD_WriteCommand;
 	//==========================驱动芯片检测
 	LCD_Reset();
 	DeviceCode	=	LCD_ReadData(LCD_R000_IR);
@@ -72,12 +76,136 @@ void LCD_Initialize(LCDDef *pInfo)
 	{
 		pInfo->Data.PColor	=	pInfo->Data.BColor^0xFF;
 	}
+  
 	//==========================LCD初始化及上电配置
 	LCDSYS->Display.PowerOn();						//LCD上电/初始化配置
 	//==========================以背景色清除屏幕
 	LCD_Clean(pInfo->Data.BColor);				//按背景色清除屏幕函数
 	//==========================开背光
 	LCD_BL_ON;
+	//==========================字库配置
+	GT32L32_Initialize(&pInfo->GT32L32.SPI);				//普通SPI通讯方式配置
+}
+/*******************************************************************************
+*函数名			:	LCD_Initialize
+*功能描述		:	LCD初始化：
+*输入				: 
+*返回值			:	无
+*******************************************************************************/
+void LCDFsmc_Initialize(LCDDef *pInfo)
+{
+  
+  
+	static unsigned short	DeviceCode	=	0;
+  GPIO_InitTypeDef                GPIO_InitStructure;
+	FSMC_NORSRAMInitTypeDef         FSMC_NORSRAMInitStructure;
+  FSMC_NORSRAMTimingInitTypeDef   FSMC_NORSRAMTimingInitStructure;
+  
+  LCDPortDef  *Port;
+	LCDSYS	  =	pInfo;		//指针指向
+  
+  Port	=	&(pInfo->Port);	
+	
+	//==========================开时钟
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |RCC_APB2Periph_GPIOB |RCC_APB2Periph_GPIOC |RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE | RCC_APB2Periph_GPIOF | RCC_APB2Periph_GPIOG | RCC_APB2Periph_AFIO, ENABLE);
+  //==========================GPIO配置
+  if(NULL!= Port->sBL_PORT)
+    GPIO_Configuration_OPP50	(Port->sBL_PORT,				Port->sBL_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+  if(NULL!= Port->sREST_PORT)
+    GPIO_Configuration_OPP50	(Port->sREST_PORT,			Port->sREST_Pin);				//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+  if(NULL!= Port->sCS_PORT)
+    GPIO_Configuration_OPP50	(Port->sCS_PORT,				Port->sCS_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+  //-----------------打开FSMC的数据端口D[15:0]
+  GPIO_Configuration_APP50(GPIOD,GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_14 | GPIO_Pin_15);
+  GPIO_Configuration_APP50(GPIOE,GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 |  GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15);
+  //-----------------打开FSMC功能端口，PD.4=RD(nOE)；PD.5=WR(nWE)
+  GPIO_Configuration_APP50(GPIOD,GPIO_Pin_4 | GPIO_Pin_5);
+  //-----------------打开NE4设置
+  GPIO_Configuration_APP50(GPIOG,GPIO_Pin_12);
+  //-----------------打开RS设置
+  GPIO_Configuration_APP50(GPIOE,GPIO_Pin_3);
+  
+  //==========================初始化GPIO状态
+  //--------------NE4=1
+  GPIO_SetBits(GPIOG, GPIO_Pin_12);
+  //--------------LCD_RESET=0
+  GPIO_ResetBits(GPIOE, GPIO_Pin_1);
+  //--------------LCD_RD=1(nOE)
+  GPIO_SetBits(GPIOD, GPIO_Pin_4);
+  //--------------LCD_WR=1(nWE)
+  GPIO_SetBits(GPIOD, GPIO_Pin_5);
+  //--------------NE4=0
+  GPIO_ResetBits(GPIOG, GPIO_Pin_12);
+  SysTick_DeleymS(100); 
+  
+  //===========================FSMC初始化
+  
+  /*-- FSMC Configuration ------------------------------------------------------*/
+  /*----------------------- SRAM Bank 4 ----------------------------------------*/
+  /* FSMC_Bank1_NORSRAM4 configuration */
+  FSMC_NORSRAMTimingInitStructure.FSMC_AddressSetupTime = 1;
+  FSMC_NORSRAMTimingInitStructure.FSMC_AddressHoldTime = 0;
+  FSMC_NORSRAMTimingInitStructure.FSMC_DataSetupTime = 2;
+  FSMC_NORSRAMTimingInitStructure.FSMC_BusTurnAroundDuration = 0;
+  FSMC_NORSRAMTimingInitStructure.FSMC_CLKDivision = 0;
+  FSMC_NORSRAMTimingInitStructure.FSMC_DataLatency = 0;
+  FSMC_NORSRAMTimingInitStructure.FSMC_AccessMode = FSMC_AccessMode_B;
+
+  /* Color LCD configuration ------------------------------------
+     LCD configured as follow:
+        - Data/Address MUX = Disable
+        - Memory Type = SRAM
+        - Data Width = 16bit
+        - Write Operation = Enable
+        - Extended Mode = Enable
+        - Asynchronous Wait = Disable */
+  FSMC_NORSRAMInitStructure.FSMC_Bank = FSMC_Bank1_NORSRAM4;
+  FSMC_NORSRAMInitStructure.FSMC_DataAddressMux = FSMC_DataAddressMux_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_MemoryType = FSMC_MemoryType_SRAM;
+  FSMC_NORSRAMInitStructure.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;
+  FSMC_NORSRAMInitStructure.FSMC_BurstAccessMode = FSMC_BurstAccessMode_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_WaitSignalPolarity = FSMC_WaitSignalPolarity_Low;
+  FSMC_NORSRAMInitStructure.FSMC_WrapMode = FSMC_WrapMode_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_WaitSignalActive = FSMC_WaitSignalActive_BeforeWaitState;
+  FSMC_NORSRAMInitStructure.FSMC_WriteOperation = FSMC_WriteOperation_Enable;
+  FSMC_NORSRAMInitStructure.FSMC_WaitSignal = FSMC_WaitSignal_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_ExtendedMode = FSMC_ExtendedMode_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_WriteBurst = FSMC_WriteBurst_Disable;
+  FSMC_NORSRAMInitStructure.FSMC_ReadWriteTimingStruct = &FSMC_NORSRAMTimingInitStructure;
+  FSMC_NORSRAMInitStructure.FSMC_WriteTimingStruct = &FSMC_NORSRAMTimingInitStructure;
+
+  FSMC_NORSRAMInit(&FSMC_NORSRAMInitStructure);
+
+  /* - BANK 3 (of NOR/SRAM Bank 0~3) is enabled */
+  FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM4, ENABLE);  
+  
+//	GPIO_Configuration_OPP50	(Port->sRD_PORT,				Port->sRD_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sREST_PORT,			Port->sREST_Pin);				//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sDC_PORT,				Port->sDC_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sWR_PORT,				Port->sWR_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605	
+//	GPIO_Configuration_OPP50	(Port->sTE_PORT,				Port->sTE_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sDATABUS_PORT,		Port->sDATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+	
+  //===========================函数地址
+  LCDSYS->Display.WriteIndex    = LCDFsmc_WriteIndex;
+  LCDSYS->Display.WriteData     = LCDFsmc_WriteData;
+  LCDSYS->Display.WriteCommand  = LCDFsmc_WriteCommand;
+  //==========================驱动配置
+  SSD1963_Initialize(pInfo);
+
+  //==========================检查背景色与画笔色是否相同
+	if(pInfo->Data.PColor	==	pInfo->Data.BColor)
+	{
+		pInfo->Data.PColor	=	pInfo->Data.BColor^0xFF;
+	}
+	//==========================LCD初始化及上电配置
+	LCDSYS->Display.PowerOn();						//LCD上电/初始化配置
+	//==========================以背景色清除屏幕
+//	LCD_Clean(pInfo->Data.BColor);				//按背景色清除屏幕函数
+  LCD_Clean(LCD565_WHITE);				//按背景色清除屏幕函数
+	//==========================开背光LIGHT=1
+  GPIO_SetBits(Port->sBL_PORT, Port->sBL_Pin);
 	//==========================字库配置
 	GT32L32_Initialize(&pInfo->GT32L32.SPI);				//普通SPI通讯方式配置
 }
@@ -147,6 +275,7 @@ void LCD_WriteDataEnd( void )
 	LCD_DC_LOW; 	//数据
 	LCD_CS_HIGH;
 }
+
 #if 1
 /*******************************************************************************
 * 函数名			:	R61509V_WriteData
@@ -220,23 +349,69 @@ void LCD_WriteData(u16 Data)
 *输入				: 
 *返回值			:	无
 *******************************************************************************/
-void LCD_WriteCommand(												//写完整控制命令
+void LCD_WriteCommand(												  //写完整控制命令
 											unsigned short Index,			//寄存器索引
 											unsigned short Command		//命令
 											)	//写完整控制命令
 {
 	//==================写地址
-	LCD_WriteIndexStart();	
-	LCD_WriteData(Index);
-	LCD_WriteIndexEnd();
+//	LCD_WriteIndexStart();	
+//	LCD_WriteData(Index);
+//	LCD_WriteIndexEnd();
+  LCDSYS->Display.WriteIndex(Index);
 	
 	//==================写数据
-	LCD_WriteDataStart();
-	LCD_WriteData(Command);
-	LCD_WriteDataEnd();
+//	LCD_WriteDataStart();
+//	LCD_WriteData(Command);
+//	LCD_WriteDataEnd();
+  LCDSYS->Display.WriteData(Command);
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void LCDFsmc_WriteIndex(unsigned short Index)
+{  
+  *(volatile unsigned short*)(LCDSYS->Data.FsmcRegAddr)  = Index;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void LCDFsmc_WriteData(unsigned short Data)
+{  
+  *(volatile unsigned short*)(LCDSYS->Data.FsmcDataAddr)  = Data;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void LCDFsmc_WriteCommand(										  //写完整控制命令
+											unsigned short Index,			//寄存器索引
+											unsigned short Command		//命令
+											)	//写完整控制命令
+{
+  LCDFsmc_WriteIndex(Index);
+  LCDFsmc_WriteData(Command);
 }
 
-//
+
+
 /*******************************************************************************
 *函数名			:	LCD_Clean
 *功能描述		:	清屏程序：清除屏幕函数---用背景色填充屏幕
@@ -280,15 +455,15 @@ void LCD_Clean(u16 Color)	//清除屏幕函数
 			break;			
 	}
 	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);		//写入地址区域
-	LCD_WriteDataStart();									//写数据使能	
+//	LCD_WriteDataStart();									//写数据使能	
 	for(x=0;x<MaxH;x++)
 	{
 		for(y=0;y<MaxV;y++)
 		{
-			LCD_WriteData(Color);							//写数据
+			LCDSYS->Display.WriteData(Color);							//写数据
 		}
 	}	
-	LCD_WriteDataEnd();										//写数据完成
+//	LCD_WriteDataEnd();										//写数据完成
 }
 
 /*******************************************************************************
@@ -303,10 +478,11 @@ void LCD_DrawDot(
 									unsigned short Color		//点颜色*/	
 								)
 {
-	LCDSYS->Display.WriteAddress(HSX,HSY,HSX,HSY);	//设置光标位置 
-	LCD_WriteDataStart();
-	LCD_WriteData(Color); 	//笔画颜色
-	LCD_WriteDataEnd();
+	LCDSYS->Display.WriteAddress(HSX,HSY,HSX,HSY);	//设置光标位置
+  LCDSYS->Display.WriteData(Color);
+//	LCD_WriteDataStart();
+//	LCD_WriteData(Color); 	//笔画颜色
+//	LCD_WriteDataEnd();
 }
 /*******************************************************************************
 *函数名		:	LCD_DrawLine
@@ -469,50 +645,16 @@ void LCD_Fill(
 {          
 	unsigned int i;
 	unsigned int j;	
-//	unsigned short HSX,HEX,HSY,HEY,MaxH,MaxV;
-//	eRotate	Rotate	=	LCDSYS->Flag.Rotate;
-//	
-//	MaxH	=	LCDSYS->Data.MaxH;
-//	MaxV	=	LCDSYS->Data.MaxV;
-//	
-//	switch(Rotate)
-//	{
-//		case 	Draw_Rotate_0D:
-//					HSX	=	x1;
-//					HEX	=	x2;
-//					HSY	=	y1;
-//					HEY	=	y2;
-//			break;
-//		case	Draw_Rotate_90D:
-//					HSX	=	x1;
-//					HEX	=	x2;
-//					HSY	=	y1;
-//					HEY	=	y2;
-//			break;
-//		case	Draw_Rotate_180D:
-//					HSX	=	x1;
-//					HEX	=	x2;
-//					HSY	=	y1;
-//					HEY	=	y2;
-//			break;
-//		default:
-//					HSX	=	x1;
-//					HEX	=	x2;
-//					HSY	=	y1;
-//					HEY	=	y2;
-//			break;			
-//	}
-//	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);
 	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);
-	LCD_WriteDataStart();
+//	LCD_WriteDataStart();
 	for(i=0;i<=x2-x1;i++)
 	{
 		for(j=0;j<=y2-y1;j++)
 		{
-			LCD_WriteData(color);
+			LCDSYS->Display.WriteData(color);
 		}
 	}
-	LCD_WriteDataEnd();	
+//	LCD_WriteDataEnd();	
 }
 /**************************************************************************************************
 * [Function] R61509V_Setbackground:  设置背景颜色
@@ -593,7 +735,7 @@ void LCD_ShowChar(
     y2	=	y+font-1;
 	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
 	i=0;
-	LCD_WriteDataStart();
+//	LCD_WriteDataStart();
 	for(i=0;i<num;i++)
 	{ 
 		temp=Buffer[i];		 					//调用1608字体--二维数组形式--字库使用时取消
@@ -605,7 +747,7 @@ void LCD_ShowChar(
 			}
 			else
 				LCD_PEN_COLOR=LCDSYS->Data.BColor;
-			LCD_WriteData(LCD_PEN_COLOR);
+			LCDSYS->Display.WriteData(LCD_PEN_COLOR);
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
@@ -620,13 +762,13 @@ void LCD_ShowChar(
         }
         else
           LCD_PEN_COLOR=LCDSYS->Data.BColor;
-        LCD_WriteData(LCD_PEN_COLOR);
+        LCDSYS->Display.WriteData(LCD_PEN_COLOR);
         temp=temp<<1;
       }
       i++;
     }		
 	}
-	LCD_WriteDataEnd();	
+//	LCD_WriteDataEnd();	
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -656,7 +798,7 @@ void LCD_ShowWord(
   x2	=	x+font-1;
   y2	=	y+font-1;
 	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
-	LCD_WriteDataStart();
+//	LCD_WriteDataStart();
 	for(i=0;i<num;i++)
 	{ 
 		u16 LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色	
@@ -669,7 +811,7 @@ void LCD_ShowWord(
 			}
 			else
 				LCD_PEN_COLOR=LCDSYS->Data.BColor;
-			LCD_WriteData(LCD_PEN_COLOR);
+			LCDSYS->Display.WriteData(LCD_PEN_COLOR);
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
@@ -684,13 +826,13 @@ void LCD_ShowWord(
         }
         else
           LCD_PEN_COLOR=LCDSYS->Data.BColor;
-        LCD_WriteData(LCD_PEN_COLOR);
+        LCDSYS->Display.WriteData(LCD_PEN_COLOR);
         temp=temp<<1;
       }
       i++;
     }			
 	}
-	LCD_WriteDataEnd();
+//	LCD_WriteDataEnd();
 }
 
 /*******************************************************************************
@@ -932,7 +1074,7 @@ void LCD_ShowBMP(
   eRotate Rotate = LCDSYS->Flag.Rotate;
   LCDSYS->Flag.Rotate  = Draw_Rotate_0D;		//使用旋转角度
   LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
-  LCD_WriteDataStart();
+//  LCD_WriteDataStart();
 	for(i=0;i<Length;)
 	{
 //    RGB565  =   (RGBBuffer[j+2]>>3);
@@ -944,10 +1086,10 @@ void LCD_ShowBMP(
 //    j+=3;
 //    i+=3;
     RGB565  = RGB888toRGB565(&RGBBuffer[i]);
-    LCD_WriteData(RGB565);
+    LCDSYS->Display.WriteData(RGB565);
     i+=3;
 	}
-  LCD_WriteDataEnd();
+//  LCD_WriteDataEnd();
   LCDSYS->Flag.Rotate  =  Rotate;
 }
 /*******************************************************************************

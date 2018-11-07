@@ -52,7 +52,6 @@ void SysTick_Configuration(unsigned long Time)	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 	Load	=	SysTick->LOAD;							//获取原重装载值
 	Ctrl	=	SysTick->CTRL&0x0000FFFF;		//获取原控制参数
-	
 ////	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);					//系统时钟 72MHZ
 //	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);			//系统时钟/8==9MHz
 ////	SysTick_SetReload(9);			//1uS

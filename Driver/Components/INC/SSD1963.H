@@ -196,8 +196,8 @@ enum SSD1963REG
 
 
 void SSD1963_Initialize(void*	pInfo);
-void SSD1963_BackLightOn(void);
-void SSD1963_BackLightOff(void);
+//void SSD1963_BackLightOn(void);
+//void SSD1963_BackLightOff(void);
 void SSD1963_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);
 void SSD1963_PowerOn(void);
 //void SSD1963_Delay(u16 xms);

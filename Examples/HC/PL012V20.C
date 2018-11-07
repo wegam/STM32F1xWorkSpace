@@ -330,12 +330,12 @@ void PD014Test_Server(void)
 	//=================================运行指示
 	if(DspTime==500)
 	{
-		LCD_Fill(380,220,395,235,LCD565_WHITE);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(200,40,395,235,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 	else if(DspTime==1000)
 	{
 		DspTime	=	0;
-		LCD_Fill(380,220,395,235,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(200,40,395,235,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 }
 /*******************************************************************************
