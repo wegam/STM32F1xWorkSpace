@@ -31,7 +31,7 @@
 
 //#include "STM32_SDCard.H"
 //#include "GT32L32M0180.H"
-
+#include 	"TOOL.H"
 
 
 //#define SDCardTest
@@ -42,18 +42,16 @@
 //NE2 0x640000000
 //NE3 0x680000000
 //NE4 0x6C0000000
+
 //数据区地址
-
 #define Bank1_LCD_Data ((u32)0x6C100000)
-
 //寄存器区地址
-
 #define Bank1_LCD_Reg ((u32)0x6C000000)
 
 LCDDef	sLCD;
 
-u16 millisecond=0;
-u8 hour=23,min=00,second=30;
+
+
 
 //u8 GTBuffer[512]={0};		//点阵数据存储空间
 
@@ -85,7 +83,16 @@ unsigned  short color = 0;
 unsigned	short	Rait	=	0;
 unsigned	long	ImageAr	=	0;
 
+ u16 year; 
+ u8 month;
+ u8 day;
+ u8 hour;
+ u8 minute;
+ u8 second;
+u16 millisecond=0;
 
+void GetTime(void);
+void ClockServer(void);
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
 //->功能描述	:	 
@@ -99,6 +106,7 @@ void FSMCTest_Configuration(void)
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	
   Power_Configuration();
   LCD_Configuration();
+  GetTime();
 
 //  res = f_open(&fsrc, "1:srcfile.dat", FA_OPEN_EXISTING | FA_READ);
 //  ADC_TempSensorConfiguration(&ADCDATA);								//STM32内部温度传感器配置
@@ -116,7 +124,8 @@ void FSMCTest_Configuration(void)
   LCD_ShowAntenna(760,2,3,LCD565_GRED);   //显示12x12天线
   LCD_Printf(10,10,32,LCD565_BRED,"后边的省略号就是可变参数");  //后边的省略号就是可变参数
 	PWM_OUT(TIM2,PWM_OUTChannel1,2000,900);						//PWM设定-20161127版本
-  SysTick_Configuration(2000000);
+  
+  SysTick_Configuration(1000);
 //  SysTick_DeleymS(500);
 //  LCD_Clean(LCD565_WHITE);
 //	while(1)
@@ -129,7 +138,12 @@ void FSMCTest_Configuration(void)
 //		LCDCLER(LCD565_BRED);SysTick_DeleymS(500);
 //		LCDCLER(LCD565_GRED);SysTick_DeleymS(500);
 //	}
-	
+//  LCD_Printf(0,220,32,LCD565_RED,"%0.4d-",year);		//编译日期
+//  LCD_Printf(5*16,220,32,LCD565_RED,"%0.2d-",month);		//编译日期
+//  LCD_Printf(8*16,220,32,LCD565_RED,"%0.2d-",day);		//编译日期
+//	LCD_Printf(11*16,220,32,LCD565_RED,"%0.2d:",hour);		//编译日期
+//  LCD_Printf(14*16*3,220,32,LCD565_RED,"%0.2d:",minute);		//编译日期
+//  LCD_Printf(17*16,220,32,LCD565_RED,"%0.2d:",second);		//编译日期
 }
 
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
@@ -141,12 +155,13 @@ void FSMCTest_Configuration(void)
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 void FSMCTest_Server(void)
 {
-  unsigned  short i = 0;
-  for(i=0;i<0x1FFFFFF;i++)
-  {
-    LCD_Printf(10,10,32,LCD565_RED,"后边的省略号就是可变参数%0.8d",i);  //后边的省略号就是可变参数
-    i+=89;
-  }	
+//  unsigned  short i = 0;
+//  for(i=0;i<0x1FFFFFF;i++)
+//  {
+//    LCD_Printf(10,10,32,LCD565_RED,"后边的省略号就是可变参数%0.8d",i);  //后边的省略号就是可变参数
+//    i+=89;
+//  }
+  ClockServer();
 //	LCD_Clean(LCD565_WHITE);SysTick_DeleymS(200);	
 //	LCD_Clean(LCD565_BLUE);SysTick_DeleymS(200);
 //	LCD_Clean(LCD565_BRED);SysTick_DeleymS(200);
@@ -155,6 +170,72 @@ void FSMCTest_Server(void)
 //  LCD_Clean(LCD565_BLACK);
 //  SysTick->LOAD=800000000;
 //  SysTick_Configuration(1000);
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void GetTime(void)
+{
+	BuildTimeDef*	BuildTime	=	GetBuildTime(__DATE__,__TIME__);
+	
+  year  	= BuildTime->year;
+  month 	= BuildTime->month;
+  day   	= BuildTime->day;
+  hour  	= BuildTime->hour;
+  minute  = BuildTime->minute;
+	
+  second  = BuildTime->second;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void ClockServer(void)
+{
+  static char Flag = 0;
+  if(Flag== 0)
+  {
+    Flag= 1;
+    
+    LCD_Printf(0,220,32,LCD565_RED,"%0.4d-",year);		//编译日期
+    LCD_Printf(5*16,220,32,LCD565_RED,"%0.2d-",month);		//编译日期
+    LCD_Printf(8*16,220,32,LCD565_RED,"%0.2d",day);		//编译日期
+    
+    LCD_Printf(13*16,220,32,LCD565_RED,"%0.2d:",hour);		//编译日期
+    LCD_Printf(16*16,220,32,LCD565_RED,"%0.2d:",minute);		//编译日期
+    LCD_Printf(19*16,220,32,LCD565_RED,"%0.2d",second);		//编译日期    
+  }
+  if(++millisecond>999)
+  {
+    millisecond = 0;
+    if(++second>59)
+    {    
+      second  = 0;
+      if(++minute>59)
+      {  
+        minute  = 0;
+        if(++hour>=24)
+        { 
+          hour = 0;
+          LCD_Printf(8*16,220,32,LCD565_RED,"%0.2d",++day);		//编译日期
+        }
+        LCD_Printf(13*16,220,32,LCD565_RED,"%0.2d:",hour);		//编译日期      
+      }
+      LCD_Printf(16*16,220,32,LCD565_RED,"%0.2d:",minute);		//编译日期    
+    }
+    LCD_Printf(19*16,220,32,LCD565_RED,"%0.2d",second);		//编译日期
+  }
 }
 /*******************************************************************************
 *函数名			:	function
