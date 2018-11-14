@@ -145,19 +145,27 @@ void PL012V20_Configuration(void)
 	
 //	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
 	PWM_OUT(TIM2,PWM_OUTChannel1,2,900);	//PWM设定-20161127版本--指示灯
-	PWM_OUT(TIM3,PWM_OUTChannel3,1000,990);		//PWM设定-20161127版本--背光
+	PWM_OUT(TIM3,PWM_OUTChannel3,1000,500);		//PWM设定-20161127版本--背光
 	
 	GetTime();	
 	
 	LCD_ShowAntenna(380,0,3,LCD565_WHITE);   //显示12x12电池
 	
 	
-//	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
 	LCD_Printf(0,0,16,LCD565_YELLOW,"项目编号:%s",Version);		//项目编号
 //  LCD_Printf(0,220,16,LCD565_RED,"编译时间:%4d-%0.2d-%0.2d-%s",year,month,day,__TIME__); 	//编译时间
   LCD_Printf(0,220,16,LCD565_WHITE,"%0.2d:",hour);		//编译日期
   LCD_Printf(8*3,220,16,LCD565_WHITE,"%0.2d:",minute);		//编译日期
   LCD_Printf(8*6,220,16,LCD565_WHITE,"%0.2d",second);		//编译日期
+	
+	LCD_Printf(0,0,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+	LCD_Printf(0,40*1,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+	LCD_Printf(0,40*2,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+	LCD_Printf(0,40*3,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+	LCD_Printf(0,40*4,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+//	LCD_Printf(0,40*5,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+//	LCD_Printf(0,32*6,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
   
   SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 }
@@ -330,12 +338,12 @@ void PD014Test_Server(void)
 	//=================================运行指示
 	if(DspTime==500)
 	{
-		LCD_Fill(200,40,395,235,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(300,150,395,235,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 	else if(DspTime==1000)
 	{
 		DspTime	=	0;
-		LCD_Fill(200,40,395,235,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(300,150,395,235,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 }
 /*******************************************************************************
@@ -680,7 +688,7 @@ void LCD_Configuration(void)
 	
 	sLCD.Data.BColor	=	LCD565_BLACK;
 	sLCD.Data.PColor	=	LCD565_RED;
-	sLCD.Flag.Rotate	=	Draw_Rotate_90D;
+	sLCD.Flag.Rotate	=	Draw_Rotate_270D;
 	
 	//=======================字库端口
 	sLCD.GT32L32.SPI.Port.SPIx	=	SPI1;
@@ -689,8 +697,6 @@ void LCD_Configuration(void)
 	sLCD.GT32L32.SPI.Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
 	
 	LCD_Initialize(&sLCD);
-
-//	SysTick_DeleymS(1000);				//SysTick延时nmS
 }
 
 /*******************************************************************************
@@ -984,10 +990,6 @@ void LCD_Display(void)
 			case 0xC1:	LCD_Printf(0		,120	,16	,0,"发药层控制器通信异常！！！！");				//错误状态
 				break;
 		}
-//		RevBuffe[0]=0;
-//		RevBuffe[1]=0;
-//		RevBuffe[2]=0;
-//		RevBuffe[3]=0;
 	}
 #endif
 }
