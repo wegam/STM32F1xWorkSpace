@@ -278,7 +278,6 @@ EAN13条形码调用程序
 参数：int* BAR_NUM 条形码数字数组指针，BAR_NUM[13]数组包含13个数字。
 返回：定义DWORD BAR_PIC_ADDR[13];用于存放对应地址，返回此数组指针。
 ***********************************************************************/
-
 u32 GT32L32_GetBarCode_13(u8 * BAR_NUM)
 {
 	u32 i,BaseAddr=0x478FD2;
@@ -451,41 +450,7 @@ u32 GT32L32_GetBarCode_128(u8	*BAR_NUM,u8	flag)
 	return BAR_PIC_ADDR[0];
 }
 
-/***********************************
-天线调用程序
-函数：u32 Antenna_CODE_12X12_GetData(u8 NUM)
-功能：获取12X12天线调用地址,取出点阵数据。
-参数：NUM 0123带表天线信号强度。
-返回：数据地址
-***********************************/
-u32 GT32L32_GetAntennaCode(u8	NUM,u8 *GetBuffer)
-{
-  u32 lengh=24;
-	u32 Address,BaseAdd=0x47AD32;  
-	Address=NUM*24+BaseAdd;
 
-  GT32L32_ReadBuffer(Address,lengh,GetBuffer);		//从字库中读数据并返回数据长度
-  
-	return lengh;
-}
-
-/**********************************
-电池调用程序
-函数：u32 Battery_CODE_12X12_GetData(u8 NUM)
-功能：获取12X12电池调用地址,取出点阵数据。
-参数：NUM 0123带表电池电量。
-返回：数据地址
-**********************************/
-u32 GT32L32_GetBatteryCode(u8	NUM,u8 *GetBuffer)
-{
-  u32 lengh=24;
-	u32 Address, BaseAdd=0x47ADAA;
-	Address=BaseAdd+NUM*24;
-  
-  GT32L32_ReadBuffer(Address,lengh,GetBuffer);		//从字库中读数据并返回数据长度
-  
-	return lengh;
-}
 /**********************************************************
 UNICODE转GBK码表映射算法,仅1&3字符区 
 函数：WORD U2G(WORD Unicode) 
@@ -630,9 +595,6 @@ u32 GT32L32_UNICODE_To_GBK(u16 unicode,u8 *GetBuffer)
 	Address+=BaseAdd;
 	return Address; 
 }
-
-
-
 /***********************************************************
 BIG5转GBK转换算法
 函数：u32 GT32L32_BIG5_To_GBK(u16 BIG5_Code) 
@@ -773,8 +735,48 @@ u16 GT32L32_ReadBuffer(
 	return lengh;	
 }
 /*******************************************************************************
+* 函数名			:	GT32L32_GetAntennaCode
+* 功能描述		:	天线符号读取程序，获取12X12天线调用地址,取出点阵数据
+* 输入			: NUM 0123带表天线信号强度
+							GetBuffer 数据接收缓存
+* 返回值			: 读取的数据长度
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+u32 GT32L32_GetAntennaCode(u8	NUM,u8 *GetBuffer)
+{
+  u32 lengh=24;
+	u32 Address,BaseAdd=0x47AD32;  
+	Address=NUM*24+BaseAdd;
+
+  GT32L32_ReadBuffer(Address,lengh,GetBuffer);		//从字库中读数据并返回数据长度
+  
+	return lengh;
+}
+/*******************************************************************************
+* 函数名			:	GT32L32_GetBatteryCode
+* 功能描述		:	电池符号读取程序，获取12X12电池调用地址,取出点阵数据
+* 输入			: NUM 0123带表电池电量
+							GetBuffer 数据接收缓存
+* 返回值			: 读取的数据长度
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+u32 GT32L32_GetBatteryCode(u8	NUM,u8 *GetBuffer)
+{
+  u32 lengh=24;
+	u32 Address, BaseAdd=0x47ADAA;
+	Address=BaseAdd+NUM*24;
+  
+  GT32L32_ReadBuffer(Address,lengh,GetBuffer);		//从字库中读数据并返回数据长度
+  
+	return lengh;
+}
+/*******************************************************************************
 * 函数名			:	GT32L32_ReadCode
-* 功能描述		:	从字库中读数据并返回数据长度
+* 功能描述		:	从字库中读数据并返回数据长度 
 * 输入			: void
 * 返回值			: void
 * 修改时间		: 无
@@ -783,7 +785,7 @@ u16 GT32L32_ReadBuffer(
 *******************************************************************************/
 u16 GT32L32_ReadCode(
 												u8 font,								//字体大小
-												u16 word,								//字符内码地址
+												u16 word,								//字符内码值
                         u8 *ReadBuffer				  //接收数据的缓存
 											)
 {
@@ -794,19 +796,15 @@ u16 GT32L32_ReadCode(
 	//区分单双字节
 	if(word>>8>=0x80)
 	{
-		//获取ASCII点阵地址
 		Address	=	GT32L32_GetAddress(font, (u8)(word>>8), (u8)word, 0, 0);		//获取地址
-		//获取ASCII点阵数据长度
 		lengh= GT32L32_GetBufferLen(font, (u8)(word>>8), (u8)word, 0, 0);			//获取长度
 	}
 	else
 	{
-		//获取ASCII点阵地址
-		Address	=	GT32L32_GetAddress(font, (u8)word, 0, 0, 0);		//获取地址
-		//获取ASCII点阵数据长度
+		Address	=	GT32L32_GetAddress(font, (u8)word, 0, 0, 0);			//获取地址
 		lengh= GT32L32_GetBufferLen(font, (u8)word, 0, 0, 0);			//获取长度
 	}	
-  GT32L32_ReadBuffer(Address,lengh,ReadBuffer);
+  GT32L32_ReadBuffer(Address,lengh,ReadBuffer);		//读取数据
 	return lengh;
 }
 

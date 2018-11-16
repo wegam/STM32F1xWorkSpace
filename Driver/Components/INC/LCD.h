@@ -256,43 +256,36 @@ extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 void LCD_Initialize(LCDDef *pInfo);
 void LCDFsmc_Initialize(LCDDef *pInfo);
 void LCD_ShowAntenna(u16 x,u16 y,u8 Num,u16 PenColor);   //显示12x12天线
-void LCD_ShowBattery(u16 x,u16 y,u8 Num,u16 PenColor);   //显示12x12电池
+void LCD_ShowBattery(u16 x,u16 y,u8 Num,u16 PenColor); 	//显示12x12电池
 void LCD_Show(u16 x,u16 y,u8 font,u16 PenColor,u8 num,u8 *Buffer);	
 void LCD_ShowHex(u16 x,u16 y,u8 font,u16 color,u8 num,u8 bitnum,u8 *Buffer);    //显示十六进制数据
 unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...);  //后边的省略号就是可变参数
 void LCD_ShowBMP(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 Length,u8 *RGBBuffer);    //显示十六进制数据
 unsigned  short RGB888toRGB565(u8 *RGB888);
-//======================================内部函数
+
+//======================================内部底层函数
 void LCD_Reset(void);
-void LCD_WriteIndexStart( void );
-void LCD_WriteIndexEnd( void );
-void LCD_WriteIndex( unsigned short Index );
-void LCD_WriteDataStart( void );
-void LCD_WriteDataEnd( void );
-void LCD_WriteData(u16 Data);
-u16 LCD_ReadData( unsigned short Index );
-void LCD_WriteCommand(unsigned short index,unsigned short Command);	//写完整控制命令
-//======================================FSMC基础函数
-void LCDFsmc_WriteIndex(unsigned short Index);
-void LCDFsmc_WriteData(unsigned short Data);
-void LCDFsmc_WriteCommand(unsigned short index,unsigned short Command);	//写完整控
+
+void LCD_WriteIndex( unsigned short Index );		//GPIO方式写地址
+void LCD_WriteData(u16 Data);										//GPIO方式写数据					
+void LCDFsmc_WriteIndex(unsigned short Index);	//FSMC方式写地址
+void LCDFsmc_WriteData(unsigned short Data);		//FSMC方式写数据
+void LCD_WriteCommand(unsigned short index,unsigned short Command);		//写完整控制命令
+u16 LCD_ReadData( unsigned short Index );				//读数据
 
 
 void LCD_Clean(u16 COLOR);	//清除屏幕函数
 void LCD_DrawDot(unsigned short HSX,unsigned short HSY,unsigned short color);		//画点
 void LCD_DrawLine(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);						//AB 两个坐标画一条直线
 void LCD_DrawCircle(u16 x1,u16 y1, u16 R, u8 Filled, u16 color );		//画一个圆形框
-void LCD_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);			//画一个矩形框
+void LCD_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);				//画一个矩形框
 
 void LCD_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 void LCD_SetBackground(u16 BackColor );
 void LCD_ShowChar(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
 void LCD_ShowWord(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
 
-
-
-
-
+//======================================延时函数
 void LCD_DelayuS(u32 xuS);
 void LCD_DelaymS(u32 xmS);
 void LCD_DelayS(u32 xS);

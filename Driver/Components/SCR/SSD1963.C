@@ -4,20 +4,14 @@
 ***SSD1963 LCD屏驱动器
 ********************************************************************************/
 #include "SSD1963.H"
-
-#include "STM32_GPIO.H"
-
-#include "stm32f10x_rcc.h"
-#include "stm32f10x_type.h"
-#include "stm32f10x_gpio.h"
-
-#include "font.h"
-
-#include	"stdio.h"			//用于printf
-#include	"string.h"			//用于printf
-#include	"stdarg.h"			//用于获取不确定个数的参数
-#include	"stdlib.h"			//malloc动态申请内存空间
 #include "LCD.H"
+
+
+//#include	"stdio.h"			//用于printf
+//#include	"string.h"		//用于printf
+//#include	"stdarg.h"		//用于获取不确定个数的参数
+//#include	"stdlib.h"		//malloc动态申请内存空间
+
 //#include <reg51.h>
 //#include "intrins.h"
 //#include "font\font.h"

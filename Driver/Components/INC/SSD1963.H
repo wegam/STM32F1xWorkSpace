@@ -39,53 +39,6 @@
 //#define	LCD_DataPortL P0     //低8位数据口	,8位模式下低8位可以不接线,请确认P0口已经上拉10K电阻,不宜太小，最小4.7K,推荐10K.
 
 
-////画笔颜色
-//#define SSD1963_WHITE         	 	0xFFFF
-//#define SSD1963_BLACK         	 	0x0000	  
-//#define SSD1963_BLUE         	 		0x001F  
-//#define SSD1963_BRED             	0XF81F
-//#define SSD1963_GRED 			 				0XFFE0
-//#define SSD1963_GBLUE							0X07FF
-//#define SSD1963_RED           	 	0xF800
-//#define SSD1963_MAGENTA       	 	0xF81F
-//#define SSD1963_GREEN         	 	0x07E0		//0X07E0
-//#define SSD1963_CYAN          	 	0x7FFF
-//#define SSD1963_YELLOW        	 	0xFFE0
-//#define SSD1963_BROWN 			 			0XBC40 //棕色
-//#define SSD1963_BRRED 			 			0XFC07 //棕红色
-//#define SSD1963_GRAY  			 			0X8430 //灰色
-//GUI颜色
-
-//#define DARKBLUE      	 	0X01CF	//深蓝色
-//#define LIGHTBLUE      	 	0X7D7C	//浅蓝色  
-//#define GRAYBLUE       	 	0X5458 //灰蓝色
-//以上三色为PANEL的颜色 
- 
-//#define LIGHTGREEN     	 	0X841F //浅绿色
-//#define LGRAY 			 			0XC618 //浅灰色(PANNEL),窗体背景色
-
-//#define LGRAYBLUE        	0XA651 //浅灰蓝色(中间层颜色)
-//#define LBBLUE           	0X2B12 //浅棕蓝色(选择条目的反色)
-
-//extern	char *Char_Buffer;
-//extern  u16 BACK_COLOR, POINT_COLOR;   //背景色，画笔色
-
-//sbit LCD_RS = P3^5;  		 //数据/命令切换
-//sbit LCD_WR = P3^6;		  //写控制
-//sbit LCD_RD =P3^7;		     //读控制
-//sbit LCD_CS=P1^0;		//片选	
-//sbit LCD_REST = P1^2;	      //复位 
-
-
-
-
-#define OFF 0
-#define	ON	1
-
-#define Status_L	0
-#define Status_H	1
-
-
 
 #define LCD_HDP 799			//水平像素点个数
 #define LCD_HT	928			//显示时长 928
@@ -196,69 +149,10 @@ enum SSD1963REG
 
 
 void SSD1963_Initialize(void*	pInfo);
-//void SSD1963_BackLightOn(void);
-//void SSD1963_BackLightOff(void);
+
 void SSD1963_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);
 void SSD1963_PowerOn(void);
-//void SSD1963_Delay(u16 xms);
 
-//void SSD1963_PinConf(SSD1963_Pindef *Pinfo);
-
-//void SSD1963_Configuration(void);		//管脚初始化
-
-
-
-//void SSD1963_Writ_Bus(unsigned short BUS_DATA);   //并行数据写入函数
-//void SSD1963_WR_DATA8(char VH,char VL); //发送数据-8位参数
-//void SSD1963_WR_DATA8(char VH,char VL); //发送数据-8位参数
-	
-//void SSD1963_Init(void); 
-
-
-
-
-
-
-
-
-
-
-//void SSD1963_Clear(u16 Color);
-
-//void LCD_WR_DATA8(char VH,char VL); //发送数据-8位参数
-//void SSD1963_WR_DATA(unsigned short data);				//写数据
-//void SSD1963_WR_COMMAND(unsigned short Command);			//写命令
-
-
-//void SSD1963_ShowString(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);		//显示字符串
-//void SSD1963_ShowChar(unsigned short x,unsigned short y,unsigned char num,unsigned char mode);								//显示一个字符
-
-
-
-//void SSD1963_DrawPoint(unsigned short x,unsigned short y);//画点
-//void SSD1963_DrawPoint_big(unsigned short x,unsigned short y);//画一个大点
-//u16  SSD1963_ReadPoint(unsigned short x,unsigned short y); //读点
-//void SSD1963_DrawCircle(unsigned short x0,unsigned short y0,unsigned char r);
-//void SSD1963_DrawLine(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);						//画直线
-//void SSD1963_DrawRectangle(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);				//画矩形框	   
-//void SSD1963_Fill(unsigned short xsta,unsigned short ysta,unsigned short xend,unsigned short yend,unsigned short color);	//填充--清屏
-//void SSD1963_ShowCharGT(u16 x,u16 y,u8 font,u8 num,u8 *Buffer);		//高通字库测试程序-----备删除/SSD1963_ShowString
-
-
-//void SSD1963_ShowNum(unsigned short x,unsigned short y,unsigned long num,unsigned char len);									//显示数字
-//void SSD1963_ShowEn(unsigned short x,unsigned short y,unsigned long num);													//显示单字节字符
-//void SSD1963_Show2Num(unsigned short x,unsigned short y,unsigned short num,unsigned char len);//显示2个数字串，包含数字
-
-
-
-//void SSD1963_ShowStringbac(unsigned short x,unsigned short y,const unsigned char *p);		 //显示一个字符串,16字体
- 
-
-//void RGB888ToRGB565(unsigned char Color_R,unsigned char Color_G,unsigned char Color_B,unsigned short *RGB565);			//RGB888转RGB565颜色(分别取高位)
-
-
-//void SSD1963_Configuration(void);
-//void SSD1963_Server(void);
 
 
 #endif

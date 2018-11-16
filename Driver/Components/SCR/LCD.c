@@ -87,15 +87,13 @@ void LCD_Initialize(LCDDef *pInfo)
 	GT32L32_Initialize(&pInfo->GT32L32.SPI);				//普通SPI通讯方式配置
 }
 /*******************************************************************************
-*函数名			:	LCD_Initialize
-*功能描述		:	LCD初始化：
+*函数名			:	LCDFsmc_Initialize
+*功能描述		:	FSMC接口LCD初始化：
 *输入				: 
 *返回值			:	无
 *******************************************************************************/
 void LCDFsmc_Initialize(LCDDef *pInfo)
-{
-  
-  
+{  
 	static unsigned short	DeviceCode	=	0;
   GPIO_InitTypeDef                GPIO_InitStructure;
 	FSMC_NORSRAMInitTypeDef         FSMC_NORSRAMInitStructure;
@@ -137,7 +135,7 @@ void LCDFsmc_Initialize(LCDDef *pInfo)
   GPIO_SetBits(GPIOD, GPIO_Pin_5);
   //--------------NE4=0
   GPIO_ResetBits(GPIOG, GPIO_Pin_12);
-  SysTick_DeleymS(100); 
+  LCD_DelaymS(100); 
   
   //===========================FSMC初始化
   
@@ -190,7 +188,7 @@ void LCDFsmc_Initialize(LCDDef *pInfo)
   //===========================函数地址
   LCDSYS->Display.WriteIndex    = LCDFsmc_WriteIndex;
   LCDSYS->Display.WriteData     = LCDFsmc_WriteData;
-  LCDSYS->Display.WriteCommand  = LCDFsmc_WriteCommand;
+  LCDSYS->Display.WriteCommand  = LCD_WriteCommand;
   //==========================驱动配置
   SSD1963_Initialize(pInfo);
 
@@ -227,58 +225,28 @@ void LCD_Reset(void)
 	LCD_RST_HIGH;
 	LCD_DelaymS(10);				//SysTick延时nmS
 }
-/**************************************************************************************************
-* [Function] R61509V_DispOff:  关闭R61509V显示( 黑屏?)
-* [No param]
-**************************************************************************************************/
-void LCD_WriteIndexStart( void )
-{
-	LCD_CS_LOW; 	//片选信号 0:片选;1:失能;
-	LCD_DC_LOW; 	//命令/数据：0：命令;1-数据
-	LCD_RD_HIGH;	//读信号;0:读数据
-}
-/**************************************************************************************************
-* [Function] R61509V_DispOff:  关闭R61509V显示( 黑屏?)
-* [No param]
-**************************************************************************************************/
-void LCD_WriteIndexEnd( void )
-{
-	LCD_CS_HIGH;	//片选信号 0:片选;1:失能;
-}
+
 /**************************************************************************************************
 * [Function] R61509V_DispOff:  关闭R61509V显示( 黑屏?)
 * [No param]
 **************************************************************************************************/
 void LCD_WriteIndex( unsigned short Index )
 {
-	LCD_CS_LOW; 	//片选信号 0:片选;1:失能;
-	LCD_DC_LOW; 	//命令/数据：0：命令;1-数据
-	LCD_WriteData(Index);
-	LCD_DC_HIGH; 	//命令/数据：0：命令;1-数据
-}
-/**************************************************************************************************
-* [Function] R61509V_DispOff:  关闭R61509V显示( 黑屏?)
-* [No param]
-**************************************************************************************************/
-void LCD_WriteDataStart( void )
-{
-	LCD_CS_LOW; 	//片选信号 0:片选;1:失能;
-	LCD_DC_HIGH; 	//命令/数据：0：命令;1-数据
-	LCD_RD_HIGH;	//读信号;0:读数据
-}
-/**************************************************************************************************
-* [Function] R61509V_DispOff:  关闭R61509V显示( 黑屏?)
-* [No param]
-**************************************************************************************************/
-void LCD_WriteDataEnd( void )
-{
-	LCD_DC_LOW; 	//数据
+//	LCD_CS_LOW; 	//片选信号 0:片选;1:失能;
+//	LCD_DC_LOW; 	//命令/数据：0：命令;1-数据
+//	LCD_WriteData(Index);
+//	LCD_DC_HIGH; 	//命令/数据：0：命令;1-数据
+	
+	LCD_CS_LOW;
+	LCD_RD_HIGH;
+	LCD_RS_LOW;
+	LCD_DATABUS_PORT->ODR = Index;
+	LCD_WR_LOW;
+	LCD_WR_HIGH;
 	LCD_CS_HIGH;
 }
-
-#if 1
 /*******************************************************************************
-* 函数名			:	R61509V_WriteData
+* 函数名			:	LCD_WriteData
 * 功能描述		:	写16位数据
 * 输入			: void
 * 返回值			: void
@@ -288,9 +256,75 @@ void LCD_WriteDataEnd( void )
 *******************************************************************************/
 void LCD_WriteData(u16 Data)
 {
+#if 1	//16位数据接口
+//	LCD_WR_LOW;
+//	LCD_DATABUS_PORT->ODR = Data;		
+//	LCD_WR_HIGH;
+	
+	LCD_CS_LOW;
+	LCD_RD_HIGH;
+	LCD_RS_HIGH;
+	LCD_DATABUS_PORT->ODR = Data;
+	LCD_WR_LOW;
+	LCD_WR_HIGH;
+	LCD_CS_HIGH;
+#else	//8位数据接口
+	LCD_CS_LOW;
+	LCD_RD_HIGH;
+	LCD_RS_HIGH;
+	//----------高8位
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Data>>8;		
+	LCD_WR_HIGH;
+	//----------低8位
 	LCD_WR_LOW;
 	LCD_DATABUS_PORT->ODR = Data;		
 	LCD_WR_HIGH;
+	
+	LCD_CS_HIGH;
+#endif
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void LCDFsmc_WriteIndex(unsigned short Index)
+{  
+  *(volatile unsigned short*)(LCDSYS->Data.FsmcRegAddr)  = Index;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void LCDFsmc_WriteData(unsigned short Data)
+{  
+  *(volatile unsigned short*)(LCDSYS->Data.FsmcDataAddr)  = Data;
+}
+/*******************************************************************************
+*函数名			:	R61509V_WriteCommand
+*功能描述		:	写完整控制命令
+*输入				: 
+*返回值			:	无
+*******************************************************************************/
+void LCD_WriteCommand(												  //写完整控制命令
+											unsigned short Index,			//寄存器索引
+											unsigned short Command		//命令
+											)	//写完整控制命令
+{
+	//==================写地址
+  LCDSYS->Display.WriteIndex(Index);	
+	//==================写数据
+  LCDSYS->Display.WriteData(Command);
 }
 /**************************************************************************************************
 * [Function] R61509V_ReadData:  从R61509V读取数据
@@ -322,95 +356,6 @@ u16 LCD_ReadData( unsigned short Index )
 	GPIO_Configuration_OPP50	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	return Data;	
 }
-#else
-/*******************************************************************************
-* 函数名			:	R61509V_WriteData
-* 功能描述		:	写8位数据
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-void LCD_WriteData(u16 Data)
-{
-	LCD_WR_LOW;
-	LCD_DATABUS_PORT->ODR = Data>>8;		
-	LCD_WR_HIGH;
-	
-	LCD_WR_LOW;
-	LCD_DATABUS_PORT->ODR = Data;		
-	LCD_WR_HIGH;
-}
-#endif
-/*******************************************************************************
-*函数名			:	R61509V_WriteCommand
-*功能描述		:	写完整控制命令
-*输入				: 
-*返回值			:	无
-*******************************************************************************/
-void LCD_WriteCommand(												  //写完整控制命令
-											unsigned short Index,			//寄存器索引
-											unsigned short Command		//命令
-											)	//写完整控制命令
-{
-	//==================写地址
-//	LCD_WriteIndexStart();	
-//	LCD_WriteData(Index);
-//	LCD_WriteIndexEnd();
-  LCDSYS->Display.WriteIndex(Index);
-	
-	//==================写数据
-//	LCD_WriteDataStart();
-//	LCD_WriteData(Command);
-//	LCD_WriteDataEnd();
-  LCDSYS->Display.WriteData(Command);
-}
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	function
-*输入				: 
-*返回值			:	无
-*修改时间		:	无
-*修改说明		:	无
-*注释				:	wegam@sina.com
-*******************************************************************************/
-void LCDFsmc_WriteIndex(unsigned short Index)
-{  
-  *(volatile unsigned short*)(LCDSYS->Data.FsmcRegAddr)  = Index;
-}
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	function
-*输入				: 
-*返回值			:	无
-*修改时间		:	无
-*修改说明		:	无
-*注释				:	wegam@sina.com
-*******************************************************************************/
-void LCDFsmc_WriteData(unsigned short Data)
-{  
-  *(volatile unsigned short*)(LCDSYS->Data.FsmcDataAddr)  = Data;
-}
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	function
-*输入				: 
-*返回值			:	无
-*修改时间		:	无
-*修改说明		:	无
-*注释				:	wegam@sina.com
-*******************************************************************************/
-void LCDFsmc_WriteCommand(										  //写完整控制命令
-											unsigned short Index,			//寄存器索引
-											unsigned short Command		//命令
-											)	//写完整控制命令
-{
-  LCDFsmc_WriteIndex(Index);
-  LCDFsmc_WriteData(Command);
-}
-
-
 
 /*******************************************************************************
 *函数名			:	LCD_Clean
@@ -480,9 +425,6 @@ void LCD_DrawDot(
 {
 	LCDSYS->Display.WriteAddress(HSX,HSY,HSX,HSY);	//设置光标位置
   LCDSYS->Display.WriteData(Color);
-//	LCD_WriteDataStart();
-//	LCD_WriteData(Color); 	//笔画颜色
-//	LCD_WriteDataEnd();
 }
 /*******************************************************************************
 *函数名		:	LCD_DrawLine
@@ -513,10 +455,10 @@ void LCD_DrawLine(
 	else if(delta_x==0)
 		incx=0;//垂直线 
 	else
-		{
-			incx=-1;
-			delta_x=-delta_x;
-		}
+	{
+		incx=-1;
+		delta_x=-delta_x;
+	}
 		
 	if(delta_y>0)
 		incy=1; 
@@ -563,12 +505,6 @@ void LCD_DrawCircle(
 {
 	int a,b;
 	int di;
-	
-//	void ( *DSPDrawDot )(unsigned short HSX,unsigned short HSY,unsigned short Color);
-//	void ( *DSPDrawLine )( unsigned short HSX,unsigned short HSY,unsigned short HEX,unsigned short HEY,unsigned short Color);
-//	DSPDrawDot	=	LcdDisplay.DSPDrawDot;
-//	DSPDrawLine	=	LcdDisplay.DSPDrawLine;
-	
 	a=0;b=r;	  
 	di=3-(r<<1);             //判断下个点位置的标志
 	while(a<=b)
@@ -901,8 +837,7 @@ void LCD_Show(
 			LCD_ShowWord(x,y,font,PenColor,GetBufferLength,CodeBuffer);
 			//A5=====================水平显示地址增加
       x+=font;
-			i++;		//双字节，减两次
-			
+			i++;		//双字节，减两次			
 		}
 		//B=====================单字节--ASCII字符集
 		else
@@ -1077,14 +1012,6 @@ void LCD_ShowBMP(
 //  LCD_WriteDataStart();
 	for(i=0;i<Length;)
 	{
-//    RGB565  =   (RGBBuffer[j+2]>>3);
-//    RGB565  <<= 5;
-//    RGB565  |=  (RGBBuffer[j+1]>>3);		//取5位
-//    RGB565  <<= 6;
-//    RGB565  |=  (RGBBuffer[j+0]>>3);
-//    LCD_WriteData(RGB565);
-//    j+=3;
-//    i+=3;
     RGB565  = RGB888toRGB565(&RGBBuffer[i]);
     LCDSYS->Display.WriteData(RGB565);
     i+=3;
@@ -1112,20 +1039,10 @@ unsigned  short RGB888toRGB565(u8 *RGB888)
   RGB565<<=6;
   //-----------------Blue：取5位
   RGB565  |= RGB888[0]>>3;
-
   return  RGB565;
 }
 
-/**************************************************************************************************
-* [Function] LCD_DrawPixelEx:  函数功能、注意事项等的描述
-* [param01]u16 x: description
-* [param02]u16 y: description
-* [param03]u16 color: description
-**************************************************************************************************/
-void LCD_DrawPixelEx( u16 x, u16 y, u16 color )
-{
-	LCD_DrawDot(x,y,color);		//画点
-}
+
 /*******************************************************************************
 * 函数名			:	LCD_DelayuS
 * 功能描述		:	延时x微秒

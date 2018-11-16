@@ -103,9 +103,6 @@ static void R61509V_SetWindowAddress(			//设置窗口地址
 	LCD_WriteCommand(R61509V_R003_EM,Model);						//RAM Address Set (Vertical Address) (R201h)
 	//======================================启动写入
 	LCD_WriteIndex(R61509V_R202_GDRW);		//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
-//	LCD_WriteIndexStart();	
-//	LCD_WriteData(R61509V_R202_GDRW);		//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
-//	LCD_WriteIndexEnd();
 }
 
 
