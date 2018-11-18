@@ -190,9 +190,9 @@ void TAMPER_IRQHandler(void)
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void RTC_IRQHandler(void)
-{
-}
+//void RTC_IRQHandler(void)
+//{
+//}
 
 /*******************************************************************************
 * Function Name  : FLASH_IRQHandler

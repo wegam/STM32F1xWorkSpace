@@ -111,6 +111,8 @@ typedef enum
 extern void FSMCTest_Configuration(void);
 extern void FSMCTest_Server(void);
 
+void RTC_Server(void);
+
 void Power_Configuration(void);
 void Power_Server(void);
 void LCD_Server(void);			//显示服务相关

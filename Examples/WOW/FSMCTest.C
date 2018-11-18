@@ -6,6 +6,7 @@
 //#include "stm32f10x_dma.h"
 
 #include "LCD.H"
+#include "NAND.H"
 
 
 #include "STM32F10x_BitBand.H"
@@ -19,15 +20,13 @@
 //#include "STM32_PWM.H"
 //#include "STM32_GPIO.H"
 #include "STM32_USART.H"
+#include "STM32_RTC.H"
 //#include	"image.h"
 //#include "STM32_DMA.H"
 
 //#include 	"Image.H"
-//#include 	"LinkedList.H"
-
-//#include "TM1618.H"
 //#include "MMC_SD.h"
-//#include "FatFsAPI.h"			/* 自定义API接口*/
+#include "FatFsAPI.h"			/* 自定义API接口*/
 
 //#include "STM32_SDCard.H"
 //#include "GT32L32M0180.H"
@@ -72,7 +71,7 @@ FATFS   FatFsObj[1];  //逻辑驱动器的工作区(文件系统对象)
 DIR     dir;          //目录对象结构体
 FILINFO fno;          //文件信息结构体
 FIL fsrc, fdst;       //文件对象
-//BYTE buffer[4096];    //文件拷贝缓冲区
+BYTE buffer[4096];    //文件拷贝缓冲区
 char FilSearchInf[FileNum][13]={0,0};    //存储查找到的文件名数组
 unsigned char LenName = 0;
 
@@ -106,6 +105,8 @@ void FSMCTest_Configuration(void)
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	
   Power_Configuration();
   LCD_Configuration();
+  RTC_Configuration();
+//  SD_Configuration();
   GetTime();
 
 //  res = f_open(&fsrc, "1:srcfile.dat", FA_OPEN_EXISTING | FA_READ);
@@ -119,7 +120,7 @@ void FSMCTest_Configuration(void)
 	
 //	IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
 //  SysTick_DeleymS(500);
-//  LCD_Clean(LCD565_BLUE);
+  LCD_Clean(LCD565_BLUE);
   LCD_ShowBattery(780,2,2,LCD565_GRED);   //显示12x12电池
   LCD_ShowAntenna(760,2,3,LCD565_GRED);   //显示12x12天线
   LCD_Printf(10,10,32,LCD565_BRED,"后边的省略号就是可变参数");  //后边的省略号就是可变参数
@@ -162,6 +163,7 @@ void FSMCTest_Server(void)
 //    i+=89;
 //  }
   ClockServer();
+  RTC_Server();
 //	LCD_Clean(LCD565_WHITE);SysTick_DeleymS(200);	
 //	LCD_Clean(LCD565_BLUE);SysTick_DeleymS(200);
 //	LCD_Clean(LCD565_BRED);SysTick_DeleymS(200);
@@ -171,6 +173,35 @@ void FSMCTest_Server(void)
 //  SysTick->LOAD=800000000;
 //  SysTick_Configuration(1000);
 }
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void RTC_Server(void)
+{
+  static unsigned char  sec=0;  
+  if(sec!=calendar.sec)
+  {
+    if(0==calendar.w_year||0==calendar.w_month||0==calendar.w_date)
+    {
+      RTC_Get();
+      if(0==calendar.w_year||0==calendar.w_month||0==calendar.w_date)
+      {
+        GetTime();
+        RTC_Set(year,month,day,hour,minute,second+9);   //编译下载时间会慢7秒
+      }
+    }
+    sec=calendar.sec;
+    LCD_Printf(0,180,32,LCD565_BRED,"RTC时钟:%0.4d年%0.2d月%0.2d日%0.2d时%0.2d分%0.2d秒",
+    calendar.w_year,calendar.w_month,calendar.w_date,calendar.hour,calendar.min,calendar.sec);
+  }
+}
+
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
@@ -364,5 +395,127 @@ void LCD_Configuration(void)
 	sLCD.GT32L32.SPI.Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
   
   LCDFsmc_Initialize(&sLCD);  
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void SD_Configuration(void)
+{
+  u16 da=0;
+  u16 color;
+  
+  
+  
+  LCD_Printf (0,0,16,LCD565_GREEN,"STM32F1xWorkSpace--(MmcSDTest)SD卡读取");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  LCD_Printf (0,16,16,LCD565_GREEN,"为驱动器注册工作区......");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  //========================为逻辑驱动器注册工作区
+  result = f_mount(&FatFsObj[0],"0:",1);    //在FatFs模块上注册/注销一个工作区(文件系统对象)
+  if(0  ==  result)
+  {
+    u32 sd_size;
+    u32 free;
+    LCD_Printf (0,32,16,LCD565_GREEN,"驱动器注册成功");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    //========================得到容量信息，包括总容量和剩余容量
+    result = SD_disk_getcapacity("0",&sd_size,&free);
+    if(0  ==  result)
+    {
+      LCD_Printf (0,48,16,LCD565_GREEN,"SD卡容量%dKByte,%dMB,%0.5fGB",sd_size,sd_size>>10,(double)(sd_size>>10)/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      //========================获取剩余容量    
+      LCD_Printf (0,64,16,LCD565_GREEN,"SD卡剩余容量%dKByte,%dMB,%0.5fGB",free,free>>10,(double)(free>>10)/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      free  = sd_size-free;
+      LCD_Printf (0,80,16,LCD565_GREEN,"已用容量%dKByte,%dMB,%0.5fGB",free,free>>10,(double)(free>>10)/1024);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    }
+    else
+    {
+      LCD_Printf (0,48,16,LCD565_GREEN,"容量信息查询失败");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+      return;
+    }
+  }
+  else
+  {
+    LCD_Printf (0,32,16,LCD565_GREEN,"驱动器注册失败");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    return;
+  }
+  //========================查找指定文件
+  LCD_Printf (0,96,16,LCD565_GREEN,"查找指定文件:bmp");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+  result  = FilSearch(&FatFsObj[0],&dir,"0:/","bmp",FilSearchInf);  //在指定路径下查找指定扩展名的文件，并记录在(*p)[13]数组中，注意最大记录条数
+  if(0 != result)
+  {
+    unsigned short    i=0;
+    unsigned short    j = 0;
+    unsigned short    flg=0;
+    LCD_Printf (0,112,16,LCD565_GREEN,"查找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+    for(i=0;i<FileNum;i++)
+    {
+      if(0  !=  FilSearchInf[i][0])
+      {
+        unsigned char k = 0;
+        for(k=0;k<13;++k)
+        {
+          if(0  ==  FilSearchInf[i][k])
+            break;
+        }
+        //===============打印查找的bmp文件名
+        LCD_Show(0,128+i*16,16,LCD565_GREEN,k,FilSearchInf[i]);
+      }
+    }
+    while(1)
+    {
+//      i=0;
+//      j=0;
+      //===============================图片1
+      for(i=0;i<FileNum;i++)
+      {
+        if(FilSearchInf[i][0] !=0)
+        {
+          yv  = 0;
+          flg = 0;
+          result  = f_open(&fsrc,&FilSearchInf[i][0],FA_READ);
+//          if(result)
+//            break;
+          for(j=0;j<480;j++)
+          {
+            if(flg==0)
+            {
+              result  = f_read(&fsrc,buffer,54,&br);
+            }
+            else
+            {
+              result  = f_read(&fsrc,buffer,2400,&br);
+            }
+            if(FR_OK  !=  result)
+            {
+    //          return;
+            }
+            da  = 0;
+            if(flg==0)
+            {
+              flg = 1;
+              da  = 0;
+              result  = f_read(&fsrc,buffer,2400,&br);
+            }
+
+            LCD_ShowBMP(0,yv,800,yv,br,buffer);    //显示十六进制数据
+            yv+=1;
+            if(yv>=480)
+              yv  = 0;
+          }
+//          SysTick_DeleyS(3);					//SysTick延时nS
+        }
+      }           
+    }    
+  }
+  else
+  {    
+    LCD_Printf (0,112,16,LCD565_GREEN,"未找到bmp文件");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数    
+  }
+//  f_getfree();  
+
 }
 #endif

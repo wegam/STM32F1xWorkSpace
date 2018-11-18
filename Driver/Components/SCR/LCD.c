@@ -983,7 +983,7 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...)			
 
 	//7)**********结束可变参数的获取
 	va_end(args);                                      		
-  if((12!=font)&&(16!=font)&&(24!=font)&&(32!=font))
+  if((8!=font)&&(12!=font)&&(16!=font)&&(24!=font)&&(32!=font))
   {
     font  = 24;
   }
