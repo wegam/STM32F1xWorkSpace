@@ -127,7 +127,7 @@ void FSMCTest_Configuration(void)
 	PWM_OUT(TIM2,PWM_OUTChannel1,2000,900);						//PWM…Ë∂®-20161127∞Ê±æ
   
   SysTick_Configuration(1000);
-//  SysTick_DeleymS(500);
+
 //  LCD_Clean(LCD565_WHITE);
 //	while(1)
 //	{
