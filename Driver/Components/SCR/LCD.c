@@ -524,11 +524,11 @@ void LCD_Clean(u16 Color)	//清除屏幕函数
 	{
 		for(y=0;y<MaxV;y++)
 		{
-//			LCDSYS->Display.WriteData(Color);							//写数据
-			R61509V_WriteGRAM(&Color,1);
+			LCDSYS->Display.WriteData(Color);							//写数据
+//			R61509V_WriteGRAM(&Color,1);
 		}
 	}	
-//	LCD_WriteDataEnd();										//写数据完成
+
 }
 
 /*******************************************************************************

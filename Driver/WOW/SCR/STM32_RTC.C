@@ -62,7 +62,7 @@ void RTC_Configuration(void)
   RTC_WaitForLastTask();
   /* 配置了预分频值: 设置RTC时钟周期为1s */
   //RTC_SetPrescaler(32767); /* RTC period = RTCCLK/RTC_PR = (32.768 KHz)/(32767+1)*/   //24小时会快9秒
-  RTC_SetPrescaler(32770); /* RTC period = RTCCLK/RTC_PR = (32.768 KHz)/(32767+1)*/
+  RTC_SetPrescaler(32775); /* RTC period = RTCCLK/RTC_PR = (32.768 KHz)/(32767+1)*/
   /* 等待对RTC寄存器最后的写操作完成 */
   RTC_WaitForLastTask();
   /* 使能RTC秒中断 */ 
