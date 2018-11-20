@@ -23,6 +23,7 @@
 #include "ILI9326.h"
 #include "SSD1963.H"
 
+#define		Bus16Bit
 LCDDef 			*LCDSYS	=	NULL;	//内部驱动使用，不可删除
 unsigned short PenColor		=	0;		//画笔颜色
 unsigned short BackColor	=	0;		//背景颜色
@@ -57,7 +58,7 @@ void LCD_Initialize(LCDDef *pInfo)
   LCDSYS->Display.WriteCommand  = LCD_WriteCommand;
 	//==========================驱动芯片检测
 	LCD_Reset();
-	DeviceCode	=	LCD_ReadData(LCD_R000_IR);
+	DeviceCode	=	LCD_ReadData(0x0000);
 	
 	if(R61509ID	==	DeviceCode)
 	{
@@ -219,9 +220,9 @@ void LCDFsmc_Initialize(LCDDef *pInfo)
 void LCD_Reset(void)
 {
 	LCD_RST_HIGH;
-	LCD_DelaymS(10);				//SysTick延时nmS
+	LCD_DelaymS(5);				//SysTick延时nmS
 	LCD_RST_LOW;
-	LCD_DelaymS(10);				//SysTick延时nmS
+	LCD_DelaymS(5);				//SysTick延时nmS
 	LCD_RST_HIGH;
 	LCD_DelaymS(10);				//SysTick延时nmS
 }
@@ -340,21 +341,137 @@ u16 LCD_ReadData( unsigned short Index )
 	LCD_RD_HIGH;
 	LCD_CS_LOW;
 	LCD_RS_LOW;
-	LCD_WR_LOW;
+
 	LCD_DATABUS_PORT->ODR = Index;
+	LCD_WR_LOW;
 	LCD_WR_HIGH;
 	LCD_RS_HIGH;
-	LCD_DelaymS(10);
+
 	GPIO_Configuration_IPU	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
   
 	LCD_RD_LOW;
-  LCD_DelaymS(10);
+
 	Data = LCD_DATABUS_PORT->IDR;
 	LCD_RD_HIGH;
 	LCD_CS_HIGH;
 	
 	GPIO_Configuration_OPP50	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	return Data;	
+}
+/*******************************************************************************
+* 函数名			:	LCD_WriteRegister
+* 功能描述		:	写指定寄存器 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void LCD_WriteRegister(unsigned	short	Index,unsigned short Data)
+{
+#ifdef	Bus16Bit
+	//---------------------Write Index
+	LCD_RD_HIGH;
+	LCD_CS_LOW;
+	
+	LCD_DC_LOW;		//RS
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Index;
+	LCD_WR_HIGH;
+	LCD_DC_HIGH;	//RS
+	//---------------------Write Data
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Data;
+	LCD_WR_HIGH;
+	LCD_CS_HIGH;	
+#else
+	//---------------------Write Index
+	LCD_RD_HIGH;
+	LCD_CS_LOW;
+	
+	LCD_DC_LOW;		//RS
+	
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Index>>8;
+	LCD_WR_HIGH;
+	
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Index;
+	LCD_WR_HIGH;
+	
+	LCD_DC_HIGH;	//RS
+	//---------------------Write Data
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Data>>8;
+	LCD_WR_HIGH;
+	
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Data;
+	LCD_WR_HIGH;
+	
+	LCD_CS_HIGH;		
+#endif
+}
+/*******************************************************************************
+* 函数名			:	LCD_ReadRegister
+* 功能描述		:	读指定寄存器 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short LCD_ReadRegister(unsigned	short	Index)
+{
+	unsigned short Data	=	0;
+#ifdef	Bus16Bit
+	//---------------------Write Index
+	LCD_RD_HIGH;
+	LCD_CS_LOW;
+	
+	LCD_DC_LOW;		//RS
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Index;
+	LCD_WR_HIGH;
+	LCD_DC_HIGH;	//RS
+	//---------------------Write Data
+	GPIO_Configuration_IPU	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
+	LCD_RD_LOW;
+	Data	=	LCD_DATABUS_PORT->IDR;
+	LCD_RD_HIGH;
+	LCD_CS_HIGH;
+	GPIO_Configuration_OPP50	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+#else
+	//---------------------Write Index
+	LCD_RD_HIGH;
+	LCD_CS_LOW;
+	
+	LCD_DC_LOW;		//RS
+	
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Index>>8;
+	LCD_WR_HIGH;
+	
+	LCD_WR_LOW;
+	LCD_DATABUS_PORT->ODR = Index;
+	LCD_WR_HIGH;
+	
+	LCD_DC_HIGH;	//RS
+	//---------------------Write Data
+	GPIO_Configuration_IPU	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
+	LCD_RD_LOW;
+	Data	=	LCD_DATABUS_PORT->IDR;
+	LCD_RD_HIGH;
+	
+	Data	<<=8;
+	
+	LCD_RD_LOW;
+	Data	|=	LCD_DATABUS_PORT->IDR;
+	LCD_RD_HIGH;	
+	LCD_CS_HIGH;
+	GPIO_Configuration_OPP50	(LCD_DATABUS_PORT,LCD_DATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+#endif
+	return Data;
 }
 
 /*******************************************************************************
@@ -367,6 +484,7 @@ void LCD_Clean(u16 Color)	//清除屏幕函数
 {
 	unsigned short x,y;
 	unsigned short HSX,HEX,HSY,HEY,MaxH,MaxV;
+	unsigned long	length	=	0;
 	eRotate	Rotate	=	LCDSYS->Flag.Rotate;
 	
 	MaxH	=	LCDSYS->Data.MaxH;
@@ -399,13 +517,15 @@ void LCD_Clean(u16 Color)	//清除屏幕函数
 					HEY	=	MaxH-1;
 			break;			
 	}
+	length	=	(unsigned long)MaxH*MaxV;
 	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);		//写入地址区域
-//	LCD_WriteDataStart();									//写数据使能	
+//	R61509V_WriteGRAM(Color,length);
 	for(x=0;x<MaxH;x++)
 	{
 		for(y=0;y<MaxV;y++)
 		{
-			LCDSYS->Display.WriteData(Color);							//写数据
+//			LCDSYS->Display.WriteData(Color);							//写数据
+			R61509V_WriteGRAM(&Color,1);
 		}
 	}	
 //	LCD_WriteDataEnd();										//写数据完成
@@ -832,7 +952,7 @@ void LCD_Show(
         y=x=0;
       }
       //A3=====================读取点阵数据
-			GetBufferLength	=	GT32L32_ReadCode(font,word,CodeBuffer);		//从字库中读数据并返回数据长度
+			GetBufferLength	=	GT32L32_GetCode(font,word,CodeBuffer);		//从字库中读数据并返回数据长度
 			//A4=====================写入屏幕
 			LCD_ShowWord(x,y,font,PenColor,GetBufferLength,CodeBuffer);
 			//A5=====================水平显示地址增加
@@ -854,7 +974,7 @@ void LCD_Show(
         y=x=0;
       }
       //B3=====================读取点阵数据
-			GetBufferLength	=	GT32L32_ReadCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
+			GetBufferLength	=	GT32L32_GetCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
 			//=======================水平制表符按空格显示(部分字库会当0xFF输出)
 			if(	('	'	==	(char)dst)		//水平制表符
 				||(' '	==	(char)dst))		//空格
@@ -937,7 +1057,7 @@ void LCD_ShowHex(
         y=x=0;
       }
       //3=====================读取点阵数据
-      GetBufferLength	=	GT32L32_ReadCode(font,dst,CodeBuffer);		//从字库中读数据并返回数据长度
+      GetBufferLength	=	GT32L32_GetCode(font,dst,CodeBuffer);		//从字库中读数据并返回数据长度
       //4=====================写入屏幕
       LCD_ShowChar(x,y,font,color,GetBufferLength,CodeBuffer);
       //5=====================显示地址增加

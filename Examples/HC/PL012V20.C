@@ -102,22 +102,6 @@ u16 color	=	0;
  u8 second;
 
 unsigned char Version[]="PL012V2.0 RF智能耗材管理柜";
-//unsigned char DataStr[]=__DATE__;
-//unsigned char	TimeStr[]=__TIME__;
-
-//typedef struct
-//{
-// u16 year; 
-// u8 month;
-// u8 day;
-// u8 hour;
-// u8 minute;
-// u8 second;
-//}t_SysTime;
-
-//t_SysTime SysTime;
-
-
 
 
 void GetTime(void);
@@ -152,20 +136,14 @@ void PL012V20_Configuration(void)
 	LCD_ShowAntenna(380,0,3,LCD565_WHITE);   //显示12x12电池
 	
 	
-	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(0x0000));		//编译日期
 	LCD_Printf(0,0,16,LCD565_YELLOW,"项目编号:%s",Version);		//项目编号
 //  LCD_Printf(0,220,16,LCD565_RED,"编译时间:%4d-%0.2d-%0.2d-%s",year,month,day,__TIME__); 	//编译时间
   LCD_Printf(0,220,16,LCD565_WHITE,"%0.2d:",hour);		//编译日期
   LCD_Printf(8*3,220,16,LCD565_WHITE,"%0.2d:",minute);		//编译日期
   LCD_Printf(8*6,220,16,LCD565_WHITE,"%0.2d",second);		//编译日期
 	
-	LCD_Printf(0,0,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
-	LCD_Printf(0,40*1,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
-	LCD_Printf(0,40*2,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
-	LCD_Printf(0,40*3,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
-	LCD_Printf(0,40*4,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
-//	LCD_Printf(0,40*5,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
-//	LCD_Printf(0,32*6,32,LCD565_RED,"显示驱动:%4X",LCD_ReadData(LCD_R000_IR));		//编译日期
+
   
   SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 }
@@ -208,20 +186,7 @@ void PL012V20_Server(void)
 	{
 		Time	=	0;
     ClockServer();
-//		if(WriteFlag	==	0)
-//		{
-//			WriteFlag	=	1;
-//			LCD_Clean(LCD565_YELLOW);
-//		}
-//		else
-//		{
-//			WriteFlag	=	0;
-//			LCD_Clean(LCD565_RED);
-//		}
 	}
-	
-//	ID	=	LCD_ReadData(LCD_R000_IR);
-	
 //	LCD_Fill(10,10,50,50,LCD565_WHITE);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	
 //	LCD_ShowBattery(360,0,2,LCD565_RED);   //显示12x12电池
@@ -232,48 +197,9 @@ void PL012V20_Server(void)
 //	LCD_Display();
 //	return;
 	PD014Test_Server();
-	
-	
-	
-//	return;
+
 //	RS485_Server();
 	return;
-//	if(DelayTime++>=500)
-//	{
-//		DelayTime	=	0;
-//	}
-//	if(LCDTime++>=1000)
-//	{
-//		LCDTime	=	0;
-////		R61509V_Clean(R61509V_BRED); 					//清除屏幕函数
-//		LCD_Display();
-//	}
-//	SwitchID_Server();
-	 
-//	if(LCDTime==500)
-//	{
-//		PL010V13_PrintfString(0		,134+50+16	,16	,"发药层控制器通信异常！！！！");				//错误状态
-//	}
-//	else if(LCDTime==1000)
-//	{
-//		PL010V13_PrintfString(0		,134+50+16	,16	,"XXXXXXXXXXXXXXXXXXXXXXXXXX");				//错误状态
-//	}	
-
-	
-#if 0
-	if(DelayTime==0)
-	{
-		
-		DelayTime=0;
-		CS5530_ADC_Value=CS5530_ReadData(&CS5530);	//读取AD值，如果返回0xFFFFFFFF,则未读取到24位AD值
-//		R61509V_Clean(R61509V_BLACK); 					//清除屏幕函数
-//		R61509V_ShowEn(0,0,CS5530_ADC_Value);
-//		PL010V13_PrintfString(0		,0	,16	,"%2d",SwitchID);				//待发药槽位，后边的省略号就是可变参数
-		PL010V13_PrintfString(120		,100	,32	,"%8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
-	}
-#endif
-	
-
 }
 /*******************************************************************************
 *函数名			:	function
@@ -662,31 +588,31 @@ void LCD_Configuration(void)
 	//=======================LCD端口
 	LCDPortDef	*LcdPort	=	&sLCD.Port;
 	
-	LcdPort->sCS_PORT	=	GPIOB;
-	LcdPort->sCS_Pin	=	GPIO_Pin_7;
+	LcdPort->sCS_PORT	=	LcdCsPort;
+	LcdPort->sCS_Pin	=	LcdCsPin;
 
-	LcdPort->sDC_PORT	=	GPIOB;
-	LcdPort->sDC_Pin	=	GPIO_Pin_6;
+	LcdPort->sDC_PORT	=	LcdDcPort;
+	LcdPort->sDC_Pin	=	LcdDcPin;
 	
-	LcdPort->sWR_PORT	=	GPIOB;
-	LcdPort->sWR_Pin	=	GPIO_Pin_8;
+	LcdPort->sWR_PORT	=	LcdWrPort;
+	LcdPort->sWR_Pin	=	LcdWrPin;
 	
-	LcdPort->sRD_PORT	=	GPIOB;
-	LcdPort->sRD_Pin	=	GPIO_Pin_5;
+	LcdPort->sRD_PORT	=	LcdRdPort;
+	LcdPort->sRD_Pin	=	LcdRdPin;
 	
-	LcdPort->sREST_PORT	=	GPIOB;
-	LcdPort->sREST_Pin	=	GPIO_Pin_9;
+	LcdPort->sREST_PORT	=	LcdRestPort;
+	LcdPort->sREST_Pin	=	LcdRestPin;
 	
-	LcdPort->sBL_PORT		=	GPIOB;
-	LcdPort->sBL_Pin		=	GPIO_Pin_0;
+	LcdPort->sBL_PORT		=	LcdBlPort;
+	LcdPort->sBL_Pin		=	LcdBlPin;
 	
-	LcdPort->sTE_PORT		=	GPIOB;
-	LcdPort->sTE_Pin		=	GPIO_Pin_4;
+	LcdPort->sTE_PORT		=	LcdTePort;
+	LcdPort->sTE_Pin		=	LcdTePin;
 	
-	LcdPort->sDATABUS_PORT	=	GPIOC;
-	LcdPort->sDATABUS_Pin		=	GPIO_Pin_All;
+	LcdPort->sDATABUS_PORT	=	LcdBusPort;
+	LcdPort->sDATABUS_Pin		=	LcdBusPin;
 	
-	sLCD.Data.BColor	=	LCD565_BLACK;
+	sLCD.Data.BColor	=	LCD565_BLUE;
 	sLCD.Data.PColor	=	LCD565_RED;
 	sLCD.Flag.Rotate	=	Draw_Rotate_270D;
 	

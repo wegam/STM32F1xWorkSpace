@@ -783,7 +783,7 @@ u32 GT32L32_GetBatteryCode(u8	NUM,u8 *GetBuffer)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-u16 GT32L32_ReadCode(
+u16 GT32L32_GetCode(
 												u8 font,								//字体大小
 												u16 word,								//字符内码值
                         u8 *ReadBuffer				  //接收数据的缓存

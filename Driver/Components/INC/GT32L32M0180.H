@@ -98,7 +98,7 @@ typedef enum
 	
 	Reserved_BaseAddr_LSB				=	(u32)0x7F8760,			//保留区低地址
 	Reserved_BaseAddr_MSB				=	(u32)0x7FFFFF,			//保留区高地址		
-}	GT32L32_BaseAddr_TypeDef;		//字符点阵字库基地址表
+}	GT32L32BaseAddrTypeDef;		//字符点阵字库基地址表
 //----错误列表------------------------------------------------------------
 typedef enum
 {
@@ -139,7 +139,7 @@ void GT32L32_ChipErase(GT32L32Def *pInfo);		//擦除用户区数据
 //----------------------------------------------------------接口函数
 u32 GT32L32_GetAntennaCode(u8	NUM,u8 *GetBuffer);						//天线图标调用程序
 u32 GT32L32_GetBatteryCode(u8	NUM,u8 *GetBuffer);						//电池图标调用程序
-u16	GT32L32_ReadCode(u8 font,u16 word,u8 *ReadBuffer);		//从字库中读数据并返回数据长度
+u16	GT32L32_GetCode(u8 font,u16 word,u8 *ReadBuffer);		//从字库中读数据并返回数据长度
 //u8  GT32L32_ReadWriteByte(u8 Data);		//读写一个字节
 //void GT32L32_SendByte(GT32L32Def *pInfo,u8 ByteData);		//发送一个字节数据,先发送高位
 //u8 GT32L32_ReadByte(GT32L32Def *pInfo);		//读一个字节,先读高位

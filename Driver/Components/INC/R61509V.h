@@ -24,7 +24,7 @@
 
 
 /*功能位 */
-#define R61509V_DC1_IMAGE_ENABLE_BIT	0x1000
+#define R61509V_DC1_IMAGE_ENABLE_BIT		0x1000
 #define R61509V_DC1_PARTIAL_ENABLE_BIT	0x0100
 
 #define R61509V_R000_IR			( (u16) 0x0000) 	//Device code read Index (IR)/*[10:0]REG ID */
@@ -86,11 +86,17 @@
 
 void R61509V_Initialize(void*	pInfo);
 
+void R61509V_WriteCommand(unsigned	short	Index,unsigned short Cmd);
+void R61509V_WriteRegister(unsigned	short	Index,unsigned short Data);		//写指定寄存器
+unsigned short R61509V_ReadRegister(unsigned	short	Index);							//读指定寄存器
 
-static void R61509V_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
-static void R61509V_PowerOn(void);					//按照主控芯片R61509V的power supply on sequence 进行配置
-static void R61509V_PowerOff( void );		//关闭R61509V 电源
-static void R61509V_DispOff( void );			//关闭R61509V显示( 黑屏?)
+void R61509V_WriteGRAM(unsigned	short* RAM,unsigned long length);				//写显示寄存器
+
+
+void R61509V_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
+void R61509V_PowerOn(void);					//按照主控芯片R61509V的power supply on sequence 进行配置
+void R61509V_PowerOff( void );		//关闭R61509V 电源
+void R61509V_DispOff( void );			//关闭R61509V显示( 黑屏?)
 
 
 #endif	//_BSP_R61509VR61509V_H_2016_

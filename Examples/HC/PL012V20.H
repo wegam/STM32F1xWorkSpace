@@ -1,6 +1,35 @@
 #ifndef __PL012V20_H
 #define __PL012V20_H
 
+
+
+#define	LcdCsPort		GPIOB
+#define	LcdCsPin		GPIO_Pin_7
+
+#define	LcdDcPort		GPIOB
+#define	LcdDcPin		GPIO_Pin_6
+	
+#define	LcdWrPort		GPIOB
+#define	LcdWrPin		GPIO_Pin_8
+	
+#define	LcdRdPort		GPIOB
+#define	LcdRdPin		GPIO_Pin_5
+	
+#define	LcdRestPort	GPIOB
+#define	LcdRestPin	GPIO_Pin_9
+	
+#define	LcdBlPort		GPIOB
+#define	LcdBlPin		GPIO_Pin_0
+	
+#define	LcdTePort		GPIOB
+#define	LcdTePin		GPIO_Pin_4
+	
+#define	LcdBusPort	GPIOC
+#define	LcdBusPin		GPIO_Pin_All
+
+
+
+
 typedef struct _sPd014
 {
 	unsigned char Head;				//起始符0x7E
@@ -26,6 +55,14 @@ typedef struct _Pd014AckFarm
 	unsigned char BCC8;				//异或检验：从目的地址开始异或到校验码前一个字节
 	unsigned char End;				//结束符0x7F
 }Pd014AckFarmDef;
+
+
+
+
+
+
+
+
 
 void PL012V20_Configuration(void);
 void PL012V20_Server(void);
