@@ -537,6 +537,9 @@ void LCD_Clean(u16 Color)	//清除屏幕函数
 		}
 	}	
 //	LCD_WriteDataEnd();										//写数据完成
+<<<<<<< HEAD
+>>>>>>> parent of 6dcaeab... 20181121 HP
+=======
 >>>>>>> parent of 6dcaeab... 20181121 HP
 }
 
