@@ -156,11 +156,22 @@ void FSMCTest_Configuration(void)
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 void FSMCTest_Server(void)
 {
+//  unsigned  short i = 0;
+//  for(i=0;i<0x1FFFFFF;i++)
+//  {
+//    LCD_Printf(10,10,32,LCD565_RED,"后边的省略号就是可变参数%0.8d",i);  //后边的省略号就是可变参数
+//    i+=89;
+//  }
   ClockServer();
   RTC_Server();
-
+//	LCD_Clean(LCD565_WHITE);SysTick_DeleymS(200);	
+//	LCD_Clean(LCD565_BLUE);SysTick_DeleymS(200);
+//	LCD_Clean(LCD565_BRED);SysTick_DeleymS(200);
+//	LCD_Clean(LCD565_GRED);SysTick_DeleymS(200);
+//	LCD_Clean(LCD565_RED);
 //  LCD_Clean(LCD565_BLACK);
-
+//  SysTick->LOAD=800000000;
+//  SysTick_Configuration(1000);
 }
 /*******************************************************************************
 *函数名			:	function
