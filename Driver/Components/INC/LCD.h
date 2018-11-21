@@ -15,8 +15,8 @@
 
 #include "STM32_PWM.H"
 
-#define	R61509ID	(unsigned short)0xB509
-#define	ILI9326ID	(unsigned short)0x9326
+
+
 //#define	LCD_H 240		//水平方向点数，从左到右+
 //#define LCD_V 400		//垂直方向点数，从上到下+
 
@@ -89,15 +89,32 @@ typedef struct	_LCDFlag		//0为无标识
 }LCDFlagDef;
 typedef struct _DisplayDriver
 {
+	//------------------待删除
 	void ( *WriteAddress )( unsigned short HSX,unsigned short HSY,unsigned short HEX,unsigned short HEY);
 	void ( *WriteIndex)(unsigned short Index);
   void ( *WriteData)(unsigned short Data);
   void ( *WriteCommand)(unsigned short Index,unsigned short Command);
+	
+	void ( *BackLightOn )(void);
+  void ( *BackLightOff )(void);
+	
+	//---------------------------
 	void ( *PowerOn )(void);
 	void ( *PowerOff )(void);
-	void ( *DispOff )(void);
-  void ( *BackLightOn )(void);
-  void ( *BackLightOff )(void);
+	void ( *DispOff )(void);	 
+	
+	void ( *DrawDot)(unsigned short HSX,unsigned short HSY,unsigned short color);		//画点
+	void ( *DrawLine)(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);						//AB 两个坐标画一条直线
+	void ( *DrawCircle)(u16 x1,u16 y1, u16 R, u8 Filled, u16 color );		//画一个圆形框
+	void ( *DrawRectangle)(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);				//画一个矩形框
+	
+	void ( *Fill )(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	void ( *Clean)(u16 Color);								//清除屏幕函数;
+	void ( *SetBackground)(u16 BackColor );
+	
+	//--------------------------------------------字符显示
+	void ( *ShowChar)(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
+	void ( *ShowWord)(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
 
 }DisplayDriverDef;
 typedef struct	_LCD
@@ -253,7 +270,8 @@ extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 
 
 //======================================外部接口
-void LCD_Initialize(LCDDef *pInfo);
+unsigned short LCD_Initialize(LCDDef *pInfo);
+
 void LCDFsmc_Initialize(LCDDef *pInfo);
 void LCD_ShowAntenna(u16 x,u16 y,u8 Num,u16 PenColor);   //显示12x12天线
 void LCD_ShowBattery(u16 x,u16 y,u8 Num,u16 PenColor); 	//显示12x12电池

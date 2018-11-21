@@ -137,14 +137,14 @@ void PL012V20_Configuration(void)
 	
 	
 	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(0x0000));		//编译日期
-	LCD_Printf(0,0,16,LCD565_YELLOW,"项目编号:%s",Version);		//项目编号
+	LCD_Printf(0,0,32,LCD565_YELLOW,"项目编号:%s",Version);		//项目编号
 //  LCD_Printf(0,220,16,LCD565_RED,"编译时间:%4d-%0.2d-%0.2d-%s",year,month,day,__TIME__); 	//编译时间
   LCD_Printf(0,220,16,LCD565_WHITE,"%0.2d:",hour);		//编译日期
   LCD_Printf(8*3,220,16,LCD565_WHITE,"%0.2d:",minute);		//编译日期
   LCD_Printf(8*6,220,16,LCD565_WHITE,"%0.2d",second);		//编译日期
 	
-
-  
+//	ILI9326_SetBackground(LCD565_BLUE);
+  LCD_Printf(0,100,16,LCD565_RED,"%s",Version);		//项目编号
   SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 }
 
@@ -187,6 +187,7 @@ void PL012V20_Server(void)
 		Time	=	0;
     ClockServer();
 	}
+
 //	LCD_Fill(10,10,50,50,LCD565_WHITE);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	
 //	LCD_ShowBattery(360,0,2,LCD565_RED);   //显示12x12电池
@@ -264,12 +265,16 @@ void PD014Test_Server(void)
 	//=================================运行指示
 	if(DspTime==500)
 	{
-		LCD_Fill(300,150,395,235,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(320,180,390,230,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(335,190,375,220,LCD565_GREEN);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(350,200,360,210,LCD565_MAGENTA);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 	else if(DspTime==1000)
 	{
 		DspTime	=	0;
-		LCD_Fill(300,150,395,235,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(320,180,390,230,LCD565_YELLOW);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(335,190,375,220,LCD565_DARKBLUE);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+		LCD_Fill(350,200,360,210,LCD565_GRAY);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	}
 }
 /*******************************************************************************
@@ -612,7 +617,7 @@ void LCD_Configuration(void)
 	LcdPort->sDATABUS_PORT	=	LcdBusPort;
 	LcdPort->sDATABUS_Pin		=	LcdBusPin;
 	
-	sLCD.Data.BColor	=	LCD565_BLUE;
+	sLCD.Data.BColor	=	LCD565_BLACK;
 	sLCD.Data.PColor	=	LCD565_RED;
 	sLCD.Flag.Rotate	=	Draw_Rotate_270D;
 	

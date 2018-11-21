@@ -17,6 +17,8 @@
 #define	ILI9326_H 240		//水平方向点数，从左到右+
 #define ILI9326_V 400		//垂直方向点数，从上到下+
 
+#define	ILI9326ID	(unsigned short)0x9326		//芯片型号标识
+	
 
 //****************************寄存器**************************
 #define ILI9326_R000_IR			( (u16) 0x0000) 	//Index (IR)/*[10:0]REG ID */
@@ -87,11 +89,41 @@
 #define ILI9326_R70B_SIT3    ( (u16) 0x070B) /*Set internal timing */
 
 
-void ILI9326_Initialize(void*	pInfo);
+unsigned short ILI9326_Initialize(void*	pInfo);
 
-void ILI9326_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
+
+//--------------------------------------------驱动层
+void ILI9326_Reset(void);
+unsigned short ILI9326_ReadData(void);
+unsigned short ILI9326_ReadRegister(unsigned	short	Index);
+
+void ILI9326_WriteData(unsigned	short	Data);
+void ILI9326_WriteAddr(unsigned	short	Addr);
+void ILI9326_WriteIndex(unsigned	short	Index);
+void ILI9326_WriteRegister(unsigned	short	Addr,unsigned short Data);
+void ILI9326_WriteCommand(unsigned	short	Index,unsigned short Cmd);
+
+void ILI9326_WriteGRAM(unsigned	short* RAM,unsigned long length);
+void ILI9326_ReadGRAM(unsigned	short* RAM,unsigned long length);
+//--------------------------------------------接口层
 void ILI9326_PowerOn( void );			//LCD 上电并初始化相关寄存器
 void ILI9326_PowerOff( void );		//关闭LCD 电源
+void ILI9326_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
+
+//--------------------------------------------GUI
+void ILI9326_DrawDot(unsigned short HSX,unsigned short HSY,unsigned short color);		//画点
+void ILI9326_DrawLine(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);						//AB 两个坐标画一条直线
+void ILI9326_DrawCircle(u16 x1,u16 y1, u16 R, u8 Filled, u16 color );		//画一个圆形框
+void ILI9326_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);				//画一个矩形框
+
+void ILI9326_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+void ILI9326_Clean(u16 Color);	//清除屏幕函数;
+void ILI9326_SetBackground(u16 BackColor );
+
+//--------------------------------------------字符显示
+void ILI9326_ShowChar(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
+void ILI9326_ShowWord(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
+
 
 #endif//_BSP_LCDILI9326_H_2016_
 /************************************** The End Of FILE **************************************/

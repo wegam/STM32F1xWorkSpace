@@ -34,7 +34,7 @@ unsigned short VAsize	=	0;		//输入大小
 *输入				: 
 *返回值			:	无
 *******************************************************************************/
-void LCD_Initialize(LCDDef *pInfo)
+unsigned short LCD_Initialize(LCDDef *pInfo)
 {
 	static unsigned short	DeviceCode	=	0;
 	
@@ -58,20 +58,23 @@ void LCD_Initialize(LCDDef *pInfo)
   LCDSYS->Display.WriteCommand  = LCD_WriteCommand;
 	//==========================驱动芯片检测
 	LCD_Reset();
-	DeviceCode	=	LCD_ReadData(0x0000);
+//	DeviceCode	=	LCD_ReadData(0x0000);
 	
+	DeviceCode	=	ILI9326_Initialize(pInfo);
+	if(ILI9326ID	==	DeviceCode)
+	{
+		goto	Lcd_InitContinue;
+	}
+		
+	DeviceCode	=	R61509V_Initialize(pInfo);
 	if(R61509ID	==	DeviceCode)
 	{
-		R61509V_Initialize(pInfo);
+		goto	Lcd_InitContinue;
 	}
-	else if(ILI9326ID	==	DeviceCode)
-	{
-		ILI9326_Initialize(pInfo);
-	}
-	else
-	{
-    SSD1963_Initialize(pInfo);
-	}
+	
+	SSD1963_Initialize(pInfo);
+
+	Lcd_InitContinue:
   //==========================检查背景色与画笔色是否相同
 	if(pInfo->Data.PColor	==	pInfo->Data.BColor)
 	{
@@ -86,6 +89,8 @@ void LCD_Initialize(LCDDef *pInfo)
 	LCD_BL_ON;
 	//==========================字库配置
 	GT32L32_Initialize(&pInfo->GT32L32.SPI);				//普通SPI通讯方式配置
+	
+	return	0;
 }
 /*******************************************************************************
 *函数名			:	LCDFsmc_Initialize
@@ -482,53 +487,7 @@ unsigned short LCD_ReadRegister(unsigned	short	Index)
 *******************************************************************************/
 void LCD_Clean(u16 Color)	//清除屏幕函数
 {
-	unsigned short x,y;
-	unsigned short HSX,HEX,HSY,HEY,MaxH,MaxV;
-	unsigned long	length	=	0;
-	eRotate	Rotate	=	LCDSYS->Flag.Rotate;
-	
-	MaxH	=	LCDSYS->Data.MaxH;
-	MaxV	=	LCDSYS->Data.MaxV;
-	
-	switch(Rotate)
-	{
-		case 	Draw_Rotate_0D:
-					HSX	=	0;
-					HEX	=	MaxH-1;
-					HSY	=	0;
-					HEY	=	MaxV-1;
-			break;
-		case	Draw_Rotate_90D:
-					HSX	=	0;
-					HEX	=	MaxV-1;
-					HSY	=	0;
-					HEY	=	MaxH-1;
-			break;
-		case	Draw_Rotate_180D:
-					HSX	=	0;
-					HEX	=	MaxH-1;
-					HSY	=	0;
-					HEY	=	MaxV-1;
-			break;
-		default:
-					HSX	=	0;
-					HEX	=	MaxV-1;
-					HSY	=	0;
-					HEY	=	MaxH-1;
-			break;			
-	}
-	length	=	(unsigned long)MaxH*MaxV;
-	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);		//写入地址区域
-//	R61509V_WriteGRAM(Color,length);
-	for(x=0;x<MaxH;x++)
-	{
-		for(y=0;y<MaxV;y++)
-		{
-			LCDSYS->Display.WriteData(Color);							//写数据
-//			R61509V_WriteGRAM(&Color,1);
-		}
-	}	
-
+	LCDSYS->Display.Clean(Color);
 }
 
 /*******************************************************************************
@@ -543,8 +502,7 @@ void LCD_DrawDot(
 									unsigned short Color		//点颜色*/	
 								)
 {
-	LCDSYS->Display.WriteAddress(HSX,HSY,HSX,HSY);	//设置光标位置
-  LCDSYS->Display.WriteData(Color);
+	LCDSYS->Display.DrawDot(HSX,HSY,Color);
 }
 /*******************************************************************************
 *函数名		:	LCD_DrawLine
@@ -561,53 +519,7 @@ void LCD_DrawLine(
 									unsigned short Color					//颜色
 )
 {
-	u16 t; 
-	int xerr=0,yerr=0,delta_x,delta_y,distance; 
-	int incx,incy,uRow,uCol; 
-
-	delta_x=HEX-HSX; //计算坐标增量 
-	delta_y=HEY-HSY; 
-	uRow=HSX; 
-	uCol=HSY;
-	
-	if(delta_x>0)
-		incx=1; //设置单步方向 
-	else if(delta_x==0)
-		incx=0;//垂直线 
-	else
-	{
-		incx=-1;
-		delta_x=-delta_x;
-	}
-		
-	if(delta_y>0)
-		incy=1; 
-	else if(delta_y==0)
-		incy=0;//水平线 
-	else
-		{incy=-1;delta_y=-delta_y;}
-		
-	if( delta_x>delta_y)
-		distance=delta_x; 								//选取基本增量坐标轴 
-	else
-		distance=delta_y;
-	
-	for(t=0;t<distance+1;t++ )					//画线输出 
-	{  
-		LCD_DrawDot(uRow,uCol,Color);			//画点 
-		xerr+=delta_x ; 
-		yerr+=delta_y ; 
-		if(xerr>distance) 
-		{ 
-			xerr-=distance; 
-			uRow+=incx; 
-		} 
-		if(yerr>distance) 
-		{ 
-			yerr-=distance;
-			uCol+=incy; 
-		} 
-	}
+	LCDSYS->Display.DrawLine(HSX,HSY,HEX,HEY,Color);
 }
 /**************************************************************************************************
 * [Function] LCD_DrawCircle:  函数功能、注意事项等的描述
@@ -620,72 +532,19 @@ void LCD_DrawCircle(
 												u16 x,u16 y,		//圆心坐标原点
 												u16 r,					//半径
 												u8 Filled,			//是否填充
-												u16 color				//颜色
+												u16 Color				//颜色
 												)
 {
-	int a,b;
-	int di;
-	a=0;b=r;	  
-	di=3-(r<<1);             //判断下个点位置的标志
-	while(a<=b)
-	{
-		if(Filled)	//填充就画线
-		{
-			LCD_DrawLine(x,y,x-b,y-a,color);             //3           
-			LCD_DrawLine(x,y,x+b,y-a,color);             //0           
-			LCD_DrawLine(x,y,x-a,y+b,color);             //1       
-			LCD_DrawLine(x,y,x-b,y-a,color);             //7           
-			LCD_DrawLine(x,y,x-a,y-b,color);             //2             
-			LCD_DrawLine(x,y,x+b,y+a,color);             //4               
-			LCD_DrawLine(x,y,x+a,y-b,color);             //5
-			LCD_DrawLine(x,y,x+a,y+b,color);             //6 
-			LCD_DrawLine(x,y,x-b,y+a,color);             
-			a++;
-			//使用Bresenham算法画圆     
-			if(di<0)
-				di +=4*a+6;	  
-			else
-			{
-				di+=10+4*(a-b);   
-				b--;
-			}
-			LCD_DrawLine(x,y,x+a,y+b,color);				//AB 两个坐标画一条直线
-		}
-		else
-		{
-			LCD_DrawDot(x-b,y-a,color);             //3           
-			LCD_DrawDot(x+b,y-a,color);             //0           
-			LCD_DrawDot(x-a,y+b,color);             //1       
-			LCD_DrawDot(x-b,y-a,color);             //7           
-			LCD_DrawDot(x-a,y-b,color);             //2             
-			LCD_DrawDot(x+b,y+a,color);             //4               
-			LCD_DrawDot(x+a,y-b,color);             //5
-			LCD_DrawDot(x+a,y+b,color);             //6 
-			LCD_DrawDot(x-b,y+a,color);             
-			a++;
-			//使用Bresenham算法画圆     
-			if(di<0)
-				di +=4*a+6;	  
-			else
-			{
-				di+=10+4*(a-b);   
-				b--;
-			}
-				LCD_DrawDot(x+a,y+b,color);
-		}
-	}
+	LCDSYS->Display.DrawCircle(x,y,r,Filled,Color);
 }
 /**************************************************************************************************
 * [Function] LCD_DrawRectangle:  画一下矩形框
 * [param01]t_Point top_p: 顶点坐标值
 * [param02]t_Point botton_p : 地板坐标值
 **************************************************************************************************/
-void LCD_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color)
+void LCD_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 Color)
 {
-	LCD_DrawLine( x1, y1,	x1,	y2, color );
-	LCD_DrawLine( x1, y1,	x2,	y1, color );
-	LCD_DrawLine( x2, y1,	x2,	y2, color );
-	LCD_DrawLine( x1, y2,	x2,	y2, color );
+	LCDSYS->Display.DrawRectangle(x1,y1,x2,y2,Color);
 }
 /*******************************************************************************
 *函数名			:	LCD_DrawPoint_big
@@ -696,21 +555,10 @@ void LCD_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color)
 void LCD_Fill(
 							unsigned short x1, unsigned short y1, 	//x1,y1:起点坐标
 							unsigned short x2, unsigned short y2,		//x2,y2:终点坐标
-							u16 color
+							u16 Color
 )
-{          
-	unsigned int i;
-	unsigned int j;	
-	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);
-//	LCD_WriteDataStart();
-	for(i=0;i<=x2-x1;i++)
-	{
-		for(j=0;j<=y2-y1;j++)
-		{
-			LCDSYS->Display.WriteData(color);
-		}
-	}
-//	LCD_WriteDataEnd();	
+{ 
+	LCDSYS->Display.Fill(x1,y1,x2,y2,Color);
 }
 /**************************************************************************************************
 * [Function] R61509V_Setbackground:  设置背景颜色
@@ -779,52 +627,7 @@ void LCD_ShowChar(
 										
 )		//高通字库测试程序
 {
-	u8 temp;
-	u8 i=0,j=0;
-	unsigned short x1=0,x2=0,y1=0,y2=0;
-	unsigned short LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色
-	x1	=	x;
-	y1	=	y;
-//  if(x>LCDSYS->Data.MaxV-font||y>LCDSYS->Data.MaxH-font)
-//			return;
-    x2	=	x+font/2-1;
-    y2	=	y+font-1;
-	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
-	i=0;
-//	LCD_WriteDataStart();
-	for(i=0;i<num;i++)
-	{ 
-		temp=Buffer[i];		 					//调用1608字体--二维数组形式--字库使用时取消
-		for(j=0;j<8;j++)
-		{
-			if((temp&0x80)==0X80)
-			{
-				LCD_PEN_COLOR=color;
-			}
-			else
-				LCD_PEN_COLOR=LCDSYS->Data.BColor;
-			LCDSYS->Display.WriteData(LCD_PEN_COLOR);
-			temp=temp<<1;
-		}
-    //=======================未满8位的补充定入
-    if((24==font)||(12==font))
-    {
-      temp=Buffer[i+1];		 					
-      for(j=0;j<4;j++)
-      {
-        if((temp&0x80)==0X80)
-        {
-          LCD_PEN_COLOR=color;
-        }
-        else
-          LCD_PEN_COLOR=LCDSYS->Data.BColor;
-        LCDSYS->Display.WriteData(LCD_PEN_COLOR);
-        temp=temp<<1;
-      }
-      i++;
-    }		
-	}
-//	LCD_WriteDataEnd();	
+	LCDSYS->Display.ShowChar(x,y,font,color,num,Buffer);
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -842,53 +645,7 @@ void LCD_ShowWord(
 										
 )		//高通字库测试程序
 {
-	u8 temp;
-	u8 i=0,j=0;
-	unsigned short x1=0,x2=0,y1=0,y2=0;
-//	unsigned short LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色
-	x1	=	x;
-	y1	=	y;
-  
-//  if(x>LCDSYS->Data.MaxH-font||y>LCDSYS->Data.MaxV-font)
-//    return;
-  x2	=	x+font-1;
-  y2	=	y+font-1;
-	LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
-//	LCD_WriteDataStart();
-	for(i=0;i<num;i++)
-	{ 
-		u16 LCD_PEN_COLOR	=	LCDSYS->Data.PColor;   	//画笔色	
-		temp=Buffer[i];		 				
-		for(j=0;j<8;j++)
-		{
-			if((temp&0x80)==0X80)
-			{
-				LCD_PEN_COLOR=color;
-			}
-			else
-				LCD_PEN_COLOR=LCDSYS->Data.BColor;
-			LCDSYS->Display.WriteData(LCD_PEN_COLOR);
-			temp=temp<<1;
-		}
-    //=======================未满8位的补充定入
-    if((12==font))
-    {
-      temp=Buffer[i+1];		 					
-      for(j=0;j<4;j++)
-      {
-        if((temp&0x80)==0X80)
-        {
-          LCD_PEN_COLOR=color;
-        }
-        else
-          LCD_PEN_COLOR=LCDSYS->Data.BColor;
-        LCDSYS->Display.WriteData(LCD_PEN_COLOR);
-        temp=temp<<1;
-      }
-      i++;
-    }			
-	}
-//	LCD_WriteDataEnd();
+	LCDSYS->Display.ShowWord(x,y,font,color,num,Buffer);
 }
 
 /*******************************************************************************
@@ -966,7 +723,7 @@ void LCD_Show(
       if(x>MaxH-font/2)
       {
         x=0;
-        y+=12;
+        y+=font;
       }
       //B2=====================显示到屏尾，从原点开始
       if(y>MaxV-font)
@@ -986,6 +743,7 @@ void LCD_Show(
 			//B5=====================水平显示地址增加
       x+=font/2;						
 		}
+//		PenColor+=50;
 	}
 }
 /*******************************************************************************
@@ -1127,8 +885,8 @@ void LCD_ShowBMP(
   unsigned short j = 0;
   unsigned short  RGB565;
   eRotate Rotate = LCDSYS->Flag.Rotate;
-  LCDSYS->Flag.Rotate  = Draw_Rotate_0D;		//使用旋转角度
-  LCDSYS->Display.WriteAddress(x1,y1,x2,y2);//设置显示区域
+  LCDSYS->Flag.Rotate  = Draw_Rotate_0D;			//使用旋转角度
+  LCDSYS->Display.WriteAddress(x1,y1,x2,y2);	//设置显示区域
 //  LCD_WriteDataStart();
 	for(i=0;i<Length;)
 	{

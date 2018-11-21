@@ -18,7 +18,7 @@
 #define	R61509V_H 240		//水平方向点数，从左到右+
 #define R61509V_V 400		//垂直方向点数，从上到下+
 
-
+#define	R61509ID	(unsigned short)0xB509			//芯片型号标识
 //****************************控制定义End**************************
 
 
@@ -84,20 +84,42 @@
 
 
 
-void R61509V_Initialize(void*	pInfo);
+unsigned short R61509V_Initialize(void*	pInfo);
 
+//--------------------------------------------驱动层
+void R61509V_Reset(void);
+unsigned short R61509V_ReadData(void);
+unsigned short R61509V_ReadRegister(unsigned	short	Addr);
+
+void R61509V_WriteData(unsigned	short	Data);
+void R61509V_WriteIndex(unsigned	short	Index);
+void R61509V_WriteAddr(unsigned	short	Addr);
+void R61509V_WriteRegister(unsigned	short	Addr,unsigned short Data);		//写指定寄存器
 void R61509V_WriteCommand(unsigned	short	Index,unsigned short Cmd);
-void R61509V_WriteRegister(unsigned	short	Index,unsigned short Data);		//写指定寄存器
-unsigned short R61509V_ReadRegister(unsigned	short	Index);							//读指定寄存器
+
 
 void R61509V_WriteGRAM(unsigned	short* RAM,unsigned long length);				//写显示寄存器
+void R61509V_ReadGRAM(unsigned	short* RAM,unsigned long length);
+//--------------------------------------------接口层
 
-
-void R61509V_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
 void R61509V_PowerOn(void);					//按照主控芯片R61509V的power supply on sequence 进行配置
 void R61509V_PowerOff( void );		//关闭R61509V 电源
 void R61509V_DispOff( void );			//关闭R61509V显示( 黑屏?)
+void R61509V_SetWindowAddress(unsigned short x1,unsigned short y1,unsigned short x2,unsigned short y2);//设置窗地址
 
+//--------------------------------------------GUI
+void R61509V_DrawDot(unsigned short HSX,unsigned short HSY,unsigned short color);		//画点
+void R61509V_DrawLine(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);						//AB 两个坐标画一条直线
+void R61509V_DrawCircle(u16 x1,u16 y1, u16 R, u8 Filled, u16 color );		//画一个圆形框
+void R61509V_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);
+
+void R61509V_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+void R61509V_Clean(u16 Color);	//清除屏幕函数;
+void R61509V_SetBackground(u16 BackColor );
+
+//--------------------------------------------字符显示
+void R61509V_ShowChar(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
+void R61509V_ShowWord(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
 
 #endif	//_BSP_R61509VR61509V_H_2016_
 /************************************** The End Of FILE **************************************/
