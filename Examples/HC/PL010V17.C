@@ -17,7 +17,7 @@
 
 #include "PL010V17.H"
 
-#include "R61509V.h"
+#include "LCD.h"
 #include "CS5530.H"
 
 #include "GT32L32M0180.H"
@@ -54,7 +54,7 @@ u16 millisecond=0;
 //char	Char_Buffer[256];		//记录format内码
 
 
-RS485_TypeDef  RS485;
+RS485Def  RS485;
 OneWrieDef DS18B20;
 #define	Rs485Size	256
 u8 RxdBuffe[Rs485Size]={0};
@@ -69,7 +69,7 @@ u8	Rev_ID	=	0;
 
 
 
-SWITCHID_CONF	SWITCHID;
+SwitchDef	SWITCHID;
 u8 SwitchID=0;	//拔码开关地址
 
 
@@ -82,7 +82,7 @@ u8	DspFlg	=	0;
 
 u16 BKlight	=	0;
 
-u8 line	=	0;
+u16 line	=	0;
 u8 lineT	=	0;
 
 
@@ -133,7 +133,7 @@ void PL010V17_Configuration(void)
 	
 	RS485_Configuration();
 	
-	DS18B20_Server();
+//	DS18B20_Server();
 	
 //	USART_Configuration();
 	
@@ -160,12 +160,19 @@ void PL010V17_Configuration(void)
 void PL010V17_Server(void)
 {	
 	unsigned short	tmepr=50;
+	static unsigned short Dtime	=	0;
 	double	WenDu	=	0.0;
 	IWDG_Feed();				//独立看门狗喂狗
 //	RS485_Server();		//通讯管理---负责信息的接收与发送
 //	LCD_Server();				//显示服务相关
 //	CS5530_Server();		//称重服务，AD值处理，获取稳定值
 //	TempSensor_Server();	//内部温度传感器
+	if(Dtime++>200)
+	{
+		Dtime	=	0;
+		CS5530_Server();		//称重服务，AD值处理，获取稳定值
+	}
+	return;
 	tmepr	=	DS18B20_Read(&DS18B20);						//复位Dallas,返回结果
 	WenDu	=	tmepr*0.0625;
 //	if(WenDubac!=WenDu)
@@ -173,7 +180,7 @@ void PL010V17_Server(void)
 		WenDubac	=	WenDu;
 		if(lineT>=240)
 			lineT	=	0;	
-		LCD_Printf(200		,lineT,16	,"温度:%4.4f℃",WenDubac);		//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(200		,lineT,16	,LCD565_RED,"温度:%4.4f℃",WenDubac);		//待发药槽位，后边的省略号就是可变参数
 //		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",tmepr);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
 		lineT+=16;	
 //	}
@@ -211,7 +218,7 @@ void TempSensor_Server(void)
 			lineT	=	0;		
 		TempDataB	=	TempData;
 		TempR	=	Get_ADC_Temperature(TempDataB);												//获取内部温度传感器温度
-		LCD_Printf(100		,lineT,16	,"温度:%0.8f",TempR);		//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(100		,lineT,16	,LCD565_RED,"温度:%0.8f",TempR);		//待发药槽位，后边的省略号就是可变参数
 		lineT+=16;	
 	}
 }
@@ -231,11 +238,15 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 	if((CS5530.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530.Data.WeighLive	!=CS5530_ADC_Value))
 	{
 		if(line>=240)
+		{
 			line	=	0;
+			LCD_Clean(LCD565_LBBLUE);	//清除屏幕函数
+		}
 		CS5530_ADC_Value	=	CS5530.Data.WeighLive>>0;
-		LCD_Printf(0		,line,16	,"AD:%0.8d",CS5530_ADC_Value>>2);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(0		,line,32	,LCD565_RED,"AD:%0.10d",CS5530_ADC_Value>>0);				//待发药槽位，后边的省略号就是可变参数
+//		LCD_Printf(0		,line,32	,LCD565_RED,"距离:%0.10dmm",CS5530_ADC_Value/456);				//待发药槽位，后边的省略号就是可变参数
 		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
-		line+=16;		
+		line+=32;		
 	}
 	return;
 #endif
@@ -249,7 +260,7 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 		if(CS5530_ADC_Value	!= 0xFFFFFFFF)
 		{
 			CS5530_ADC_Value	=	CS5530_ADC_Value>>2;
-			LCD_Printf(0		,128,32	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
+			LCD_Printf(0		,128,32	,LCD565_RED,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
 			USART_DMAPrintf	(USART1,"CH1:%0.8X\r\n",CS5530_ADC_Value);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
 //			READ_GAIN=CS5530_ReadRegister(&CS5530,CS5530_READ_GAIN);				//增益寄存器
 		}
@@ -260,7 +271,7 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 	if(CS5530_ADC_Value	!=	CS5530.Data.Origin)
 	{
 		CS5530_ADC_Value	=	CS5530.Data.Origin;
-		LCD_Printf(0		,128,32	,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(0		,128,32	,LCD565_RED,"AD:%0.8d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
 	}
 //	if(CS5530_Time++>=50)		//1秒钟
 //	{		
@@ -374,12 +385,12 @@ void LCD_Server(void)			//显示服务相关
 				{
 					hour=0;
 				}
-				LCD_Printf(100,130,32,"%02d:",hour);		//后边的省略号就是可变参数
+				LCD_Printf(100,130,32,LCD565_RED,"%02d:",hour);		//后边的省略号就是可变参数
 				
 			}
-			LCD_Printf(148,130,32,"%02d:",min);		//后边的省略号就是可变参数
+			LCD_Printf(148,130,32,LCD565_RED,"%02d:",min);		//后边的省略号就是可变参数
 		}
-		LCD_Printf(196,130,32,"%02d",second);		//后边的省略号就是可变参数
+		LCD_Printf(196,130,32,LCD565_RED,"%02d",second);		//后边的省略号就是可变参数
 	}
 #endif
 #if 0		//画圆
@@ -617,7 +628,7 @@ void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 		Rev_ADC<<=8;
 		Rev_ADC	+=	RevBuffe[5];
 		
-		LCD_Printf(0		,128	,16	,"接收到通道%0.2d称重值：%0.8d",Rev_ID,Rev_ADC);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(0		,128	,16	,LCD565_RED,"接收到通道%0.2d称重值：%0.8d",Rev_ID,Rev_ADC);				//待发药槽位，后边的省略号就是可变参数
 		
 	}
 	if(Rs485_Time	++>5)
@@ -678,7 +689,7 @@ void SwitchID_Server(void)	//拔码开关处理--动态更新拨码地址
 	if(SwitchID	!=	ID_Temp)
 	{
 		SwitchID	=	ID_Temp;
-		LCD_Printf(0		,0,32	,"地址：%0.2d",SwitchID);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(0		,0,32	,LCD565_RED,"地址：%0.2d",SwitchID);				//待发药槽位，后边的省略号就是可变参数
 	}
 }
 /*******************************************************************************
@@ -759,7 +770,9 @@ void LCD_Configuration(void)
 	Port->sDATABUS_PORT	=	GPIOB;
 	Port->sDATABUS_Pin	=	GPIO_Pin_All;
 	
-	sLCD.Flag.Rotate	=	Draw_Rotate_90D;	//使用旋转角度	
+	sLCD.Data.BColor	=	LCD565_LBBLUE;
+	sLCD.Data.PColor	=	LCD565_RED;
+	sLCD.Flag.Rotate	=	Draw_Rotate_90D;
 	
 	SPIx->Port.SPIx=SPI1;
 	
@@ -777,7 +790,12 @@ void LCD_Configuration(void)
 	
 	SPIx->Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
 	
-	R61509V_Initialize(&sLCD);
+	sLCD.GT32L32.SPI.Port.SPIx	=	SPI1;
+	sLCD.GT32L32.SPI.Port.CS_PORT	=	GPIOA;
+	sLCD.GT32L32.SPI.Port.CS_Pin		=	GPIO_Pin_4;
+	sLCD.GT32L32.SPI.Port.SPI_BaudRatePrescaler_x=SPI_BaudRatePrescaler_2;
+	
+	LCD_Initialize(&sLCD);
 }
 /*******************************************************************************
 * 函数名			:	function

@@ -137,7 +137,7 @@ void PL012V20_Configuration(void)
 	
 	
 	LCD_Printf(0,140,16,LCD565_RED,"显示驱动:%4X",LCD_ReadData(0x0000));		//编译日期
-	LCD_Printf(0,0,32,LCD565_YELLOW,"项目编号:%s",Version);		//项目编号
+	LCD_Printf(0,0,16,LCD565_YELLOW,"项目编号:%s",Version);		//项目编号
 //  LCD_Printf(0,220,16,LCD565_RED,"编译时间:%4d-%0.2d-%0.2d-%s",year,month,day,__TIME__); 	//编译时间
   LCD_Printf(0,220,16,LCD565_WHITE,"%0.2d:",hour);		//编译日期
   LCD_Printf(8*3,220,16,LCD565_WHITE,"%0.2d:",minute);		//编译日期
@@ -145,6 +145,7 @@ void PL012V20_Configuration(void)
 	
 //	ILI9326_SetBackground(LCD565_BLUE);
   LCD_Printf(0,100,16,LCD565_RED,"%s",Version);		//项目编号
+	LCD_Printf(0,100,24,LCD565_RED,"ABCDEFGHJKLNMZCXQWERTPOIUY0123456789",Version);		//项目编号
   SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 }
 

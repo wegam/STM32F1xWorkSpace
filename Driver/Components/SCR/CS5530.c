@@ -272,6 +272,8 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 	
 	CS5530_Status=0x01000000;		//1200
 	
+	CS5530_Status=0x00100000;		//test
+	
 	CS5530_WriteRegister(pInfo,CS5530_WRITE_GAIN,CS5530_Status);			//增益寄存器	
 		
 //	CS5530_Status=0xFFFFFFFF;
@@ -299,7 +301,18 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 	
 //	CS5530_Status=CS5530_Status|CS5530_CONF_SHORT_INPUTS;								//设置为输入短路
 
+//	CS5530_Status	=	CS5530_Status&(~CS5530_CONF_UNIPOLAR_MODE);		//双极性
+	CS5530_Status	=	CS5530_Status|CS5530_CONF_UNIPOLAR_MODE;		//单极性
+
 	CS5530_WriteRegister(pInfo,CS5530_WRITE_CONFIG,CS5530_Status);		//配置寄存器
+	
+	CS5530_Status	=	CS5530_ReadRegister(pInfo,CS5530_READ_OFFSET);			//偏移寄存器
+	
+	CS5530_WriteRegister(pInfo,CS5530_WRITE_OFFSET,CS5530_Status);		//配置寄存器
+	
+	CS5530_Status	=	CS5530_ReadRegister(pInfo,CS5530_READ_GAIN);			//增益寄存器
+	
+	CS5530_WriteRegister(pInfo,CS5530_WRITE_GAIN,CS5530_Status);		//配置寄存器
 	
 	CS5530_WriteCommand(pInfo,CS5530_SYSTEM_OFFSET_CAL);							//执行偏移校准
 	

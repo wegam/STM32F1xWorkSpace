@@ -487,60 +487,7 @@ unsigned short LCD_ReadRegister(unsigned	short	Index)
 *******************************************************************************/
 void LCD_Clean(u16 Color)	//清除屏幕函数
 {
-<<<<<<< HEAD
 	LCDSYS->Display.Clean(Color);
-=======
-	unsigned short x,y;
-	unsigned short HSX,HEX,HSY,HEY,MaxH,MaxV;
-	unsigned long	length	=	0;
-	eRotate	Rotate	=	LCDSYS->Flag.Rotate;
-	
-	MaxH	=	LCDSYS->Data.MaxH;
-	MaxV	=	LCDSYS->Data.MaxV;
-	
-	switch(Rotate)
-	{
-		case 	Draw_Rotate_0D:
-					HSX	=	0;
-					HEX	=	MaxH-1;
-					HSY	=	0;
-					HEY	=	MaxV-1;
-			break;
-		case	Draw_Rotate_90D:
-					HSX	=	0;
-					HEX	=	MaxV-1;
-					HSY	=	0;
-					HEY	=	MaxH-1;
-			break;
-		case	Draw_Rotate_180D:
-					HSX	=	0;
-					HEX	=	MaxH-1;
-					HSY	=	0;
-					HEY	=	MaxV-1;
-			break;
-		default:
-					HSX	=	0;
-					HEX	=	MaxV-1;
-					HSY	=	0;
-					HEY	=	MaxH-1;
-			break;			
-	}
-	length	=	(unsigned long)MaxH*MaxV;
-	LCDSYS->Display.WriteAddress(HSX,HSY,HEX,HEY);		//写入地址区域
-//	R61509V_WriteGRAM(Color,length);
-	for(x=0;x<MaxH;x++)
-	{
-		for(y=0;y<MaxV;y++)
-		{
-//			LCDSYS->Display.WriteData(Color);							//写数据
-			R61509V_WriteGRAM(&Color,1);
-		}
-	}	
-//	LCD_WriteDataEnd();										//写数据完成
-<<<<<<< HEAD
->>>>>>> parent of 6dcaeab... 20181121 HP
-=======
->>>>>>> parent of 6dcaeab... 20181121 HP
 }
 
 /*******************************************************************************
@@ -769,6 +716,23 @@ void LCD_Show(
       x+=font;
 			i++;		//双字节，减两次			
 		}
+		else if(('\r'==dst)||('\n'==dst))
+		{
+			if(('\n'==Buffer[i+1])||('\r'==Buffer[i+1]))
+			{
+				i++;	//去掉回车符长度
+			}
+			if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+			else
+			{
+				x=0;
+				y+=font;
+			}
+			goto LCD_ShowJump;
+		}
 		//B=====================单字节--ASCII字符集
 		else
 		{			
@@ -796,7 +760,8 @@ void LCD_Show(
 			//B5=====================水平显示地址增加
       x+=font/2;						
 		}
-//		PenColor+=50;
+		LCD_ShowJump:
+			__nop();
 	}
 }
 /*******************************************************************************
