@@ -25,6 +25,7 @@
 
 #define		Bus16Bit
 LCDDef 			*LCDSYS	=	NULL;	//内部驱动使用，不可删除
+stLCDScroll	*ScrollBuff	=	NULL;
 unsigned short PenColor		=	0;		//画笔颜色
 unsigned short BackColor	=	0;		//背景颜色
 unsigned short VAsize	=	0;		//输入大小
@@ -212,6 +213,23 @@ void LCDFsmc_Initialize(LCDDef *pInfo)
   GPIO_SetBits(Port->sBL_PORT, Port->sBL_Pin);
 	//==========================字库配置
 	GT32L32_Initialize(&pInfo->GT32L32.SPI);				//普通SPI通讯方式配置
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void LCD_DisplayServer(void)
+{
+	if(NULL	!=	ScrollBuff)
+	{
+		LCD_Clean(LCDSYS->Data.BColor);
+		LCD_ShowScroll(ScrollBuff->startx,ScrollBuff->starty,ScrollBuff->font,ScrollBuff->color,ScrollBuff->length,ScrollBuff->buffer);
+	}
 }
 /*******************************************************************************
 * 函数名			:	LCD_Reset
@@ -647,7 +665,25 @@ void LCD_ShowWord(
 {
 	LCDSYS->Display.ShowWord(x,y,font,color,num,Buffer);
 }
-
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short LCD_GetDispCodeBuffer(
+													u8 font,								//字体大小
+													u16 word,								//字符内码值
+													u8 *ReadBuffer				  //接收数据的缓存
+												)
+{
+	unsigned short lengh=0;
+	lengh	=	GT32L32_GetCode(font,word,ReadBuffer);		//从字库中读数据并返回数据长度
+	return lengh;
+}
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
@@ -709,7 +745,7 @@ void LCD_Show(
         y=x=0;
       }
       //A3=====================读取点阵数据
-			GetBufferLength	=	GT32L32_GetCode(font,word,CodeBuffer);		//从字库中读数据并返回数据长度
+			GetBufferLength	=	LCD_GetDispCodeBuffer(font,word,CodeBuffer);		//从字库中读数据并返回数据长度
 			//A4=====================写入屏幕
 			LCD_ShowWord(x,y,font,PenColor,GetBufferLength,CodeBuffer);
 			//A5=====================水平显示地址增加
@@ -748,7 +784,115 @@ void LCD_Show(
         y=x=0;
       }
       //B3=====================读取点阵数据
-			GetBufferLength	=	GT32L32_GetCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
+			GetBufferLength	=	LCD_GetDispCodeBuffer(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
+			//=======================水平制表符按空格显示(部分字库会当0xFF输出)
+			if(	('	'	==	(char)dst)		//水平制表符
+				||(' '	==	(char)dst))		//空格
+			{
+				memset(CodeBuffer,0x00,GetBufferLength);
+			}
+			//B4=====================写入屏幕
+			LCD_ShowChar(x,y,font,PenColor,GetBufferLength,CodeBuffer);
+			//B5=====================水平显示地址增加
+      x+=font/2;						
+		}
+		LCD_ShowJump:
+			__nop();
+	}
+}
+/*******************************************************************************
+* 函数名			:	LCD_ShowScroll
+* 功能描述		:	滚动显示 
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void LCD_ShowScroll(void)		//高通字库测试程序
+{
+	unsigned short	MaxV,MaxH;	//边界值
+	unsigned char i=0;
+	unsigned char CodeBuffer[130]={0};
+	unsigned char	num		=	0;
+	unsigned char	font	=	0;
+	unsigned char* Buffer	=NULL;
+	
+	stLCDScroll*	TempBuff;
+	if(NULL==	ScrollBuff)
+	{
+		return;
+	}
+	TempBuff	=	ScrollBuff;
+	
+//	LCD_Show(TempBuff->startx,TempBuff->starty,TempBuff->font,TempBuff->color,TempBuff->length,TempBuff->buffer);
+	switch(LCDSYS->Flag.Rotate)
+	{
+		case Draw_Rotate_90D:
+			MaxV	=	LCDSYS->Data.MaxH;
+			MaxH	=	LCDSYS->Data.MaxV;
+			break;
+		case Draw_Rotate_180D:
+			MaxV	=	LCDSYS->Data.MaxV;
+			MaxH	=	LCDSYS->Data.MaxH;
+			break;
+		case Draw_Rotate_270D:
+			MaxV	=	LCDSYS->Data.MaxH;
+			MaxH	=	LCDSYS->Data.MaxV;
+			break;
+		default:
+			MaxV	=	LCDSYS->Data.MaxV;
+			MaxH	=	LCDSYS->Data.MaxH;
+			break;
+	}
+	LCD_ShowCoutinue:
+	Buffer	=	&TempBuff->buffer[TempBuff->starty];
+	for(i=0;i<num;i++)
+	{
+		unsigned char GetBufferLength	=	0;
+		unsigned char dst=Buffer[i];
+		
+		//A=====================双字节--汉字
+		if(dst>0x80)
+		{
+			
+			u16 word=dst<<8;
+      
+			TempBuff->starty+=2;
+			dst=Buffer[i+1];
+			word=word|dst;			
+			//A1=====================显示超限换行
+      if(x>MaxH-font)
+      {
+        x=0;
+        y+=font;
+      }
+      //A2=====================显示到屏尾，从原点开始
+      if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+      //A3=====================读取点阵数据
+			GetBufferLength	=	LCD_GetDispCodeBuffer(font,word,CodeBuffer);		//从字库中读数据并返回数据长度
+			//A4=====================写入屏幕
+			LCD_ShowWord(x,y,font,PenColor,GetBufferLength,CodeBuffer);
+			//A5=====================水平显示地址增加
+      x+=font;
+			i++;		//双字节，减两次			
+		}
+		//B=====================单字节--ASCII字符集
+		else
+		{			
+			//B1=====================显示超限换行
+      if(x>MaxH-font/2)
+      {
+        x=0;
+        y+=font;
+      }
+      //B2=====================显示到屏尾，从原点开始
+      if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+      //B3=====================读取点阵数据
+			GetBufferLength	=	LCD_GetDispCodeBuffer(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
 			//=======================水平制表符按空格显示(部分字库会当0xFF输出)
 			if(	('	'	==	(char)dst)		//水平制表符
 				||(' '	==	(char)dst))		//空格
@@ -833,7 +977,7 @@ void LCD_ShowHex(
         y=x=0;
       }
       //3=====================读取点阵数据
-      GetBufferLength	=	GT32L32_GetCode(font,dst,CodeBuffer);		//从字库中读数据并返回数据长度
+      GetBufferLength	=	LCD_GetDispCodeBuffer(font,dst,CodeBuffer);		//从字库中读数据并返回数据长度
       //4=====================写入屏幕
       LCD_ShowChar(x,y,font,color,GetBufferLength,CodeBuffer);
       //5=====================显示地址增加
@@ -881,9 +1025,82 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...)			
 	va_end(args);                                      		
   if((8!=font)&&(12!=font)&&(16!=font)&&(24!=font)&&(32!=font))
   {
+    font  = 32;
+  }
+	LCD_ShowScroll(x,y,font,color,InputDataSize,(unsigned char*)DataBuffer);
+	return InputDataSize;
+}
+/*******************************************************************************
+*函数名		:	LCD_PrintfScroll
+*功能描述	:	LCD滚动显示内容
+*输入			: x,y:起点坐标
+						*p:字符串起始地址
+						用16字体
+*输出			:	无
+*返回值		:	无
+*例程			:
+*******************************************************************************/
+unsigned int LCD_PrintfScroll(u16 x,u16 y,u8 font,u16 color,const char *format,...)				//后边的省略号就是可变参数
+{ 
+		
+//		va_list ap; 										//VA_LIST 是在C语言中解决变参问题的一组宏，所在头文件：#include <stdarg.h>,用于获取不确定个数的参数
+//		static char string[ 256 ];			//定义数组，
+//  	va_start( ap, format );
+//		vsprintf( string , format, ap );    
+//		va_end( ap );
+	
+	char	DataBuffer[256]={0};			//记录format内码
+	//1)**********获取数据宽度
+  u16 InputDataSize=0;		//获取数据宽度	
+	//3)**********args为定义的一个指向可变参数的变量，va_list以及下边要用到的va_start,va_end都是是在定义，可变参数函数中必须要用到宏， 在stdarg.h头文件中定义
+	va_list args; 
+	//5)**********初始化args的函数，使其指向可变参数的第一个参数，format是可变参数的前一个参数
+	va_start(args, format);
+	//6)**********正常情况下返回生成字串的长度(除去\0),错误情况返回负值
+	InputDataSize = vsnprintf(DataBuffer, InputDataSize,format, args);
+
+	//7)**********结束可变参数的获取
+	va_end(args);                                      		
+  if((8!=font)&&(12!=font)&&(16!=font)&&(24!=font)&&(32!=font))
+  {
     font  = 24;
   }
-	LCD_Show(x,y,font,color,InputDataSize,(unsigned char*)DataBuffer);
+	if(NULL	==	ScrollBuff)
+	{
+		static stLCDScroll	NewBuff;		
+		
+		NewBuff.startx	=	x;
+		NewBuff.starty	=	y;
+		NewBuff.runxstart	=	0;
+		NewBuff.color	=	color;
+		NewBuff.font	=	font;
+		NewBuff.length	=	InputDataSize;
+		memcpy(NewBuff.buffer,DataBuffer,InputDataSize);
+		
+		ScrollBuff	=	&NewBuff;
+		ScrollBuff->nextlist	=	NULL;
+	}
+	else
+	{
+		static stLCDScroll		NewBuff;
+		stLCDScroll*	TempBuff;
+		TempBuff	=	(stLCDScroll*)ScrollBuff->nextlist;
+		while(NULL	!=	TempBuff->nextlist)
+		{
+			TempBuff	=	(stLCDScroll*)ScrollBuff->nextlist;
+		}
+		NewBuff.startx	=	x;
+		NewBuff.starty	=	y;
+		NewBuff.runxstart	=	0;
+		NewBuff.color	=	color;
+		NewBuff.font	=	font;
+		NewBuff.length	=	InputDataSize;
+		memcpy(NewBuff.buffer,DataBuffer,InputDataSize);
+		
+		NewBuff.nextlist	=	NULL;
+		TempBuff->nextlist	=	(unsigned long*)&NewBuff;
+	}
+	LCD_ShowScroll(x,y,font,color,InputDataSize,(unsigned char*)DataBuffer);
 	return InputDataSize;
 }
 /*******************************************************************************

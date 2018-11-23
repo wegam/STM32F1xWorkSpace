@@ -523,9 +523,9 @@ unsigned long CS5530_GetWeightUseMedinaFilter(CS5530Def *pInfo)
 //	unsigned long 	weighMax=0;
 //	unsigned long 	weighMid=0;
 //	unsigned long 	weighMin=0;
-	unsigned long 	weighAve=0;		//平均值
-	unsigned long 	weighVar=0;		//方差
-	unsigned short 	Length	=	0;
+	static unsigned long 	weighAve=0;		//平均值
+	static unsigned long 	weighVar=0;		//方差
+	static unsigned short 	Length	=	0;
 	unsigned long		*Buffer		=	NULL;			//数据缓存	
 
 	Buffer	=	&(pInfo->Data.Buffer[0]);
@@ -540,15 +540,15 @@ unsigned long CS5530_GetWeightUseMedinaFilter(CS5530Def *pInfo)
 	weighVar	=	GetVarLong(Buffer,Length);		//获取unsigned long方差
 	weighVar	=	weighVar/Length;
 	
-	if(weighVar<WeighVarMax)		//方差太大，离散性差，数据无效
-	{
-		return weighAve;		
-	}
-	else
-	{
-		return 0xFFFFFFFF;
-	}
-//	return weighVar;
+//	if(weighVar<WeighVarMax)		//方差太大，离散性差，数据无效
+//	{
+//		return weighAve;		
+//	}
+//	else
+//	{
+//		return 0xFFFFFFFF;
+//	}
+	return weighAve;
 }
 /*******************************************************************************
 * 函数名			:	function

@@ -167,11 +167,11 @@ void PL010V17_Server(void)
 //	LCD_Server();				//显示服务相关
 //	CS5530_Server();		//称重服务，AD值处理，获取稳定值
 //	TempSensor_Server();	//内部温度传感器
-	if(Dtime++>200)
-	{
-		Dtime	=	0;
+//	if(Dtime++>200)
+//	{
+//		Dtime	=	0;
 		CS5530_Server();		//称重服务，AD值处理，获取稳定值
-	}
+//	}
 	return;
 	tmepr	=	DS18B20_Read(&DS18B20);						//复位Dallas,返回结果
 	WenDu	=	tmepr*0.0625;
@@ -235,6 +235,8 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 {
 #if 1
 	CS5530_Process(&CS5530);
+	//
+	goto WeighFiltUse;
 	if((CS5530.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530.Data.WeighLive	!=CS5530_ADC_Value))
 	{
 		if(line>=240)
@@ -243,10 +245,26 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 			LCD_Clean(LCD565_LBBLUE);	//清除屏幕函数
 		}
 		CS5530_ADC_Value	=	CS5530.Data.WeighLive>>0;
-		LCD_Printf(0		,line,32	,LCD565_RED,"AD:%0.10d",CS5530_ADC_Value>>0);				//待发药槽位，后边的省略号就是可变参数
-//		LCD_Printf(0		,line,32	,LCD565_RED,"距离:%0.10dmm",CS5530_ADC_Value/456);				//待发药槽位，后边的省略号就是可变参数
+//		LCD_Printf(0		,line,32	,LCD565_RED,"AD:%0.10d",CS5530_ADC_Value>>0);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(0		,line,32	,LCD565_RED,"距离:%0.10dmm",CS5530_ADC_Value/836+300-50);				//待发药槽位，后边的省略号就是可变参数
 		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
 		line+=32;		
+	}
+	WeighFiltUse:
+	if((CS5530.Data.WeighFilt	!=0xFFFFFFFF)&&(CS5530.Data.WeighFilt	!=CS5530_ADC_Value))
+	{
+		if(line>=240)
+		{
+			line	=	0;
+			LCD_Clean(LCD565_LBBLUE);	//清除屏幕函数
+		}
+		CS5530_ADC_Value	=	CS5530.Data.WeighFilt>>0;
+//		LCD_Printf(0		,line,32	,LCD565_RED,"AD:%0.10d",CS5530_ADC_Value>>3);				//待发药槽位，后边的省略号就是可变参数
+		CS5530_ADC_Value	=	CS5530_ADC_Value>>3;
+		LCD_Printf(0		,line,32	,LCD565_RED,"距离:%0.6dmm",CS5530_ADC_Value/85+314);				//待发药槽位，后边的省略号就是可变参数
+//		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
+		line+=32;		
+		CS5530.Data.WeighFilt	=	0xFFFFFFFF;
 	}
 	return;
 #endif

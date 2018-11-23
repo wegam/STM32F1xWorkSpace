@@ -126,6 +126,17 @@ typedef struct	_LCD
 	GT32L32Def				GT32L32;
 }LCDDef;
 
+typedef struct	_stLCDScroll
+{
+	unsigned short	startx;				//ÆðÊ¼ÏÔÊ¾x×ø±ê
+	unsigned short	starty;				//ÆðÊ¼ÏÔÊ¾y×ø±ê
+	unsigned short	color;				//ÏÔÊ¾ÑÕÉ«
+	unsigned short	length;				//ÏÔÊ¾ÄÚÈÝ³¤¶È.
+	unsigned short	runxstart;		//´ÓµÚ¼¸¸ö×Ö·û¿ªÊ¼ÏÔÊ¾
+	unsigned char		font;					//ÏÔÊ¾×ÖºÅ
+	unsigned char		buffer[100];	//ÏÔÊ¾ÄÚÈÝ
+	unsigned long*	nextlist;			//ÏÂÒ»¸öÏÔÊ¾ÄÚÈÝµØÖ·
+}stLCDScroll;
 
 extern LCDDef *LCDSYS;			//ÄÚ²¿Çý¶¯Ê¹ÓÃ£¬²»¿ÉÉ¾³ý
 
@@ -202,82 +213,18 @@ extern LCDDef *LCDSYS;			//ÄÚ²¿Çý¶¯Ê¹ÓÃ£¬²»¿ÉÉ¾³ý
 #define LCD565_LBBLUE    	0X2B12 	//Ç³×ØÀ¶É«(Ñ¡ÔñÌõÄ¿µÄ·´É«)
 
 
-
-
-
-
-
-
-
-/*¹¦ÄÜÎ» */
-#define LCD_DC1_IMAGE_ENABLE_BIT	0x1000
-#define LCD_DC1_PARTIAL_ENABLE_BIT	0x0100
-
-//#define LCD_R000_IR			( (u16) 0x0000) 	//Device code read Index (IR)/*[10:0]REG ID */
-//#define LCD_R000_DCR		( (u16) 0x0000) 	//Device code read (R000h)/*[15:0]	B509H Read */			//Device code read
-//#define LCD_R001_DOC		( (u16) 0x0001) 	//Driver Output Control (R001h)/*[8]SS,[10]SM */
-//#define LCD_R002_DWC		( (u16) 0x0002) 	//LCD Drive Wave Control (R002h)/*[8]BC */
-//#define LCD_R003_EM			( (u16) 0x0003) 	//Entry Mode (R003h)/*[3]AM,[5:4]ID,[7]ORG,[12]BGR,[14]DFM,[15]TRI */
-//#define LCD_R007_DC1		( (u16) 0x0007) 	//Display Control 1 (R007h)/*[8]BASEE,[12]PTDE */
-//#define LCD_R008_DC2		( (u16) 0x0008) 	//Display Control 2 (R008h)/*[15:8]FP,[7:0]BP */
-//#define LCD_R009_DC3		( (u16) 0x0009) 	//Display Control 3 (R009h)/*[10]PTS,[11]PTV */
-//#define LCD_R00B_ECC		( (u16) 0x000B)		//Eight Color Control (R00Bh) /*[0]COL */
-//#define LCD_R00C_EDIC1	( (u16) 0x000C) 	//External Display Interface Control 1 (R00Ch)/*[0]RIM,[5:4]DM,[8]RM,[14:12]ENC */
-//#define LCD_R00F_EDIC2	( (u16) 0x000F) 	//External Display Interface Control 2 (R00Fh)//*[0]DPL,[1]EPL,[3]HSPL,[4]VSPL */
-//#define LCD_R010_PIC1		( (u16) 0x0010) 	//Panel Interface Control 1 (R010h)	/*[5:0]RTNI,[]DIV */
-//#define LCD_R011_PIC2		( (u16) 0x0011) 	//Panel Interface Control 2 (R011h)	/*[2:0]STDI,[10:8]NOWI */
-//#define LCD_R012_PIC3		( (u16) 0x0012) 	//Panel Interface Control 3 (R012h)	/*[2:0]SEQWI,[10:8]VEQWI */
-//#define LCD_R013_PIC4		( (u16) 0x0013) 	//Panel Interface Control 4 (R013h)	/*[2:0]MCPI */
-//#define LCD_R014_PIC5		( (u16) 0x0014) 	//Panel Interface Control 5 (R014h)	/*[2:0]PCDIVL,[10:8]PCDIVH */
-//#define LCD_R020_PIC6		( (u16) 0x0020) 	//Panel Interface Control 6 (R020h)	/*[] */
-//#define LCD_R021_PIC7		( (u16) 0x0021) 	//Panel Interface Control 7 (R021h)	/*[2:0]STDE,[10:8]NOWE */
-//#define LCD_R022_PIC8		( (u16) 0x0022) 	//Panel Interface Control 8 (R022h)	/*[2:0]SEQWE,[10:8]VEQWE */
-//#define LCD_R023_PIC9		( (u16) 0x0023) 	//Panel Interface Control 9 (R023h)	/*[7:0]MCPE */
-//#define LCD_R090_FMC		( (u16) 0x0090) 	//Frame Marker Control (R090h)	/*[8:0]FMP,[14:12]FMI,[15]FMKM */
-//#define LCD_R100_PC1		( (u16) 0x0100) 	//Power Control 1 (R100h)	/*[2]DSTB,[5:4]AP,[10:8]BT */
-//#define LCD_R101_PC2		( (u16) 0x0101)		//Power Control 2 (R101h) /*[2:0]VC,[6:4]DCO,[10:8]DC1 */
-//#define LCD_R102_PC3		( (u16) 0x0102) 	//Power Control3 (R102h)	/*[4]PON,[5]PSON,[8]VCMR,[15:11]VRH */
-//#define LCD_R103_PC4		( (u16) 0x0103) 	//Power Control 4 (R103h)	/*[12:8]VDV */
-//#define LCD_R200_HA			( (u16) 0x0200)		//RAM Address Set (Horizontal Address) (R200h)	 /*[7:0] */
-//#define LCD_R201_VA			( (u16) 0x0201) 	//RAM Address Set (Vertical Address) (R201h)	/*[8:0] */
-//#define LCD_R202_GDRW		( (u16) 0x0202)		//GRAM Data Write (R202h)/GRAM Data Read (R202h)
-//#define LCD_R280_NVM		( (u16) 0x0280) 	//NVM Data Read / NVM Data Write (R280h)	/*[7:0]UID,[14:8]VCM */
-//#define LCD_R210_HSA		( (u16) 0x0210) 	//Window Horizontal RAM Address Start (R210h)		/*[7:0] */
-//#define LCD_R211_HEA		( (u16) 0x0211) 	//Window Horizontal RAM Address End(R211h)	/*[7:0] */
-//#define LCD_R212_VSA		( (u16) 0x0212)		//Window Vertical RAM Address Start (R212h) /*[8:0] */
-//#define LCD_R213_VEA		( (u16) 0x0213) 	//Window Vertical RAM Address End (R213h)	/*[8:0] */
-//#define LCD_R300_YC1		( (u16) 0x0300)		//¦Ã Control 1(R300)	
-//#define LCD_R301_YC2		( (u16) 0x0301)		//¦Ã Control 2(R301)	
-//#define LCD_R302_YC3		( (u16) 0x0302)		//¦Ã Control 3(R302)	
-//#define LCD_R303_YC4		( (u16) 0x0303)		//¦Ã Control 4(R303)	
-//#define LCD_R304_YC5		( (u16) 0x0304)		//¦Ã Control 5(R304)	
-//#define LCD_R305_YC6		( (u16) 0x0305)		//¦Ã Control 6(R305)	
-//#define LCD_R306_YC7		( (u16) 0x0306)		//¦Ã Control 7(R306)	
-//#define LCD_R307_YC8		( (u16) 0x0307)		//¦Ã Control 8(R307)	
-//#define LCD_R308_YC9		( (u16) 0x0308)		//¦Ã Control 9(R308)	
-//#define LCD_R309_YC10		( (u16) 0x0309)		//¦Ã Control 10(R309)	
-//#define LCD_R400_BINL		( (u16) 0x0400)		//Base Image Number of Line (R400h) /*[15]GS,[14:9]NL,[6:1]SCN */
-//#define LCD_R401_BIDC		( (u16) 0x0401) 	//Base Image Display Control (R401h)	/*[2]NDL,[1]VLE,[0]REV */
-//#define LCD_R404_BIVSC	( (u16) 0x0404) 	//Base Image Vertical Scroll Control (R404h)	/*[8:0]VL */
-//#define LCD_R500_PTDP		( (u16) 0x0500) 	//Display Position (R500h)	/*[8:0] */
-//#define LCD_R501_PTSA		( (u16) 0x0501) 	//RAM Address 1 (Start Line Address) (R501h)	/*[8:0] */
-//#define LCD_R502_PTEA		( (u16) 0x0502) 	//RAM Address 1 (End Line Address) (R502h)	/*[8:0] */
-//#define LCD_R600_TR			( (u16) 0x0600) 	//Test Register (Software Reset) (R600h)	/*[0]TRSR */
-//#define LCD_R6F0_NVMC1	( (u16) 0x06F0)  	//NVM Access Control 1 (R6F0h),	/*[5:4]EOP,[6]CALB,[7]TE */
-//#define LCD_R6F1_NVMC2	( (u16) 0x06F1)  	//NVM Access Control 2 (R6F1h),	/*[15:0]NVDAT */
-//#define LCD_R6F2_NVMC3	( (u16) 0x06F2)  	//NVM Access Control 3 (R6F2h)/*[3]NVVRF */
-
-
-
 //======================================Íâ²¿½Ó¿Ú
 unsigned short LCD_Initialize(LCDDef *pInfo);
-
 void LCDFsmc_Initialize(LCDDef *pInfo);
+void LCD_DisplayServer(void);
+
 void LCD_ShowAntenna(u16 x,u16 y,u8 Num,u16 PenColor);   //ÏÔÊ¾12x12ÌìÏß
 void LCD_ShowBattery(u16 x,u16 y,u8 Num,u16 PenColor); 	//ÏÔÊ¾12x12µç³Ø
 void LCD_Show(u16 x,u16 y,u8 font,u16 PenColor,u8 num,u8 *Buffer);	
+void LCD_ShowScroll(u16 x,u16 y,u8 font,u16 PenColor,u8 num,u8 *Buffer);	
 void LCD_ShowHex(u16 x,u16 y,u8 font,u16 color,u8 num,u8 bitnum,u8 *Buffer);    //ÏÔÊ¾Ê®Áù½øÖÆÊý¾Ý
-unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...);  //ºó±ßµÄÊ¡ÂÔºÅ¾ÍÊÇ¿É±ä²ÎÊý
+unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...);  //LCD´òÓ¡ÄÚÈÝ
+unsigned int LCD_PrintfScroll(u16 x,u16 y,u8 font,u16 color,const char *format,...);  //LCD¹ö¶¯´òÓ¡ÄÚÈÝ
 void LCD_ShowBMP(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 Length,u8 *RGBBuffer);    //ÏÔÊ¾Ê®Áù½øÖÆÊý¾Ý
 unsigned  short RGB888toRGB565(u8 *RGB888);
 
@@ -304,6 +251,7 @@ void LCD_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);				//ÔÚÖ¸¶¨ÇøÓòÄÚÌ
 void LCD_SetBackground(u16 BackColor );
 void LCD_ShowChar(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //¸ßÍ¨×Ö¿â²âÊÔ³ÌÐò
 void LCD_ShowWord(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //¸ßÍ¨×Ö¿â²âÊÔ³ÌÐò
+unsigned short LCD_GetDispCodeBuffer(u8 font,u16 word,u8 *ReadBuffer);	//»ñÈ¡ÏÔÊ¾µÄÄÚÈÝ
 
 //======================================ÑÓÊ±º¯Êý
 void LCD_DelayuS(u32 xuS);

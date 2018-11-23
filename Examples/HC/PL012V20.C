@@ -146,6 +146,7 @@ void PL012V20_Configuration(void)
 //	ILI9326_SetBackground(LCD565_BLUE);
   LCD_Printf(0,100,16,LCD565_RED,"%s",Version);		//项目编号
 	LCD_Printf(0,100,24,LCD565_RED,"ABCDEFGHJKLNMZCXQWERTPOIUY0123456789",Version);		//项目编号
+	LCD_PrintfScroll(0,100,32,LCD565_GREEN,"ABCDEFGHJKLNMZCXQWERTPOIUY0123456789",Version);		//项目编号
   SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 }
 
@@ -188,7 +189,7 @@ void PL012V20_Server(void)
 		Time	=	0;
     ClockServer();
 	}
-
+	LCD_DisplayServer();
 //	LCD_Fill(10,10,50,50,LCD565_WHITE);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
 	
 //	LCD_ShowBattery(360,0,2,LCD565_RED);   //显示12x12电池
