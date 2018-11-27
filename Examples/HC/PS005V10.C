@@ -28,6 +28,7 @@
 #include "STM32_SPI.H"
 #include "74HC595.H"
 #include "CD4051.H"
+#include "STM32_ADC.H"
 
 #include "string.h"				//串和内存操作函数头文件
 #include "stdlib.h"				//串和内存操作函数头文件
@@ -37,7 +38,10 @@ SPIDef stHC595SPI;
 stCD4051Def	stCD4051H,stCD4051L;
 
 unsigned	char	DspData	=	0;
-unsigned	char DspBuffer[10]	=	{0x55,0xFF};
+unsigned  char  x,y;
+unsigned	char DspBuffer[10]	=	{0x00,0x00};
+unsigned  short adcdata = 0;
+unsigned  short time= 0;
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -63,15 +67,15 @@ void PS005V10_Configuration(void)
 	
 	CD4051_Configuration();	
 	
-	CD4051_SetSensor(1,1);
+	CD4051_SetSensor(1,2);
+	DspData=0xFF^(0x01<<2);
+	SysTick_Configuration(200);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
-	SysTick_Configuration(200000);	//系统嘀嗒时钟配置72MHz,单位为uS
-	
-
+  ADC1_DiscConfigurationDMANR(1,ADC_Channel_8,ADC_SampleTime_7Cycles5);
 
 	PWM_OUT(TIM2,PWM_OUTChannel1,2,500);	//PWM设定-20161127版本--运行指示灯
 	
-	PWM_OUT(TIM4,PWM_OUTChannel4,5000,530);	//PWM设定-20161127版本--运行指示灯
+	PWM_OUT(TIM4,PWM_OUTChannel4,5000,830);	//PWM设定-20161127版本--运行指示灯
 }
 /*******************************************************************************
 * 函数名		:	
@@ -82,9 +86,15 @@ void PS005V10_Configuration(void)
 *******************************************************************************/
 void PS005V10_Server(void)
 {	
-	DspData++;
-	DspData	=	0;
-	HC595_Write(&DspData,1);
+  static char i=0;
+//	DspData++;
+//	DspData	=	0;
+  
+  if(i++>=3)
+    i=0;
+//  DspBuffer[0]  = DspData;
+  SensorServer();
+	HC595_Write(&DspBuffer[i],i);
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -118,13 +128,14 @@ void HC595_Write(unsigned	char* Buffer,unsigned	char len)
 	unsigned	char i=0;
 	//--------------------------SPI驱动
 	SPI_CS_LOW(&stHC595SPI);
-	for(i=0;i<len;i++)
-	{
+//	for(i=0;i<len;i++)
+//	{
 		datah	=	Buffer[i];
 		datal	=	datah^0xFF;
+    datal	=	0xFF^(0x01<<len);
 		SPI_ReadWriteByteSPI(&stHC595SPI,datah);
 		SPI_ReadWriteByteSPI(&stHC595SPI,datal);
-	}
+//	}
 	SPI_CS_HIGH(&stHC595SPI);
 	return;
 }
@@ -178,8 +189,8 @@ void CD4051_Configuration(void)
 void CD4051_SetSensor(unsigned	char x,unsigned char y)
 {
 	GPIO_SetBits(stCD4051H.Port.EN_PORT, stCD4051H.Port.EN_Pin);			//A/A0
-	CD4051_WriteChannel(&stCD4051H,0);
-	CD4051_WriteChannel(&stCD4051L,0);
+	CD4051_WriteChannel(&stCD4051H,x);
+	CD4051_WriteChannel(&stCD4051L,y);
 	GPIO_ResetBits(stCD4051H.Port.EN_PORT, stCD4051H.Port.EN_Pin);			//A/A0
 }
 /*******************************************************************************
@@ -193,6 +204,39 @@ void CD4051_SetSensor(unsigned	char x,unsigned char y)
 *******************************************************************************/
 void RS485_Server(void)			//通讯管理---负责信息的接收与发送
 {
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void SensorServer(void)
+{
+  if(time++>10)
+  {
+    time  = 0;
+    ADC1_DiscGetData(&adcdata);
+    if(adcdata<0x0D00)
+    {
+      DspBuffer[y]|=0x01<<x;
+    }
+    else
+    {
+      
+      DspBuffer[y]&=0xFF^(0x01<<x);
+    }
+    if(x++>=7)
+    {
+      x=0;
+      if(y++>=3)
+        y=0;
+    }
+    CD4051_SetSensor(x,y);
+  }
 }
 
 /*******************************************************************************

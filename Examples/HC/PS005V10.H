@@ -14,7 +14,7 @@ void PS005V10_Server(void);
 
 
 void RS485_Server(void);		//通讯管理---负责信息的接收与发送
-
+void SensorServer(void);
 
 void HC595_Configuration(void);
 void HC595_Write(unsigned	char* Buffer,unsigned	char len);

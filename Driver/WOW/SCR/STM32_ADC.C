@@ -230,7 +230,7 @@ unsigned char ADC1_DiscGetData(unsigned short* DataBuffer)
 {
   if(NULL !=  ADCBuffer)
   {
-    memcpy(DataBuffer,ADCBuffer,ChannelCount);
+    memcpy(DataBuffer,ADCBuffer,ChannelCount*2);
     return ChannelCount;
   }
   else
