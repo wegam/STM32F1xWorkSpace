@@ -228,7 +228,7 @@ void LCD_DisplayServer(void)
 	if(NULL	!=	ScrollBuff)
 	{
 		LCD_Clean(LCDSYS->Data.BColor);
-		LCD_ShowScroll(ScrollBuff->startx,ScrollBuff->starty,ScrollBuff->font,ScrollBuff->color,ScrollBuff->length,ScrollBuff->buffer);
+		LCD_ShowScroll(ScrollBuff);
 	}
 }
 /*******************************************************************************
@@ -806,15 +806,15 @@ void LCD_Show(
 * 输入			: void
 * 返回值			: void
 *******************************************************************************/
-void LCD_ShowScroll(void)		//高通字库测试程序
+void LCD_ShowScroll(stLCDScroll	*ScrollBuff)		//高通字库测试程序
 {
 	unsigned short	MaxV,MaxH;	//边界值
 	unsigned char i=0;
 	unsigned char CodeBuffer[130]={0};
-	unsigned char	num		=	0;
+	unsigned char	num		=	ScrollBuff->length;
 	unsigned char	font	=	0;
 	unsigned char* Buffer	=NULL;
-	
+	unsigned	short x,y;
 	stLCDScroll*	TempBuff;
 	if(NULL==	ScrollBuff)
 	{
@@ -1027,7 +1027,7 @@ unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...)			
   {
     font  = 32;
   }
-	LCD_ShowScroll(x,y,font,color,InputDataSize,(unsigned char*)DataBuffer);
+	LCD_Show(x,y,font,color,InputDataSize,(unsigned char*)DataBuffer);
 	return InputDataSize;
 }
 /*******************************************************************************
@@ -1100,7 +1100,7 @@ unsigned int LCD_PrintfScroll(u16 x,u16 y,u8 font,u16 color,const char *format,.
 		NewBuff.nextlist	=	NULL;
 		TempBuff->nextlist	=	(unsigned long*)&NewBuff;
 	}
-	LCD_ShowScroll(x,y,font,color,InputDataSize,(unsigned char*)DataBuffer);
+//	LCD_ShowScroll(x,y,font,color,InputDataSize,(unsigned char*)DataBuffer);
 	return InputDataSize;
 }
 /*******************************************************************************

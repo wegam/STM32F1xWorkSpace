@@ -141,13 +141,17 @@ void PL010V17_Configuration(void)
 	
 	LCD_Configuration();
 	
-	ADC_TempSensorConfiguration(&TempData);
+	ADC_TempSensorConfiguration(&TempData);	
+	
+	
 	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
 //	IWDG_Configuration(2000);			//独立看门狗配置---参数单位ms	
 
 //	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);	//PWM设定-20161127版本--运行指示灯
+
+	
 	
 }
 /*******************************************************************************
@@ -235,8 +239,8 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 {
 #if 1
 	CS5530_Process(&CS5530);
-	//
-	goto WeighFiltUse;
+	
+	goto WeighFiltUse;		//滤波输出
 	if((CS5530.Data.WeighLive	!=0xFFFFFFFF)&&(CS5530.Data.WeighLive	!=CS5530_ADC_Value))
 	{
 		if(line>=240)
@@ -247,23 +251,27 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 		CS5530_ADC_Value	=	CS5530.Data.WeighLive>>0;
 //		LCD_Printf(0		,line,32	,LCD565_RED,"AD:%0.10d",CS5530_ADC_Value>>0);				//待发药槽位，后边的省略号就是可变参数
 		LCD_Printf(0		,line,32	,LCD565_RED,"距离:%0.10dmm",CS5530_ADC_Value/836+300-50);				//待发药槽位，后边的省略号就是可变参数
+		
 		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
 		line+=32;		
 	}
 	WeighFiltUse:
 	if((CS5530.Data.WeighFilt	!=0xFFFFFFFF)&&(CS5530.Data.WeighFilt	!=CS5530_ADC_Value))
 	{
-		if(line>=240)
+		LCD_Printf(0		,0,24	,LCD565_GREEN,"距离");				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(200		,0,24	,LCD565_GREEN,"十进制");				//待发药槽位，后边的省略号就是可变参数
+		if(line>=240||line<=16)
 		{
-			line	=	0;
+			line	=	24;
 			LCD_Clean(LCD565_LBBLUE);	//清除屏幕函数
 		}
 		CS5530_ADC_Value	=	CS5530.Data.WeighFilt>>0;
 //		LCD_Printf(0		,line,32	,LCD565_RED,"AD:%0.10d",CS5530_ADC_Value>>3);				//待发药槽位，后边的省略号就是可变参数
 		CS5530_ADC_Value	=	CS5530_ADC_Value>>3;
-		LCD_Printf(0		,line,32	,LCD565_RED,"距离:%0.6dmm",CS5530_ADC_Value/85+314);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(0		,line,24	,LCD565_RED,"距离:%0.6dmm",CS5530_ADC_Value/85+314);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(200		,line,24	,LCD565_RED,"AD:%0.10d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
 //		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
-		line+=32;		
+		line+=24;			//换行
 		CS5530.Data.WeighFilt	=	0xFFFFFFFF;
 	}
 	return;

@@ -221,7 +221,7 @@ void LCD_DisplayServer(void);
 void LCD_ShowAntenna(u16 x,u16 y,u8 Num,u16 PenColor);   //显示12x12天线
 void LCD_ShowBattery(u16 x,u16 y,u8 Num,u16 PenColor); 	//显示12x12电池
 void LCD_Show(u16 x,u16 y,u8 font,u16 PenColor,u8 num,u8 *Buffer);	
-void LCD_ShowScroll(u16 x,u16 y,u8 font,u16 PenColor,u8 num,u8 *Buffer);	
+void LCD_ShowScroll(stLCDScroll	*ScrollBuff);	
 void LCD_ShowHex(u16 x,u16 y,u8 font,u16 color,u8 num,u8 bitnum,u8 *Buffer);    //显示十六进制数据
 unsigned int LCD_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...);  //LCD打印内容
 unsigned int LCD_PrintfScroll(u16 x,u16 y,u8 font,u16 color,const char *format,...);  //LCD滚动打印内容

@@ -98,7 +98,7 @@ void SPI_InitializeSPI(SPIDef *pInfo)
 	SPI_InitTypeDef  SPI_InitStructure;
 	GPIO_InitTypeDef GPIO_InitStructure;
 	SPI_TypeDef *SPIx	=	pInfo->Port.SPIx;
-//	unsigned char SPIx_CsFlg=0;		//如果使用纯硬件SPIx（含CS脚），SPIx_CsFlg=1，否则SPIx_CsFlg=0；
+	unsigned char SPIx_CsFlg=1;		//如果使用纯硬件SPIx（含CS脚），SPIx_CsFlg=1，否则SPIx_CsFlg=0；
 
 	//2)**********相关GPIO配置
 	switch(*(u32*)&SPIx)
@@ -172,7 +172,6 @@ void SPI_InitializeSPI(SPIDef *pInfo)
 //		SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;															//片选方式     	（硬件或软件方式）
 //	}
 //	SPI_Init(pInfo->Port.SPIx,&SPI_InitStructure);
-//	
 ////	SPI_Cmd(pInfo->Port.SPIx, ENABLE);				//使能SPI	
 //	
 //	//3)**********使能SPIx_NESS为主输出模式
