@@ -39,7 +39,7 @@ stCD4051Def	stCD4051H,stCD4051L;
 
 unsigned	char	DspData	=	0;
 unsigned  char  x,y;
-unsigned	char DspBuffer[10]	=	{0x00,0x00};
+unsigned	char DspBuffer[10]	=	{0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
 unsigned  short adcdata = 0;
 unsigned  short time= 0;
 /*******************************************************************************
@@ -67,8 +67,6 @@ void PS005V10_Configuration(void)
 	
 	CD4051_Configuration();	
 	
-	CD4051_SetSensor(1,2);
-	DspData=0xFF^(0x01<<2);
 	SysTick_Configuration(200);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
   ADC1_DiscConfigurationDMANR(1,ADC_Channel_8,ADC_SampleTime_7Cycles5);
