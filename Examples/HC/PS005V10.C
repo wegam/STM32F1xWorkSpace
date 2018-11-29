@@ -73,7 +73,9 @@ void PS005V10_Configuration(void)
 
 	PWM_OUT(TIM2,PWM_OUTChannel1,2,500);	//PWM设定-20161127版本--运行指示灯
 	
-	PWM_OUT(TIM4,PWM_OUTChannel4,5000,830);	//PWM设定-20161127版本--运行指示灯
+	PWM_OUT(TIM4,PWM_OUTChannel4,5000,990);	//PWM设定-20161127版本--运行指示灯
+	
+//	PWM_OUT(TIM1,PWM_OUTChannel1,2,500);	//PWM设定-20161127版本--运行指示灯
 }
 /*******************************************************************************
 * 函数名		:	
@@ -218,7 +220,7 @@ void SensorServer(void)
   {
     time  = 0;
     ADC1_DiscGetData(&adcdata);
-    if(adcdata<0x0D00)
+    if(adcdata<0x0D40)
     {
       DspBuffer[y]|=0x01<<x;
     }
