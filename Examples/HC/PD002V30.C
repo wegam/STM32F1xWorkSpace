@@ -152,7 +152,7 @@ void PD002V30_Configuration(void)
 	
 	AT24C02_Configuration();
 	
-	PWM_OUT(TIM2,PWM_OUTChannel1,1,900);						//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,8000000,500);						//PWM设定-20161127版本
 }
 /*******************************************************************************
 * 函数名		:	
@@ -347,7 +347,7 @@ void AT24C02_ReadData(void)		//读数据,一页一通道，前4字节存数量，后4字节存单重
 *******************************************************************************/
 void SwitchID_Configuration(void)
 {
-	SWITCHID_CONF	*pInfo	=	&MS200.SWITCHID;
+	SwitchDef	*pInfo	=	&MS200.SWITCHID;
 	
 	pInfo->NumOfSW	=	4;
 	
@@ -375,7 +375,7 @@ void SwitchID_Configuration(void)
 *******************************************************************************/
 void PD002V30_USART_Cofiguration(void)
 {
-	RS485_TypeDef	*RS485	=	&MS200.BUS485;
+	RS485Def	*RS485	=	&MS200.BUS485;
 	RS485->USARTx	=	USART2;
 	RS485->RS485_CTL_PORT	=	GPIOA;
 	RS485->RS485_CTL_Pin	=	GPIO_Pin_1;
@@ -455,42 +455,6 @@ void PD002V30_RS485_Server(void)
 {
 	PD002V30_RS485_Recv();		//RS485接收
 	PD002V30_RS485_Send();		//RS485发送
-//	Num	=	RS485_ReadBufferIDLE(RS485,RS485RxBuf);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
-//	if(Num)
-//	{
-//		MS200ProCCDef	MS200Pro;
-//		u8 Address	=	0;
-//		memcpy((u8*)&MS200Pro,RS485RxBuf,Num);
-//		Address	=	MS200Pro.Address;
-//		//======校验地址
-//		if(((Address&0x07)	==SwitchID)||((Address&0x07)	==SwitchID+1))
-//		{			
-//			u8 Bcc8	=	0;
-//			//数据校验：校验正确后应答
-//			Bcc8	=	BCC8(&MS200Pro.SerialNumber,9);
-//			if(Bcc8==MS200Pro.Bcc8)	//校验正确，需要应答
-//			{
-//				MS200.RS485Rx.Data.Retry	=	0;
-//				MS200.RS485Rx.Data.Time		=	0;
-//				
-//				if(MS200Pro.Receipt!=0x0B)
-//				{
-//					memcpy((u8*)&MS200.RS485Rx.Pro,RS485RxBuf,Num);	//保存数据					
-//					
-//					PD002V30_RS485_Recv();
-//					return;
-//				}
-//				else
-//				{
-//					MS200.RS485Rx.Pro.Cmd	=	APP_CMD_Null;		//上级应答，任务完成，命令清除
-//					return;
-//				}
-//			}
-//			
-//		}
-//	}
-	
-//	RS485_ReadBufferIDLE(&BUS485,(u32*)Bus485Re,(u32*)Bus485Rx);	
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -504,7 +468,7 @@ void PD002V30_RS485_Server(void)
 void PD002V30_RS485_Recv(void)
 {
 	u8 Num	=	0;
-	RS485_TypeDef	*RS485Port	=	&MS200.BUS485;
+	RS485Def	*RS485Port	=	&MS200.BUS485;
 	
 	MS200ProCCDef	*Ack		=	&MS200.Ack;					//485接收缓存
 	PD002V30CHDef			*Channel			=	&MS200.CH1SS3;		//SS3接口，外面
@@ -591,8 +555,8 @@ void PD002V30_RS485_Recv(void)
 *******************************************************************************/
 void PD002V30_RS485_Send(void)
 {
-	USARTStatusDef	Status	=	USART_IDLESTD;
-	RS485_TypeDef 	RS485Info	=	MS200.BUS485;
+	USARTStatusDef	Status;
+	RS485Def 				RS485Info	=	MS200.BUS485;
 	USART_TypeDef* 	USARTx	=	MS200.BUS485.USARTx;
 	
 	MS200ProCCDef			*Ack					=	&MS200.Ack;					//485接收缓存
@@ -611,11 +575,7 @@ void PD002V30_RS485_Send(void)
 //	unsigned long			Quantity			=	Data->Quantity;				//数量
 //	unsigned long			WeightPiece		=	Data->WeightPiece;		//数量
 	
-	Status	=	USART_Status(RS485Info.USARTx);		//串口状态检查
-	if(Status	!=	USART_IDLESTD)
-	{
-		return;
-	}
+
 	if(Ack->Head.h1	== head1)
 	{
 		PD002V30_Pro_Packet(Ack);		//协议打包
@@ -849,7 +809,7 @@ void PD002V30_WORK_Server(void)
 				default :
 					*WorkState	=	StateIdle;		/*空闲状态*/
 					return;
-				break;
+
 			}
 		}
 		break;
@@ -867,7 +827,7 @@ void PD002V30_WORK_Server(void)
 			*WorkRequst	=	RequstIdle;		/*无数据请求*/
 			return;
 		}
-		break;
+
 		case StateReadI2CDataReq:		/*请求获取备份EEPROM数值*/
 		{
 			//清除数据
@@ -882,7 +842,7 @@ void PD002V30_WORK_Server(void)
 			*WorkRequst	=	RequstIdle;
 			return;
 		}
-		break;
+
 		case StateSaveI2CDataReq:		/*请求保存备份EEPROM数值*/
 		{
 			AT24C02_SaveData();					//保存数据,一页一通道，前4字节存数量，后4字节存单重
@@ -893,7 +853,6 @@ void PD002V30_WORK_Server(void)
 			*WorkRequst	=	RequstIdle;
 			return;
 		}
-		break;
 		case StateGetFiltDataReq:			/*请求获取滤波AD值*/
 		{
 				Data->Time	=	0;
@@ -917,7 +876,6 @@ void PD002V30_WORK_Server(void)
 				return;
 			}
 		}
-				break;
 		case StateGetFiltDataExe:		/*执行获取滤波AD值*/	
 		{
 			if(ADC->Data.WeighFilt	== 0xFFFFFFFF)		//获取稳定AD值
@@ -949,7 +907,6 @@ void PD002V30_WORK_Server(void)
 			{
 				case RequstIdle:
 						return;
-				break;
 				case RequstBackupData:
 						Data->WeightNew			=	0;
 						Data->WeightBackUp	=	ADC->Data.WeighFilt;

@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xHC' 
- * Target:  'PD006V20' 
+ * Target:  'PD002V30ADC' 
  */
 
 #ifndef RTE_COMPONENTS_H

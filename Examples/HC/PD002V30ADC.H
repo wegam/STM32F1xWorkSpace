@@ -1,5 +1,5 @@
-#ifndef __PD002V30_H
-#define __PD002V30_H
+#ifndef __PD002V30ADC_H
+#define __PD002V30ADC_H
 
 
 #include "STM32_USART.H"
@@ -172,35 +172,20 @@ typedef	struct _PD002V30
 
 
 
-void PD002V30_Configuration(void);
+void PD002V30ADC_Configuration(void);
 
-void PD002V30_Server(void);
+void PD002V30ADC_Server(void);
 
 void PD002V30_USART_Cofiguration(void);
-void PD002V30_USART_Server(void);
-void PD002V30_RS485_Server(void);	//RS485服务程序
-void PD002V30_RS485_Recv(void);		//RS485接收
-void PD002V30_RS485_Send(void);		//RS485发送
-void PD002V30_Pro_Packet(MS200ProCCDef	*Pro);	//协议打包
-
-
-void PD002V30_CMD_Server(void);		//命令处理
-void PD002V30_WORK_Server(void);	//状态处理
-	
-void AT24C02_Configuration(void);
-void AT24C02_SaveData(void);		//保存数据,一页一通道，前4字节存数量，后4字节存单重
-void AT24C02_ReadData(void);		//读数据,一页一通道，前4字节存数量，后4字节存单重
 	
 void SwitchID_Configuration(void);
 
 unsigned char PD002V30_GetSwitchID(void);				//获取拔码开关地址
-unsigned char PD002V30_GetBufferArray(void);		//获取各抽屉的AD值
+
 
 void CS5530_Configuration(void);		//CS5530初始化
 void CS5530_Server(void);				//读取AD值
-	
-void Seg_Configuration(void);		//数码管接口配置
-void Seg_Server(void);					//数码更新接口
+
 
 #endif
 

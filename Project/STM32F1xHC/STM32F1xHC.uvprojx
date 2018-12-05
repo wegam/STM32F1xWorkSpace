@@ -701,6 +701,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -965,6 +970,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -2113,6 +2123,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2377,6 +2392,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -3525,6 +3545,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3789,6 +3814,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -4937,6 +4967,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5201,6 +5236,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -6349,6 +6389,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -6613,6 +6658,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -7761,6 +7811,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -8025,6 +8080,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -9173,6 +9233,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -9437,6 +9502,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -10585,6 +10655,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -10849,6 +10924,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -11997,6 +12077,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -12261,6 +12346,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -13409,6 +13499,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -13673,6 +13768,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -14821,6 +14921,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -15085,6 +15190,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -16233,6 +16343,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -16497,6 +16612,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -17645,6 +17765,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -17909,6 +18034,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -19057,6 +19187,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -19321,6 +19456,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -20469,6 +20609,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -20733,6 +20878,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -21330,7 +21480,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>12</TargetSelection>
+          <TargetSelection>6</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -21344,7 +21494,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>BIN\CMSIS_AGDI.dll</Driver>
+            <Driver>Segger\JL2CM3.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -21881,6 +22031,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -22146,6 +22301,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
             </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -22324,6 +22484,1247 @@
               <FileName>R61509V.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\R61509V.c</FilePath>
+            </File>
+            <File>
+              <FileName>SSD1963.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\SSD1963.C</FilePath>
+            </File>
+            <File>
+              <FileName>ILI9326.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\ILI9326.c</FilePath>
+            </File>
+            <File>
+              <FileName>SteepMotor.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\SteepMotor.C</FilePath>
+            </File>
+            <File>
+              <FileName>SWITCHID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\SWITCHID.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1618.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1618.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1638.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1638.C</FilePath>
+            </File>
+            <File>
+              <FileName>LOCK.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\LOCK.C</FilePath>
+            </File>
+            <File>
+              <FileName>AT24C02.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\AT24C02.C</FilePath>
+            </File>
+            <File>
+              <FileName>LCD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\LCD.c</FilePath>
+            </File>
+            <File>
+              <FileName>MX25L4006E.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MX25L4006E.C</FilePath>
+            </File>
+            <File>
+              <FileName>DS18B20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Driver/Tool</GroupName>
+          <Files>
+            <File>
+              <FileName>CRC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Tool\CRC.C</FilePath>
+            </File>
+            <File>
+              <FileName>LinkedList.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Tool\LinkedList.C</FilePath>
+            </File>
+            <File>
+              <FileName>TOOL.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Tool\TOOL.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Driver/Protocol</GroupName>
+          <Files>
+            <File>
+              <FileName>SPI_FLASH.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\SPI_FLASH.C</FilePath>
+            </File>
+            <File>
+              <FileName>USART_ISP.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\USART_ISP.C</FilePath>
+            </File>
+            <File>
+              <FileName>HC_PHY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\HC_PHY.C</FilePath>
+            </File>
+            <File>
+              <FileName>HC_RS232.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\HC_RS232.C</FilePath>
+            </File>
+            <File>
+              <FileName>HC_RS485.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\HC_RS485.C</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>OneWrie.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Protocol\OneWrie.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Document</GroupName>
+          <Files>
+            <File>
+              <FileName>C语言printf()输出格式大全.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Document\C语言printf()输出格式大全.txt</FilePath>
+            </File>
+            <File>
+              <FileName>note.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Document\note.txt</FilePath>
+            </File>
+            <File>
+              <FileName>readme.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Document\readme.txt</FilePath>
+            </File>
+            <File>
+              <FileName>USB说明.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Document\USB说明.txt</FilePath>
+            </File>
+            <File>
+              <FileName>常用C语言标准库函数.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Document\常用C语言标准库函数.txt</FilePath>
+            </File>
+            <File>
+              <FileName>常用头文件.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Document\常用头文件.txt</FilePath>
+            </File>
+            <File>
+              <FileName>仿真设置 .txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Document\仿真设置 .txt</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>::CMSIS</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>1</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
+        </Group>
+      </Groups>
+    </Target>
+    <Target>
+      <TargetName>PD002V30ADC</TargetName>
+      <ToolsetNumber>0x4</ToolsetNumber>
+      <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
+      <TargetOption>
+        <TargetCommonOption>
+          <Device>STM32F103CB</Device>
+          <Vendor>STMicroelectronics</Vendor>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
+          <PackURL>http://www.keil.com/pack/</PackURL>
+          <Cpu>IROM(0x08000000,0x20000) IRAM(0x20000000,0x5000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
+          <FlashUtilSpec></FlashUtilSpec>
+          <StartupFile></StartupFile>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000 -FP0($$Device:STM32F103CB$Flash\STM32F10x_128.FLM))</FlashDriverDll>
+          <DeviceId>0</DeviceId>
+          <RegisterFile>$$Device:STM32F103CB$Device\Include\stm32f10x.h</RegisterFile>
+          <MemoryEnv></MemoryEnv>
+          <Cmp></Cmp>
+          <Asm></Asm>
+          <Linker></Linker>
+          <OHString></OHString>
+          <InfinionOptionDll></InfinionOptionDll>
+          <SLE66CMisc></SLE66CMisc>
+          <SLE66AMisc></SLE66AMisc>
+          <SLE66LinkerMisc></SLE66LinkerMisc>
+          <SFDFile>$$Device:STM32F103CB$SVD\STM32F103xx.svd</SFDFile>
+          <bCustSvd>0</bCustSvd>
+          <UseEnv>0</UseEnv>
+          <BinPath></BinPath>
+          <IncludePath></IncludePath>
+          <LibPath></LibPath>
+          <RegisterFilePath></RegisterFilePath>
+          <DBRegisterFilePath></DBRegisterFilePath>
+          <TargetStatus>
+            <Error>0</Error>
+            <ExitCodeStop>0</ExitCodeStop>
+            <ButtonStop>0</ButtonStop>
+            <NotGenerated>0</NotGenerated>
+            <InvalidFlash>1</InvalidFlash>
+          </TargetStatus>
+          <OutputDirectory>.\OutPut\Obj\</OutputDirectory>
+          <OutputName>PD002V30ADC</OutputName>
+          <CreateExecutable>1</CreateExecutable>
+          <CreateLib>0</CreateLib>
+          <CreateHexFile>1</CreateHexFile>
+          <DebugInformation>1</DebugInformation>
+          <BrowseInformation>1</BrowseInformation>
+          <ListingPath>.\OutPut\List\</ListingPath>
+          <HexFormatSelection>1</HexFormatSelection>
+          <Merge32K>0</Merge32K>
+          <CreateBatchFile>0</CreateBatchFile>
+          <BeforeCompile>
+            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg2>0</RunUserProg2>
+            <UserProg1Name></UserProg1Name>
+            <UserProg2Name></UserProg2Name>
+            <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
+            <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopU1X>0</nStopU1X>
+            <nStopU2X>0</nStopU2X>
+          </BeforeCompile>
+          <BeforeMake>
+            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg2>0</RunUserProg2>
+            <UserProg1Name></UserProg1Name>
+            <UserProg2Name></UserProg2Name>
+            <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
+            <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopB1X>0</nStopB1X>
+            <nStopB2X>0</nStopB2X>
+          </BeforeMake>
+          <AfterMake>
+            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg2>0</RunUserProg2>
+            <UserProg1Name></UserProg1Name>
+            <UserProg2Name></UserProg2Name>
+            <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
+            <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopA1X>0</nStopA1X>
+            <nStopA2X>0</nStopA2X>
+          </AfterMake>
+          <SelectedForBatchBuild>0</SelectedForBatchBuild>
+          <SVCSIdString></SVCSIdString>
+        </TargetCommonOption>
+        <CommonProperty>
+          <UseCPPCompiler>0</UseCPPCompiler>
+          <RVCTCodeConst>0</RVCTCodeConst>
+          <RVCTZI>0</RVCTZI>
+          <RVCTOtherData>0</RVCTOtherData>
+          <ModuleSelection>0</ModuleSelection>
+          <IncludeInBuild>1</IncludeInBuild>
+          <AlwaysBuild>0</AlwaysBuild>
+          <GenerateAssemblyFile>0</GenerateAssemblyFile>
+          <AssembleAssemblyFile>0</AssembleAssemblyFile>
+          <PublicsOnly>0</PublicsOnly>
+          <StopOnExitCode>3</StopOnExitCode>
+          <CustomArgument></CustomArgument>
+          <IncludeLibraryModules></IncludeLibraryModules>
+          <ComprImg>1</ComprImg>
+        </CommonProperty>
+        <DllOption>
+          <SimDllName>SARMCM3.DLL</SimDllName>
+          <SimDllArguments> -REMAP</SimDllArguments>
+          <SimDlgDll>DARMSTM.DLL</SimDlgDll>
+          <SimDlgDllArguments>-pSTM32F103VC</SimDlgDllArguments>
+          <TargetDllName>SARMCM3.DLL</TargetDllName>
+          <TargetDllArguments></TargetDllArguments>
+          <TargetDlgDll>TCM.DLL</TargetDlgDll>
+          <TargetDlgDllArguments>-pCM3</TargetDlgDllArguments>
+        </DllOption>
+        <DebugOption>
+          <OPTHX>
+            <HexSelection>1</HexSelection>
+            <HexRangeLowAddress>0</HexRangeLowAddress>
+            <HexRangeHighAddress>0</HexRangeHighAddress>
+            <HexOffset>0</HexOffset>
+            <Oh166RecLen>16</Oh166RecLen>
+          </OPTHX>
+          <Simulator>
+            <UseSimulator>0</UseSimulator>
+            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
+            <RunToMain>1</RunToMain>
+            <RestoreBreakpoints>1</RestoreBreakpoints>
+            <RestoreWatchpoints>1</RestoreWatchpoints>
+            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
+            <RestoreFunctions>1</RestoreFunctions>
+            <RestoreToolbox>1</RestoreToolbox>
+            <LimitSpeedToRealTime>1</LimitSpeedToRealTime>
+            <RestoreSysVw>1</RestoreSysVw>
+          </Simulator>
+          <Target>
+            <UseTarget>1</UseTarget>
+            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
+            <RunToMain>1</RunToMain>
+            <RestoreBreakpoints>1</RestoreBreakpoints>
+            <RestoreWatchpoints>1</RestoreWatchpoints>
+            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
+            <RestoreFunctions>0</RestoreFunctions>
+            <RestoreToolbox>1</RestoreToolbox>
+            <RestoreTracepoints>0</RestoreTracepoints>
+            <RestoreSysVw>1</RestoreSysVw>
+          </Target>
+          <RunDebugAfterBuild>0</RunDebugAfterBuild>
+          <TargetSelection>6</TargetSelection>
+          <SimDlls>
+            <CpuDll></CpuDll>
+            <CpuDllArguments></CpuDllArguments>
+            <PeripheralDll></PeripheralDll>
+            <PeripheralDllArguments></PeripheralDllArguments>
+            <InitializationFile></InitializationFile>
+          </SimDlls>
+          <TargetDlls>
+            <CpuDll></CpuDll>
+            <CpuDllArguments></CpuDllArguments>
+            <PeripheralDll></PeripheralDll>
+            <PeripheralDllArguments></PeripheralDllArguments>
+            <InitializationFile></InitializationFile>
+            <Driver>Segger\JL2CM3.dll</Driver>
+          </TargetDlls>
+        </DebugOption>
+        <Utilities>
+          <Flash1>
+            <UseTargetDll>1</UseTargetDll>
+            <UseExternalTool>0</UseExternalTool>
+            <RunIndependent>0</RunIndependent>
+            <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
+            <Capability>1</Capability>
+            <DriverSelection>4096</DriverSelection>
+          </Flash1>
+          <bUseTDR>1</bUseTDR>
+          <Flash2>BIN\UL2CM3.DLL</Flash2>
+          <Flash3>"" ()</Flash3>
+          <Flash4></Flash4>
+          <pFcarmOut></pFcarmOut>
+          <pFcarmGrp></pFcarmGrp>
+          <pFcArmRoot></pFcArmRoot>
+          <FcArmLst>0</FcArmLst>
+        </Utilities>
+        <TargetArmAds>
+          <ArmAdsMisc>
+            <GenerateListings>0</GenerateListings>
+            <asHll>1</asHll>
+            <asAsm>1</asAsm>
+            <asMacX>1</asMacX>
+            <asSyms>1</asSyms>
+            <asFals>1</asFals>
+            <asDbgD>1</asDbgD>
+            <asForm>1</asForm>
+            <ldLst>0</ldLst>
+            <ldmm>1</ldmm>
+            <ldXref>1</ldXref>
+            <BigEnd>0</BigEnd>
+            <AdsALst>1</AdsALst>
+            <AdsACrf>1</AdsACrf>
+            <AdsANop>0</AdsANop>
+            <AdsANot>0</AdsANot>
+            <AdsLLst>1</AdsLLst>
+            <AdsLmap>1</AdsLmap>
+            <AdsLcgr>1</AdsLcgr>
+            <AdsLsym>1</AdsLsym>
+            <AdsLszi>1</AdsLszi>
+            <AdsLtoi>1</AdsLtoi>
+            <AdsLsun>1</AdsLsun>
+            <AdsLven>1</AdsLven>
+            <AdsLsxf>1</AdsLsxf>
+            <RvctClst>0</RvctClst>
+            <GenPPlst>0</GenPPlst>
+            <AdsCpuType>"Cortex-M3"</AdsCpuType>
+            <RvctDeviceName></RvctDeviceName>
+            <mOS>0</mOS>
+            <uocRom>0</uocRom>
+            <uocRam>0</uocRam>
+            <hadIROM>1</hadIROM>
+            <hadIRAM>1</hadIRAM>
+            <hadXRAM>0</hadXRAM>
+            <uocXRam>0</uocXRam>
+            <RvdsVP>0</RvdsVP>
+            <hadIRAM2>0</hadIRAM2>
+            <hadIROM2>0</hadIROM2>
+            <StupSel>8</StupSel>
+            <useUlib>1</useUlib>
+            <EndSel>0</EndSel>
+            <uLtcg>0</uLtcg>
+            <nSecure>0</nSecure>
+            <RoSelD>3</RoSelD>
+            <RwSelD>3</RwSelD>
+            <CodeSel>0</CodeSel>
+            <OptFeed>0</OptFeed>
+            <NoZi1>0</NoZi1>
+            <NoZi2>0</NoZi2>
+            <NoZi3>0</NoZi3>
+            <NoZi4>0</NoZi4>
+            <NoZi5>0</NoZi5>
+            <Ro1Chk>0</Ro1Chk>
+            <Ro2Chk>0</Ro2Chk>
+            <Ro3Chk>0</Ro3Chk>
+            <Ir1Chk>1</Ir1Chk>
+            <Ir2Chk>0</Ir2Chk>
+            <Ra1Chk>0</Ra1Chk>
+            <Ra2Chk>0</Ra2Chk>
+            <Ra3Chk>0</Ra3Chk>
+            <Im1Chk>1</Im1Chk>
+            <Im2Chk>0</Im2Chk>
+            <OnChipMemories>
+              <Ocm1>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm1>
+              <Ocm2>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm2>
+              <Ocm3>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm3>
+              <Ocm4>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm4>
+              <Ocm5>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm5>
+              <Ocm6>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm6>
+              <IRAM>
+                <Type>0</Type>
+                <StartAddress>0x20000000</StartAddress>
+                <Size>0x5000</Size>
+              </IRAM>
+              <IROM>
+                <Type>1</Type>
+                <StartAddress>0x8000000</StartAddress>
+                <Size>0x20000</Size>
+              </IROM>
+              <XRAM>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </XRAM>
+              <OCR_RVCT1>
+                <Type>1</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT1>
+              <OCR_RVCT2>
+                <Type>1</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT2>
+              <OCR_RVCT3>
+                <Type>1</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT3>
+              <OCR_RVCT4>
+                <Type>1</Type>
+                <StartAddress>0x8000000</StartAddress>
+                <Size>0x20000</Size>
+              </OCR_RVCT4>
+              <OCR_RVCT5>
+                <Type>1</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT5>
+              <OCR_RVCT6>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT6>
+              <OCR_RVCT7>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT7>
+              <OCR_RVCT8>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT8>
+              <OCR_RVCT9>
+                <Type>0</Type>
+                <StartAddress>0x20000000</StartAddress>
+                <Size>0x5000</Size>
+              </OCR_RVCT9>
+              <OCR_RVCT10>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT10>
+            </OnChipMemories>
+            <RvctStartVector></RvctStartVector>
+          </ArmAdsMisc>
+          <Cads>
+            <interw>1</interw>
+            <Optim>2</Optim>
+            <oTime>0</oTime>
+            <SplitLS>0</SplitLS>
+            <OneElfS>1</OneElfS>
+            <Strict>0</Strict>
+            <EnumInt>0</EnumInt>
+            <PlainCh>0</PlainCh>
+            <Ropi>0</Ropi>
+            <Rwpi>0</Rwpi>
+            <wLevel>2</wLevel>
+            <uThumb>0</uThumb>
+            <uSurpInc>0</uSurpInc>
+            <uC99>0</uC99>
+            <useXO>0</useXO>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
+            <VariousControls>
+              <MiscControls></MiscControls>
+              <Define>PD002V30ADC</Define>
+              <Undefine></Undefine>
+              <IncludePath>..\..\Examples\DEMO\include;..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Examples\HC;.\main;..\..\Driver\Tool;..\..\Driver\Protocol</IncludePath>
+            </VariousControls>
+          </Cads>
+          <Aads>
+            <interw>1</interw>
+            <Ropi>0</Ropi>
+            <Rwpi>0</Rwpi>
+            <thumb>0</thumb>
+            <SplitLS>0</SplitLS>
+            <SwStkChk>0</SwStkChk>
+            <NoWarn>0</NoWarn>
+            <uSurpInc>0</uSurpInc>
+            <useXO>0</useXO>
+            <VariousControls>
+              <MiscControls></MiscControls>
+              <Define></Define>
+              <Undefine></Undefine>
+              <IncludePath></IncludePath>
+            </VariousControls>
+          </Aads>
+          <LDads>
+            <umfTarg>1</umfTarg>
+            <Ropi>0</Ropi>
+            <Rwpi>0</Rwpi>
+            <noStLib>0</noStLib>
+            <RepFail>1</RepFail>
+            <useFile>0</useFile>
+            <TextAddressRange>0x8000000</TextAddressRange>
+            <DataAddressRange>0x20000000</DataAddressRange>
+            <pXoBase></pXoBase>
+            <ScatterFile></ScatterFile>
+            <IncludeLibs></IncludeLibs>
+            <IncludeLibsPath></IncludeLibsPath>
+            <Misc></Misc>
+            <LinkerInputFile></LinkerInputFile>
+            <DisabledWarnings></DisabledWarnings>
+          </LDads>
+        </TargetArmAds>
+      </TargetOption>
+      <Groups>
+        <Group>
+          <GroupName>MAIN</GroupName>
+          <Files>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\main\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_IT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\main\STM32_IT.c</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_WOW.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\main\STM32_WOW.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP_HC</GroupName>
+          <Files>
+            <File>
+              <FileName>MS0800_PC004V10.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\MS0800_PC004V10.C</FilePath>
+            </File>
+            <File>
+              <FileName>MS0800_PL001V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\MS0800_PL001V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>MS0800_PM001V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\MS0800_PM001V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC001V10.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC001V10.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC001V21.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC001V21.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC001V22.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC001V22.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC001V25.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC001V25.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC004V21.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC004V21.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC006V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC006V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC006V21.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC006V21.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC006V22.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC006V22.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC012V13.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC012V13.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC016V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC016V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC018V10.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC018V10.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD002V30.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD003V11.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD003V11.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD003VG.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD003VG.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD004V10.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD004V10.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD006V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD006V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD008V11.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD008V11.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD010V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD010V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD011V10.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD011V10.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD011V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD011V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD014V14.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD014V14.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD014V15.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD014V15.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL001V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL001V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL006V10.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL006V10.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL009V31.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL009V31.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL009V33.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL009V33.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL010V13.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL010V13.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL010V15.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL010V15.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL010V15TEST.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL010V15TEST.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL010V17.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL010V17.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL012V11.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL012V11.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL012V11LCD.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL012V11LCD.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL012V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL012V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL012V30.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL012V30.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL013V10.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL013V10.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL013V11.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL013V11.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL013V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL013V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>PM001V20.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PM001V20.C</FilePath>
+            </File>
+            <File>
+              <FileName>PM004V10.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PM004V10.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD011V20_PD014TEST.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD011V20_PD014TEST.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC001V30HC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC001V30HC.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC004V21HC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC004V21HC.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC004V31HC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC004V31HC.C</FilePath>
+            </File>
+            <File>
+              <FileName>PM001V20HC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PM001V20HC.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL009V31HC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL009V31HC.C</FilePath>
+            </File>
+            <File>
+              <FileName>PL009V33HC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PL009V33HC.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD010V20CAN.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD010V20CAN.C</FilePath>
+            </File>
+            <File>
+              <FileName>PC016V20Com.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PC016V20Com.C</FilePath>
+            </File>
+            <File>
+              <FileName>HCProTest.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\HCProTest.C</FilePath>
+            </File>
+            <File>
+              <FileName>PS005V10.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
+            </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Lib/STM32F10x</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32f10x_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_bkp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_bkp.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_dac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_dac.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_dbgmcu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_dbgmcu.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_fsmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_fsmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_iwdg.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_lib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_lib.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_nvic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_nvic.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_pwr.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_sdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_sdio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_systick.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_wwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Library\STM32F10x_StdPeriph_Driver\SCR\stm32f10x_wwdg.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Lib/Startup</GroupName>
+          <Files>
+            <File>
+              <FileName>cortexm3_macro.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\Library\Startup\STM32F10x\cortexm3_macro.s</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_vector.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\Library\Startup\STM32F10x\stm32f10x_vector.s</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Driver/WOW</GroupName>
+          <Files>
+            <File>
+              <FileName>STM32_096OLED.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_096OLED.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_A3987.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_A3987.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_ADC.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_CAN.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_CAN.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_CRC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_CRC.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_DAC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_DAC.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_DMA.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_DMA.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_EXTI.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_EXTI.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_FLASH.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_FLASH.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_GPIO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_GPIO.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_I2C.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_I2C.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_NVIC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_NVIC.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_PWM.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_PWM.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_RCC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_RCC.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_RTC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_RTC.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_SDCard.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_SDCard.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_SPI.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_SPI.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_SPI_Struct.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_SPI_Struct.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_SYS.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_SYS.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_SYSLED.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_SYSLED.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_SYSTICK.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_SYSTICK.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_TIM.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_TIM.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_USART.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_USART.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_WDG.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Driver/Components</GroupName>
+          <Files>
+            <File>
+              <FileName>74HC165.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\74HC165.C</FilePath>
+            </File>
+            <File>
+              <FileName>74HC595.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\74HC595.C</FilePath>
+            </File>
+            <File>
+              <FileName>A3987.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\A3987.C</FilePath>
+            </File>
+            <File>
+              <FileName>CardReader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\CardReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>CD4051.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\CD4051.C</FilePath>
+            </File>
+            <File>
+              <FileName>CD4511.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\CD4511.C</FilePath>
+            </File>
+            <File>
+              <FileName>CS5530.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\CS5530.c</FilePath>
+            </File>
+            <File>
+              <FileName>Dallas.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\Dallas.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -22371,6 +23772,93 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
+            </File>
+            <File>
+              <FileName>DRV8801.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DRV8801.C</FilePath>
+            </File>
+            <File>
+              <FileName>DS2401.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\DS2401.c</FilePath>
+            </File>
+            <File>
+              <FileName>EC11Encoder.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\EC11Encoder.C</FilePath>
+            </File>
+            <File>
+              <FileName>font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\font.c</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\GT32L32M0180.C</FilePath>
+            </File>
+            <File>
+              <FileName>gui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\gui.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>2</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>0</vShortEn>
+                    <vShortWch>0</vShortWch>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>MOTOR.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\MOTOR.C</FilePath>
+            </File>
+            <File>
+              <FileName>R61509V.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\R61509V.c</FilePath>
             </File>
             <File>
               <FileName>SSD1963.C</FileName>
@@ -23293,6 +24781,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -23557,6 +25050,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -24705,6 +26203,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -24969,6 +26472,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -26117,6 +27625,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -26381,6 +27894,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -27529,6 +29047,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -27793,6 +29316,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -29176,6 +30704,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -29440,6 +30973,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -30588,6 +32126,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -30852,6 +32395,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -32000,6 +33548,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -32264,6 +33817,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -33412,6 +34970,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -33676,6 +35239,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -34824,6 +36392,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -35088,6 +36661,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -36236,6 +37814,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -36500,6 +38083,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -37648,6 +39236,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -37912,6 +39505,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -39060,6 +40658,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -39324,6 +40927,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -40472,6 +42080,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -40736,6 +42349,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -41884,6 +43502,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -42148,6 +43771,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -43249,6 +44877,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -43513,6 +45146,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -44614,6 +46252,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -44878,6 +46521,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -45979,6 +47627,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -46243,6 +47896,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -47344,6 +49002,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -47608,6 +49271,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -48709,6 +50377,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -48973,6 +50646,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -50074,6 +51752,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -50338,6 +52021,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -51439,6 +53127,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -51703,6 +53396,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -52804,6 +54502,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -53068,6 +54771,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -54169,6 +55877,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -54433,6 +56146,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -55581,6 +57299,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -55845,6 +57568,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -56993,6 +58721,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -57257,6 +58990,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -58405,6 +60143,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -58669,6 +60412,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -59817,6 +61565,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -60081,6 +61834,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -61229,6 +62987,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -61493,6 +63256,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -62641,6 +64409,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -62905,6 +64678,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -64006,6 +65784,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -64270,6 +66053,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -65418,6 +67206,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -65682,6 +67475,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -66783,6 +68581,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -67047,6 +68850,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -68148,6 +69956,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -68412,6 +70225,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -69513,6 +71331,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -69777,6 +71600,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -70925,6 +72753,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -71189,6 +73022,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -72337,6 +74175,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -72601,6 +74444,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -73702,6 +75550,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Examples\HC\PS005V10.C</FilePath>
             </File>
+            <File>
+              <FileName>PD002V30ADC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\HC\PD002V30ADC.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -73966,6 +75819,11 @@
               <FileName>STM32_WDG.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_WDG.C</FilePath>
+            </File>
+            <File>
+              <FileName>STM32_MCO.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\SCR\STM32_MCO.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -74401,6 +76259,7 @@
           <targetInfo name="PC016V20Com"/>
           <targetInfo name="PC018V10"/>
           <targetInfo name="PD002V30"/>
+          <targetInfo name="PD002V30ADC"/>
           <targetInfo name="PD003V11"/>
           <targetInfo name="PD003VG"/>
           <targetInfo name="PD004V10"/>

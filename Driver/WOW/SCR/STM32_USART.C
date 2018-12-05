@@ -2079,18 +2079,11 @@ u16 USART_DMASend(
 						||((DMA1_Channel4->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-            if(NULL !=  uTx1Addr)
-              free(uTx1Addr);
-            uTx1Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
-            if(NULL ==  uTx1Addr)   //内存申请失败
-            {
-              return 0;
-            }
-						memcpy(uTx1Addr,tx_buffer,BufferSize);
+//						memcpy(uTx1Addr,tx_buffer,BufferSize);
 						DMA1_Channel4->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel4,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
 						DMA1->IFCR = DMA1_FLAG_GL4;										//DMA_ClearFlag(DMA1_FLAG_TC4);	//清除标志						
 						DMA1_Channel4->CNDTR 	=BufferSize;						    //设定待发送缓冲区大小
-						DMA1_Channel4->CMAR 	=(u32)uTx1Addr;				  //发送缓冲区
+						DMA1_Channel4->CMAR 	=(u32)tx_buffer;				  //发送缓冲区
 						DMA1_Channel4->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel4,ENABLE);//DMA发送开启3
 						return BufferSize;
 					}
@@ -2110,18 +2103,11 @@ u16 USART_DMASend(
 						||((DMA1_Channel7->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-            if(NULL !=  uTx2Addr)
-              free(uTx2Addr);
-            uTx2Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
-            if(NULL ==  uTx2Addr)   //内存申请失败
-            {
-              return 0;
-            }
-            memcpy(uTx2Addr,tx_buffer,BufferSize);
+//            memcpy(uTx2Addr,tx_buffer,BufferSize);
             DMA1_Channel7->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel7,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
             DMA1->IFCR = DMA1_FLAG_GL7;										//DMA_ClearFlag(DMA1_FLAG_TC7);	//清除标志						
             DMA1_Channel7->CNDTR 	=BufferSize;						    //设定待发送缓冲区大小
-            DMA1_Channel7->CMAR 	=(u32)uTx2Addr;				  //发送缓冲区
+            DMA1_Channel7->CMAR 	=(u32)tx_buffer;				  //发送缓冲区
             DMA1_Channel7->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel7,ENABLE);//DMA发送开启3
             return BufferSize;
           }
@@ -2137,18 +2123,11 @@ u16 USART_DMASend(
 						||((DMA1_Channel2->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-            if(NULL !=  uTx3Addr)
-              free(uTx3Addr);
-            uTx3Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
-            if(NULL ==  uTx3Addr)   //内存申请失败
-            {
-              return 0;
-            }
-						memcpy(uTx3Addr,tx_buffer,BufferSize);
+//						memcpy(uTx3Addr,tx_buffer,BufferSize);
 						DMA1_Channel2->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel2,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
 						DMA1->IFCR = DMA1_FLAG_GL2;										//DMA_ClearFlag(DMA1_FLAG_TC2);	//清除标志						
 						DMA1_Channel2->CNDTR 	=BufferSize;						//设定待发送缓冲区大小
-						DMA1_Channel2->CMAR 	=(u32)uTx3Addr;				//发送缓冲区
+						DMA1_Channel2->CMAR 	=(u32)tx_buffer;				//发送缓冲区
 						DMA1_Channel2->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel2,ENABLE);//DMA发送开启3
 						return BufferSize;
 					}
@@ -2164,18 +2143,11 @@ u16 USART_DMASend(
 						||((DMA2_Channel5->CCR&0x00000001)==0)				//通道未开启
 						)
 					{
-            if(NULL !=  uTx4Addr)
-              free(uTx4Addr);
-            uTx4Addr  = (unsigned char*)malloc((unsigned int)BufferSize);
-            if(NULL ==  uTx4Addr)   //内存申请失败
-            {
-              return 0;
-            }
-						memcpy(uTx4Addr,tx_buffer,BufferSize);
+//						memcpy(uTx4Addr,tx_buffer,BufferSize);
 						DMA2_Channel5->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel2,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
 						DMA2->IFCR = DMA2_FLAG_GL5;										//DMA_ClearFlag(DMA2_FLAG_TC5);	//清除标志						
 						DMA2_Channel5->CNDTR 	=BufferSize;						//设定待发送缓冲区大小
-						DMA2_Channel5->CMAR 	=(u32)uTx4Addr;				//发送缓冲区
+						DMA2_Channel5->CMAR 	=(u32)tx_buffer;				//发送缓冲区
 						DMA2_Channel5->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA2_Channel5,ENABLE);//DMA发送开启3
 						return BufferSize;
 					}
@@ -2761,7 +2733,7 @@ u16 RS485_DMASend(
 //	SysTick_DeleymS(1);				//SysTick延时nmS
 	RS485_TX_EN(pRS485);
 //	USART_DMASend	(USARTx,(u8*)tx_buffer,BufferSize);		//串口DMA发送程序
-	USART_DMASendList(USARTx,(u8*)tx_buffer,BufferSize);		//串口DMA发送程序
+	USART_DMASend(USARTx,(u8*)tx_buffer,BufferSize);		//串口DMA发送程序
 	return 0;
 }
 

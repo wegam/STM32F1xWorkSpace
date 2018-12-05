@@ -1,4 +1,5 @@
 #include "STM32_WOW.H"
+#include "STM32_WDG.H"
 
 
 //#include "STM32F10x_BitBand.H"
@@ -218,10 +219,7 @@ void WOW_Configuration(void)
 	PC001V30HC_Configuration();
 #endif
 
-//*********************************PD002V30*********************************//
-#ifdef PD002V30
-	PD002V30_Configuration();
-#endif
+
 
 //*********************************PC004V21*********************************//
 #ifdef PC004V21
@@ -268,7 +266,14 @@ void WOW_Configuration(void)
 #ifdef PC018V10
 	PC018V10_Configuration();
 #endif
-
+//*********************************PD002V30*********************************//
+#ifdef PD002V30
+	PD002V30_Configuration();
+#endif
+//*********************************PD002V30ADC*********************************//
+#ifdef PD002V30ADC
+	PD002V30ADC_Configuration();
+#endif
 //*********************************PD003V11*********************************//
 #ifdef PD003V11
 	PD003V11_Configuration();
@@ -754,6 +759,10 @@ void WOW_Server(void)
 //*********************************PD002V30*********************************//
 #ifdef PD002V30
 	PD002V30_Server();
+#endif
+//*********************************PD002V30ADC*********************************//
+#ifdef PD002V30ADC
+	PD002V30ADC_Server();
 #endif
 //*********************************PD003V11*********************************//
 #ifdef PD003V11
