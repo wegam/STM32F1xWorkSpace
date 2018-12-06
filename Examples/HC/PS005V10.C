@@ -29,6 +29,7 @@
 #include "74HC595.H"
 #include "CD4051.H"
 #include "STM32_ADC.H"
+#include "STM32_MCO.H"
 
 #include "string.h"				//串和内存操作函数头文件
 #include "stdlib.h"				//串和内存操作函数头文件
@@ -71,9 +72,11 @@ void PS005V10_Configuration(void)
 	
   ADC1_DiscConfigurationDMANR(1,ADC_Channel_8,ADC_SampleTime_7Cycles5);
 
-	PWM_OUT(TIM2,PWM_OUTChannel1,2,500);	//PWM设定-20161127版本--运行指示灯
+	PWM_OUT(TIM2,PWM_OUTChannel1,4800000,500);	//PWM设定-20161127版本--运行指示灯
 	
 	PWM_OUT(TIM4,PWM_OUTChannel4,5000,990);	//PWM设定-20161127版本--运行指示灯
+	
+//	MCO_Initialize();
 	
 //	PWM_OUT(TIM1,PWM_OUTChannel1,2,500);	//PWM设定-20161127版本--运行指示灯
 }

@@ -77,7 +77,7 @@
         <tvExpOptDlg>0</tvExpOptDlg>
         <IsCurrentTarget>0</IsCurrentTarget>
       </OPTFL>
-      <CpuCode>18</CpuCode>
+      <CpuCode>255</CpuCode>
       <Books>
         <Book>
           <Number>0</Number>
@@ -393,7 +393,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -2123,7 +2123,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -3853,7 +3853,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -5583,7 +5583,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -7284,7 +7284,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -9102,7 +9102,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -10837,7 +10837,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -14993,7 +14993,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -16711,7 +16711,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -19570,7 +19570,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -21262,7 +21262,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -23035,7 +23035,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -24540,10 +24540,6 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
-          <Key>DLGUARM</Key>
-        </SetRegEntry>
-        <SetRegEntry>
-          <Number>0</Number>
           <Key>CMSIS_AGDI</Key>
           <Name>-X"CMSIS-DAP HID" -U0001A0000005 -O206 -S8 -C0 -P00 -N00("ARM CoreSight SW-DP") -D00(1BA01477) -L00(0) -FO15 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_128.FLM -FS08000000 -FL020000 -FP0($$Device:STM32F103CB$Flash\STM32F10x_128.FLM)</Name>
         </SetRegEntry>
@@ -24797,7 +24793,7 @@
       <OPTFL>
         <tvExp>1</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
-        <IsCurrentTarget>1</IsCurrentTarget>
+        <IsCurrentTarget>0</IsCurrentTarget>
       </OPTFL>
       <CpuCode>18</CpuCode>
       <Books>
@@ -24888,10 +24884,6 @@
         <pMon>Segger\JL2CM3.dll</pMon>
       </DebugOpt>
       <TargetDriverDllRegistry>
-        <SetRegEntry>
-          <Number>0</Number>
-          <Key>DLGUARM</Key>
-        </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
           <Key>CMSIS_AGDI</Key>
@@ -25485,7 +25477,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -27215,7 +27207,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -28945,7 +28937,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -30675,7 +30667,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -32405,7 +32397,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -35306,7 +35298,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -38178,7 +38170,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -41021,7 +41013,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -42779,7 +42771,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -48870,7 +48862,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -52575,7 +52567,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -55724,7 +55716,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -57390,7 +57382,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -59153,7 +59145,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -62005,7 +61997,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Components\INC\SSD1963.H</Filename>
+          <Filename>D:\WOW\STM32\STM32F1xWorkSpace\Driver\Components\INC\SSD1963.H</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -72550,7 +72542,7 @@
       <OPTFL>
         <tvExp>1</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
-        <IsCurrentTarget>0</IsCurrentTarget>
+        <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
       <CpuCode>18</CpuCode>
       <Books>
@@ -72644,7 +72636,6 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name></Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -72686,178 +72677,34 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>70</LineNumber>
+          <LineNumber>253</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
+          <Address>134223810</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Protocol\HC_PHY.C</Filename>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>&lt;1&gt;..\..\Driver\WOW\SCR\STM32_PWM.C</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\PS005V10\../../Driver/WOW/SCR/STM32_PWM.C\253</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>244</LineNumber>
+          <LineNumber>248</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
+          <Address>134223790</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Protocol\HC_PHY.C</Filename>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>&lt;1&gt;..\..\Driver\WOW\SCR\STM32_PWM.C</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>281</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Protocol\HC_PHY.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>3</Number>
-          <Type>0</Type>
-          <LineNumber>575</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Protocol\HC_PHY.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>4</Number>
-          <Type>0</Type>
-          <LineNumber>639</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Protocol\HC_PHY.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>5</Number>
-          <Type>0</Type>
-          <LineNumber>664</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Driver\Protocol\HC_PHY.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>6</Number>
-          <Type>0</Type>
-          <LineNumber>295</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Examples\HC\PD002V30ADC.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>7</Number>
-          <Type>0</Type>
-          <LineNumber>299</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Examples\HC\PD002V30ADC.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>8</Number>
-          <Type>0</Type>
-          <LineNumber>303</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Examples\HC\PD002V30ADC.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>9</Number>
-          <Type>0</Type>
-          <LineNumber>311</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Examples\HC\PD002V30ADC.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>10</Number>
-          <Type>0</Type>
-          <LineNumber>317</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\Examples\HC\PD002V30ADC.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\PS005V10\../../Driver/WOW/SCR/STM32_PWM.C\248</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -72905,6 +72752,26 @@
           <count>8</count>
           <WinNumber>1</WinNumber>
           <ItemText>DspData</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Tim_num1</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>TIMx_Frequency,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>TIM_Prescaler,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>12</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>TIM_Period,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>
@@ -73715,7 +73582,7 @@
 
   <Group>
     <GroupName>Lib/STM32F10x</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -74069,7 +73936,7 @@
 
   <Group>
     <GroupName>Driver/WOW</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

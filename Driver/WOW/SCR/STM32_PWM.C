@@ -196,30 +196,30 @@ void PWM_OUT			//PWM输出配置
 	TIMx_Frequency = RCC_ClocksStatus.SYSCLK_Frequency;
 	if (((*(u32*)&TIMx)&APB2PERIPH_BASE) == APB2PERIPH_BASE)
   {
-    TIMx_Frequency = RCC_ClocksStatus.PCLK2_Frequency;	//APB2
+    TIMx_Frequency = RCC_ClocksStatus.PCLK2_Frequency;	//APB2		//最大72MHz
   }
   else
   {
-    TIMx_Frequency = RCC_ClocksStatus.PCLK1_Frequency;	//APB1
+    TIMx_Frequency = RCC_ClocksStatus.PCLK1_Frequency;	//APB1		//最大36MHz
   }
 	//*7,计算定时器参数*********************************************************************
 	//Fsys==Fpwm*Count==Fpwm*(Prescaler*Period)	
 	//	TIMx_Prescaler				=	72-1		;		// 	定时器时钟分频值
 	//	TIMx_Period						=	1000-1	;		// 	定时器自动重装载值
 	//	Tim_num1							=	0				;		//	临时变量1
-	if(1/PWM_Frequency>10)
+	if(1/PWM_Frequency>10)	//小于0.1HZ
 	{
 		Tim_num1=(double)(TIMx_Frequency)/(PWM_Frequency*100);							//根据定时器输出频率计算计数值
 		TIMx_Prescaler=60000;
 		TIMx_Period=(u16)(((double)Tim_num1/(double)TIMx_Prescaler)*200);
 	}
-	else if(1/PWM_Frequency>1.0)
+	else if(1/PWM_Frequency>1.0)//小于1HZ
 	{
 		Tim_num1=(double)(TIMx_Frequency)/(PWM_Frequency*10);							//根据定时器输出频率计算计数值
 		TIMx_Prescaler=60000;
 		TIMx_Period=(u16)(((double)Tim_num1/(double)TIMx_Prescaler)*20);
 	}
-	else if(PWM_Frequency>=1.0)
+	else if(PWM_Frequency>=1.0)//大于等于1HZ
 	{
 		Tim_num1=(double)(TIMx_Frequency)/(PWM_Frequency);							//根据定时器输出频率计算计数值
 		Tim_num1=(double)(Tim_num1*2.0);

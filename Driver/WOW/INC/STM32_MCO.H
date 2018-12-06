@@ -18,7 +18,7 @@
 #define __STM32_MCO_H
 #include "stm32f10x_rcc.h"
 
-
+void MCO_Initialize(void);
 
 
 
