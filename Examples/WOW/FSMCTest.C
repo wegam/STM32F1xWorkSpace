@@ -121,30 +121,14 @@ void FSMCTest_Configuration(void)
 //	IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
 //  SysTick_DeleymS(500);
   LCD_Clean(LCD565_BLUE);
+  LCD_SetBackground(LCD565_LBBLUE);
   LCD_ShowBattery(780,2,2,LCD565_GRED);   //显示12x12电池
   LCD_ShowAntenna(760,2,3,LCD565_GRED);   //显示12x12天线
-  LCD_Printf(10,10,32,LCD565_BRED,"后边的省略号就是可变参数");  //后边的省略号就是可变参数
+  LCD_Printf(10,10,32,LCD565_BRED,"FSMC液晶屏驱动测试：%0.4d年%0.2d月%0.2d日%0.2d时%0.2d分%0.2d秒",
+    year,month,day,hour,minute,second);  //后边的省略号就是可变参数
 	PWM_OUT(TIM2,PWM_OUTChannel1,2000,900);						//PWM设定-20161127版本
   
   SysTick_Configuration(1000);
-
-//  LCD_Clean(LCD565_WHITE);
-//	while(1)
-//	{
-//    RCC_GetClocksFreq(&RCC_ClocksStatus);	//获取时钟参数
-//    LCD_Printf(10,10,32,LCD565_BRED,"后边的省略号就是可变参数%0.8d",SysTick->VAL);  //后边的省略号就是可变参数
-//		LCD_Clean(LCD565_BLACK);SysTick_DeleymS(500);
-//		LCD_Clean(LCD565_WHITE);SysTick_DeleymS(500);	
-//		LCD_Clean(LCD565_BLUE);SysTick_DeleymS(500);
-//		LCDCLER(LCD565_BRED);SysTick_DeleymS(500);
-//		LCDCLER(LCD565_GRED);SysTick_DeleymS(500);
-//	}
-//  LCD_Printf(0,220,32,LCD565_RED,"%0.4d-",year);		//编译日期
-//  LCD_Printf(5*16,220,32,LCD565_RED,"%0.2d-",month);		//编译日期
-//  LCD_Printf(8*16,220,32,LCD565_RED,"%0.2d-",day);		//编译日期
-//	LCD_Printf(11*16,220,32,LCD565_RED,"%0.2d:",hour);		//编译日期
-//  LCD_Printf(14*16*3,220,32,LCD565_RED,"%0.2d:",minute);		//编译日期
-//  LCD_Printf(17*16,220,32,LCD565_RED,"%0.2d:",second);		//编译日期
 }
 
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
@@ -156,22 +140,8 @@ void FSMCTest_Configuration(void)
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 void FSMCTest_Server(void)
 {
-//  unsigned  short i = 0;
-//  for(i=0;i<0x1FFFFFF;i++)
-//  {
-//    LCD_Printf(10,10,32,LCD565_RED,"后边的省略号就是可变参数%0.8d",i);  //后边的省略号就是可变参数
-//    i+=89;
-//  }
-  ClockServer();
+//  ClockServer();
   RTC_Server();
-//	LCD_Clean(LCD565_WHITE);SysTick_DeleymS(200);	
-//	LCD_Clean(LCD565_BLUE);SysTick_DeleymS(200);
-//	LCD_Clean(LCD565_BRED);SysTick_DeleymS(200);
-//	LCD_Clean(LCD565_GRED);SysTick_DeleymS(200);
-//	LCD_Clean(LCD565_RED);
-//  LCD_Clean(LCD565_BLACK);
-//  SysTick->LOAD=800000000;
-//  SysTick_Configuration(1000);
 }
 /*******************************************************************************
 *函数名			:	function
@@ -197,7 +167,7 @@ void RTC_Server(void)
       }
     }
     sec=calendar.sec;
-    LCD_Printf(0,180,32,LCD565_BRED,"RTC时钟:%0.4d年%0.2d月%0.2d日%0.2d时%0.2d分%0.2d秒",
+    LCD_Printf(0,180,32,LCD565_BLACK,"RTC时钟:%0.4d年%0.2d月%0.2d日%0.2d时%0.2d分%0.2d秒",
     calendar.w_year,calendar.w_month,calendar.w_date,calendar.hour,calendar.min,calendar.sec);
   }
 }

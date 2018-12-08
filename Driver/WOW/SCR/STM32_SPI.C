@@ -34,7 +34,8 @@ SPI需要配置基本内容：
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_dma.h"
 #include "stm32f10x_nvic.h"
-
+#define spiBufsize  256
+unsigned  char spiTxBuff[spiBufsize]={0};
 //SPIDef	*SPISYS	=	0;	//内部驱动使用，不可删除
 
 /*******************************************************************************
@@ -160,25 +161,14 @@ void SPI_InitializeSPI(SPIDef *pInfo)
 	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;																	//片选方式     	（硬件或软件方式）
 	SPI_InitStructure.SPI_BaudRatePrescaler = pInfo->Port.SPI_BaudRatePrescaler_x;				//波特率预分频 	（从2---256分频）
 	SPI_Init(pInfo->Port.SPIx,&SPI_InitStructure);
-	SPI_Cmd(pInfo->Port.SPIx, ENABLE);				//使能SPI
 	
-//	SPIx_CsFlg	=	1;
-//	if(SPIx_CsFlg==1)																			//如果使用纯硬件SPI1（含CS脚），UseSPI1_flg=1，否则UseSPI1_flg=0；
-//	{
-//		SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;																//片选方式     	（硬件或软件方式）
-//	}
-//	else
-//	{
-//		SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;															//片选方式     	（硬件或软件方式）
-//	}
-//	SPI_Init(pInfo->Port.SPIx,&SPI_InitStructure);
-////	SPI_Cmd(pInfo->Port.SPIx, ENABLE);				//使能SPI	
-//	
-//	//3)**********使能SPIx_NESS为主输出模式
-//	if((pInfo->Port.SPIx->CR1&0X0200)!=SPI_NSS_Soft)						//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
-//	{
-//		SPI_SSOutputCmd(pInfo->Port.SPIx, ENABLE);			//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
-//	}
+
+//	//3)**********使能SPIx_NESS为主输出模式，NSS主输出模式需要外接上拉电阻，否则无法实现关闭SPI时NSS脚上拉为高电平
+	if((pInfo->Port.SPIx->CR1&0X0200)!=SPI_NSS_Soft)						//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
+	{
+		SPI_SSOutputCmd(pInfo->Port.SPIx, ENABLE);			//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号,需要在SPI_Cmd(pInfo->Port.SPIx, ENABLE)开启
+	}
+  SPI_Cmd(pInfo->Port.SPIx, ENABLE);				//使能SPI
 }
 /*******************************************************************************
 *函数名		:	SPI_DMA_Configuration
@@ -232,60 +222,64 @@ void SPI_InitializeDMA(SPIDef *pInfo)		//SPI_FLASH_DMA方式配置
 		default	:	break;
 	}
 	//4)**********SPI_DMA配置
-//	if(Conf_Flag==1)																		//需要配置标志，如果SPIx合法，则Conf_Flag==1，然后进行下一步DMA配置项
-//	{
-//		//5)**********DMA发送初始化，外设作为DMA的目的端
-//		DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(SPIx->DR);	//DMA外设源地址
-//		DMA_Initstructure.DMA_MemoryBaseAddr     = (u32)SPI_Conf->SPI_FLASH_Info.MOSI_Buffer;						//DMA数据内存地址
-//		DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralDST;												//DMA_DIR_PeripheralDST（外设作为DMA的目的端），DMA_DIR_PeripheralSRC（外设作为数据传输的来源）
-//		DMA_Initstructure.DMA_BufferSize = 0; 																		//指定DMA通道的DMA缓存的大小
-//		DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;					//DMA_PeripheralInc_Enable（外设地址寄存器递增），DMA_PeripheralInc_Disable（外设地址寄存器不变），
-//		DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;										//DMA_MemoryInc_Enable（内存地址寄存器递增），DMA_MemoryInc_Disable（内存地址寄存器不变）
-//		DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;		//外设数据宽度--DMA_PeripheralDataSize_Byte（数据宽度为8位），DMA_PeripheralDataSize_HalfWord（数据宽度为16位），DMA_PeripheralDataSize_Word（数据宽度为32位）
-//		DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;						//内存数据宽度--DMA_MemoryDataSize_Byte（数据宽度为8位），DMA_MemoryDataSize_HalfWord（数据宽度为16位），DMA_MemoryDataSize_Word（数据宽度为32位）
-//		DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;															//DMA工作模式--DMA_Mode_Normal（只传送一次）, DMA_Mode_Circular（不停地传送）
-//		DMA_Initstructure.DMA_Priority = DMA_Priority_High; 											//DMA通道的转输优先级--DMA_Priority_VeryHigh（非常高）DMA_Priority_High（高)，DMA_Priority_Medium（中），DMA_Priority_Low（低）
-//		DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;															//DMA通道的内存到内存传输--DMA_M2M_Enable(设置为内存到内存传输)，DMA_M2M_Disable（非内存到内存传输）
-//		DMA_Init(DMAx_Channeltx,&DMA_Initstructure);															//初始化DMA
 
-//		//6)**********DMA接收初始化，外设作为DMA的源端
-//		DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(SPIx->DR);	//DMA外设源地址
-//		DMA_Initstructure.DMA_MemoryBaseAddr     = 	(u32)SPI_Conf->SPI_FLASH_Info.MISO_Buffer;						//DMA数据内存地址
-//		DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralSRC;												//DMA_DIR_PeripheralDST（外设作为DMA的目的端），DMA_DIR_PeripheralSRC（外设作为数据传输的来源）
-//		DMA_Initstructure.DMA_BufferSize = 0; 																		//指定DMA通道的DMA缓存的大小
-//		DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;					//DMA_PeripheralInc_Enable（外设地址寄存器递增），DMA_PeripheralInc_Disable（外设地址寄存器不变），
-//		DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;										//DMA_MemoryInc_Enable（内存地址寄存器递增），DMA_MemoryInc_Disable（内存地址寄存器不变）
-//		DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;		//外设数据宽度--DMA_PeripheralDataSize_Byte（数据宽度为8位），DMA_PeripheralDataSize_HalfWord（数据宽度为16位），DMA_PeripheralDataSize_Word（数据宽度为32位）
-//		DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;						//内存数据宽度--DMA_MemoryDataSize_Byte（数据宽度为8位），DMA_MemoryDataSize_HalfWord（数据宽度为16位），DMA_MemoryDataSize_Word（数据宽度为32位）
-//		DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;															//DMA工作模式--DMA_Mode_Normal（只传送一次）, DMA_Mode_Circular（不停地传送）
-//		DMA_Initstructure.DMA_Priority = DMA_Priority_High; 											//DMA通道的转输优先级--DMA_Priority_VeryHigh（非常高）DMA_Priority_High（高)，DMA_Priority_Medium（中），DMA_Priority_Low（低）
-//		DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;															//DMA通道的内存到内存传输--DMA_M2M_Enable(设置为内存到内存传输)，DMA_M2M_Disable（非内存到内存传输）
-//		DMA_Init(DMAx_Channelrx,&DMA_Initstructure);															//初始化DMA
-//		
-//		//7)**********DMA通道中断初始化---此为DMA发送中断----DMA发送完成中断
-//			
-//		SPI_I2S_DMACmd(SPI_Conf->SPIx, SPI_I2S_DMAReq_Tx, ENABLE);								//开启DMA发送
-//		SPI_I2S_DMACmd(SPI_Conf->SPIx, SPI_I2S_DMAReq_Rx, ENABLE);								//开启DMA接收
-//		//使能SPIx
-//		SPI_Cmd(SPI_Conf->SPIx, ENABLE);
-//		
-//		//9.2)**********使能相关DMA通道传输完成中断
-//		DMA_Cmd(DMAx_Channelrx,DISABLE);	
-//		DMA_Cmd(DMAx_Channeltx,DISABLE);
-//	}
-//	SPI_Conf->SPI_Flash_USER_DMAFlg=1;	//如果使用DMA，	SPI_Flash_USER_DMAFlg=1，	否则SPI_Flash_USER_DMAFlg=0；此由SPI_FLASH_ConfigurationDMA根据SPI配置判断设置此值
+		//5)**********DMA发送初始化，外设作为DMA的目的端
+		DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(&SPIx->DR);	//DMA外设源地址
+		DMA_Initstructure.DMA_MemoryBaseAddr     = (u32)spiTxBuff;						//DMA数据内存地址
+		DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralDST;												//DMA_DIR_PeripheralDST（外设作为DMA的目的端），DMA_DIR_PeripheralSRC（外设作为数据传输的来源）
+		DMA_Initstructure.DMA_BufferSize = spiBufsize; 													  //指定DMA通道的DMA缓存的大小
+		DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;					//DMA_PeripheralInc_Enable（外设地址寄存器递增），DMA_PeripheralInc_Disable（外设地址寄存器不变），
+		DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;										//DMA_MemoryInc_Enable（内存地址寄存器递增），DMA_MemoryInc_Disable（内存地址寄存器不变）
+		DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;		//外设数据宽度--DMA_PeripheralDataSize_Byte（数据宽度为8位），DMA_PeripheralDataSize_HalfWord（数据宽度为16位），DMA_PeripheralDataSize_Word（数据宽度为32位）
+		DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;						//内存数据宽度--DMA_MemoryDataSize_Byte（数据宽度为8位），DMA_MemoryDataSize_HalfWord（数据宽度为16位），DMA_MemoryDataSize_Word（数据宽度为32位）
+		DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;															//DMA工作模式--DMA_Mode_Normal（只传送一次）, DMA_Mode_Circular（不停地传送）
+		DMA_Initstructure.DMA_Priority = DMA_Priority_High; 											//DMA通道的转输优先级--DMA_Priority_VeryHigh（非常高）DMA_Priority_High（高)，DMA_Priority_Medium（中），DMA_Priority_Low（低）
+		DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;															//DMA通道的内存到内存传输--DMA_M2M_Enable(设置为内存到内存传输)，DMA_M2M_Disable（非内存到内存传输）
+		DMA_Init(DMAx_Channeltx,&DMA_Initstructure);															//初始化DMA
+
+		//6)**********DMA接收初始化，外设作为DMA的源端
+		DMA_Initstructure.DMA_PeripheralBaseAddr =  (u32)(&SPIx->DR);	//DMA外设源地址
+		DMA_Initstructure.DMA_MemoryBaseAddr     = 	(u32)spiTxBuff;						//DMA数据内存地址
+		DMA_Initstructure.DMA_DIR = DMA_DIR_PeripheralSRC;												//DMA_DIR_PeripheralDST（外设作为DMA的目的端），DMA_DIR_PeripheralSRC（外设作为数据传输的来源）
+		DMA_Initstructure.DMA_BufferSize = spiBufsize; 													  //指定DMA通道的DMA缓存的大小
+		DMA_Initstructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;					//DMA_PeripheralInc_Enable（外设地址寄存器递增），DMA_PeripheralInc_Disable（外设地址寄存器不变），
+		DMA_Initstructure.DMA_MemoryInc =DMA_MemoryInc_Enable;										//DMA_MemoryInc_Enable（内存地址寄存器递增），DMA_MemoryInc_Disable（内存地址寄存器不变）
+		DMA_Initstructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;		//外设数据宽度--DMA_PeripheralDataSize_Byte（数据宽度为8位），DMA_PeripheralDataSize_HalfWord（数据宽度为16位），DMA_PeripheralDataSize_Word（数据宽度为32位）
+		DMA_Initstructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;						//内存数据宽度--DMA_MemoryDataSize_Byte（数据宽度为8位），DMA_MemoryDataSize_HalfWord（数据宽度为16位），DMA_MemoryDataSize_Word（数据宽度为32位）
+		DMA_Initstructure.DMA_Mode = DMA_Mode_Normal;															//DMA工作模式--DMA_Mode_Normal（只传送一次）, DMA_Mode_Circular（不停地传送）
+		DMA_Initstructure.DMA_Priority = DMA_Priority_High; 											//DMA通道的转输优先级--DMA_Priority_VeryHigh（非常高）DMA_Priority_High（高)，DMA_Priority_Medium（中），DMA_Priority_Low（低）
+		DMA_Initstructure.DMA_M2M = DMA_M2M_Disable;															//DMA通道的内存到内存传输--DMA_M2M_Enable(设置为内存到内存传输)，DMA_M2M_Disable（非内存到内存传输）
+		DMA_Init(DMAx_Channelrx,&DMA_Initstructure);															//初始化DMA
+		
+		//7)**********DMA通道中断初始化---此为DMA发送中断----DMA发送完成中断
+			
+		SPI_I2S_DMACmd(SPIx, SPI_I2S_DMAReq_Tx, ENABLE);								//开启DMA发送
+		SPI_I2S_DMACmd(SPIx, SPI_I2S_DMAReq_Rx, ENABLE);								//开启DMA接收
+		//使能SPIx
+//		SPI_Cmd(SPIx, ENABLE);
+		
+		//9.2)**********使能相关DMA通道传输完成中断
+		DMA_Cmd(DMAx_Channelrx,ENABLE);	
+		DMA_Cmd(DMAx_Channeltx,ENABLE);
+
+
+  
 	//使能SPIx
-	SPI_Cmd(SPIx, DISABLE);
-		//3)**********使能SPIx_NESS为主输出模式
-	if((SPIx->CR1&0X0200)!=SPI_NSS_Soft)						//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
-	{
-		SPI_SSOutputCmd(SPIx, ENABLE);								//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
-	}
-	else
-	{
-		SPI_SSOutputCmd(SPIx, DISABLE);								//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
-	}
+//	SPI_Cmd(SPIx, DISABLE);
+//  SPI_Cmd(SPIx, ENABLE);
+//		//3)**********使能SPIx_NESS为主输出模式
+//	if((SPIx->CR1&0X0200)!=SPI_NSS_Soft)						//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
+//	{
+//		SPI_SSOutputCmd(SPIx, ENABLE);								//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号,需要在SPI_Cmd(pInfo->Port.SPIx, ENABLE)开启
+//	}
+//	else
+//	{
+//		SPI_SSOutputCmd(SPIx, DISABLE);								//如果在主机模式下的片选方式为硬件（SPI_NSS_Hard）方式，此处必须打开，否则NSS无信号
+//	}
 }
+
+
+
 void SPI_CS_LOW(SPIDef *pInfo)
 {
 	pInfo->Port.CS_PORT->BRR		= pInfo->Port.CS_Pin;
@@ -313,6 +307,84 @@ void SPI_MOSI_HIGH(SPIDef *pInfo)
 unsigned char SPI_MISO_In(SPIDef *pInfo)
 {
 	return(pInfo->Port.MISO_PORT->IDR 	&	pInfo->Port.MISO_Pin);
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short SPI_DMASend(SPI_TypeDef* SPIx,unsigned char *tx_buffer,unsigned short BufferSize)
+{
+//  spiTxBuff
+  switch(*(u32*)&SPIx)
+  {
+    case SPI2_BASE:
+      if(   (DMA1_Channel5->CNDTR==0)										//通道空闲--已发完数据
+        ||( (DMA1_Channel5->CCR&0x00000001)==0))				//通道未开启
+        {
+          DMA1_Channel5->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel5,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
+          DMA1->IFCR = DMA1_FLAG_GL5;										//DMA_ClearFlag(DMA1_FLAG_TC5);	//清除标志						
+          DMA1_Channel5->CNDTR 	=BufferSize;					  //设定待发送缓冲区大小
+          DMA1_Channel5->CMAR 	=(u32)tx_buffer;			  //发送缓冲区
+          DMA1_Channel5->CCR |=(u32)0x00000001;			  //DMA_Cmd(DMA1_Channel5,ENABLE);//DMA发送开启3
+          return BufferSize;
+        }
+//        else
+//        {
+//          //链表缓存
+//        }
+      break;
+    default:break;
+  }  
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	0表示已将数据发往发送区，0xFFFF表示忙，其它表示读完成，返回读的数量
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short SPI_DMAReadWrite(SPI_TypeDef* SPIx,unsigned char *tx_buffer,unsigned char *rx_buffer,unsigned short BufferSize)
+{
+  switch(*(u32*)&SPIx)
+  {
+    case SPI2_BASE:
+      //-------------------------检查读缓冲有无数据
+    if(SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) != RESET)  //发送完成
+    {
+      if(0!=DMA1_Channel4->CNDTR)       //接收到数据---需要先将数据缓存读出
+      {
+        unsigned  short RxdNum;  //读到的数据
+        DMA1_Channel4->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel4,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR
+        RxdNum  = DMA1_Channel4->CNDTR;
+        DMA1_Channel4->CNDTR  = 0;                  //清除接收计数
+        return RxdNum;      //返回读到的数据大小
+      }
+      else if(0 ==  DMA1_Channel5->CNDTR)   //发送缓存为空---表示可以进行新的发送
+      {
+        //-----------------------重新设定接收缓存地址
+        DMA1_Channel4->CNDTR 	=BufferSize;					  //设定待发送缓冲区大小
+        DMA1_Channel4->CMAR = (u32)rx_buffer;
+        DMA1_Channel4->CCR |=(u32)0x00000001;			  //DMA_Cmd(DMA1_Channel4,ENABLE);//DMA接收开启3
+        
+        DMA1_Channel5->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel5,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
+        DMA1->IFCR = DMA1_FLAG_GL5;										//DMA_ClearFlag(DMA1_FLAG_TC5);	//清除标志						
+        DMA1_Channel5->CNDTR 	=BufferSize;					  //设定待发送缓冲区大小
+        DMA1_Channel5->CMAR 	=(u32)tx_buffer;			  //发送缓冲区
+        DMA1_Channel5->CCR |=(u32)0x00000001;			  //DMA_Cmd(DMA1_Channel5,ENABLE);//DMA发送开启3
+        return 0;
+      }
+    }
+      break;
+    default:break;
+  }
+  return 0xFFFF;
 }
 /*******************************************************************************
 * 函数名			:	function

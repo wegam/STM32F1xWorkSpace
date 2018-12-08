@@ -97,6 +97,11 @@ void SPI_InitializeNR(SPIDef* pInfo);							//普通SPI接口配置
 void SPI_InitializeSPI(SPIDef *pInfo);		//普通SPI接口配置
 void SPI_InitializeDMA(SPIDef *pInfo);			//SPI-DMA通讯方式配置---20170722未完成
 
+
+unsigned short SPI_DMASend(SPI_TypeDef* SPIx,unsigned char *tx_buffer,unsigned short BufferSize);
+unsigned short SPI_DMAReadWrite(SPI_TypeDef* SPIx,unsigned char *tx_buffer,unsigned char *rx_buffer,unsigned short BufferSize);
+
+
 void SPI_CS_LOW(SPIDef *pInfo);
 void SPI_CS_HIGH(SPIDef *pInfo);
 void SPI_CLK_LOW(SPIDef *pInfo);

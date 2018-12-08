@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xST' 
- * Target:  'FSMC_NOR' 
+ * Target:  'SPI_DMA' 
  */
 
 #ifndef RTE_COMPONENTS_H

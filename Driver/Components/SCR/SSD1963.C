@@ -65,16 +65,16 @@ void SSD1963_Initialize(void*	pInfo)
 	Port	=	&pSSD1963->Port;
 	
 	//==========================GPIO配置
-	GPIO_Configuration_OPP50	(Port->sBL_PORT,				Port->sBL_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-	GPIO_Configuration_OPP50	(Port->sRD_PORT,				Port->sRD_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-	GPIO_Configuration_OPP50	(Port->sREST_PORT,			Port->sREST_Pin);				//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-	GPIO_Configuration_OPP50	(Port->sDC_PORT,				Port->sDC_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-	GPIO_Configuration_OPP50	(Port->sWR_PORT,				Port->sWR_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-	GPIO_Configuration_OPP50	(Port->sCS_PORT,				Port->sCS_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-	GPIO_Configuration_OPP50	(Port->sTE_PORT,				Port->sTE_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-	GPIO_Configuration_OPP50	(Port->sDATABUS_PORT,		Port->sDATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sBL_PORT,				Port->sBL_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sRD_PORT,				Port->sRD_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sREST_PORT,			Port->sREST_Pin);				//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sDC_PORT,				Port->sDC_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sWR_PORT,				Port->sWR_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sCS_PORT,				Port->sCS_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sTE_PORT,				Port->sTE_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+//	GPIO_Configuration_OPP50	(Port->sDATABUS_PORT,		Port->sDATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	
-	DeviceCode	=	SSD1963_ReadRegister(0x00);
+//	DeviceCode	=	SSD1963_ReadRegister(0x00);
 	
 	//==========================检查背景色与画笔色是否相同
 	if(pSSD1963->Data.PColor	==	pSSD1963->Data.BColor)
@@ -102,6 +102,13 @@ void SSD1963_Initialize(void*	pInfo)
 	pSSD1963->Display.ShowChar				=	SSD1963_ShowChar;
 	pSSD1963->Display.ShowWord				=	SSD1963_ShowWord;
 	
+  if(NULL ==  pSSD1963->Display.WriteIndex)
+    pSSD1963->Display.WriteIndex  = SSD1963_WriteIndex;
+  if(NULL ==  pSSD1963->Display.WriteData)
+    pSSD1963->Display.WriteData  = SSD1963_WriteData;
+  if(NULL ==  pSSD1963->Display.WriteCommand)
+    pSSD1963->Display.WriteCommand  = SSD1963_WriteCommand;
+  
 	SSD1963_PowerOn();
 	SSD1963_Clean(pSSD1963->Data.BColor);
 	
@@ -275,10 +282,10 @@ void SSD1963_WriteGRAM(unsigned	short* RAM,unsigned long length)
 {
 	unsigned	long	i	=	0;
 	SSD1963Crl(CS);	//LCD_CS_LOW;
-	SSD1963_WriteAddr(0X3C);
+	pSSD1963->Display.WriteIndex(0X3C);
 	for(i=0;i<length;i++)
 	{
-		SSD1963_WriteData(RAM[i]);
+		pSSD1963->Display.WriteData(RAM[i]);
 	}
 	SSD1963Set(CS);	//LCD_CS_HIGH;
 }
@@ -668,13 +675,13 @@ void SSD1963_Fill(
 	unsigned int x;
 	unsigned int y;	
 	SSD1963_SetWindowAddress(x1,y1,x2,y2);
-	SSD1963_WriteIndex( 0X2C );
+	pSSD1963->Display.WriteIndex( 0X2C );
 	SSD1963Crl(CS);	//LCD_CS_LOW;
 	for(x=0;x<=x2-x1;x++)
 	{
 		for(y=0;y<=y2-y1;y++)
 		{
-			SSD1963_WriteData(Color);							//写数据
+			pSSD1963->Display.WriteData(Color);							//写数据
 		}
 	}	
 	SSD1963Set(CS);	//LCD_CS_HIGH;
@@ -766,7 +773,7 @@ void SSD1963_ShowChar(
 	y2	=	y+font-1;
 	
 	SSD1963_SetWindowAddress(x1,y1,x2,y2);//设置显示区域	
-	SSD1963_WriteIndex( 0X2C );
+	pSSD1963->Display.WriteIndex( 0X2C );
 	SSD1963Crl(CS);	//LCD_CS_LOW;
 	for(i=0;i<num;i++)
 	{ 
@@ -779,7 +786,7 @@ void SSD1963_ShowChar(
 			}
 			else
 				LCD_PEN_COLOR=pSSD1963->Data.BColor;
-			SSD1963_WriteData(LCD_PEN_COLOR);
+			pSSD1963->Display.WriteData(LCD_PEN_COLOR);
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
@@ -794,7 +801,7 @@ void SSD1963_ShowChar(
         }
         else
           LCD_PEN_COLOR=pSSD1963->Data.BColor;
-        SSD1963_WriteData(LCD_PEN_COLOR);
+        pSSD1963->Display.WriteData(LCD_PEN_COLOR);
         temp=temp<<1;
       }
       i++;
@@ -827,7 +834,7 @@ void SSD1963_ShowWord(
   x2	=	x+font-1;
   y2	=	y+font-1;
 	SSD1963_SetWindowAddress(x1,y1,x2,y2);//设置显示区域
-	SSD1963_WriteIndex( 0X2C );
+	pSSD1963->Display.WriteIndex( 0X2C );
 	SSD1963Crl(CS);	//LCD_CS_LOW;
 	for(i=0;i<num;i++)
 	{ 
@@ -840,7 +847,7 @@ void SSD1963_ShowWord(
 			}
 			else
 				LCD_PEN_COLOR=pSSD1963->Data.BColor;
-			SSD1963_WriteData(LCD_PEN_COLOR);
+			pSSD1963->Display.WriteData(LCD_PEN_COLOR);
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
@@ -855,7 +862,7 @@ void SSD1963_ShowWord(
         }
         else
           LCD_PEN_COLOR=pSSD1963->Data.BColor;
-        SSD1963_WriteData(LCD_PEN_COLOR);
+        pSSD1963->Display.WriteData(LCD_PEN_COLOR);
         temp=temp<<1;
       }
       i++;
