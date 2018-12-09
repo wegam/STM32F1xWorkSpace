@@ -13,7 +13,7 @@
 //#include "STM32_GPIO.H"
 //#include "STM32_PWM.H"
 //#include "STM32_SYSTICK.H"
-#include "font.h"
+//#include "font.h"
 #include "string.h"				//串和内存操作函数头文件
 #include "stdlib.h"				//串和内存操作函数头文件
 #include "stdarg.h"				//串和内存操作函数头文件

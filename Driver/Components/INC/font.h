@@ -14,9 +14,13 @@ extern unsigned char code_asc2_1608[1520];
 //extern unsigned char code_seg3_1608[1520];
 
 extern volatile unsigned char code_ascii_1608[127][16];
+extern  unsigned char ascii_code0_9748[583];
 
 extern volatile unsigned char code_nBitmapDot[598];                  // ͼƬ
-					  		 
+
+
+
+
 #endif  
 	 
 	 

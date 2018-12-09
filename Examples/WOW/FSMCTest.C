@@ -2,7 +2,7 @@
 
 #include "FSMCTest.H"
 
-//#include "string.h"				//串和内存操作函数头文件
+#include "string.h"				//串和内存操作函数头文件
 //#include "stm32f10x_dma.h"
 
 #include "LCD.H"
@@ -31,7 +31,6 @@
 //#include "STM32_SDCard.H"
 //#include "GT32L32M0180.H"
 #include 	"TOOL.H"
-
 
 //#define SDCardTest
 //#define GT32L32M0180Test
@@ -109,26 +108,18 @@ void FSMCTest_Configuration(void)
 //  SD_Configuration();
   GetTime();
 
-//  res = f_open(&fsrc, "1:srcfile.dat", FA_OPEN_EXISTING | FA_READ);
-//  ADC_TempSensorConfiguration(&ADCDATA);								//STM32内部温度传感器配置
-//  LCD_ShowBattery(780,2,2,LCD565_GREEN);   //显示12x12电池
-//  LCD_ShowAntenna(760,2,3,LCD565_GREEN);   //显示12x12天线
-  
-//  LCD_Printf (300,0,32,LCD565_GREEN,"图片显示测试");					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-  
-//	SysTick_Configuration(1000);											//系统嘀嗒时钟配置72MHz,单位为uS
-	
-//	IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
-//  SysTick_DeleymS(500);
-  LCD_Clean(LCD565_BLUE);
   LCD_SetBackground(LCD565_LBBLUE);
   LCD_ShowBattery(780,2,2,LCD565_GRED);   //显示12x12电池
   LCD_ShowAntenna(760,2,3,LCD565_GRED);   //显示12x12天线
+  
+//  USART_DMA_ConfigurationNR	(USART1,115200,128);	//USART_DMA配置--查询方式，不开中断
+  
   LCD_Printf(10,10,32,LCD565_BRED,"FSMC液晶屏驱动测试：%0.4d年%0.2d月%0.2d日%0.2d时%0.2d分%0.2d秒",
     year,month,day,hour,minute,second);  //后边的省略号就是可变参数
-	PWM_OUT(TIM2,PWM_OUTChannel1,2000,900);						//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,200,300);						//PWM设定-20161127版本
   
-  SysTick_Configuration(1000);
+//  IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
+  SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS
 }
 
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
@@ -140,8 +131,20 @@ void FSMCTest_Configuration(void)
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 void FSMCTest_Server(void)
 {
+//  unsigned short RxNum  = 0;
 //  ClockServer();
   RTC_Server();
+//  RxNum = USART_ReadBufferIDLE(USART1,buffer);
+//  if(RxNum)
+//  {
+//    USART_DMASend(USART1,buffer,RxNum);
+//  }
+//  if(time++<1000)
+//    return;
+//  time  = 0;
+//  if(time++<9)
+//  USART_DMAPrintfList(USART1,"RTC时钟%0.2d:%0.4d年%0.2d月%0.2d日%0.2d时%0.2d分%0.2d秒\r\n",
+//    time,calendar.w_year,calendar.w_month,calendar.w_date,calendar.hour,calendar.min,calendar.sec);
 }
 /*******************************************************************************
 *函数名			:	function

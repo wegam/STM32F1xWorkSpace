@@ -439,6 +439,7 @@ void WOW_Configuration(void)
 void WOW_Server(void)
 {
 //	IWDG_Feed();								//独立看门狗喂狗
+  MainServer();          //
 
 //***********************************数字调音板服务程序***********************************//
 #ifdef DEMO
