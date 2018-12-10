@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xWOW' 
- * Target:  'FSMCTest' 
+ * Target:  'CS5530_DEMO' 
  */
 
 #ifndef RTE_COMPONENTS_H

@@ -14,11 +14,13 @@
 
 
 #define CS5530_WRITE_OFFSET				(unsigned char)0x01	/*写偏移寄存器*/
-#define CS5530_READ_OFFSET				(unsigned char)0x09	/*读偏移寄存器*/
 #define CS5530_WRITE_GAIN					(unsigned char)0x02	/*写增益寄存器*/
-#define CS5530_READ_GAIN					(unsigned char)0x0A	/*读增益寄存器*/
 #define CS5530_WRITE_CONFIG				(unsigned char)0x03	/*写配置寄存器*/
+ 
+#define CS5530_READ_OFFSET				(unsigned char)0x09	/*读偏移寄存器*/
+#define CS5530_READ_GAIN					(unsigned char)0x0A	/*读增益寄存器*/
 #define CS5530_READ_CONFIG				(unsigned char)0x0B	/*读配置寄存器*/
+  
 #define CS5530_START_SINGLE				(unsigned char)0x80	//执行单次转换
 #define CS5530_START_CONTINUOUS		(unsigned char)0xC0	//执行连续转换
 #define CS5530_SYSTEM_OFFSET_CAL	(unsigned char)0x85	/*执行系统偏移校准*/
@@ -135,22 +137,20 @@ void CS5530_Process(CS5530Def *pInfo);
 
 
 void CS5530_Delay(u32 time);
-//void CS5530_CS_LOW(CS5530Def *pInfo);
-//void CS5530_CS_HIGH(CS5530Def *pInfo);
-void CS5530_SDI_LOW(CS5530Def *pInfo);
-//void CS5530_SDI_HIGH(CS5530Def *pInfo);
-//void CS5530_SCLK_LOW(CS5530Def *pInfo);
-//void CS5530_SCLK_HIGH(CS5530Def *pInfo);
-u8 CS5530_SDO_STATE(CS5530Def *pInfo);
 
-void CS5530_WriteOneByte(CS5530Def *pInfo, u8 dat);
-void CS5530_WriteRegister(CS5530Def *pInfo, u8 command,u32 setData);
-void CS5530_WriteCommand(CS5530Def *Pinfo,u8 command);
 
-unsigned char CS5530_ReadOneByte(CS5530Def *pInfo);
+void CS5530_WriteOneByte(u8 dat);
+unsigned char CS5530_ReadOneByte(void);
+
+void CS5530_WriteRegister(u8 command,u32 setData);
+void CS5530_WriteCommand(u8 command);
+
+
 u32 CS5530_GetADData(CS5530Def *pInfo);
-u32 CS5530_ReadRegister(CS5530Def *pInfo, u8 command);
-void CS5530_ClearBuf(CS5530Def *pInfo);
+u32 CS5530_ReadRegister(u8 command);
+
+
+
 void CS5530_PowerUp(CS5530Def *pInfo);		//CS5530上电及初始化
 void CS5530_PowerDown(CS5530Def *pInfo);
 

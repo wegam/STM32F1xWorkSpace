@@ -286,9 +286,9 @@ void CS5530_Server(void)		//称重服务，AD值处理，获取稳定值
 		}
 		CS5530_ADC_Value	=	CS5530.Data.WeighFilt>>0;
 //		LCD_Printf(0		,line,32	,LCD565_RED,"AD:%0.10d",CS5530_ADC_Value>>3);				//待发药槽位，后边的省略号就是可变参数
-		CS5530_ADC_Value	=	CS5530_ADC_Value>>2;
+		CS5530_ADC_Value	=	CS5530_ADC_Value>>0;
 		LCD_Printf(0		,line,24	,LCD565_RED,"距离:%0.6dmm",CS5530_ADC_Value/151-730);				//待发药槽位，后边的省略号就是可变参数
-		LCD_Printf(200		,line,24	,LCD565_RED,"AD:%0.10d",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
+		LCD_Printf(200		,line,24	,LCD565_RED,"AD:%0.10X",CS5530_ADC_Value);				//待发药槽位，后边的省略号就是可变参数
 //		USART_DMAPrintf	(UART4,"CH1:%0.8X\r\n",CS5530_ADC_Value>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数--1.7版本为UART4
 		line+=24;			//换行
 		CS5530.Data.WeighFilt	=	0xFFFFFFFF;

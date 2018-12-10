@@ -1257,6 +1257,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2678,6 +2683,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -4101,6 +4111,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5522,6 +5537,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -6945,6 +6965,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -8366,6 +8391,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -9789,6 +9819,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -11210,6 +11245,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -12633,6 +12673,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -14054,6 +14099,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -15477,6 +15527,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -16898,6 +16953,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -18321,6 +18381,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -19742,6 +19807,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -21165,6 +21235,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -22540,6 +22615,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -23914,6 +23994,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -25337,6 +25422,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -26759,6 +26849,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -28180,6 +28275,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -29696,6 +29796,11 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -31260,6 +31365,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -32681,6 +32791,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -34104,6 +34219,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -35525,6 +35645,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -36948,6 +37073,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -38369,6 +38499,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -39792,6 +39927,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -41214,6 +41354,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -42588,6 +42733,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -44011,6 +44161,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -45385,6 +45540,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -46761,6 +46921,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -48135,6 +48300,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -49511,6 +49681,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -50885,6 +51060,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -52261,6 +52441,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -53636,6 +53821,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -55010,6 +55200,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -56433,6 +56628,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -57854,6 +58054,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -59277,6 +59482,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -60698,6 +60908,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -62121,6 +62336,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -63543,6 +63763,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -64917,6 +65142,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -66340,6 +66570,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -67714,6 +67949,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -69090,6 +69330,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -70464,6 +70709,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -71887,6 +72137,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -73309,6 +73564,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -74684,6 +74944,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
             </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -76058,6 +76323,11 @@
               <FileName>DS18B20.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\DS18B20.C</FilePath>
+            </File>
+            <File>
+              <FileName>TM1616.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\Components\SCR\TM1616.C</FilePath>
             </File>
           </Files>
         </Group>

@@ -54,7 +54,8 @@ u16 us=0;
 *******************************************************************************/
 void CS5530Demo_Configuration(void)
 {	
-	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
+//	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
+  RCC_Configuration_HSI();
 	
 	GPIO_DeInitAll();							//将所有的GPIO关闭----V20170605
 	
@@ -68,7 +69,7 @@ void CS5530Demo_Configuration(void)
 	
 	PWM_OUT(TIM2,PWM_OUTChannel1,1,500);						//PWM设定-20161127版本
 	
-	USART_DMA_ConfigurationNR	(USART2,115200,32);	//USART_DMA配置--查询方式，不开中断
+//	USART_DMA_ConfigurationNR	(USART2,115200,32);	//USART_DMA配置--查询方式，不开中断
 	
 //	TM1616_WriteByte(&TM1616_1,5);
 	
@@ -136,21 +137,6 @@ void CS5530_Configuration(void)
 	CS5530.Port.SDO_Pin		=	GPIO_Pin_6;
 	
 	CS5530_Initialize(&CS5530);
-	
-	
-//	CS5530.Port.CS_PORT		=	GPIOB;
-//	CS5530.Port.CS_Pin		=	GPIO_Pin_12;
-//	
-//	CS5530.Port.SCLK_PORT	=	GPIOB;
-//	CS5530.Port.SCLK_Pin	=	GPIO_Pin_13;
-//	
-//	CS5530.Port.SDI_PORT	=	GPIOB;
-//	CS5530.Port.SDI_Pin		=	GPIO_Pin_15;
-//	
-//	CS5530.Port.SDO_PORT	=	GPIOB;
-//	CS5530.Port.SDO_Pin		=	GPIO_Pin_14;
-//	
-//	CS5530_Initialize(&CS5530);
 }
 
 /*******************************************************************************
@@ -171,12 +157,12 @@ void TM1616_DIS(void)
 //		}
 		weigth	=	CS5530_ReadData(&CS5530);		//获取稳定的AD值
 //		weigth	=	CS5530.Data.WeighLive;		//获取稳定的AD值
-//		if((0xFFFFFFFF	!=	weigth)&&(0	!=	weigth))
-//		{
+		if((0xFFFFFFFF	!=	weigth)&&(0	!=	weigth))
+		{
 			TM1616_Display(&TM1616_1,weigth/10000);
 			TM1616_Display(&TM1616_2,weigth%10000);
 			USART_DMAPrintf	(USART2,"CH1:%0.8X\r\n",weigth>>2);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-//		}
+		}
 	}
 }
 
