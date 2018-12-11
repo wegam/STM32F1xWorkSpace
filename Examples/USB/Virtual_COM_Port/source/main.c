@@ -49,11 +49,12 @@
 *******************************************************************************/
 int main(void)
 {
+  #include "stm32f10x_gpio.h"
   Set_System();
   Set_USBClock();
   USB_Interrupts_Config();
   USB_Init();
-  
+  GPIO_SetBits(GPIOA, GPIO_Pin_8);
   while (1)
   {
   }

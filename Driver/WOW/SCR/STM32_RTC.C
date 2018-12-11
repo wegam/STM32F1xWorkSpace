@@ -32,10 +32,10 @@ const u8 mon_table[12]={31,28,31,30,31,30,31,31,30,31,30,31};
 void NVIC_ConfigurationRTC(void)
 {
     NVIC_InitTypeDef NVIC_InitStructure;
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); 
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1); 
     NVIC_InitStructure.NVIC_IRQChannel = RTC_IRQChannel;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 }

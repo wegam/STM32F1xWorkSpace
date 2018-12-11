@@ -5,7 +5,7 @@
 #include "stm32f10x_gpio.h"
 
 
-#define DataNum											10	//计算时需要获取的数据个数
+#define DataNum											20	//计算时需要获取的数据个数
 #define GetFiltDataDelayTime				DataNum*150	//获取稳定AD值需要的延时单位ms（单次取数时间*取数个数+多增加时间3000）
 #define	WeighCmpMax									3000	//相邻AD值允许差值大小
 #define	WeighVarMax									20000	//允许最大方差

@@ -49,7 +49,11 @@ u8 SwitchID=0;	//拔码开关地址
 #define RS485_PD_RXEN		PA1=0				//rs485接收称重板使能
 #define RS485_PD_TXEN		PA1=1				//rs485发送称重板使能
 
-unsigned	char ADCCH1SS3EN,ADCCH2SS4EN;
+unsigned	char ADCCH1SS3EN,ADCCH2SS4EN;   //通道选择标志
+unsigned  char DataOutStrEn;              //数据输出标志，SW3为0输出十六进制，为1输出字符串
+unsigned  char DataOutMMEn;               //数据输出类型，SW4为0输出原始数据，为1输出转换后的mm单位数据，16进制格式
+
+unsigned  char Txbuffer[32]={0};
 
 unsigned	short SYSLEDTime;
 unsigned	short SwitchTime=0;
@@ -103,10 +107,7 @@ void PD002V30ADC_Server(void)
 	{
 		SYSLEDTime=0;
 		GPIO_Toggle	(GPIOA,GPIO_Pin_0);		//将GPIO相应管脚输出翻转----V20170605
-		if(SwitchTime++>5)
-		{
-			SwitchTime=0;
-		}
+		
 	}
 	
 	USARTStatus	=	USART_Status(MS200.BUS485.USARTx);		//串口状态检查
@@ -114,15 +115,20 @@ void PD002V30ADC_Server(void)
 	{
 		RS485_PD_RXEN;
 	}	
-	if(0	!=	SwitchTime)
-	{
-		return;
-	}
-	
+  
+
+	if(SwitchTime++<1000)   //1秒查检一次拨码开关
+  {
+    return;
+  }
+  SwitchTime=0;
+  
 	SwitchID	=	SWITCHID_Read(&MS200.SWITCHID);
 	{
 		ADCCH1SS3EN	=	0;
 		ADCCH2SS4EN	=	0;
+    DataOutStrEn  = 0;
+    DataOutMMEn = 0;
 		//------------------未拨码，默认开启用双通道
 		if(0	==	(SwitchID&0x03))
 		{
@@ -146,7 +152,24 @@ void PD002V30ADC_Server(void)
 		{
 			ADCCH1SS3EN	=	1;
 			ADCCH2SS4EN	=	1;
-		}		
+		}
+
+    if(4  == (SwitchID&0x04))
+    {
+      DataOutStrEn  = 1;    //输出字符串16进制格式
+    }
+    else
+    {
+      DataOutStrEn  = 0;    //输出16进制
+    }
+    if(8  == (SwitchID&0x08))
+    {
+      DataOutMMEn  = 1;    //转换为mm输出
+    }
+    else
+    {
+      DataOutMMEn  = 0;    //输出原始AD值
+    }
 	}
 }
 
@@ -276,49 +299,121 @@ void CS5530_Configuration(void)
 *******************************************************************************/
 void CS5530_Server(void)
 {
-#if 1
+  unsigned  long Ch1Data  = 0,Ch2Data=  0;
+  unsigned  short TxNum = 0;
+//  unsigned  char buffer[32]="CH1:";
+  
+  
+  
+  
 	CS5530_Process(&MS200.CH1SS3.ADC);		//SS3接口，外面
 	CS5530_Process(&MS200.CH2SS4.ADC);		//SS4接口，里面
 	
-//	if(((MS200.CH1SS3.ADC.Data.WeighFilt	!=0xFFFFFFFF)&&(MS200.CH2SS4.ADC.Data.WeighFilt	!=0xFFFFFFFF))
-//		&&((MS200.CH1SS3.ADC.Data.WeighFilt	!=0x00)&&(MS200.CH2SS4.ADC.Data.WeighFilt	!=0x00)))
-//	{
-//		USART_DMAPrintf	(USART1,"CH1:%0.8X\r\nCH2:%0.8X\r\n",MS200.CH1SS3.ADC.Data.WeighFilt,MS200.CH2SS4.ADC.Data.WeighFilt);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-//		MS200.CH1SS3.ADC.Data.WeighFilt	=	0;
-//		MS200.CH2SS4.ADC.Data.WeighFilt	=	0;
-//	}
-	if(((MS200.CH1SS3.ADC.Data.WeighLive	!=0xFFFFFFFF)&&(MS200.CH2SS4.ADC.Data.WeighLive	!=0xFFFFFFFF))
-		&&((MS200.CH1SS3.ADC.Data.WeighLive	!=0x00)&&(MS200.CH2SS4.ADC.Data.WeighLive	!=0x00)))
-	{
-		if(ADCCH1SS3EN&&ADCCH2SS4EN)
-		{
-			RS485_DMAPrintf	(&MS200.BUS485,"CH1:%0.8X\r\nCH2:%0.8X\r\n",MS200.CH1SS3.ADC.Data.WeighLive,MS200.CH2SS4.ADC.Data.WeighLive);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		}
-		else if(ADCCH1SS3EN)
-		{
-			RS485_DMAPrintf	(&MS200.BUS485,"CH1:%0.8X\r\n",MS200.CH1SS3.ADC.Data.WeighLive);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		}
-		else if(ADCCH2SS4EN)
-		{
-			RS485_DMAPrintf	(&MS200.BUS485,"CH2:%0.8X\r\n",MS200.CH2SS4.ADC.Data.WeighLive);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		}
-		MS200.CH1SS3.ADC.Data.WeighLive	=	0;
-		MS200.CH2SS4.ADC.Data.WeighLive	=	0;
-	}
-	else if((MS200.CH1SS3.ADC.Data.WeighLive	!=0xFFFFFFFF)&&(MS200.CH1SS3.ADC.Data.WeighLive	!=0x00))
-	{
-		if(ADCCH1SS3EN)
-		RS485_DMAPrintf	(&MS200.BUS485,"CH1:%0.8X\r\n",MS200.CH1SS3.ADC.Data.WeighLive);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		MS200.CH1SS3.ADC.Data.WeighLive	=	0;
-	}
-	else if((MS200.CH2SS4.ADC.Data.WeighLive	!=0xFFFFFFFF)&&(MS200.CH2SS4.ADC.Data.WeighLive	!=0x00))
-	{
-		if(ADCCH2SS4EN)
-		RS485_DMAPrintf	(&MS200.BUS485,"CH2:%0.8X\r\n",MS200.CH2SS4.ADC.Data.WeighLive);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-		MS200.CH2SS4.ADC.Data.WeighLive	=	0;
-	}
-	return;
-#endif
+  Ch1Data = MS200.CH1SS3.ADC.Data.WeighLive;    //通道1AD值
+  Ch2Data = MS200.CH2SS4.ADC.Data.WeighLive;    //通道2AD值
+  
+//  Ch1Data = MS200.CH1SS3.ADC.Data.WeighFilt;    //通道1AD值--经过滤波
+//  Ch2Data = MS200.CH2SS4.ADC.Data.WeighFilt;    //通道2AD值--经过滤波
+  
+  //---------------------------通道1输出
+  if(ADCCH1SS3EN)
+  {
+    if((Ch1Data	!=0xFFFFFFFF)&&(Ch1Data	!=0x00))
+    {
+      if(DataOutStrEn)  //输出字符串
+      {
+        //-----------------转换数据为mm
+        if(DataOutMMEn)
+        {
+          unsigned short temp = 0x1370;   //距离过短无法识别初始值
+          if(Ch1Data>temp)
+            Ch1Data =  Ch1Data-temp;
+          else
+            Ch1Data = 0;
+          Ch1Data = Ch1Data/35;   //距离参数
+          
+          TxNum = RS485_DMAPrintf	(&MS200.BUS485,"CH1:%0.6dmm\r\n",Ch1Data);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+        }
+        else
+        {
+          TxNum = RS485_DMAPrintf	(&MS200.BUS485,"CH1:%0.8X\r\n",Ch1Data);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+        }        
+      }
+      else
+      {
+        //-----------------转换数据为mm
+        if(DataOutMMEn)
+        {
+          Ch1Data = (Ch1Data-300)/50;
+        }
+        //--------输出数据格式：43 48 31 xx xx xx xx 0D 0A   //数据内容低字节在前
+        Txbuffer[0]='C';
+        Txbuffer[1]='H';
+        Txbuffer[2]='1';
+        memcpy(&Txbuffer[3],&Ch1Data,4);
+        Txbuffer[7] = '\r';
+        Txbuffer[8] = '\n';
+        TxNum = RS485_DMASend(&MS200.BUS485,Txbuffer,9);
+      }
+    }
+    if(0  !=  TxNum)
+      return;
+    MS200.CH1SS3.ADC.Data.WeighLive	=	0;
+    MS200.CH1SS3.ADC.Data.WeighFilt	=	0;
+//    return;
+  }
+  //---------------------------通道2输出
+  if(ADCCH2SS4EN)
+  {
+    if((Ch2Data	!=0xFFFFFFFF)&&(Ch2Data	!=0x00))
+    {     
+      if(DataOutStrEn)  //输出字符串
+      {
+        //-----------------转换数据为mm
+        if(DataOutMMEn)
+        {
+          unsigned short temp = 0x1500;   //距离过短无法识别初始值
+          if(Ch2Data>temp)
+            Ch2Data =  Ch2Data-temp;
+          else
+            Ch2Data = 0;
+          Ch2Data = Ch2Data/35;   //距离参数
+
+          TxNum = RS485_DMAPrintf	(&MS200.BUS485,"CH2:%0.6dmm\r\n",Ch2Data);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+        }
+        else
+        {
+          TxNum = RS485_DMAPrintf	(&MS200.BUS485,"CH2:%0.8X\r\n",Ch2Data);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
+        }
+      }
+        
+      else
+      {
+        //-----------------转换数据为mm
+        if(DataOutMMEn)
+        {
+          unsigned short temp = 0x9F;   //距离过短无法识别初始值
+          if(Ch2Data>temp)
+            Ch2Data =  Ch2Data-temp;
+          else
+            Ch2Data = 0;
+          Ch2Data = Ch2Data/33;   //距离参数
+        }
+        //--------输出数据格式：43 48 32 xx xx xx xx 0D 0A   //数据内容低字节在前
+        Txbuffer[0]='C';
+        Txbuffer[1]='H';
+        Txbuffer[2]='2';
+        memcpy(&Txbuffer[3],&Ch2Data,4);
+        Txbuffer[7] = '\r';
+        Txbuffer[8] = '\n';
+        TxNum = RS485_DMASend(&MS200.BUS485,Txbuffer,9);
+      }
+    }
+    if(0  !=  TxNum)
+      return;
+    MS200.CH2SS4.ADC.Data.WeighLive	=	0;
+    MS200.CH2SS4.ADC.Data.WeighFilt	=	0;
+  }  
 }
 
 /*******************************************************************************

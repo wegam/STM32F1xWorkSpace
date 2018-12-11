@@ -1639,7 +1639,7 @@ u16 RS485_DMASend(
 	Status	=	USART_Status(USARTx);		//串口状态检查
 	if(1  ==  Status.USART_IDLESTD)   //bit[0] 0-串口空闲；1-串口非空闲，状态根据以下位定义
 	{
-		return 0;
+		return BufferSize;
 	}
 //	SysTick_DeleymS(1);				//SysTick延时nmS
 	RS485_TX_EN(pRS485);

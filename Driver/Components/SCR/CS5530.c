@@ -72,7 +72,7 @@ void CS5530_WriteOneByte(u8 dat)
   
 //	pInfo->Port.SCLK_PORT->BRR    = pInfo->Port.SCLK_Pin;   //SCLK==0
   CS5530SetL(CS);         //CS==0
-	CS5530_Delayus(50);				//SysTick延时nuS
+	CS5530_Delayus(100);				//SysTick延时nuS
 	for(i=0; i<8; i++)
 	{
 		if((dat&0x80) != 0)
@@ -80,11 +80,11 @@ void CS5530_WriteOneByte(u8 dat)
 		else
       CS5530SetL(SDI);    //SDI==0
 		
-		CS5530_Delayus(50);	  //SysTick延时nuS
+		CS5530_Delayus(100);	  //SysTick延时nuS
     CS5530SetH(SCLK);     //SCLK==1
-		CS5530_Delayus(50);    //SysTick延时nuS
+		CS5530_Delayus(100);    //SysTick延时nuS
     CS5530SetL(SCLK);     //SCLK==0
-    CS5530_Delayus(50);    //SysTick延时nuS
+    CS5530_Delayus(100);    //SysTick延时nuS
 		dat <<= 1;
 	}
 }
@@ -99,16 +99,17 @@ unsigned char CS5530_ReadOneByte(void)
 	uint8_t i;
 	uint8_t reValue=0;
   CS5530SetL(SDI);        //SDI==0
-	CS5530_Delayus(10);		  //SysTick延时nuS
+	CS5530_Delayus(100);		  //SysTick延时nuS
 	for(i=0; i<8; i++)
 	{	
     CS5530SetH(SCLK);     //SCLK==1
-    CS5530_Delayus(10);	  //SysTick延时nuS
+    CS5530_Delayus(100);	  //SysTick延时nuS
 		reValue <<= 1;
 		if(CS5530GetBit)
 			reValue++;
-		CS5530_Delayus(10);	  //SysTick延时nuS
-    CS5530SetL(SCLK);     //SCLK==0		
+		CS5530_Delayus(100);	  //SysTick延时nuS
+    CS5530SetL(SCLK);     //SCLK==0	
+    CS5530_Delayus(100);	  //SysTick延时nuS
 	}
 	CS5530_Delayus(100);	  //SysTick延时nuS
 
@@ -227,6 +228,7 @@ void CS5530_PowerUp(CS5530Def *pInfo)
   //3)设置增益寄存器
   //3.1)读增益寄存器
   WriteCS5530Gain:
+  SysTick_DeleymS(100);				//SysTick延时nmS
   CS5530_Status = CS5530_ReadRegister(CS5530_READ_GAIN);				//增益寄存器
 	//3.2)设置增益值
 //	CS5530_Status|=0x01000000;
@@ -239,7 +241,7 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 //	CS5530_Status=0x00400000;		//300	
 //	CS5530_Status=0x00200000;		//150	
 //	CS5530_Status=0x01000000;		//1200	
-	CS5530_Status=0x02F00000;		//test
+	CS5530_Status=0x3FFF0000;		//test    //参数越大，放大倍数越小
 	//3.3)写入增益值
   CS5530_WriteRegister(CS5530_WRITE_GAIN,CS5530_Status);			//增益寄存器	
   //3.4)检查写入值
@@ -252,6 +254,7 @@ void CS5530_PowerUp(CS5530Def *pInfo)
   //4)设置偏移寄存器
   //4.1)读偏移寄存器
   WriteCS5530Offset:
+  SysTick_DeleymS(100);				//SysTick延时nmS
 	CS5530_Status=CS5530_ReadRegister(CS5530_READ_OFFSET);			//偏移寄存器
   //4.2)设置偏移值
   CS5530_Status|=0x000000;
@@ -266,6 +269,7 @@ void CS5530_PowerUp(CS5530Def *pInfo)
   //5)设置配置寄存器
   //5.1)读配置寄存器
   WriteCS5530Config:
+  SysTick_DeleymS(100);				//SysTick延时nmS
   CS5530_Status=CS5530_ReadRegister(CS5530_READ_CONFIG);			//配置寄存器
   //5.2)设置转换速率
   CS5530_Status=CS5530_Status|0x82000;    //6.25sps	
@@ -275,10 +279,10 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 //  CS5530_Status=CS5530_Status|0x4000;		  //3840sps	
 //  CS5530_Status=CS5530_Status|0x6000;		  //240sps
   //5.3)设置输入极性
-  CS5530_Status	&=	~CS5530_CONF_UNIPOLAR_MODE;		            //双极性
-//  CS5530_Status	=	CS5530_Status|CS5530_CONF_UNIPOLAR_MODE;		//单极性
+//  CS5530_Status	&=	~CS5530_CONF_UNIPOLAR_MODE;		            //双极性
+  CS5530_Status	=	CS5530_Status|CS5530_CONF_UNIPOLAR_MODE;		//单极性
   //5.4)设置输入模式
-  CS5530_Status	&=	~CS5530_CONF_SHORT_INPUTS;                //正常输入
+//  CS5530_Status	&=	~CS5530_CONF_SHORT_INPUTS;                //正常输入
 //  CS5530_Status=CS5530_Status|CS5530_CONF_SHORT_INPUTS;		    //设置为输入短路
   //5.3)写入
   CS5530_WriteRegister(CS5530_WRITE_CONFIG,CS5530_Status);		//配置寄存器
@@ -288,12 +292,14 @@ void CS5530_PowerUp(CS5530Def *pInfo)
     goto WriteCS5530Config;
   }
 	
+  SysTick_DeleymS(100);				//SysTick延时nmS
+  
 	CS5530_WriteCommand(CS5530_SYSTEM_OFFSET_CAL);							//执行偏移校准
 	
 	CS5530_WriteCommand(CS5530_SYSTEM_GAIN_CAL);								//执行系统增益校准
 
 
-	
+	SysTick_DeleymS(200);				//SysTick延时nmS
 	CS5530_WriteCommand(CS5530_START_CONTINUOUS);									//执行连续转换
 	
 //	CS5530_WriteCommand(CS5530_START_SINGLE);									//执行单次转换

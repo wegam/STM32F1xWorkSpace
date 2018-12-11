@@ -415,6 +415,7 @@ void USB_LP_CAN_RX0_IRQHandler(void)
 #elif	USBtoSPI	
 	USB_Istr();			//usb_istr.c
 #endif
+  WOW_Server();			//usb_istr.c
 }
 
 /*******************************************************************************
