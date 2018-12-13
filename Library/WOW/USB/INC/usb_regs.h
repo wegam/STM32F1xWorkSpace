@@ -43,9 +43,9 @@ enum EP_BUF_NUM
 /*                         General registers                                  */
 /******************************************************************************/
 
-/* Control register */							//控制寄存器
+/* Control register */							//控制寄存器:用于定义USB模块的工作模式，中断的处理，设备的地址和读取当前帧的编号。
 #define CNTR    ((volatile unsigned *)(RegBase + 0x40))
-/* Interrupt status register */			//中断状态寄存器
+/* Interrupt status register */			//中断状态寄存器:此寄存器包含所有中断源的状态信息，以供应用程序确认产生中断请求的事件。
 #define ISTR    ((volatile unsigned *)(RegBase + 0x44))
 /* Frame number register */					//帧编号寄存器
 #define FNR     ((volatile unsigned *)(RegBase + 0x48))
@@ -178,7 +178,7 @@ enum EP_BUF_NUM
 #define EPRX_DTOGMASK  (EPRX_STAT|EPREG_MASK)
 /* Exported macro ------------------------------------------------------------*/
 /* SetCNTR */
-#define _SetCNTR(wRegValue)  (*CNTR   = (u16)wRegValue)
+#define _SetCNTR(wRegValue)  (*CNTR   = (u16)wRegValue)			//配置控制寄存器
 
 /* SetISTR */
 #define _SetISTR(wRegValue)  (*ISTR   = (u16)wRegValue)

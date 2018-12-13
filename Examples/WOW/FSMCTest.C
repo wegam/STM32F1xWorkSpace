@@ -80,6 +80,9 @@ char Key = 0;
 unsigned  short color = 0;
 unsigned	short	Rait	=	0;
 unsigned	long	ImageAr	=	0;
+unsigned	short	sysledtime=0;
+unsigned	char	sysledflag=0;
+unsigned	short	Ratio	=	0;
 
  u16 year; 
  u8 month;
@@ -91,6 +94,7 @@ u16 millisecond=0;
 
 void GetTime(void);
 void ClockServer(void);
+void SYSLED(void);
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
 //->功能描述	:	 
@@ -116,8 +120,14 @@ void FSMCTest_Configuration(void)
   
   LCD_Printf(10,10,32,LCD565_BRED,"FSMC液晶屏驱动测试：%0.4d年%0.2d月%0.2d日%0.2d时%0.2d分%0.2d秒",
     year,month,day,hour,minute,second);  //后边的省略号就是可变参数
-	PWM_OUT(TIM2,PWM_OUTChannel1,200,300);						//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,2,300);						//PWM设定-20161127版本
+//	PWM_OUT(TIM4,PWM_OUTChannel1,2000,0);						//PWM设定-20161127版本
+//	PWM_OUT(TIM4,PWM_OUTChannel2,500,500);						//PWM设定-20161127版本
+//	PWM_OUT(TIM4,PWM_OUTChannel3,2000,0);						//PWM设定-20161127版本
+	
   
+//	GPIO_Configuration_OPP50	(GPIOA,GPIO_Pin_0);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	
 //  IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
   SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS
 }
@@ -134,6 +144,7 @@ void FSMCTest_Server(void)
 //  unsigned short RxNum  = 0;
 //  ClockServer();
   RTC_Server();
+//	SYSLED();
 //  RxNum = USART_ReadBufferIDLE(USART1,buffer);
 //  if(RxNum)
 //  {
@@ -145,6 +156,38 @@ void FSMCTest_Server(void)
 //  if(time++<9)
 //  USART_DMAPrintfList(USART1,"RTC时钟%0.2d:%0.4d年%0.2d月%0.2d日%0.2d时%0.2d分%0.2d秒\r\n",
 //    time,calendar.w_year,calendar.w_month,calendar.w_date,calendar.hour,calendar.min,calendar.sec);
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void SYSLED(void)
+{
+	if(sysledtime++>5)
+	{
+		sysledtime	=	0;
+		if(0==sysledflag)
+		{
+			if(Ratio++>999)
+			{
+				sysledflag	=	1;
+			}
+		}
+		else
+		{
+			if(Ratio--==500)
+			{
+				sysledflag	=	0;
+			}
+		}
+		PWM_OUT(TIM2,PWM_OUTChannel1,1000,Ratio);						//PWM设定-20161127版本
+//		SetPWM_Ratio(Ratio);		//设置占空比---LED
+	}	
 }
 /*******************************************************************************
 *函数名			:	function
