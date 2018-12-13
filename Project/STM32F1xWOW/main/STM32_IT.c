@@ -414,8 +414,10 @@ void USB_LP_CAN_RX0_IRQHandler(void)
 	USB_Istr();			//usb_istr.c
 #elif	USBtoSPI	
 	USB_Istr();			//usb_istr.c
+#elif	USBDEMO	
+	#include "usb_istr.h"
+	USB_Istr();			//usb_istr.c
 #endif
-  WOW_Server();			//usb_istr.c
 }
 
 /*******************************************************************************

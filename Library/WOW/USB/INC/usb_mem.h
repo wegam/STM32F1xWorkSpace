@@ -1,9 +1,9 @@
 /******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_lib.h
+* File Name          : usb_mem.h
 * Author             : MCD Application Team
 * Version            : V2.2.0
 * Date               : 06/13/2008
-* Description        : USB library include files
+* Description        : Utility prototypes functions for memory/PMA transfers
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -14,24 +14,19 @@
 *******************************************************************************/
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_LIBW_H
-#define __USB_LIBW_H
+#ifndef __USB_MEM_H
+#define __USB_MEM_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "usb_typeW.h"			//主要是用 typedef为 stm32支持的数据类型取一些新的名称/
-#include "usb_regsW.h"			//用于寄存器操作
-#include "usb_defW.h"			//主要是定义一些相关的结构体
-#include "usb_coreW.h"			//USB总线数据处理的核心文件
-#include "usb_initW.h"			//用于端点数据输入输入中断处理
-#include "usb_memW.h"			//用于缓冲区操作
-#include "usb_intW.h"			//用于端点数据输入输入中断处
-
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+void UserToPMABufferCopy(u8 *pbUsrBuf, u16 wPMABufAddr, u16 wNBytes);
+void PMAToUserBufferCopy(u8 *pbUsrBuf, u16 wPMABufAddr, u16 wNBytes);
+
 /* External variables --------------------------------------------------------*/
 
-#endif /* __USB_LIB_H */
+#endif  /*__USB_MEM_H*/
 
 /******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/

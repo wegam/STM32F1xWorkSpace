@@ -14,9 +14,9 @@
 *******************************************************************************/
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_COREW_H
-#define __USB_COREW_H
-#include "usb_typeW.h"			//主要是用 typedef为 stm32支持的数据类型取一些新的名称/
+#ifndef __USB_CORE_H
+#define __USB_CORE_H
+#include "usb_type.h"			//主要是用 typedef为 stm32支持的数据类型取一些新的名称/
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
 typedef enum _CONTROL_STATE

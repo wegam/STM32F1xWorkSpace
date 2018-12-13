@@ -165,7 +165,7 @@ void USB_Configuration(void)
 { 
   USB_Initialize();  
   GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_8);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
-  USBDisconnect;
+//  USBDisconnect;
   USBConnect;
   
 }

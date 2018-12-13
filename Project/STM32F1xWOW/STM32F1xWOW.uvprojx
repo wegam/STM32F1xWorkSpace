@@ -801,37 +801,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -984,44 +984,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2191,37 +2196,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2374,44 +2379,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3581,37 +3591,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3764,44 +3774,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4971,37 +4986,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5154,44 +5169,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -6361,37 +6381,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -6544,44 +6564,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -7751,37 +7776,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -7934,44 +7959,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -9141,37 +9171,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -9324,44 +9354,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -10531,37 +10566,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -10714,44 +10749,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -11921,37 +11961,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -12104,44 +12144,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -13311,37 +13356,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -13494,44 +13539,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -14701,37 +14751,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -14884,44 +14934,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -16091,37 +16146,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -16274,44 +16329,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -17481,37 +17541,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -17664,44 +17724,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -18871,37 +18936,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -19054,44 +19119,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -20261,37 +20331,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -20444,44 +20514,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -21651,37 +21726,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -21834,44 +21909,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -23041,37 +23121,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -23224,44 +23304,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -24431,37 +24516,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -24614,44 +24699,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -25821,37 +25911,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -26004,44 +26094,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -27211,37 +27306,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -27394,44 +27489,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -28601,37 +28701,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -28784,44 +28884,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -29991,37 +30096,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -30174,44 +30279,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -31381,37 +31491,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -31564,44 +31674,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -32771,37 +32886,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -32954,44 +33069,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -34161,37 +34281,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -34344,44 +34464,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -35551,37 +35676,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -35734,44 +35859,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -36941,37 +37071,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -37124,44 +37254,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -38331,37 +38466,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -38514,44 +38649,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -39721,37 +39861,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -39904,44 +40044,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -41111,37 +41256,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -41294,44 +41439,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -42501,37 +42651,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -42684,44 +42834,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -43891,37 +44046,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -44074,44 +44229,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -45281,37 +45441,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -45464,44 +45624,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -46671,37 +46836,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -46854,44 +47019,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -48061,37 +48231,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -48244,44 +48414,49 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -49023,7 +49198,7 @@
               <MiscControls></MiscControls>
               <Define>USBDEMO</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Library\Startup\STM32F10x;..\..\Library\C;..\..\Library\ARM\Include;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Driver\Protocol;..\..\Examples\DEMO\include;..\..\Examples\WOW;.\main;..\..\Driver\Tool;..\..\Driver\FatFs\source;..\..\Library\USBWOW\INC;..\..\Driver\USB</IncludePath>
+              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Library\Startup\STM32F10x;..\..\Library\C;..\..\Library\ARM\Include;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Driver\Protocol;..\..\Examples\DEMO\include;..\..\Examples\WOW;.\main;..\..\Driver\Tool;..\..\Driver\FatFs\source;..\..\Library\WOW\USB\INC;..\..\Driver\WOW\USB</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -49451,101 +49626,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib/USB</GroupName>
-          <GroupOption>
-            <CommonProperty>
-              <UseCPPCompiler>0</UseCPPCompiler>
-              <RVCTCodeConst>0</RVCTCodeConst>
-              <RVCTZI>0</RVCTZI>
-              <RVCTOtherData>0</RVCTOtherData>
-              <ModuleSelection>0</ModuleSelection>
-              <IncludeInBuild>0</IncludeInBuild>
-              <AlwaysBuild>2</AlwaysBuild>
-              <GenerateAssemblyFile>2</GenerateAssemblyFile>
-              <AssembleAssemblyFile>2</AssembleAssemblyFile>
-              <PublicsOnly>2</PublicsOnly>
-              <StopOnExitCode>11</StopOnExitCode>
-              <CustomArgument></CustomArgument>
-              <IncludeLibraryModules></IncludeLibraryModules>
-              <ComprImg>1</ComprImg>
-            </CommonProperty>
-            <GroupArmAds>
-              <Cads>
-                <interw>2</interw>
-                <Optim>0</Optim>
-                <oTime>2</oTime>
-                <SplitLS>2</SplitLS>
-                <OneElfS>2</OneElfS>
-                <Strict>2</Strict>
-                <EnumInt>2</EnumInt>
-                <PlainCh>2</PlainCh>
-                <Ropi>2</Ropi>
-                <Rwpi>2</Rwpi>
-                <wLevel>2</wLevel>
-                <uThumb>2</uThumb>
-                <uSurpInc>2</uSurpInc>
-                <uC99>2</uC99>
-                <useXO>2</useXO>
-                <v6Lang>0</v6Lang>
-                <v6LangP>0</v6LangP>
-                <vShortEn>0</vShortEn>
-                <vShortWch>0</vShortWch>
-                <VariousControls>
-                  <MiscControls></MiscControls>
-                  <Define></Define>
-                  <Undefine></Undefine>
-                  <IncludePath></IncludePath>
-                </VariousControls>
-              </Cads>
-              <Aads>
-                <interw>2</interw>
-                <Ropi>2</Ropi>
-                <Rwpi>2</Rwpi>
-                <thumb>2</thumb>
-                <SplitLS>2</SplitLS>
-                <SwStkChk>2</SwStkChk>
-                <NoWarn>2</NoWarn>
-                <uSurpInc>2</uSurpInc>
-                <useXO>2</useXO>
-                <VariousControls>
-                  <MiscControls></MiscControls>
-                  <Define></Define>
-                  <Undefine></Undefine>
-                  <IncludePath></IncludePath>
-                </VariousControls>
-              </Aads>
-            </GroupArmAds>
-          </GroupOption>
+          <GroupName>Lib/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_coreW.c</FileName>
+              <FileName>usb_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_coreW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_core.c</FilePath>
             </File>
             <File>
-              <FileName>usb_initW.c</FileName>
+              <FileName>usb_init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_initW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_init.c</FilePath>
             </File>
             <File>
-              <FileName>usb_intW.c</FileName>
+              <FileName>usb_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_intW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_int.c</FilePath>
             </File>
             <File>
-              <FileName>usb_memW.c</FileName>
+              <FileName>usb_mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_memW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_mem.c</FilePath>
             </File>
             <File>
-              <FileName>usb_regsW.c</FileName>
+              <FileName>usb_regs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_regsW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_regs.c</FilePath>
             </File>
             <File>
-              <FileName>usb_silW.c</FileName>
+              <FileName>usb_sil.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Library\USBWOW\SCR\usb_silW.c</FilePath>
+              <FilePath>..\..\Library\WOW\USB\SCR\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -49698,118 +49809,29 @@
           <GroupName>Driver/WOW/USB</GroupName>
           <Files>
             <File>
-              <FileName>usb_desc.c</FileName>
+              <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_desc.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
+              <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_Endpoint.c</FileName>
+              <FileName>usb_desc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Endpoint.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
+              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
             </File>
             <File>
               <FileName>usb_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_hal.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_Initialize.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -49859,165 +49881,24 @@
               </FileOption>
             </File>
             <File>
-              <FileName>usb_IstrEvent.c</FileName>
+              <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_IstrEvent.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
+              <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_process.c</FileName>
+              <FileName>usb_prop.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_process.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
+              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_pwr.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>0</vShortEn>
-                    <vShortWch>0</vShortWch>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
+              <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
             </File>
             <File>
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Driver\USB\usb_user.c</FilePath>
+              <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
             </File>
           </Files>
         </Group>

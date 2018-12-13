@@ -1,9 +1,9 @@
 /******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_init.h
+* File Name          : platform_config.h
 * Author             : MCD Application Team
 * Version            : V2.2.0
 * Date               : 06/13/2008
-* Description        : Initialization routines & global variables
+* Description        : Evaluation board specific configuration file.
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -14,37 +14,47 @@
 *******************************************************************************/
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_INITW_H
-#define __USB_INITW_H
-#include "usb_typeW.h"			//主要是用 typedef为 stm32支持的数据类型取一些新的名称/
-#include "usb_coreW.h"			//USB总线数据处理的核心文件
+#ifndef __PLATFORM_CONFIG_H
+#define __PLATFORM_CONFIG_H
+
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f10x_type.h"
+
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+/* Uncomment the line corresponding to the STMicroelectronics evaluation board
+   used to run the example */
+#if !defined (USE_STM3210B_EVAL) &&  !defined (USE_STM3210E_EVAL)
+ //#define USE_STM3210B_EVAL
+ #define USE_STM3210E_EVAL
+#endif
+
+/* Define the STM32F10x hardware depending on the used evaluation board */
+#ifdef USE_STM3210B_EVAL
+
+  #define USB_DISCONNECT            GPIOD  
+  #define USB_DISCONNECT_PIN        GPIO_Pin_9
+  #define RCC_APB2Periph_GPIO_DISCONNECT      RCC_APB2Periph_GPIOD
+
+#else /* USE_STM3210E_EVAL */
+
+	#ifdef PS005
+		#define USB_DISCONNECT            GPIOA  
+		#define USB_DISCONNECT_PIN        GPIO_Pin_8
+		#define RCC_APB2Periph_GPIO_DISCONNECT      RCC_APB2Periph_GPIOA
+	#else
+	  #define USB_DISCONNECT            GPIOA  
+		#define USB_DISCONNECT_PIN        GPIO_Pin_8
+		#define RCC_APB2Periph_GPIO_DISCONNECT      RCC_APB2Periph_GPIOA
+	#endif
+
+#endif /* USE_STM3210B_EVAL */
+
+
+
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-void USB_Init(void);
 
-/* External variables --------------------------------------------------------*/
-/*  The number of current endpoint, it will be used to specify an endpoint */
-extern u8	EPindex;
-/*  The number of current device, it is an index to the Device_Table */
-/*extern u8	Device_no; */
-/*  Points to the DEVICE_INFO structure of current device */
-/*  The purpose of this register is to speed up the execution */
-extern DEVICE_INFO*	pInformation;
-/*  Points to the DEVICE_PROP structure of current device */
-/*  The purpose of this register is to speed up the execution */
-extern DEVICE_PROP*	pProperty;
-/*  Temporary save the state of Rx & Tx status. */
-/*  Whenever the Rx or Tx state is changed, its value is saved */
-/*  in this variable first and will be set to the EPRB or EPRA */
-/*  at the end of interrupt process */
-extern USER_STANDARD_REQUESTS *pUser_Standard_Requests;
-
-extern u16	SaveState ;
-extern u16 wInterrupt_Mask;
-
-#endif /* __USB_INIT_H */
+#endif /* __PLATFORM_CONFIG_H */
 
 /******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/

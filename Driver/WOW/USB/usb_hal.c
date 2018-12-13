@@ -36,6 +36,11 @@
 //#include "usb_pwr.h"
 //#include "hw_config.h"
 
+
+
+#include "usb_regs.h"			//用于寄存器操作
+#include "usb_init.h"			//用于端点数据输入输入中断处理
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -55,6 +60,8 @@ void USB_Initialize(void)
   USB_ClockInitialize();     //USB时钟初始化
   USB_GpioInitialize();
   USB_NvicInitialize();      //USB中断初始化
+	
+	USB_Init();
 }
 /*******************************************************************************
 *函数名			:	function

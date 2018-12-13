@@ -50,7 +50,7 @@
 int main(void)
 {
   Set_System();
-  Set_USBClock();
+  Set_USBClock();	
   USB_Interrupts_Config();
   USB_Init();
   while (1)
