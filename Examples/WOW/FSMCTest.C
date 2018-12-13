@@ -120,7 +120,7 @@ void FSMCTest_Configuration(void)
   
   LCD_Printf(10,10,32,LCD565_BRED,"FSMC液晶屏驱动测试：%0.4d年%0.2d月%0.2d日%0.2d时%0.2d分%0.2d秒",
     year,month,day,hour,minute,second);  //后边的省略号就是可变参数
-	PWM_OUT(TIM2,PWM_OUTChannel1,2,300);						//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,500,300);						//PWM设定-20161127版本
 //	PWM_OUT(TIM4,PWM_OUTChannel1,2000,0);						//PWM设定-20161127版本
 //	PWM_OUT(TIM4,PWM_OUTChannel2,500,500);						//PWM设定-20161127版本
 //	PWM_OUT(TIM4,PWM_OUTChannel3,2000,0);						//PWM设定-20161127版本
