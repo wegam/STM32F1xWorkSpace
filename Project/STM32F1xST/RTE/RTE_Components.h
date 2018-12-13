@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xST' 
- * Target:  'SPI_DMA' 
+ * Target:  'wegam' 
  */
 
 #ifndef RTE_COMPONENTS_H
