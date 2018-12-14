@@ -27,7 +27,7 @@
 #include "usb_lib.h"
 #include "usb_prop.h"
 #include "usb_desc.h"
-#include "hw_config.h"
+//#include "hw_config.h"
 #include "platform_config.h"
 #include "usb_pwr.h"
 
@@ -35,6 +35,9 @@
 
 #include "STM32_USART.H"
 #include "stm32f10x_nvic.h"
+
+#include "VirtualCom_hardware.H"
+
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/

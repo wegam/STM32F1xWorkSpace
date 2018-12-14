@@ -54,7 +54,7 @@ void USB_Init(void)
 {
   pInformation = &Device_Info;			//这个是设备资料部分,里面的全部变量，静态的	//pInformation 是一个指向Device_Info 的指针
   pInformation->ControlState = 2;
-  pProperty = &Device_Property;			//pProperty 是一个指针，指向DEVICE_PROP 这个是设备属性部分，在usb_prop.c->Line 60
+  pProperty = &VirtualCom_DeviceProperty;			//pProperty 是一个指针，指向DEVICE_PROP 这个是设备属性部分，在usb_prop.c->Line 60
 																		//设备属性部分包含一些方法，即函数。也包括两个参数，一个是接收区的缓冲区地址，一个
 																		//是最大的包的长度。都是用字节表示的。
 																		

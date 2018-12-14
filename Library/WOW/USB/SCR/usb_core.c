@@ -297,7 +297,7 @@ RESULT Standard_ClearFeature(void)
         if (Related_Endpoint == ENDP0)
         {
           /* After clear the STALL, enable the default endpoint receiver */
-          SetEPRxCount(Related_Endpoint, Device_Property.MaxPacketSize);
+          SetEPRxCount(Related_Endpoint, pProperty->MaxPacketSize);
           _SetEPRxStatus(Related_Endpoint, EP_RX_VALID);
         }
         else
@@ -441,7 +441,7 @@ void DataStageOut(void)
       Length = save_rLength;
     }
 
-    Buffer = (*pEPinfo->CopyData)(Length);
+    Buffer = (*pEPinfo->CopyData)(Length);			//数据接收地址
     pEPinfo->Usb_rLength -= Length;
     pEPinfo->Usb_rOffset += Length;
 
@@ -976,7 +976,7 @@ u8 Out0_Process(void)
 *******************************************************************************/
 u8 Post0_Process(void)
 {
-  SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
+  SetEPRxCount(ENDP0, pProperty->MaxPacketSize);
 
   if (pInformation->ControlState == STALLED)
   {

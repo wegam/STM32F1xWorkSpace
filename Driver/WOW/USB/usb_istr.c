@@ -76,18 +76,18 @@ void USB_Istr(void)
 {
 
   wIstr = _GetISTR();			//获取中断标志，得到中断源
-
+//-------------------------------复位中断请求
 #if (IMR_MSK & ISTR_RESET)			  //USB复位请求 (USB reset request)
   if (wIstr & ISTR_RESET & wInterrupt_Mask)
   {
     _SetISTR((u16)CLR_RESET);		//清除USB复位请求 (USB reset request)
-    Device_Property.Reset();
+    pProperty->Reset();
 #ifdef RESET_CALLBACK
     RESET_Callback();
 #endif
   }
 #endif
-  /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+//-------------------------------缓冲区溢出中断请求
 #if (IMR_MSK & ISTR_DOVR)			//分组缓冲区溢出 (Packet memory area over / underrun)
   if (wIstr & ISTR_DOVR & wInterrupt_Mask)
   {
@@ -97,7 +97,7 @@ void USB_Istr(void)
 #endif
   }
 #endif
-  /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+//-------------------------------出错中断请求
 #if (IMR_MSK & ISTR_ERR)			//出错 (Error)
   if (wIstr & ISTR_ERR & wInterrupt_Mask)
   {
@@ -107,7 +107,7 @@ void USB_Istr(void)
 #endif
   }
 #endif
-  /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+//-------------------------------唤醒中断请求
 #if (IMR_MSK & ISTR_WKUP)			//唤醒请求 (Wakeup)
   if (wIstr & ISTR_WKUP & wInterrupt_Mask)
   {
@@ -118,7 +118,7 @@ void USB_Istr(void)
 #endif
   }
 #endif
-  /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+//-------------------------------挂起中断请求
 #if (IMR_MSK & ISTR_SUSP)			//挂起模块请求 (Suspend mode request)
   if (wIstr & ISTR_SUSP & wInterrupt_Mask)
   {
@@ -140,8 +140,10 @@ void USB_Istr(void)
 #endif
   }
 #endif
-  /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-#if (IMR_MSK & ISTR_SOF)										//帧首(SOF)中断标志
+//-------------------------------帧首中断请求
+#if (IMR_MSK & ISTR_SOF)										//帧首(SOF)Start-of-Frame中断标志：
+																						//对于full-speed总线，每隔1.00 ms ±0.0005 ms发送一次
+																						//对于high-speed总线，每隔125 μs ±0.0625 μs发送一次
   if (wIstr & ISTR_SOF & wInterrupt_Mask)		//读出的中断标志是SOF中断标志，且SOF中断使能了
   {
     _SetISTR((u16)CLR_SOF);									//清除SOF中断标志
@@ -165,7 +167,7 @@ void USB_Istr(void)
 #endif
   }
 #endif
-  /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+//-------------------------------正确的传输中断
 #if (IMR_MSK & ISTR_CTR)									//正确的传输 (Correct transfer)
   if (wIstr & ISTR_CTR & wInterrupt_Mask)
   {

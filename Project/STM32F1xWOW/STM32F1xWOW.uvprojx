@@ -989,19 +989,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -1014,11 +1004,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -1027,6 +1012,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2384,19 +2389,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -2409,11 +2404,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -2422,6 +2412,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3779,19 +3789,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -3804,11 +3804,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -3817,6 +3812,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5174,19 +5189,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -5199,11 +5204,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -5212,6 +5212,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -6569,19 +6589,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -6594,11 +6604,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -6607,6 +6612,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -7964,19 +7989,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -7989,11 +8004,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -8002,6 +8012,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -9359,19 +9389,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -9384,11 +9404,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -9397,6 +9412,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -10754,19 +10789,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -10779,11 +10804,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -10792,6 +10812,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -12149,19 +12189,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -12174,11 +12204,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -12187,6 +12212,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -13544,19 +13589,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -13569,11 +13604,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -13582,6 +13612,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -14939,19 +14989,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -14964,11 +15004,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -14977,6 +15012,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -16334,19 +16389,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -16359,11 +16404,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -16372,6 +16412,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -17729,19 +17789,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -17754,11 +17804,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -17767,6 +17812,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -19124,19 +19189,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -19149,11 +19204,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -19162,6 +19212,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -20519,19 +20589,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -20544,11 +20604,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -20557,6 +20612,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -21914,19 +21989,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -21939,11 +22004,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -21952,6 +22012,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -23309,19 +23389,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -23334,11 +23404,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -23347,6 +23412,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -24704,19 +24789,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -24729,11 +24804,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -24742,6 +24812,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -26099,19 +26189,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -26124,11 +26204,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -26137,6 +26212,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -27494,19 +27589,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -27519,11 +27604,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -27532,6 +27612,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -28889,19 +28989,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -28914,11 +29004,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -28927,6 +29012,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -30284,19 +30389,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -30309,11 +30404,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -30322,6 +30412,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -31679,19 +31789,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -31704,11 +31804,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -31717,6 +31812,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -33074,19 +33189,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -33099,11 +33204,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -33112,6 +33212,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -34469,19 +34589,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -34494,11 +34604,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -34507,6 +34612,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -35864,19 +35989,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -35889,11 +36004,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -35902,6 +36012,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -37259,19 +37389,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -37284,11 +37404,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -37297,6 +37412,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -38654,19 +38789,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -38679,11 +38804,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -38692,6 +38812,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -40049,19 +40189,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -40074,11 +40204,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -40087,6 +40212,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -41444,19 +41589,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -41469,11 +41604,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -41482,6 +41612,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -42839,19 +42989,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -42864,11 +43004,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -42877,6 +43012,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -44234,19 +44389,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -44259,11 +44404,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -44272,6 +44412,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -45629,19 +45789,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -45654,11 +45804,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -45667,6 +45812,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -47024,19 +47189,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -47049,11 +47204,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -47062,6 +47212,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -47443,16 +47613,16 @@
       <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
-          <Device>STM32F103ZE</Device>
+          <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
           <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
-          <Cpu>IROM(0x08000000,0x80000) IRAM(0x20000000,0x10000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
+          <Cpu>IROM(0x08000000,0x20000) IRAM(0x20000000,0x5000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_512 -FS08000000 -FL080000 -FP0($$Device:STM32F103ZE$Flash\STM32F10x_512.FLM))</FlashDriverDll>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000 -FP0($$Device:STM32F103CB$Flash\STM32F10x_128.FLM))</FlashDriverDll>
           <DeviceId>0</DeviceId>
-          <RegisterFile>$$Device:STM32F103ZE$Device\Include\stm32f10x.h</RegisterFile>
+          <RegisterFile>$$Device:STM32F103CB$Device\Include\stm32f10x.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -47462,7 +47632,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:STM32F103ZE$SVD\STM32F103xx.svd</SFDFile>
+          <SFDFile>$$Device:STM32F103CB$SVD\STM32F103xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -47540,12 +47710,12 @@
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
           <SimDllArguments> -REMAP</SimDllArguments>
-          <SimDlgDll>DARMSTM.DLL</SimDlgDll>
-          <SimDlgDllArguments>-pSTM32F103ZE</SimDlgDllArguments>
+          <SimDlgDll>DCM.DLL</SimDlgDll>
+          <SimDlgDllArguments>-pCM3</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
           <TargetDllArguments></TargetDllArguments>
-          <TargetDlgDll>DARMSTM.DLL</TargetDlgDll>
-          <TargetDlgDllArguments>-pSTM32F103ZE</TargetDlgDllArguments>
+          <TargetDlgDll>TCM.DLL</TargetDlgDll>
+          <TargetDlgDllArguments>-pCM3</TargetDlgDllArguments>
         </DllOption>
         <DebugOption>
           <OPTHX>
@@ -47714,12 +47884,12 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x10000</Size>
+                <Size>0x5000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x80000</Size>
+                <Size>0x20000</Size>
               </IROM>
               <XRAM>
                 <Type>0</Type>
@@ -47744,7 +47914,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x100000</Size>
+                <Size>0x20000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -47769,7 +47939,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x10000</Size>
+                <Size>0x5000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -48547,19 +48717,9 @@
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
             </File>
             <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_endp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
             </File>
             <File>
               <FileName>usb_Initialize.c</FileName>
@@ -48572,11 +48732,6 @@
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
             </File>
             <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
-            </File>
-            <File>
               <FileName>usb_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_pwr.c</FilePath>
@@ -48585,6 +48740,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -48966,16 +49141,16 @@
       <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
-          <Device>STM32F103ZE</Device>
+          <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
           <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
-          <Cpu>IROM(0x08000000,0x80000) IRAM(0x20000000,0x10000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
+          <Cpu>IROM(0x08000000,0x20000) IRAM(0x20000000,0x5000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_512 -FS08000000 -FL080000 -FP0($$Device:STM32F103ZE$Flash\STM32F10x_512.FLM))</FlashDriverDll>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000 -FP0($$Device:STM32F103CB$Flash\STM32F10x_128.FLM))</FlashDriverDll>
           <DeviceId>0</DeviceId>
-          <RegisterFile>$$Device:STM32F103ZE$Device\Include\stm32f10x.h</RegisterFile>
+          <RegisterFile>$$Device:STM32F103CB$Device\Include\stm32f10x.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -48985,7 +49160,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:STM32F103ZE$SVD\STM32F103xx.svd</SFDFile>
+          <SFDFile>$$Device:STM32F103CB$SVD\STM32F103xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -49063,12 +49238,12 @@
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
           <SimDllArguments> -REMAP</SimDllArguments>
-          <SimDlgDll>DARMSTM.DLL</SimDlgDll>
-          <SimDlgDllArguments>-pSTM32F103ZE</SimDlgDllArguments>
+          <SimDlgDll>DCM.DLL</SimDlgDll>
+          <SimDlgDllArguments>-pCM3</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
           <TargetDllArguments></TargetDllArguments>
-          <TargetDlgDll>DARMSTM.DLL</TargetDlgDll>
-          <TargetDlgDllArguments>-pSTM32F103ZE</TargetDlgDllArguments>
+          <TargetDlgDll>TCM.DLL</TargetDlgDll>
+          <TargetDlgDllArguments>-pCM3</TargetDlgDllArguments>
         </DllOption>
         <DebugOption>
           <OPTHX>
@@ -49237,12 +49412,12 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x10000</Size>
+                <Size>0x5000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x80000</Size>
+                <Size>0x20000</Size>
               </IROM>
               <XRAM>
                 <Type>0</Type>
@@ -49267,7 +49442,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x100000</Size>
+                <Size>0x20000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -49292,7 +49467,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x10000</Size>
+                <Size>0x5000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -49940,26 +50115,6 @@
               <FileName>hw_config.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\hw_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_desc.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_endp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_hal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_hal.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_Initialize.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -50009,14 +50164,66 @@
               </FileOption>
             </File>
             <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_endp.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>2</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>0</vShortEn>
+                    <vShortWch>0</vShortWch>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>usb_Initialize.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\usb_Initialize.c</FilePath>
+            </File>
+            <File>
               <FileName>usb_istr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_istr.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_prop.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Driver\WOW\USB\usb_prop.c</FilePath>
             </File>
             <File>
               <FileName>usb_pwr.c</FileName>
@@ -50027,6 +50234,26 @@
               <FileName>usb_user.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\USB\usb_user.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_hardware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_hardware.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualCom_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Driver\WOW\USB\VirtualCom_endp.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,9 +1,9 @@
 /******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_pwr.h
+* File Name          : hw_config.h
 * Author             : MCD Application Team
 * Version            : V2.2.0
 * Date               : 06/13/2008
-* Description        : Connection/disconnection & power management header
+* Description        : Hardware Configuration & Setup
 ********************************************************************************
 * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
@@ -14,24 +14,37 @@
 *******************************************************************************/
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_HAL_H
-#define __USB_HAL_H
+#ifndef __VirtualCom_hardware_H
+#define __VirtualCom_hardware_H
 
 /* Includes ------------------------------------------------------------------*/
-/* Exported types ------------------------------------------------------------*/
+#include "usb_type.h"
 
-/* External variables --------------------------------------------------------*/
+
+/* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
+/* Exported define -----------------------------------------------------------*/
+#define MASS_MEMORY_START     0x04002000
+#define BULK_MAX_PACKET_SIZE  0x00000040
+#define LED_ON                0xF0
+#define LED_OFF               0xFF
+
 /* Exported functions ------------------------------------------------------- */
-void USB_Initialize(void);
+void Set_System(void);
+void Set_USBClock(void);
+void Enter_LowPowerMode(void);
+void Leave_LowPowerMode(void);
+void USB_Interrupts_Config(void);
+void USB_Cable_Config (FunctionalState NewState);
+void USART_Config_Default(void);
+bool USART_Config(void);
+void USB_To_USART_Send_Data(u8* data_buffer, u8 Nb_bytes);
+void USART_To_USB_Send_Data(void);
+void Get_SerialNum(void);
+void Handle_USBAsynchXfer (void);
 
+/* External variables --------------------------------------------------------*/
 
-void USB_ClockInitialize(void);     //USB时钟初始化
-void USB_GpioInitialize(void);      //USB GPIO初始化
-void USB_NvicInitialize(void);      //USB中断初始化
-
-
-#endif  /*__USB_PWR_H*/
-
+#endif  /*__HW_CONFIG_H*/
 /******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/

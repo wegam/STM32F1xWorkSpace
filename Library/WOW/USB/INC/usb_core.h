@@ -80,7 +80,7 @@ typedef struct _ENDPOINT_INFO
   u16  Usb_wLength;
   u16  Usb_wOffset;
   u16  PacketSize;
-  u8   *(*CopyData)(u16 Length);	//这是一个函数指针定义。
+  u8   *(*CopyData)(u16 Length);			//这是一个函数指针定义。
 }ENDPOINT_INFO;
 
 /*-*-*-*-*-*-*-*-*-*-*-* Definitions for device level -*-*-*-*-*-*-*-*-*-*-*-*/
@@ -220,7 +220,7 @@ RESULT Standard_SetDeviceFeature(void);			//设置或使能设备指定的特性		//如果请求
 void SetDeviceAddress(u8);
 void NOP_Process(void);
 
-extern DEVICE_PROP Device_Property;
+extern DEVICE_PROP VirtualCom_DeviceProperty;
 extern  USER_STANDARD_REQUESTS User_Standard_Requests;
 extern  DEVICE  Device_Table;
 extern DEVICE_INFO Device_Info;

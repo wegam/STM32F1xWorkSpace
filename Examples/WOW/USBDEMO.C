@@ -32,7 +32,7 @@
 //#include "GT32L32M0180.H"
 #include 	"TOOL.H"
 
-#include "usb_hal.h"
+#include "usb_Initialize.h"
 
 //#define SDCardTest
 //#define GT32L32M0180Test
@@ -92,6 +92,7 @@ unsigned	long	ImageAr	=	0;
  u8 minute;
  u8 second;
 u16 millisecond=0;
+unsigned	short Flashsize	=	0;
 
 void GetTime(void);
 void ClockServer(void);
@@ -106,6 +107,18 @@ void USBDEMO_Configuration(void)
 {	
   RCC_ClocksTypeDef RCC_ClocksStatus;							//时钟状态---时钟值
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	
+	
+	GPIO_Configuration_OPP50	(GPIOB,GPIO_Pin_6);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	GPIO_Configuration_OPP50	(GPIOB,GPIO_Pin_7);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	GPIO_Configuration_OPP50	(GPIOB,GPIO_Pin_8);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	
+	GPIO_SetBits(GPIOB,GPIO_Pin_6);
+//	GPIO_SetBits(GPIOB,GPIO_Pin_7);
+//	GPIO_SetBits(GPIOB,GPIO_Pin_8);
+//	GPIO_ResetBits(GPIOB,GPIO_Pin_6);
+	PWM_OUT(TIM2,PWM_OUTChannel1,5,700);						//PWM设定-20161127版本
+	SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS
+//	return;
   Power_Configuration();
   
 //  LCD_Configuration();
@@ -126,6 +139,7 @@ void USBDEMO_Configuration(void)
 ////  IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
 //  SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS
   USB_Configuration(); 
+	Flashsize = *(vu32*)(0x1FFFF7E0);
 }
 
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
@@ -137,6 +151,13 @@ void USBDEMO_Configuration(void)
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 void USBDEMO_Server(void)
 {
+	if(millisecond++>500)
+	{
+		millisecond=0;
+//		GPIO_Toggle(GPIOB,GPIO_Pin_6);
+//		GPIO_Toggle(GPIOB,GPIO_Pin_7);
+//		GPIO_Toggle(GPIOB,GPIO_Pin_8);
+	}
 //  unsigned short RxNum  = 0;
 //  ClockServer();
 //  RTC_Server();

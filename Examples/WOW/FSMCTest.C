@@ -144,7 +144,7 @@ void FSMCTest_Server(void)
 //  unsigned short RxNum  = 0;
 //  ClockServer();
   RTC_Server();
-//	SYSLED();
+	SYSLED();
 //  RxNum = USART_ReadBufferIDLE(USART1,buffer);
 //  if(RxNum)
 //  {
@@ -168,25 +168,27 @@ void FSMCTest_Server(void)
 *******************************************************************************/
 void SYSLED(void)
 {
-	if(sysledtime++>5)
+	if(sysledtime++>200)
 	{
 		sysledtime	=	0;
 		if(0==sysledflag)
 		{
-			if(Ratio++>999)
+			Ratio+=1;
+			if(Ratio>35)
 			{
 				sysledflag	=	1;
 			}
 		}
 		else
 		{
-			if(Ratio--==500)
+			Ratio-=1;
+			if(Ratio<=20)
 			{
 				sysledflag	=	0;
 			}
 		}
-		PWM_OUT(TIM2,PWM_OUTChannel1,1000,Ratio);						//PWM设定-20161127版本
-//		SetPWM_Ratio(Ratio);		//设置占空比---LED
+		PWM_OUT(TIM2,PWM_OUTChannel1,2000,Ratio*Ratio);						//PWM设定-20161127版本
+//		SetPWM_Ratio(Ratio*Ratio);		//设置占空比---LED
 	}	
 }
 /*******************************************************************************

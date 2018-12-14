@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xWOW' 
- * Target:  'FSMCTest' 
+ * Target:  'USBDEMO' 
  */
 
 #ifndef RTE_COMPONENTS_H
