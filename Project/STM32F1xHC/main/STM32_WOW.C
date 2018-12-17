@@ -375,6 +375,10 @@ void WOW_Configuration(void)
 	PL010V17_Configuration();
 #endif
 
+//*********************************PL010V17AMP*********************************//
+#ifdef PL010V17AMP
+	PL010V17AMP_Configuration();
+#endif
 //*********************************PL012V11*********************************//
 #ifdef PL012V11
 	PL012V11_Configuration();
@@ -866,6 +870,13 @@ void WOW_Server(void)
 #ifdef PL010V17
 	PL010V17_Server();
 #endif
+
+
+//*********************************PL010V17AMP*********************************//
+#ifdef PL010V17AMP
+	PL010V17AMP_Server();
+#endif
+
 //*********************************PL012V11*********************************//
 #ifdef PL012V11
 	PL012V11_Server();

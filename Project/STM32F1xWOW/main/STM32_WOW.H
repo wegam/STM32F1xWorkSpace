@@ -62,12 +62,20 @@
 #ifdef FSMCTest
 	#include "FSMCTest.H"
 #endif
+//*********************************AMPTest*********************************//
+#ifdef AMPTest
+	#include "AMPTest.H"
+#endif
 
 //*********************************USBDEMO*********************************//
 #ifdef USBDEMO
 	#include "USBDEMO.H"
 #endif
 
+//*********************************AMP01*********************************//
+#ifdef AMP01
+	#include "AMP01.H"
+#endif
 
 
 

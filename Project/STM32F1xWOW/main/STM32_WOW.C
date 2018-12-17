@@ -265,9 +265,18 @@ void WOW_Configuration(void)
 	FSMCTest_Configuration();
 #endif
 
+//*********************************AMPTest*********************************//
+#ifdef AMPTest
+	AMPTest_Configuration();
+#endif
 //*********************************USBDEMO*********************************//
 #ifdef USBDEMO
 	USBDEMO_Configuration();
+#endif
+
+//*********************************AMP01*********************************//
+#ifdef AMP01
+	AMP01_Configuration();
 #endif
 
 
@@ -529,11 +538,20 @@ void WOW_Server(void)
 #ifdef FSMCTest
 	FSMCTest_Server();
 #endif
+//*********************************AMPTest*********************************//
+#ifdef AMPTest
+	AMPTest_Server();
+#endif
+
 //*********************************USBDEMO*********************************//
 #ifdef USBDEMO
 	USBDEMO_Server();
 #endif
 
+//*********************************AMP01*********************************//
+#ifdef AMP01
+	AMP01_Server();
+#endif
 
 //IWDG_Feed();								//∂¿¡¢ø¥√≈π∑Œππ∑
 
