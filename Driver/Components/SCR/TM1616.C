@@ -24,6 +24,16 @@ void TM1616_Initialize(TM1616Def *Pinfo)
 	GPIO_Configuration_OPP50	(Pinfo->STB_PORT,		Pinfo->STB_Pin);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 }
 /*******************************************************************************
+*函数名			:	function
+*功能描述		:	函数功能说明
+*输入				: 
+*返回值			:	无
+*******************************************************************************/
+void TM1616_Delay(u16 time)
+{
+	while(time--);
+}
+/*******************************************************************************
 *函数名			:	TM1616_Display
 *功能描述		:	4位数显示
 *输入				: 
@@ -36,6 +46,8 @@ void TM1616_Display(TM1616Def *Pinfo,u16 Data)
 
 	Pinfo->STB_PORT->BRR = Pinfo->STB_Pin;		//stb=0;
 	
+	TM1616_Delay(2);
+	
 	TM1616_WriteByte(Pinfo,0xC0);    //设置起始地址
 	
 	TM1616_WriteByte(Pinfo,TM1616_SegCode[(Data/1000)%10]);
@@ -46,7 +58,8 @@ void TM1616_Display(TM1616Def *Pinfo,u16 Data)
 	TM1616_WriteByte(Pinfo,0x00);
 	TM1616_WriteByte(Pinfo,TM1616_SegCode[Data%10]);
 	TM1616_WriteByte(Pinfo,0x00);
-
+	
+	TM1616_Delay(2);
 	Pinfo->STB_PORT->BSRR = Pinfo->STB_Pin;		//stb=1;
 	
 	TM1616_WriteCommand(Pinfo,0x8D);		//亮度命令	
@@ -63,6 +76,7 @@ static void TM1616_WriteByte(TM1616Def *Pinfo,unsigned char byted)
 	for(i=0;i<8;i++)
 	{
 		GPIO_ResetBits(Pinfo->CLK_PORT, Pinfo->CLK_Pin);
+		TM1616_Delay(2);
 		if((byted&0x01)==0x01)						 //确认最低位数，从低位开始写入
 		{
 			Pinfo->DIO_PORT->BSRR = Pinfo->DIO_Pin;		//dio=1;
@@ -71,7 +85,9 @@ static void TM1616_WriteByte(TM1616Def *Pinfo,unsigned char byted)
 		{
 			Pinfo->DIO_PORT->BRR = Pinfo->DIO_Pin;		//dio=0;
 		}
+		TM1616_Delay(2);
 		GPIO_SetBits(Pinfo->CLK_PORT, Pinfo->CLK_Pin);
+		//TM1616_Delay(1);
 		byted=byted>>1;							 //右移一位		
 	}
 }
@@ -84,7 +100,9 @@ static void TM1616_WriteByte(TM1616Def *Pinfo,unsigned char byted)
 static void TM1616_WriteCommand(TM1616Def *Pinfo,unsigned char command)
 {
 	Pinfo->STB_PORT->BRR = Pinfo->STB_Pin;		//stb=0;
+	TM1616_Delay(1);
 	TM1616_WriteByte(Pinfo,command);
+	TM1616_Delay(1);
 	Pinfo->STB_PORT->BSRR = Pinfo->STB_Pin;		//stb=1;
 }
 

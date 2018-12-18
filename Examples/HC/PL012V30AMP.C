@@ -13,9 +13,9 @@
 //* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 //*******************************************************************************/
 
-#ifdef PL012V30				//拆零柜LCD板
+#ifdef PL012V30AMP				//拆零柜LCD板
 
-#include "PL012V30.H"
+#include "PL012V30AMP.H"
 
 #include "LCD.H"
 
@@ -26,6 +26,7 @@
 #include "STM32_WDG.H"
 #include "STM32_PWM.H"
 #include "STM32_USART.H"
+#include	"AMP_PHY.H"
 
 
 #include "SWITCHID.H"
@@ -53,7 +54,7 @@ unsigned char	TimeStr[]=__TIME__;
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL012V30_Configuration(void)
+void PL012V30AMP_Configuration(void)
 {
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H
 	
@@ -96,7 +97,7 @@ void PL012V30_Configuration(void)
 * 输出		:
 * 返回 		:
 *******************************************************************************/
-void PL012V30_Server(void)
+void PL012V30AMP_Server(void)
 {	
 	u16 Num=0;
 	IWDG_Feed();								//独立看门狗喂狗
@@ -205,15 +206,28 @@ void RS485_Server(void)
 	RxNum=RS485_ReadBufferIDLE(&RS485,RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
-//		RxNum	=	200;
-//		memset(RxdBuffe,0x00,200);
-//		LCD_Show(0,100,32,RxNum,RxdBuffe);
-//		LCD_Clean(LCD565_BLACK);	//清除屏幕函数
-//		LCD_Fill(0,16,399,31,LCD565_GBLUE);
+		unsigned	short	coler	=	0;
+		unsigned	char*	addr	=	NULL;
+		
 		LCD_Fill(0,16,399,32,sLCD.Data.BColor);
 		LCD_ShowHex(0,16,16,LCD565_RED,RxNum,8,RxdBuffe);                //显示十六进制数据
-		LCD_Show(0,100,32,LCD565_RED,RxNum,RxdBuffe);
-//		PWM_OUT(TIM3,PWM_OUTChannel3,500,800);		//PWM设定-20161127版本--背光
+		addr	=	getheadaddr(RxdBuffe,RxNum);
+		if(NULL==addr)
+			return;
+		coler	=	RxdBuffe[8]>>5;
+		coler<<=5;
+		coler|=RxdBuffe[9]>>5;
+		coler<<=6;
+		coler|=RxdBuffe[10]>>5;
+		
+		if(0	==	RxdBuffe[7])
+		{
+			LCD_Fill(0,64,399,160,coler);
+		}
+		else
+		{
+			LCD_Fill(0,64,399,160,LCD565_RED);
+		}
 	}
 #else
 	RxNum=RS485_ReadBufferIDLE(&RS485,(u32*)RevBuffe,(u32*)RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer

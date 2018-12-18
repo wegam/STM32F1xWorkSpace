@@ -397,6 +397,10 @@ void WOW_Configuration(void)
 #ifdef PL012V30
 	PL012V30_Configuration();
 #endif
+//*********************************PL012V30AMP*********************************//
+#ifdef PL012V30AMP
+	PL012V30AMP_Configuration();
+#endif
 
 //*********************************PL013V10*********************************//
 #ifdef PL013V10
@@ -895,6 +899,12 @@ void WOW_Server(void)
 #ifdef PL012V30
 	PL012V30_Server();
 #endif
+
+//*********************************PL012V30AMP*********************************//
+#ifdef PL012V30AMP
+	PL012V30AMP_Server();
+#endif
+
 //*********************************PL013V10*********************************//
 #ifdef PL013V10
 	PL013V10_Server();

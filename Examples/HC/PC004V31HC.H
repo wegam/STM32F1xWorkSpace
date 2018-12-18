@@ -85,7 +85,7 @@
 void PC004V31HC_Configuration(void);
 void PC004V31HC_Server(void);
 
-
+void AMPTEST(void);
 
 
 void Communiction_Configuration(void);			//通讯接口配置：包含RS485,RS232,CAN

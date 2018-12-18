@@ -31,6 +31,8 @@ unsigned short time	=	0;
 unsigned char RS485BufferU[1024]={0};		//与上层通讯相关数据缓存
 unsigned char RS485BufferD[1024]={0};		//与下层通讯相关数据缓存
 unsigned char TestBuffer[]={0x7E,0x01,0x00,0x05,0x04,0x0D,0x06,0x01,0x02,0x01,0x00,0x00,0x00,0x09,0x7F};
+unsigned char OpenLed[14]={0x7E,0x09,0x03,0x01,0x01,0x00,0x01,0x01,0xFF,0X00,0XFF,0x81,0x5F,0x7F};  //Address1中控制输出端口1以LED驱动的方式打开
+unsigned char ClosLed[14]={0x7E,0x09,0x03,0x01,0x01,0x00,0x01,0x00,0x00,0XFF,0XFF,0x40,0x9F,0x7F};  //Address1中控制输出端口1以LED驱动的方式关闭
 /*******************************************************************************
 * 函数名		:	
 * 功能描述	:	 
@@ -127,6 +129,8 @@ void PC004V31HC_Server(void)
 		}
 	} 
 	PC004Test:
+	AMPTEST();
+	return;
 	if(time++>500)
 	{
 		time	=	0;
@@ -144,6 +148,35 @@ void PC004V31HC_Server(void)
 //		RS485_DMASend(&gRS485Bus,RS485BufferD,length);	//RS485-DMA发送程序
 //		USART_DMASendList(USART1,RS485BufferD,length);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
 //	}
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void AMPTEST(void)
+{
+	unsigned	short	crc=0;
+	if(time++>2000)
+		time	=	0;
+	RS485_ReadBufferIDLE(&gRS485Bus,RS485BufferU);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
+	if(time==	0)
+	{
+		crc	=	CRC16_MODBUS(&OpenLed[1],10);
+		memcpy(&OpenLed[11],&crc,2);
+		RS485_DMASend(&gRS485Bus,OpenLed,sizeof(OpenLed));	//RS485-DMA发送程序
+	}
+	else if(1000==time)
+	{
+		crc	=	CRC16_MODBUS(&ClosLed[1],10);
+		memcpy(&ClosLed[11],&crc,2);
+		RS485_DMASend(&gRS485Bus,ClosLed,sizeof(ClosLed));	//RS485-DMA发送程序
+	}
+//	OpenLed
 }
 /*******************************************************************************
 * 函数名			:	Communiction_Configuration

@@ -279,6 +279,11 @@ void WOW_Configuration(void)
 	AMP01_Configuration();
 #endif
 
+//*********************************TLE5012B*********************************//
+#ifdef TLE5012B
+	TLE5012B_Configuration();
+#endif
+
 
 }
 
@@ -552,6 +557,12 @@ void WOW_Server(void)
 #ifdef AMP01
 	AMP01_Server();
 #endif
+
+//*********************************TLE5012B*********************************//
+#ifdef TLE5012B
+	TLE5012B_Server();
+#endif
+
 
 //IWDG_Feed();								//∂¿¡¢ø¥√≈π∑Œππ∑
 

@@ -41,7 +41,14 @@ typedef struct _stampcrc16
   unsigned char crcl;
   unsigned char crch;
 }stampcrc16def;
-
+typedef struct _stmsg
+{
+  unsigned char length;
+  eucmddef 			cmd;
+	eusubcmddef		subcmd;
+	stampaddrdef	addr;
+	unsigned char buffer[128];
+}stmsgdef;
 typedef struct _stampphy
 {
   unsigned char head;
@@ -54,6 +61,7 @@ typedef struct _stampphy
 
 unsigned char* getheadaddr(unsigned char* pbuffer,unsigned short length);
 unsigned char crccheck(unsigned char* pbuffer,unsigned short length);
+unsigned short PaketMsg(unsigned	char* pbuffer,unsigned	short length);
   
 
 #endif

@@ -45,7 +45,7 @@ void MCO_Initialize(void)
 	//RCC_MCO_HSI --- 输出内部高速8MHz的RC振荡器的时钟（HSI） 
 	//RCC_MCO_HSE --- 输出高速外部时钟信号（HSE） 
 	//RCC_MCO_PLLCLK_Div2 --- 输出PLL倍频后的二分频时钟（PLLCLK/2） 	
-	RCC_MCOConfig(RCC_MCO_SYSCLK); 
+	RCC_MCOConfig(RCC_MCO_HSE); 
 }
 
 

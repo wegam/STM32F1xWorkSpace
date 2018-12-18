@@ -10,6 +10,7 @@
 #include	"stdbool.h"
 unsigned  short crc16;
 stampphydef* phy  = NULL;
+unsigned	char AmpBaket[maxmsgsize]={0};
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -88,6 +89,19 @@ unsigned char crccheck(unsigned char* pbuffer,unsigned short length)
     return 1;
   }
   return 0;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned	short PaketMsg(unsigned	char* pbuffer,unsigned	short length)
+{
+
 }
 /*******************************************************************************
 *函数名			:	function
