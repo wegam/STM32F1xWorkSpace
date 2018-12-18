@@ -211,6 +211,7 @@ extern LCDDef *LCDSYS;			//内部驱动使用，不可删除
 #define LCD565_LGRAY 			0XC618 	//浅灰色(PANNEL),窗体背景色
 #define LCD565_LGRAYBLUE 	0XA651 	//浅灰蓝色(中间层颜色)
 #define LCD565_LBBLUE    	0X2B12 	//浅棕蓝色(选择条目的反色)
+#define LCD565_UNKNOW    	0X2B20 	//测试颜色
 
 
 //======================================外部接口

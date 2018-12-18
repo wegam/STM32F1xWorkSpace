@@ -92,8 +92,11 @@ unsigned	char	sysledflag=0;
 unsigned	short	Ratio	=	0;
 
 unsigned char txflg = 0;
-unsigned char OpenLed[11]={0x7E,0x06,0x03,0x01,0x01,0x00,0x01,0x01,0x81,0x5F,0x7F};  //Address1中控制输出端口1以LED驱动的方式打开
-unsigned char ClosLed[11]={0x7E,0x06,0x03,0x01,0x01,0x00,0x01,0x00,0x40,0x9F,0x7F};  //Address1中控制输出端口1以LED驱动的方式关闭
+//unsigned char OpenLed[]={0x7E,0x09,0x03,0x01,0x01,0x01,0x01,0x01,0xB0,0x2C,0x6D,0x84,0xF3,0x7F};  //Address1中控制输出端口1以LED驱动的方式打开
+//unsigned char ClosLed[]={0x7E,0x09,0x03,0x01,0x01,0x01,0x01,0x00,0x4D,0x13,0x30,0xC4,0xF6,0x7F};  //Address1中控制输出端口1以LED驱动的方式关闭
+
+unsigned char OpenLed[]={0x7E,0x09,0x03,0x01,0x01,0x01,0x01,0x01,0x57,0x29,0x51,0x84,0xF3,0x7F};  //Address1中控制输出端口1以LED驱动的方式打开
+unsigned char ClosLed[]={0x7E,0x09,0x03,0x01,0x01,0x01,0x01,0x00,0x00,0x00,0x00,0xC4,0xF6,0x7F};  //Address1中控制输出端口1以LED驱动的方式关闭
 
  u16 year; 
  u8 month;
@@ -133,8 +136,8 @@ void AMPTest_Configuration(void)
 //    year,month,day,hour,minute,second);  //后边的省略号就是可变参数
   
   
-  USART_DMA_ConfigurationNR	(USART1,115200,ussize);	//USART_DMA配置--查询方式，不开中断
-  USART_DMA_ConfigurationNR	(USART3,115200,ussize);	//USART_DMA配置--查询方式，不开中断
+  USART_DMA_ConfigurationNR	(USART1,19200,ussize);	//USART_DMA配置--查询方式，不开中断
+  USART_DMA_ConfigurationNR	(USART3,19200,ussize);	//USART_DMA配置--查询方式，不开中断
   
 	PWM_OUT(TIM2,PWM_OUTChannel1,500,300);						//PWM设定-20161127版本
 
@@ -170,7 +173,7 @@ void USART_TEST(void)
   static  unsigned  short serial  = 0;
   static  unsigned  short testtime  = 0;
   
-  if(testtime++>500)
+  if(testtime++>1000)
   {
     unsigned  short crc16 = 0;
     testtime  = 0;
@@ -179,16 +182,16 @@ void USART_TEST(void)
     if(0  !=  txflg)  //开LED
     {
       txflg = 0;
-      crc16 = CRC16_MODBUS(&OpenLed[1],7);
-      memcpy(&OpenLed[8],&crc16,2);
-      USART_DMASend(USART3,OpenLed,11);
+      crc16 = CRC16_MODBUS(&OpenLed[1],10);
+      memcpy(&OpenLed[11],&crc16,2);
+      USART_DMASend(USART3,OpenLed,sizeof(OpenLed));
     }
     else  //关LED
     {
       txflg = 1;
-      crc16 = CRC16_MODBUS(&ClosLed[1],7);
-      memcpy(&ClosLed[8],&crc16,2);
-      USART_DMASend(USART3,ClosLed,11);
+      crc16 = CRC16_MODBUS(&ClosLed[1],10);
+      memcpy(&ClosLed[11],&crc16,2);
+      USART_DMASend(USART3,ClosLed,sizeof(ClosLed));
     }
   }
 

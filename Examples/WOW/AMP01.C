@@ -108,17 +108,17 @@ void USART_Server(void)
 void COMM_Configuration(void)
 {
   unsigned short RxNum  = 0;
-  USART_DMA_ConfigurationNR	(USART1,115200,ussize);	//USART_DMA配置--查询方式，不开中断
+  USART_DMA_ConfigurationNR	(USART1,19200,ussize);	//USART_DMA配置--查询方式，不开中断
 
   //-----------------------------总线接口485
   stRS485BS.USARTx  = USART2;
   stRS485BS.RS485_CTL_PORT  = GPIOA;
   stRS485BS.RS485_CTL_Pin   = GPIO_Pin_1;
-  RS485_DMA_ConfigurationNR			(&stRS485BS,115200,ussize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+  RS485_DMA_ConfigurationNR			(&stRS485BS,19200,ussize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
   //-----------------------------从机接口485
   stRS485SL.USARTx  = UART4;
   stRS485SL.RS485_CTL_PORT  = GPIOC;
   stRS485SL.RS485_CTL_Pin   = GPIO_Pin_12;
-  RS485_DMA_ConfigurationNR			(&stRS485SL,115200,ussize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+  RS485_DMA_ConfigurationNR			(&stRS485SL,19200,ussize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 #endif

@@ -279,6 +279,12 @@ void WOW_Configuration(void)
 	AMP01_Configuration();
 #endif
 
+
+//*********************************AMPLED02V13*********************************//
+#ifdef AMPLED02V13
+	AMPLED02_Configuration();
+#endif
+
 //*********************************TLE5012B*********************************//
 #ifdef TLE5012B
 	TLE5012B_Configuration();
@@ -558,6 +564,10 @@ void WOW_Server(void)
 	AMP01_Server();
 #endif
 
+//*********************************AMPLED02V13*********************************//
+#ifdef AMPLED02V13
+	AMPLED02_Server();
+#endif
 //*********************************TLE5012B*********************************//
 #ifdef TLE5012B
 	TLE5012B_Server();
