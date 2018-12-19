@@ -106,6 +106,8 @@ unsigned char ClosLed[]={0x7E,0x09,0x03,0x01,0x01,0x01,0x01,0x00,0x00,0x00,0x00,
  u8 second;
 u16 millisecond=0;
 
+unsigned short crc16mbs = 0;
+
 void GetTime(void);
 void ClockServer(void);
 void SYSLED(void);
@@ -158,7 +160,7 @@ void AMPTest_Server(void)
 //  ClockServer();
   RTC_Server();
   USART_Server();
-  USART_TEST();
+  //USART_TEST();
 }
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->º¯ÊýÃû		:	
@@ -252,6 +254,11 @@ void USART_Server(void)
   if(RxNum)
   {
     memcpy(u3txbuffer,u1rxbuffer,RxNum);
+    
+    crc16mbs  = CRC16_MODBUS(&u3txbuffer[1],u3txbuffer[1]+1);
+    
+    memcpy(&u3txbuffer[u3txbuffer[1]+2],&crc16mbs,2);
+    
     USART_DMASend(USART3,u3txbuffer,RxNum);
     LCD_ShowHex(0,u1dsp,16,u1dspcolr,RxNum,8,u3txbuffer);
     u1dsp+=16;

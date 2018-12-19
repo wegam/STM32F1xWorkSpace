@@ -46,7 +46,6 @@ typedef struct _stmsg
 {
   unsigned char length;   //不包含此位
   stcmddef 			cmd;
-	unsigned char subcmd;
 	stampaddrdef	addr;
 	unsigned char data[128];
 }stmsgdef;

@@ -55,6 +55,7 @@ char tep[1]={'A'};
 unsigned char Version[]="PL012V3.0 RF智能耗材管理柜";
 unsigned char DataStr[]=__DATE__;
 unsigned char	TimeStr[]=__TIME__;
+unsigned char testbuff[16]={0x7F,0x07,0x02,0x01,0x01,0x02,0xFF,0x00,0x00,0x00,0x00,0x7F};
 //SWITCHID_CONF	SWITCHID;
 //u8 SwitchID=0;	//拔码开关地址
 
@@ -194,6 +195,8 @@ void RS485_Server(void)
 	RxNum=RS485_ReadBufferIDLE(&RS485,RxdBuffe);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(RxNum)
 	{
+    LCD_ShowHex(0,16,16,LCD565_RED,RxNum,8,RxdBuffe);                //显示十六进制数据
+    
     memcpy(msgBuffe,RxdBuffe,RxNum);
     msg_Process(msgBuffe,RxNum);		
 	}
@@ -214,37 +217,75 @@ void msg_Process(unsigned char* pBuffer,unsigned short length)
   unsigned  char result  = 0;
   unsigned  short R,G,B;  
   stampphydef* ampframe=NULL;
-  stcmddef*    cmd  = NULL;
+  stcmddef*    cmd;
+  
+  LCD_Printf(0,32,16,LCD565_RED,"开始校验");                //显示十六进制数据
+  
   framlength	=	getframe(pBuffer,&length);
   if(0== framlength)
+  {
+    LCD_Printf(0,32,16,LCD565_RED,"协议出错");                //显示十六进制数据
     return;
+  }
   result  = addr2check(pBuffer,AddrLy);   //层地址检查
   if(0==result)
+  {
+    LCD_Printf(0,32,16,LCD565_RED,"层号出错");                //显示十六进制数据
     return;
+  }
   result  = addr3check(pBuffer,AddrSc);   //位地址检查
   if(0==result)
+  {
+    LCD_Printf(0,32,16,LCD565_RED,"位号出错");                //显示十六进制数据
     return;
+  }
 
-  LCD_ShowHex(0,16,16,LCD565_RED,length,8,pBuffer);                //显示十六进制数据  
+   
+  LCD_Printf(0,32,16,LCD565_RED,"校验通过");                //显示十六进制数据
   
   ampframe  = (stampphydef*)pBuffer;
   cmd = &ampframe->msg.cmd;
   
-  if(0  !=  cmd->dir)
+  if(0  !=  cmd->dir) //方向
+  {
+    LCD_Printf(0,32,16,LCD565_RED,"方向出错");                //显示十六进制数据
     return;
+  }
   if(0  ==  cmd->rw)  //写
   {
-    if(cmd->cmd == 3) //控制命令
+    if(((unsigned char)cmd->cmd&0x3F) == 2) //LED控制命令
     {
-      if(ampframe->msg.subcmd ==  1)
+      if(ampframe->msg.data[0])   //红灯
       {
-        if(0  ==  pBuffer[7])
-          LEDOFF();
-        else
-          LEDON();
+        LCD_Fill(10,60,40,90,LCD565_RED);
+      }
+      else
+      {
+        LCD_Fill(10,60,40,90,LCD565_BLACK);
+      }
+      if(ampframe->msg.data[1])   //黄灯/绿灯
+      {
+        LCD_Fill(50,60,80,90,LCD565_GREEN);
+      }
+      else
+      {
+        LCD_Fill(50,60,80,90,LCD565_BLACK);
+      }
+      if(ampframe->msg.data[2])   //蓝灯
+      {
+        LCD_Fill(90,60,120,90,LCD565_LBBLUE);
+      }
+      else
+      {
+        LCD_Fill(90,60,120,90,LCD565_BLACK);
       }
     }
-    ackFrame();   
+    else
+    {
+      LCD_Printf(0,32,16,LCD565_RED,"命令出错");                //显示十六进制数据
+    }
+    if(0xFF !=  ampframe->msg.addr.address3)
+      ackFrame();   
   }
   return;  
 }
