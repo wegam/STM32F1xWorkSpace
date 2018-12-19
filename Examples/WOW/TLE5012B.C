@@ -47,6 +47,7 @@ unsigned	short	Speed	=	0;
 unsigned	short time	=	0;
 unsigned	short dstime	=	0;
 unsigned  short seril	=	0;
+unsigned	short readdelay	=	0;
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
 //->功能描述	:	 
@@ -77,11 +78,22 @@ void TLE5012B_Configuration(void)
 	SysTick_DeleymS(1000);				//SysTick延时nmS
 	for(time=0;time<20;time++)
 	organgle	=	ReadAngle();
+	angle1	=	organgle;
+	angle2	=	organgle;
 	SysTick_DeleymS(200);				//SysTick延时nmS
   SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS
+	
+//	cwflg	=	1;
+	
 	while(1)
 	{
 		MOTORT();
+		SetOrig();
+		if(anglecount>=350)
+		{
+//			MSTP();
+			cwflg	=	0;
+		}		
 	}
 }
 
@@ -94,6 +106,7 @@ void TLE5012B_Configuration(void)
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 void TLE5012B_Server(void)
 {
+	
 	if(time++>8000)
 	{		
 		time	=	0;
@@ -106,21 +119,22 @@ void TLE5012B_Server(void)
 		angle2	=	angle1;
 		
 		cwflg	=	1;
-//		anglecount	=	0;
+		anglecount	=	0;
 	}
-	else if(4000	==	time)
+	else if(3000	==	time)
 	{
 		
 		angle1	=	ReadAngle();
 		angle1	=	ReadAngle();
 		angle2	=	angle1;
 		
-		cwflg	=	1;
-//		anglecount	=	0;
+		cwflg	=	2;
+		anglecount	=	0;
 	}
-	else if(8000<time)
+	else if(6000<time)
 	{
 		cwflg	=	0;
+		anglecount	=	0;
 	}
 	if(dstime++>100)
 	{
@@ -130,7 +144,10 @@ void TLE5012B_Server(void)
 //		if(cmpgangle<0)
 //			cmpgangle=0-cmpgangle;
 //		TM1616_Display(&Seg2,anglecount);
-		displaycount(anglecount);
+		
+//		displaycount(anglecount);
+		TM1616_Display(&Seg1,angle1);
+		TM1616_Display(&Seg2,anglecount);
 	}
 }
 /*******************************************************************************
@@ -144,102 +161,102 @@ void TLE5012B_Server(void)
 *******************************************************************************/
 void MOTORT(void)
 {	
-	if(0==cwflg)
+	if(0==cwflg)	//增量：angle2>angle1
 	{
-//		MSTP();
-//		return;
+		return;
 	}
-	angle2	=	ReadAngle();
-	if(angle2>angle1)
+	if(readdelay++<2)
 	{
-		if(angle2-angle1>350)
-		{
+		return;
+	}
+	readdelay	=	0;
+	angle2	=	ReadAngle();
+	
+//	if(angle1	==	angle2)
+//		return;
+	if(1==cwflg)	//增量：angle2>angle1
+	{	
+		
+		if(angle2-angle1>120)
 			anglecount+=360-angle2+angle1;
-		}
-		else if((angle2-angle1>1))
+		else if(angle2>angle1)
+			anglecount+=angle2-angle1;
+		else if(anglecount>0)
 		{
-			anglecount	+=	(angle2-angle1);
+			if(angle1-angle2>120)
+				anglecount-=360-angle1+angle2;
+			else
+				anglecount-=angle1-angle2;
 		}
+	}
+	else if(2==cwflg)	//减量
+	{
+		if(angle1-angle2>120)
+			anglecount+=360-angle1+angle2;
+		else if(angle1>angle2)
+			anglecount+=angle1-angle2;
+		else if(anglecount>0)
+		{
+			if(angle2-angle1>120)
+				anglecount-=360-angle2+angle1;
+			else
+				anglecount-=angle2-angle1;
+		}
+	}	
+	angle1	=	angle2;
+	if(1	==	cwflg)
+		MCW();
+	else if(2	==	cwflg)
+		MCCW();
+	else
+		MSTP();
+	
+	return;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void SetOrig(void)
+{
+//	unsigned	short ccmp	=	0;
+	if(0!=cwflg)
+		return;
+//	angle1	=	ReadAngle();
+	
+//	if(5<angle1&&angle1<=180)
+//	{
+//		MCCW();
+//	}
+//	else if(180<angle1&&angle1<=355)
+//	{
+//		MCW();
+//	}
+//	else
+//	{
+//			MSTP();
+//	}
+//	return;
+	
+	angle1	=	ReadAngle();
+	if((angle1>organgle)&&(angle1-organgle>10))
+	{
+		MCCW();
+	}
+	else if((angle1<organgle)&&(organgle-angle1>10))
+	{
+		MCW();
 	}
 	else
 	{
-		if(angle1-angle2>350)
-		{
-			anglecount+=360-angle1+angle2;
-		}
-		else if((angle1-angle2>1))
-		{
-			anglecount	+=	(angle1-angle2);
-		}
+		MSTP();
 	}
-	if(angle1	!=	angle2)
-	angle1	=	angle2;
 
-	MCW();
-	
-//	if(cwflg==1)		//正转
-//	{		
-//		if(anglecount>320)
-//		{
-//			cwflg		=	0;
-//			runflg	=	0;
-//			MSTP();
-//			return;
-//		}
-//		else
-//		{
-//			MCW();
-//		}
-//	}
-//	else if(cwflg==2)	//反转
-//	{
-//		if(anglecount>320)
-//		{
-//			cwflg		=	0;
-//			runflg	=	0;
-//			MSTP();
-//			return;
-//		}
-//		else
-//		{
-//			MCCW();
-//		}
-//	}
-
-//	else
-//	{
-////	cmpgangle	=	angle2-organgle;
-////	if((angle2>-30)&&(cmpgangle<30))
-////	{
-////		MSTP();
-////	}
-////	else if(cmpgangle<-30)
-////	{
-////		MCW();
-////	}
-////	else
-////	{
-////		MCCW();
-////	}
-////	return;
-////		if(organgle>angle2)
-////			temp	=	organgle-angle2;
-////		else
-////			temp	=	angle2-organgle;
-//		
-//		if(angle2<40||angle2>320)
-//		{
-//			MSTP();
-//		}
-//		else if((angle2<=320)&&(angle2>180))
-//		{
-//			MCW();
-//		}
-//		else
-//		{
-//			MCCW();
-//		}
-//	}
 }
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
@@ -432,7 +449,7 @@ void SPI5012B_Init(void)
 	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
 	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
 	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
 	SPI_InitStructure.SPI_CRCPolynomial = 7;
 	

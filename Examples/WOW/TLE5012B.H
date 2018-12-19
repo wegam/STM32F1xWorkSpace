@@ -65,6 +65,7 @@
 extern void TLE5012B_Configuration(void);
 extern void TLE5012B_Server(void);
 void MOTORT(void);
+void SetOrig(void);
 void USART_Server(void);
 
 void hw_configuration(void);
