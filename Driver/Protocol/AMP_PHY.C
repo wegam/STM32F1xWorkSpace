@@ -137,6 +137,85 @@ unsigned char crccheck(unsigned char* pframe,unsigned short* length)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
+unsigned short SetCrc(unsigned char* pframe,unsigned short* length)
+{  
+  unsigned short msglen = 0;    //消息段长度
+  unsigned short crclen = 0;    //要参与CRC计数的字节数
+  unsigned short crc16 = 0;     //计算的CRC16
+  
+  stampphydef* ampframe;
+  
+  ampframe  = (stampphydef*)pframe;
+  msglen  = ampframe->msg.length;
+  crclen  = msglen+1;   //msg.length需要参与CRC计算
+  crc16 = CRC16_MODBUS(&ampframe->msg.length,crclen);
+  memcpy(&ampframe->msg.data[crclen],&crc16,2);       //复制CRC数据
+  ampframe->msg.data[crclen+2]  = endcode;      //增加结束符
+  return *length;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned	short PaketMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length)
+{
+  unsigned  short framlength  = 0;  //msg段数据长度：1字节命令+3字节地址
+  unsigned  char* temp  = NULL;
+  stcmddef*  Cmd = NULL;
+  stampphydef ampframe;
+  
+  framlength  = *length+4;  //msg段数据长度：1字节命令+3字节地址
+  temp  = (unsigned  char*)&ampframe.msg.cmd;   //设置命令
+  *temp = cmd;
+  
+  ampframe.head = headcode;
+  ampframe.msg.length = framlength;           //设置msg段长度
+  memcpy(ampframe.msg.data,pbuffer,*length);  //复制数据
+  
+  framlength  = framlength+5;   //完整帧长度，head,length,crc16,end为5个字节
+  
+  memcpy(pbuffer,&ampframe,framlength);   //更新pbuffer内容
+  *length = framlength;   //打包完成后的消息长度
+  return framlength;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	检查是否为应答消息,应答消息返回1
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned char ackcheck(unsigned char* pframe)
+{ 
+  unsigned  char* temp  = NULL;
+  eucmddef* CMD=NULL;
+  if(NULL ==  pframe)
+    return  0;
+  phy = (stampphydef*)pframe;
+  temp = (unsigned  char*)&phy->msg.cmd;
+  *temp&=0x3F;            //去掉高2位
+  CMD = (eucmddef*)temp;
+  
+  if(ACK  ==  *CMD)
+    return  1;        //应答消息
+  return 0;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	检查address1地址
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 unsigned char addr1check(unsigned char* pframe,unsigned char addr1)
 { 
   unsigned addrck=0;
@@ -150,7 +229,7 @@ unsigned char addr1check(unsigned char* pframe,unsigned char addr1)
 }
 /*******************************************************************************
 *函数名			:	function
-*功能描述		:	function
+*功能描述		:	检查address2地址
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -170,7 +249,7 @@ unsigned char addr2check(unsigned char* pframe,unsigned char addr2)
 }
 /*******************************************************************************
 *函数名			:	function
-*功能描述		:	function
+*功能描述		:	检查address3地址
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -188,19 +267,7 @@ unsigned char addr3check(unsigned char* pframe,unsigned char addr3)
     return  1;
   return 0;
 }
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-unsigned	short PaketMsg(unsigned	char* pbuffer,unsigned	short length)
-{
 
-}
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function

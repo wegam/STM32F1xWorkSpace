@@ -272,7 +272,9 @@ void USART_Server(void)
       {
         u1dspcolr = LCD565_BLUE;
       }
+      LCD_Fill(0,32,399,480,sLCD.Data.BColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
       u1dsp=32;
+      u3dsp=32;
     }
   }
   RxNum = USART_ReadBufferIDLE(USART3,u3rxbuffer);
@@ -292,6 +294,7 @@ void USART_Server(void)
       {
         u3dspcolr = LCD565_BLUE;
       }
+      LCD_Fill(400,32,800,480,sLCD.Data.BColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
       u3dsp=32;
     }
   }
@@ -353,6 +356,8 @@ void RTC_Server(void)
         RTC_Set(year,month,day,hour,minute,second+9);   //编译下载时间会慢7秒
       }
     }
+//    if(0==calendar.sec)
+//      LCD_Clean(sLCD.Data.BColor);	//清除屏幕函数
     sec=calendar.sec;
     LCD_Printf(0,0,32,LCD565_BLACK,"RTC时钟:%0.4d年%0.2d月%0.2d日%0.2d时%0.2d分%0.2d秒",
     calendar.w_year,calendar.w_month,calendar.w_date,calendar.hour,calendar.min,calendar.sec);

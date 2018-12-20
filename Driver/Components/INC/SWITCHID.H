@@ -106,7 +106,8 @@ typedef struct _SwitchConf
 
 
 void SwitchIdInitialize(SwitchDef *pSwitch);					//
-unsigned short SWITCHID_Read(SwitchDef *pSwitch);			//
+unsigned short SWITCHID_ReadRight(SwitchDef *pSwitch);	  //按拨码最右边为最高位读取ID
+unsigned short SWITCHID_ReadLeft(SwitchDef *pSwitch);			//按拨码最左边为最高位读取ID
 
 
 #endif

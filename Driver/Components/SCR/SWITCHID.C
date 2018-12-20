@@ -101,14 +101,18 @@ void SwitchIdInitialize(SwitchDef *pSwitch)
 		GPIO_Configuration_IPU	(pSwitch->SW16_PORT,	pSwitch->SW16_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
 		NumOfSW-=1;
 	}
-	SWITCHID_Read(pSwitch);
+	SWITCHID_ReadRight(pSwitch);
 }
-/****************************************************************
-*函数名:
-*描述:
-*
-******************************************************************/
-unsigned short SWITCHID_Read(SwitchDef *pSwitch)
+/*******************************************************************************
+*函数名			:	SWITCHID_Read
+*功能描述		:	按拨码最右边为最高位读取ID
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short SWITCHID_ReadRight(SwitchDef *pSwitch)
 {
 	unsigned short	reValue=0;	
 	
@@ -213,6 +217,128 @@ unsigned short SWITCHID_Read(SwitchDef *pSwitch)
 		NumOfSW-=1;
 		if(pSwitch->SW16_PORT-> IDR	&pSwitch->SW16_Pin)
 			reValue|=0x0001<<15;
+	}
+	reValue	|=	Temp;
+	reValue=~reValue;		//拔码开关低有效,需要取反
+	*P=reValue;
+	pSwitch->nSWITCHID=reValue;
+	
+	return	reValue;	//将数据返回(如果需要直接获取读取值可以使用返回值)
+}
+/*******************************************************************************
+*函数名			:	SWITCHID_ReadLeft
+*功能描述		:	按拨码最左边为最高位读取ID
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short SWITCHID_ReadLeft(SwitchDef *pSwitch)
+{
+  	unsigned short	reValue=0;	
+	
+	unsigned long *P=(unsigned long*)&(pSwitch->SWData);		//获取数据结构体地址,以便将读取的数据保存	
+	unsigned char NumOfSW=pSwitch->NumOfSW;		//接入的拔码开关位数
+
+	unsigned short	Temp	=	0xFFFF<<NumOfSW;
+	
+	//根据接入的拔码开关位数从低位到高位进行读取
+	if(NumOfSW)	//SW1
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW1_PORT-> IDR	&pSwitch->SW1_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW2
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW2_PORT-> IDR	&pSwitch->SW2_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW3
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW3_PORT-> IDR	&pSwitch->SW3_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW4
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW4_PORT-> IDR	&pSwitch->SW4_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW5
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW5_PORT-> IDR	&pSwitch->SW5_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW6
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW6_PORT-> IDR	&pSwitch->SW6_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW7
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW7_PORT-> IDR	&pSwitch->SW7_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW8
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW8_PORT-> IDR	&pSwitch->SW8_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW9
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW9_PORT-> IDR	&pSwitch->SW9_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW10
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW10_PORT-> IDR	&pSwitch->SW10_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW11
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW11_PORT-> IDR	&pSwitch->SW11_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW12
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW12_PORT-> IDR	&pSwitch->SW12_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW13
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW13_PORT-> IDR	&pSwitch->SW13_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW14
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW14_PORT-> IDR	&pSwitch->SW14_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW15
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW15_PORT-> IDR	&pSwitch->SW15_Pin)
+			reValue|=0x0001<<NumOfSW;
+	}
+	if(NumOfSW)	//SW16
+	{
+		NumOfSW-=1;
+		if(pSwitch->SW16_PORT-> IDR	&pSwitch->SW16_Pin)
+			reValue|=0x0001<<NumOfSW;
 	}
 	reValue	|=	Temp;
 	reValue=~reValue;		//拔码开关低有效,需要取反

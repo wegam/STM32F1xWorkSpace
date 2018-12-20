@@ -17,6 +17,8 @@
 
 #include "AMPLED02V13.H"
 
+#include	"AMP_PHY.H"
+
 #include "LCD.H"
 
 
@@ -26,7 +28,7 @@
 #include "STM32_WDG.H"
 #include "STM32_PWM.H"
 #include "STM32_USART.H"
-#include	"AMP_PHY.H"
+
 
 
 #include "SWITCHID.H"
@@ -221,7 +223,7 @@ void msg_Process(unsigned char* pBuffer,unsigned short length)
   
   LCD_Printf(0,32,16,LCD565_RED,"开始校验");                //显示十六进制数据
   
-  framlength	=	getframe(pBuffer,&length);
+  framlength	=	getframe(pBuffer,&length);    //判断帧消息内容是否符合协议
   if(0== framlength)
   {
     LCD_Printf(0,32,16,LCD565_RED,"协议出错");                //显示十六进制数据
