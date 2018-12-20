@@ -1,5 +1,5 @@
-#ifndef __PS005V10_H
-#define __PS005V10_H
+#ifndef __PS005V11_H
+#define __PS005V11_H
 
 
 
@@ -9,15 +9,15 @@
 //}PL010V15Def;
 
 
-void PS005V10_Configuration(void);
-void PS005V10_Server(void);
+void PS005V11_Configuration(void);
+void PS005V11_Server(void);
 
 
 void RS485_Server(void);		//通讯管理---负责信息的接收与发送
 void SensorServer(void);
 
 void HC595_Configuration(void);
-void HC595_Write(unsigned	char* Buffer,unsigned	char len);
+void LED_Write(void);
 
 void CD4051_Configuration(void);
 void CD4051_SetSensor(unsigned	char x,unsigned char y);

@@ -322,7 +322,18 @@ unsigned short SPI_DMASend(SPI_TypeDef* SPIx,unsigned char *tx_buffer,unsigned s
 //  spiTxBuff
   switch(*(u32*)&SPIx)
   {
-    case SPI2_BASE:
+    case SPI1_BASE:
+      if(   (DMA1_Channel3->CNDTR==0)										//通道空闲--已发完数据
+        ||( (DMA1_Channel3->CCR&0x00000001)==0))				//通道未开启
+        {
+          DMA1_Channel3->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel5,DISABLE);//DMA发送关闭，只能在DMA关闭情况下才可以写入CNDTR					
+          DMA1->IFCR = DMA1_FLAG_GL3;										//DMA_ClearFlag(DMA1_FLAG_TC5);	//清除标志						
+          DMA1_Channel3->CNDTR 	=BufferSize;					  //设定待发送缓冲区大小
+          DMA1_Channel3->CMAR 	=(u32)tx_buffer;			  //发送缓冲区
+          DMA1_Channel3->CCR |=(u32)0x00000001;			  //DMA_Cmd(DMA1_Channel5,ENABLE);//DMA发送开启3
+          return BufferSize;
+        }
+		case SPI2_BASE:
       if(   (DMA1_Channel5->CNDTR==0)										//通道空闲--已发完数据
         ||( (DMA1_Channel5->CCR&0x00000001)==0))				//通道未开启
         {
