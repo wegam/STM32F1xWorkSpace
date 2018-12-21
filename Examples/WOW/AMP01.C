@@ -28,8 +28,6 @@ SwitchDef stSwitch;
 
 stSysdef  AMP;
 
-
-
 unsigned  short seril=0;
 /*******************************************************************************
 *函数名			:	function
@@ -112,7 +110,7 @@ void USART_Server(void)
   RxNum = USART_ReadBufferIDLE(USART1,AMP.buffer.u1rx);
   if(RxNum)
   {
-    PCmsg_Process(AMP.buffer.u1rx,RxNum);                //PC消息处理
+    Cabinetmsg_Process(AMP.buffer.u1rx,RxNum);                //PC消息处理
   }
   //---------------------读卡器接口 USART3
   RxNum = USART_ReadBufferIDLE(USART3,AMP.buffer.u3rx);
@@ -131,30 +129,27 @@ void USART_Server(void)
   RxNum = RS485_ReadBufferIDLE(&stRS485Cb,AMP.buffer.u4rx);
   if(RxNum)
   {
-    memcpy(AMP.buffer.u1tx,AMP.buffer.u4rx,RxNum);
-    USART_DMASend(USART1,AMP.buffer.u1tx,RxNum);
+    Cabinetmsg_Process(AMP.buffer.u4rx,RxNum);
   }
 }
 /*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
+* 函数名			:	Cabinetmsg_Process
+* 功能描述		:	柜消息处理：处理上位机下发消息，处理主柜下发消息，处理层板消息 
 * 输入			: void
 * 返回值			: void
 * 修改时间		: 无
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-void PCmsg_Process(unsigned char* pBuffer,unsigned short length)
+void Cabinetmsg_Process(unsigned char* pBuffer,unsigned short length)
 {
   
-  unsigned  char result  = 0;
-  
-  unsigned  short framlength  = 0;
-  
+  unsigned  char result  = 0;  
+  unsigned  short framlength  = 0;  
   unsigned  char* paddrbac = pBuffer;         //备份数据缓存起始地址
   
   stampphydef* ampframe=NULL;
-  stcmddef*    cmd;
+  stcmddef    Cmd;
   //-------------------------协议检查
   framlength	=	getframe(pBuffer,&length);    //判断帧消息内容是否符合协议
   if(0== framlength)
@@ -168,31 +163,171 @@ void PCmsg_Process(unsigned char* pBuffer,unsigned short length)
     memset(paddrbac,0x00,ccsize);             //清除数据
     return;
   }
-//  //-------------------------ID检查---PC接口不检查
-//  result  = addr1check(pBuffer,AMP.SwData.ID);     //层地址检查---控制板地址段为address1
-//  if(0==result)
-//  {
-//    return;
-//  }
   //-------------------------根据地址转发数据：广播数据发送到副柜和本柜层板
   ampframe  = (stampphydef*)pBuffer;
-  if(0xFF==ampframe->msg.addr.address1)   //广播数据
+  Cmd = ampframe->msg.cmd;
+  //-------------------------主柜数据处理
+  if(AMP.SwData.MainFlg)      //主柜
   {
-    LayPowerOn;
-    UnLock;      //开锁
-    Cabinet_Send(pBuffer,length);    //往副柜发送消息
-    Laynet_Send(pBuffer,length);     //往层板发送消息
+    //-------------------------接收到PC下发的消息：命令号的最高位为0，判断是否需要转发：转发到副柜或者层
+    if(0  ==  Cmd.dir)
+    {
+      //-----------------------针对所有柜消息
+      if(0xFF==ampframe->msg.addr.address1)    //广播数据：本柜处理及需要发往其它柜
+      {
+        Cabinet_Send((unsigned char*)ampframe,framlength);           //往副柜发送消息
+        
+        goto CabinetSelfDownDataProcess;
+      }
+      //-----------------------针对本柜消息
+      else if(AMP.SwData.ID==ampframe->msg.addr.address1)
+      {
+        goto CabinetSelfDownDataProcess;
+      }
+      //-----------------------其它副柜消息
+      else
+      {
+        Cabinet_Send((unsigned char*)ampframe,framlength);           //往副柜发送消息
+      }
+    }    
+    //-------------------------接收到副柜或者层板上传的消息：命令号的最高位为1
+    else
+    {
+      //-----------------------其它副柜上报的消息：address1不为零
+      if(0x00 !=ampframe->msg.addr.address1)    //其它副柜上报的消息，需要上传到PC
+      {
+        PCnet_Send((unsigned char*)ampframe,framlength);     //往PC发送消息
+      }
+      //-----------------------层板消息：address1为0，需要增加柜地址重新打包向PC上传
+      else
+      {
+        goto CabinetSelfUpDataProcess;
+      }
+    }
   }
-  else if(AMP.SwData.ID==ampframe->msg.addr.address1) //本柜数据
+  //-------------------------副柜数据处理：副柜接收主柜消息及向主柜上传消息
+  else
   {
-    LayPowerOn;
-    UnLock;      //开锁
-    Laynet_Send(pBuffer,length);     //往层板发送消息
+    //-------------------------接收到主柜/PC下发的消息：命令号的最高位为0，判断是否需要转发：转发到副柜或者层
+    if(0  ==  Cmd.dir)
+    {
+      //-----------------------针对所有柜消息
+      if(0xFF==ampframe->msg.addr.address1)    //广播数据：副柜仅处理消息，不往其它柜转发
+      {
+        goto CabinetSelfDownDataProcess;
+      }
+      //-----------------------针对本柜消息
+      else if(AMP.SwData.ID==ampframe->msg.addr.address1)
+      {
+        goto CabinetSelfDownDataProcess;
+      }
+      //-----------------------其它副柜消息:副柜对其它柜消息不处理
+      else
+      {
+        return;
+      }
+    }
+    //-------------------------接收到副柜上传的消息：命令号的最高位为1
+    else
+    {
+      //-----------------------其它副柜上报的消息：address1不为零
+      if(0x00 !=ampframe->msg.addr.address1)    //其它副柜上报的消息，副柜不处理
+      {
+        return;
+      }
+      //-----------------------层板消息：address1为0，需要增加柜地址重新打包向主柜上传
+      else
+      {
+        goto CabinetSelfUpDataProcess;
+      }
+    }
   }
-  else    //其它柜数据
+  
+  return;
+  
+  //----------------------下发消息需要本柜处理时会执行此过程
+  CabinetSelfDownDataProcess:     //本柜接收到的上级下发消息处理：根据第二级地址确定是否需要转发
+  
+  //---------------------检查此消息是否需要转发到层
+  if(0x00 != ampframe->msg.addr.address2)   //层地址不为0表示需要转发
   {
-    Cabinet_Send(pBuffer,length);    //往副柜发送消息
-  }  
+    Laynet_Send((unsigned char*)ampframe,framlength);     //往层板发送消息
+  }
+  //---------------------不需要转发，消息内容针对柜控制板
+  else
+  {
+    CMD_Process(pBuffer,framlength);
+  }
+  return;
+  
+  //----------------------上报类型的消息address1为0时会执行此过程
+  CabinetSelfUpDataProcess:     //接收到层上报的消息：需要添加柜地址，如果本柜为主柜，则上传到PC，如果为副柜，则上传到主柜
+  //----------------------补充数据
+  ampframe->msg.addr.address1 = AMP.SwData.ID;    //添加ID
+  ampframe->msg.cmd.dir       = 1;                //传输方向设定为上传模式
+  SetCrc((unsigned char*)ampframe,&framlength);   //重新计算CRC
+  //----------------------根据是否为主柜选择消息传输接口
+  if(AMP.SwData.MainFlg)    //主柜：通过PC接口上传
+  {
+    PCnet_Send((unsigned char*)ampframe,framlength);     //往PC发送消息
+  }
+  else
+  {
+    Cabinet_Send((unsigned char*)ampframe,framlength);  //通过柜接口向主柜发送消息
+  }
+  return;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void CMD_Process(unsigned char* pBuffer,unsigned short length)
+{
+  unsigned  short framlength  = 0;
+  unsigned  short datalen     = 0; 
+  stampphydef* ampframe       = NULL;
+  eucmddef*    cmd  = NULL;
+  
+  ampframe  = (stampphydef*)pBuffer;
+  cmd = (eucmddef*)&ampframe->msg.cmd;
+  //---------------------------上位机下发读卡器命令
+  if(ICR ==  (*cmd&Down)) //最高位为0表示上往下发
+  {
+    datalen = ampframe->msg.length-4;   //减一命令位，三地址位长度
+    CardPort_Send(ampframe->msg.data,datalen);   //往读卡器接口发数据
+    return;
+  }
+  //---------------------------开锁命令
+  if(CTL ==  (*cmd&Down)) //最高位为0表示上往下发
+  {
+    if(0  ==  ampframe->msg.data[0])    //0为开锁命令
+    {
+      UnLock;   //开锁
+    }
+    else
+    {
+      ResLock;  //释放锁
+    }
+    return;
+  }
+  //---------------------------开背光灯命令
+  if(LED ==  (*cmd&Down)) //最高位为0表示上往下发
+  {
+    if(0  !=  ampframe->msg.data[0])    //0为开锁命令
+    {
+      BackLightOn;   //开LED
+    }
+    else
+    {
+      BackLightOff;  //关LED
+    }
+    return;
+  }
 }
 /*******************************************************************************
 * 函数名			:	ICcardData_Process
@@ -206,20 +341,21 @@ void PCmsg_Process(unsigned char* pBuffer,unsigned short length)
 void ICcardData_Process(unsigned char* pBuffer,unsigned short length)
 {
   
-  unsigned  char result  = 0;
-  
+  unsigned  char result  = 0;  
   unsigned  short framlength  = 0;
+  unsigned  short datalen  = 0; 
   
-  unsigned  char  databuffer[64]={0};
-  
+  unsigned  char  databuffer[64]={0};  
   unsigned  char* paddrbac = pBuffer;         //备份数据缓存起始地址  
   
   stampphydef* ampframe=NULL;
-  stcmddef*    cmd;
-  //-------------------------打包数据
+  eucmddef*    cmd  = NULL;
+  //-------------------------检查是否为上位机往读卡器接口发数据
+
+  //-------------------------读卡器端口接收到数据
   memcpy(databuffer,pBuffer,length);
   framlength  = length;
-  framlength  = PaketMsg(databuffer,ICR|Up,&framlength);
+  framlength  = PaketUpMsg(databuffer,ICR,&framlength);
   //-------------------------设置地址:柜控制板地址段为address1
   ampframe  = (stampphydef*)databuffer;
   ampframe->msg.addr.address1 = AMP.SwData.ID;
@@ -235,6 +371,8 @@ void ICcardData_Process(unsigned char* pBuffer,unsigned short length)
     Cabinet_Send(databuffer,framlength);     //往副柜发送消息
   }
 }
+
+
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -281,7 +419,7 @@ void LockServer(void)
     if(locktime++>100)  //延迟10ms释放锁驱动
     {
       locktime  = 0;
-      BackLightOn;      //打开背光
+//      BackLightOn;      //打开背光
       ResLock;
     }
   }    
@@ -364,7 +502,7 @@ void COMM_Configuration(void)
 }
 /*******************************************************************************
 *函数名			:	function
-*功能描述		:	往副柜发送消息
+*功能描述		:	往PC发送消息
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -408,6 +546,23 @@ unsigned short Laynet_Send(unsigned char* pBuffer,unsigned short length)
   memcpy(AMP.buffer.u2tx,pBuffer,length);
 
   RS485_DMASend(&stRS485Ly,AMP.buffer.u2tx,length);
+  
+  return  0;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	往层板发送消息
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short CardPort_Send(unsigned char* pBuffer,unsigned short length)
+{
+  memcpy(AMP.buffer.u3tx,pBuffer,length);
+
+  USART_DMASend(USART3,AMP.buffer.u3tx,length);
   
   return  0;
 }

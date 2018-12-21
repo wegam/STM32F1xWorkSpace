@@ -140,6 +140,7 @@ unsigned char crccheck(unsigned char* pframe,unsigned short* length)
 unsigned short SetCrc(unsigned char* pframe,unsigned short* length)
 {  
   unsigned short msglen = 0;    //消息段长度
+  unsigned short datalen = 0;   //data长度
   unsigned short crclen = 0;    //要参与CRC计数的字节数
   unsigned short crc16 = 0;     //计算的CRC16
   
@@ -147,22 +148,24 @@ unsigned short SetCrc(unsigned char* pframe,unsigned short* length)
   
   ampframe  = (stampphydef*)pframe;
   msglen  = ampframe->msg.length;
+  datalen = msglen-4;   //一字节命令，三字节地址
   crclen  = msglen+1;   //msg.length需要参与CRC计算
   crc16 = CRC16_MODBUS(&ampframe->msg.length,crclen);
-  memcpy(&ampframe->msg.data[crclen],&crc16,2);       //复制CRC数据
-  ampframe->msg.data[crclen+2]  = endcode;      //增加结束符
+  memcpy(&ampframe->msg.data[datalen],&crc16,2);       //复制CRC数据
+  ampframe->msg.data[datalen+2]  = endcode;      //增加结束符
   return *length;
 }
+
 /*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
+* 函数名			:	PaketUpMsg
+* 功能描述		:	打包上传消息
 * 输入			: void
 * 返回值			: void
 * 修改时间		: 无
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-unsigned	short PaketMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length)
+unsigned	short PaketUpMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length)
 {
   unsigned  short framlength  = 0;  //msg段数据长度：1字节命令+3字节地址
   unsigned  char* temp  = NULL;
@@ -171,7 +174,39 @@ unsigned	short PaketMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* leng
   
   framlength  = *length+4;  //msg段数据长度：1字节命令+3字节地址
   temp  = (unsigned  char*)&ampframe.msg.cmd;   //设置命令
-  *temp = cmd;
+  *temp = (unsigned  char)cmd;
+  ampframe.msg.cmd.dir  = 1;      //设置此消息为上传类型消息
+  
+  ampframe.head = headcode;
+  ampframe.msg.length = framlength;           //设置msg段长度
+  memcpy(ampframe.msg.data,pbuffer,*length);  //复制数据
+  
+  framlength  = framlength+5;   //完整帧长度，head,length,crc16,end为5个字节
+  
+  memcpy(pbuffer,&ampframe,framlength);   //更新pbuffer内容
+  *length = framlength;   //打包完成后的消息长度
+  return framlength;
+}
+/*******************************************************************************
+* 函数名			:	PaketUpMsg
+* 功能描述		:	打包上传消息
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned	short PaketDownMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length)
+{
+  unsigned  short framlength  = 0;  //msg段数据长度：1字节命令+3字节地址
+  unsigned  char* temp  = NULL;
+  stcmddef*  Cmd = NULL;
+  stampphydef ampframe;
+  
+  framlength  = *length+4;  //msg段数据长度：1字节命令+3字节地址
+  temp  = (unsigned  char*)&ampframe.msg.cmd;   //设置命令
+  *temp = (unsigned  char)cmd;
+  ampframe.msg.cmd.dir  = 0;      //设置此消息为下发类型消息
   
   ampframe.head = headcode;
   ampframe.msg.length = framlength;           //设置msg段长度
@@ -194,16 +229,17 @@ unsigned	short PaketMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* leng
 *******************************************************************************/
 unsigned char ackcheck(unsigned char* pframe)
 { 
-  unsigned  char* temp  = NULL;
-  eucmddef* CMD=NULL;
+  unsigned  char Cmd  = 0;
+
+  stampphydef *ampframe;
   if(NULL ==  pframe)
     return  0;
-  phy = (stampphydef*)pframe;
-  temp = (unsigned  char*)&phy->msg.cmd;
-  *temp&=0x3F;            //去掉高2位
-  CMD = (eucmddef*)temp;
   
-  if(ACK  ==  *CMD)
+  ampframe = (stampphydef*)pframe;
+  Cmd = (unsigned  char)ampframe->msg.cmd.cmd;
+  Cmd&=0x3F;            //去掉高2位
+  
+  if(AMPACK  ==  Cmd)
     return  1;        //应答消息
   return 0;
 }

@@ -68,12 +68,15 @@ extern void AMP01_Server(void);
 void USART_Server(void);
 void SwitchID_Server(void);
 
-void PCmsg_Process(unsigned char* pBuffer,unsigned short length);              //消息处理
+
+void Cabinetmsg_Process(unsigned char* pBuffer,unsigned short length);        //柜消息处理
+void CMD_Process(unsigned char* pBuffer,unsigned short length);
 void ICcardData_Process(unsigned char* pBuffer,unsigned short length);         //读卡器数据处理
 
-unsigned short PCnet_Send(unsigned char* pBuffer,unsigned short length);     //往副柜发送消息
+unsigned short PCnet_Send(unsigned char* pBuffer,unsigned short length);     //往PC发送消息
 unsigned short Cabinet_Send(unsigned char* pBuffer,unsigned short length);     //往副柜发送消息
 unsigned short Laynet_Send(unsigned char* pBuffer,unsigned short length);      //往层板发送消息
+unsigned short CardPort_Send(unsigned char* pBuffer,unsigned short length);   //往读卡器接口发数据
 
 
 void GenyConfiguration(void);   //常规接口配置，背光，锁，电源控制
