@@ -40,18 +40,24 @@ unsigned  short seril=0;
 *******************************************************************************/
 void AMP01_Configuration(void)
 {	
-	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	
+	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	 
+	
+//  IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
+  
+  SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS
   
   SwitchID_Configuration();
   
   GenyConfiguration();   //常规接口配置，背光，锁，电源控制
     
   COMM_Configuration();  
-//  
+ 
 	PWM_OUT(TIM2,PWM_OUTChannel1,2,950);						//PWM设定-20161127版本
-	
-//  IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
-  SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS
+  
+  while(1)
+  {
+    AMP01_Loop();
+  }
 }
 /*******************************************************************************
 *函数名			:	function
@@ -63,10 +69,43 @@ void AMP01_Configuration(void)
 *注释				:	wegam@sina.com
 *******************************************************************************/
 void AMP01_Server(void)
-{
-  USART_Server();
+{  
   SwitchID_Server();
   LockServer();
+  Tim_Server();
+}
+/*******************************************************************************
+*函数名			:	MainBoard_Server
+*功能描述		:	主柜空闲服务程序
+              1-查询在线设备
+              2-查询副柜有无数据上传
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void AMP01_Loop(void)
+{
+  Receive_Server();
+  Send_Server();
+}
+
+//=================================软件接口ST=============================================================
+/*******************************************************************************
+*函数名			:	MainBoard_Server
+*功能描述		:	主柜空闲服务程序
+              1-查询在线设备
+              2-查询副柜有无数据上传
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void MainCabinet_IDLEServer(void)
+{
+
 }
 /*******************************************************************************
 *函数名			:	function
@@ -77,61 +116,104 @@ void AMP01_Server(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void SwitchID_Server(void)
+void Send_Server(void)
 {
-  static unsigned short swtime  = 0;
-  if(swtime++>2000) //2秒检查一次拨码
+  //----------------PC发送
+  if(0  ==  AMP.Time.PcSendTime)
   {
-    unsigned  char  tempid  = 0;
-    unsigned  char* tempbc  = (unsigned  char*)&AMP.SwData;
-    swtime  = 0;
-    tempid  = SWITCHID_ReadLeft(&stSwitch);
-    if(*tempbc  != tempid)
+    Check_SendBuff(PcPort);
+  }
+  //----------------柜发送
+  if(0  ==  AMP.Time.CabSendTime)
+  {
+    Check_SendBuff(CabPort);
+  }
+  //----------------层发送
+  if(0  ==  AMP.Time.LaySendTime)
+  {
+    Check_SendBuff(LayPort);
+  }
+  //----------------读卡器发送
+  if(0  ==  AMP.Time.CardSendTime)
+  {
+    Check_SendBuff(CardPort);
+  }
+}
+
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short Check_SendBuff(enCCPortDef Port)
+{ 
+  unsigned  char  i  = 0;
+  unsigned  short  SendLen  = 0;
+  
+  unsigned  char* SendAddr = NULL;  
+  unsigned  char*  ReSendCount;      //PC上传重发计数
+  
+  unsigned  short*  SendTime=NULL;
+  
+  stTxdef* Txd  = NULL;
+  
+  //------------------------------检查重发
+  switch(Port)
+  {
+    case  NonPort   : return 0;   //不继续执行
+    case  PcPort    : ReSendCount = &AMP.ReSend.PcCount;
+                      Txd=AMP.buffer.PcTx;    //PC接口发送缓存
+                      SendTime  = &AMP.Time.PcSendTime;
+      break;
+    case  CabPort   : ReSendCount = &AMP.ReSend.CabCount;
+                      Txd=AMP.buffer.CabTx;   //柜接口发送缓存
+                      SendTime  = &AMP.Time.CabSendTime;
+      break;
+    case  LayPort   : ReSendCount = &AMP.ReSend.LayCount;
+                      Txd=AMP.buffer.LayTx;   //层接口发送缓存
+                      SendTime  = &AMP.Time.LaySendTime;
+      break;
+    case  CardPort  : ReSendCount = &AMP.ReSend.CardCount;
+                      Txd=AMP.buffer.CardTx;  //读卡器接口发送缓存
+                      SendTime  = &AMP.Time.CardSendTime;
+      break;
+    default :return 0;      //不继续执行 
+  }
+  if(*SendTime>0)   //不到重发时间，退出
+  {
+    return  0;
+  }
+  if(*ReSendCount>=maxresendcount) //超出重发次数：放弃发送
+  {
+    Releas_OneBuffer(Port);
+    *ReSendCount  = 0;      //重发清零
+  }
+  //------------------------------检查发送缓存
+  for(i=0;i<arrysize;i++)
+  {
+    if(1  ==  Txd[i].arry)
     {
-      *tempbc  = tempid;
-      AMP01_Configuration();    //重新配置控制板
+      SendAddr  = Txd[i].data;    //起始地址
+      SendLen   = Txd[i].size;    //大小
+      *ReSendCount +=1;
+      *SendTime  =SendWait;
     }
   }
+  //-----------------------------有发数据 
+  if(NULL!= SendAddr)
+  {
+    HW_SendBuff(Port,SendAddr,SendLen);
+    return  SendLen;
+  }
+  return  0;
 }
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	function
-*输入				: 
-*返回值			:	无
-*修改时间		:	无
-*修改说明		:	无
-*注释				:	wegam@sina.com
-*******************************************************************************/
-void USART_Server(void)
-{
-  unsigned short RxNum  = 0;
-  unsigned char str[]="串口接收到数据\r\n";
-  //---------------------PC接口 USART1
-  RxNum = USART_ReadBufferIDLE(USART1,AMP.buffer.u1rx);
-  if(RxNum)
-  {
-    Cabinetmsg_Process(AMP.buffer.u1rx,RxNum);                //PC消息处理
-  }
-  //---------------------读卡器接口 USART3
-  RxNum = USART_ReadBufferIDLE(USART3,AMP.buffer.u3rx);
-  if(RxNum)
-  {
-    ICcardData_Process(AMP.buffer.u3rx,RxNum);
-  }
-  //---------------------层板接口 USART2
-  RxNum = RS485_ReadBufferIDLE(&stRS485Ly,AMP.buffer.u2rx);
-  if(RxNum)
-  {
-    memcpy(AMP.buffer.u1tx,AMP.buffer.u2rx,RxNum);
-    USART_DMASend(USART1,AMP.buffer.u1tx,RxNum);
-  }
-  //---------------------副柜接口 UART4
-  RxNum = RS485_ReadBufferIDLE(&stRS485Cb,AMP.buffer.u4rx);
-  if(RxNum)
-  {
-    Cabinetmsg_Process(AMP.buffer.u4rx,RxNum);
-  }
-}
+
+
+
 /*******************************************************************************
 * 函数名			:	Cabinetmsg_Process
 * 功能描述		:	柜消息处理：处理上位机下发消息，处理主柜下发消息，处理层板消息 
@@ -141,9 +223,8 @@ void USART_Server(void)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-void Cabinetmsg_Process(unsigned char* pBuffer,unsigned short length)
-{
-  
+void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
+{  
   unsigned  char result  = 0;  
   unsigned  short framlength  = 0;  
   unsigned  char* paddrbac = pBuffer;         //备份数据缓存起始地址
@@ -160,7 +241,7 @@ void Cabinetmsg_Process(unsigned char* pBuffer,unsigned short length)
   result  = ackcheck(pBuffer);                //检查是否为应答消息,应答消息返回1
   if(1==result)
   {
-    memset(paddrbac,0x00,ccsize);             //清除数据
+    Releas_OneBuffer(Port);        //释放一个发送缓存
     return;
   }
   //-------------------------根据地址转发数据：广播数据发送到副柜和本柜层板
@@ -288,7 +369,6 @@ void Cabinetmsg_Process(unsigned char* pBuffer,unsigned short length)
 *******************************************************************************/
 void CMD_Process(unsigned char* pBuffer,unsigned short length)
 {
-  unsigned  short framlength  = 0;
   unsigned  short datalen     = 0; 
   stampphydef* ampframe       = NULL;
   eucmddef*    cmd  = NULL;
@@ -318,7 +398,7 @@ void CMD_Process(unsigned char* pBuffer,unsigned short length)
   //---------------------------开背光灯命令
   if(LED ==  (*cmd&Down)) //最高位为0表示上往下发
   {
-    if(0  !=  ampframe->msg.data[0])    //0为开锁命令
+    if(0  !=  ampframe->msg.data[0])    //1为开LED
     {
       BackLightOn;   //开LED
     }
@@ -340,16 +420,12 @@ void CMD_Process(unsigned char* pBuffer,unsigned short length)
 *******************************************************************************/
 void ICcardData_Process(unsigned char* pBuffer,unsigned short length)
 {
-  
-  unsigned  char result  = 0;  
   unsigned  short framlength  = 0;
-  unsigned  short datalen  = 0; 
-  
+ 
   unsigned  char  databuffer[64]={0};  
-  unsigned  char* paddrbac = pBuffer;         //备份数据缓存起始地址  
   
   stampphydef* ampframe=NULL;
-  eucmddef*    cmd  = NULL;
+
   //-------------------------检查是否为上位机往读卡器接口发数据
 
   //-------------------------读卡器端口接收到数据
@@ -371,8 +447,6 @@ void ICcardData_Process(unsigned char* pBuffer,unsigned short length)
     Cabinet_Send(databuffer,framlength);     //往副柜发送消息
   }
 }
-
-
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -382,20 +456,246 @@ void ICcardData_Process(unsigned char* pBuffer,unsigned short length)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void GenyConfiguration(void)
+unsigned short Releas_OneBuffer(enCCPortDef Port)
 {
-  //---------------------锁接口配置
-  GPIO_Configuration_OPP50(LockDrPort,LockDrPin);
-  GPIO_Configuration_IPU(LockSiPort,LockSiPin);
-  ResLock;    //释放锁驱动
-  //---------------------背光接口配置
-  GPIO_Configuration_OPP50(BackLightPort,BackLightPin);
-  BackLightOn;
-  //---------------------层板供电接口配置
-  GPIO_Configuration_OPP50(LayPowerPort,LayPowerPin);
-  LayPowerOn;
+  unsigned  char  i  = 0;
+  stTxdef* Txd  = NULL;
+  
+  switch(Port)
+  {
+    case  NonPort   : return 0;   //不继续执行
+    case  PcPort    : Txd=AMP.buffer.PcTx;    //PC接口发送缓存
+      break;
+    case  CabPort   : Txd=AMP.buffer.CabTx;   //柜接口发送缓存
+      break;
+    case  LayPort   : Txd=AMP.buffer.LayTx;   //层接口发送缓存
+      break;
+    case  CardPort  : Txd=AMP.buffer.CardTx;  //读卡器接口发送缓存
+      break;
+    default :return 0;      //不继续执行 
+  }
+  for(i=0;i<arrysize;i++)
+  {
+    if(Txd[i].arry>0)
+    {
+      Txd[i].arry--;
+    }
+  }
+  return  0;
 }
 
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	AddSendData
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short AddSendBuffer(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
+{
+  unsigned  char  i  = 0;
+  unsigned  char  lastarry  = 0;
+  
+  stTxdef* Txd  = NULL;
+  
+  switch(Port)
+  {
+    case  NonPort   : return 0;   //不继续执行
+    case  PcPort    : Txd=AMP.buffer.PcTx;    //PC接口发送缓存
+      break;
+    case  CabPort   : Txd=AMP.buffer.CabTx;   //柜接口发送缓存
+      break;
+    case  LayPort   : Txd=AMP.buffer.LayTx;   //层接口发送缓存
+      break;
+    case  CardPort  : Txd=AMP.buffer.CardTx;  //读卡器接口发送缓存
+      break;
+    default :return 0;      //不继续执行 
+  }
+  //-------------------------给当前待发送队列编号(最尾号)
+  for(i=0;i<arrysize;i++)
+  {
+    if(Txd[i].arry>lastarry)
+    {
+      lastarry  = Txd[i].arry;
+      //---------------------检查发送队列中是否有相同的指令，如果有，则退出
+      if(0  ==  memcmp(Txd[i].data,pBuffer,length)) //比较相同
+      {
+        if(length ==  Txd[i].size)    //待发送长度一样
+          return  length;
+      }
+    }
+  }
+  if(lastarry>=arrysize)  //缓存满
+    return 0;     //不继续执行
+  lastarry=lastarry+1;      //最后的队列编号
+  //-------------------------将数据存储到空队列
+  for(i=0;i<arrysize;i++)
+  {
+    if(0  ==  Txd[i].arry)  //0编号表示此为空缓存
+    {
+      memcpy(Txd[i].data,pBuffer,length);
+      Txd[i].arry = lastarry;             //此缓存在发送队列中的排序
+      Txd[i].size = length; 
+      return  length;
+    }
+  }
+  return  0;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	往PC发送消息
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short PCnet_Send(unsigned char* pBuffer,unsigned short length)
+{
+  return(AddSendBuffer(PcPort,pBuffer,length));
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	往副柜发送消息
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short Cabinet_Send(unsigned char* pBuffer,unsigned short length)
+{
+  return(AddSendBuffer(CabPort,pBuffer,length));
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	往层板发送消息
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short Laynet_Send(unsigned char* pBuffer,unsigned short length)
+{
+  UnLock;
+  LayPowerOn;
+  BackLightOn;
+  AMPdelaymS(1000);
+  return(AddSendBuffer(LayPort,pBuffer,length));
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	往读卡器接口发送消息
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short CardPort_Send(unsigned char* pBuffer,unsigned short length)
+{
+  return(AddSendBuffer(CardPort,pBuffer,length));
+}
+
+//=================================软件接口End=============================================================
+
+
+//=================================硬件接口ST==============================================================
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void Receive_Server(void)
+{
+  unsigned short RxNum  = 0;
+  unsigned char rxd[ccsize]={0};
+  //==========================================================接收查询
+  //---------------------PC接口 USART1
+  RxNum = USART_ReadBufferIDLE(USART1,rxd);
+  if(RxNum)
+  {
+    Msg_Process(PcPort,rxd,RxNum);                //柜消息处理
+  }
+  //---------------------读卡器接口 USART3
+  RxNum = USART_ReadBufferIDLE(USART3,rxd);
+  if(RxNum)
+  {
+    ICcardData_Process(rxd,RxNum);
+  }
+  //---------------------层板接口 USART2
+  RxNum = RS485_ReadBufferIDLE(&stRS485Ly,rxd);
+  if(RxNum)
+  {
+    Msg_Process(LayPort,rxd,RxNum);              //柜消息处理
+  }
+  //---------------------副柜接口 UART4
+  RxNum = RS485_ReadBufferIDLE(&stRS485Cb,rxd);
+  if(RxNum)
+  {
+    Msg_Process(CardPort,rxd,RxNum);
+  }
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short HW_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
+{ 
+  switch(Port)
+  {
+    case  NonPort   : return 0;   //不继续执行
+    case  PcPort    : USART_DMASend(USART1,pBuffer,length);
+      break;
+    case  CabPort   : RS485_DMASend(&stRS485Cb,pBuffer,length);	//RS485-DMA发送程序
+      break;
+    case  LayPort   : RS485_DMASend(&stRS485Ly,pBuffer,length);	//RS485-DMA发送程序
+      break;
+    case  CardPort  : USART_DMASend(USART3,pBuffer,length);
+      break;
+    default :return 0;      //不继续执行
+  }
+  return  0;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void SwitchID_Server(void)
+{
+  if(AMP.Time.swicthidtime++>2000) //2秒检查一次拨码
+  {
+    unsigned  char  tempid  = 0;
+    unsigned  char* tempbc  = (unsigned  char*)&AMP.SwData;
+    AMP.Time.swicthidtime  = 0;
+    tempid  = SWITCHID_ReadLeft(&stSwitch);
+    if(*tempbc  != tempid)
+    {
+      *tempbc  = tempid;
+//      AMP01_Configuration();    //重新配置控制板
+      SwitchID_Configuration();  
+      GenyConfiguration();   //常规接口配置，背光，锁，电源控制    
+      COMM_Configuration();
+    }
+  }
+}
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -412,19 +712,54 @@ void LockServer(void)
   {
     locktime  = 0;
     BackLightOff;
-//    LayPowerOff;
+    LayPowerOff;
   }
   else
   {
     if(locktime++>100)  //延迟10ms释放锁驱动
     {
       locktime  = 0;
-//      BackLightOn;      //打开背光
+      BackLightOn;      //打开背光
       ResLock;
     }
   }    
 }
+//=================================硬件接口End=============================================================
 
+
+//=================================配置函数ST==============================================================
+
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void COMM_Configuration(void)
+{
+  //-----------------------------PC接口USART1
+  USART_DMA_ConfigurationNR	(USART1,19200,ccsize);	//USART_DMA配置--查询方式，不开中断
+  
+  //-----------------------------读卡器接口USART3
+  if(0==AMP.SwData.ICreadFlg) //sw2未拨码，默认19200
+    USART_DMA_ConfigurationNR	(USART3,19200,ccsize);	//USART_DMA配置--查询方式，不开中断
+  else
+    USART_DMA_ConfigurationNR	(USART3,9600,ccsize);	//USART_DMA配置--查询方式，不开中断
+
+  //-----------------------------层板接口USART2
+  stRS485Ly.USARTx  = USART2;
+  stRS485Ly.RS485_CTL_PORT  = GPIOA;
+  stRS485Ly.RS485_CTL_Pin   = GPIO_Pin_1;
+  RS485_DMA_ConfigurationNR			(&stRS485Ly,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+  //-----------------------------副柜接口UART4
+  stRS485Cb.USARTx  = UART4;
+  stRS485Cb.RS485_CTL_PORT  = GPIOC;
+  stRS485Cb.RS485_CTL_Pin   = GPIO_Pin_12;
+  RS485_DMA_ConfigurationNR			(&stRS485Cb,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+}
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
@@ -463,7 +798,7 @@ void SwitchID_Configuration(void)
   stSwitch.SW8_PORT	=	GPIOC;
 	stSwitch.SW8_Pin	=	GPIO_Pin_7;
 	
-	SwitchIdInitialize(&stSwitch);							//
+	SwitchIdInitialize(&stSwitch);						//
 	
   tempsw  = (unsigned  char*)&AMP.SwData;
   *tempsw  = SWITCHID_ReadLeft(&stSwitch);
@@ -478,93 +813,67 @@ void SwitchID_Configuration(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void COMM_Configuration(void)
+void GenyConfiguration(void)
 {
-  //-----------------------------PC接口USART1
-  USART_DMA_ConfigurationNR	(USART1,19200,ccsize);	//USART_DMA配置--查询方式，不开中断
-  
-  //-----------------------------读卡器接口USART3
-  if(0==AMP.SwData.ICreadFlg) //sw2未拨码，默认19200
-    USART_DMA_ConfigurationNR	(USART3,19200,ccsize);	//USART_DMA配置--查询方式，不开中断
-  else
-    USART_DMA_ConfigurationNR	(USART3,9600,ccsize);	//USART_DMA配置--查询方式，不开中断
-
-  //-----------------------------层板接口USART2
-  stRS485Ly.USARTx  = USART2;
-  stRS485Ly.RS485_CTL_PORT  = GPIOA;
-  stRS485Ly.RS485_CTL_Pin   = GPIO_Pin_1;
-  RS485_DMA_ConfigurationNR			(&stRS485Ly,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-  //-----------------------------副柜接口UART4
-  stRS485Cb.USARTx  = UART4;
-  stRS485Cb.RS485_CTL_PORT  = GPIOC;
-  stRS485Cb.RS485_CTL_Pin   = GPIO_Pin_12;
-  RS485_DMA_ConfigurationNR			(&stRS485Cb,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+  //---------------------锁接口配置
+  GPIO_Configuration_OPP50(LockDrPort,LockDrPin);
+  GPIO_Configuration_IPU(LockSiPort,LockSiPin);
+  ResLock;    //释放锁驱动
+  //---------------------背光接口配置
+  GPIO_Configuration_OPP50(BackLightPort,BackLightPin);
+  BackLightOn;
+  //---------------------层板供电接口配置
+  GPIO_Configuration_OPP50(LayPowerPort,LayPowerPin);
+  LayPowerOn;
 }
+//=================================配置函数End=============================================================
+
+
+//=================================时间函数ST==============================================================
+
 /*******************************************************************************
 *函数名			:	function
-*功能描述		:	往PC发送消息
+*功能描述		:	function
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-unsigned short PCnet_Send(unsigned char* pBuffer,unsigned short length)
+void Tim_Server(void)
 {
-  memcpy(AMP.buffer.u1tx,pBuffer,length);
-  USART_DMASend(USART1,AMP.buffer.u1tx,length);
-  return  0;
+  //----------------PC发送
+  if(AMP.Time.PcSendTime>0)
+  {
+    AMP.Time.PcSendTime--;
+  }
+  //----------------柜发送
+  if(AMP.Time.CabSendTime>0)
+  {
+    AMP.Time.CabSendTime--;
+  }
+  //----------------层发送
+  if(AMP.Time.LaySendTime>0)
+  {
+    AMP.Time.LaySendTime--;
+  }
+  //----------------读卡器发送
+  if(AMP.Time.CardSendTime>0)
+  {
+    AMP.Time.CardSendTime--;
+  }
 }
 /*******************************************************************************
 *函数名			:	function
-*功能描述		:	往副柜发送消息
+*功能描述		:	function
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-unsigned short Cabinet_Send(unsigned char* pBuffer,unsigned short length)
+void AMPdelaymS(unsigned  short time)
 {
-  memcpy(AMP.buffer.u4tx,pBuffer,length);
-
-  RS485_DMASend(&stRS485Cb,AMP.buffer.u4tx,length);
-  
-  return  0;
+  SysTick_DeleymS(time);				//SysTick延时nmS
 }
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	往层板发送消息
-*输入				: 
-*返回值			:	无
-*修改时间		:	无
-*修改说明		:	无
-*注释				:	wegam@sina.com
-*******************************************************************************/
-unsigned short Laynet_Send(unsigned char* pBuffer,unsigned short length)
-{
-  memcpy(AMP.buffer.u2tx,pBuffer,length);
-
-  RS485_DMASend(&stRS485Ly,AMP.buffer.u2tx,length);
-  
-  return  0;
-}
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	往层板发送消息
-*输入				: 
-*返回值			:	无
-*修改时间		:	无
-*修改说明		:	无
-*注释				:	wegam@sina.com
-*******************************************************************************/
-unsigned short CardPort_Send(unsigned char* pBuffer,unsigned short length)
-{
-  memcpy(AMP.buffer.u3tx,pBuffer,length);
-
-  USART_DMASend(USART3,AMP.buffer.u3tx,length);
-  
-  return  0;
-}
-
 #endif
