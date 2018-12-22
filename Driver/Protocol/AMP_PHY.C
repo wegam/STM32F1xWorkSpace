@@ -48,7 +48,7 @@ unsigned char* getheadaddr(unsigned char* pbuffer,unsigned short* length)
   unsigned  char* endaddr   = NULL;
   
   unsigned short	ValidLength	=	*length;
-  unsigned short	framelength	=	0;
+//  unsigned short	framelength	=	0;
   
   if(NULL  ==  pbuffer)
   {
@@ -82,7 +82,7 @@ unsigned char* getheadaddr(unsigned char* pbuffer,unsigned short* length)
       goto startcheckdata;
     }    
   }
-  return  NULL;
+//  return  NULL;
 }
 
 /*******************************************************************************
@@ -169,7 +169,7 @@ unsigned	short PaketUpMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* le
 {
   unsigned  short framlength  = 0;  //msg段数据长度：1字节命令+3字节地址
   unsigned  char* temp  = NULL;
-  stcmddef*  Cmd = NULL;
+//  stcmddef*  Cmd = NULL;
   stampphydef ampframe;
   
   framlength  = *length+4;  //msg段数据长度：1字节命令+3字节地址
@@ -200,7 +200,7 @@ unsigned	short PaketDownMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* 
 {
   unsigned  short framlength  = 0;  //msg段数据长度：1字节命令+3字节地址
   unsigned  char* temp  = NULL;
-  stcmddef*  Cmd = NULL;
+//  stcmddef*  Cmd = NULL;
   stampphydef ampframe;
   
   framlength  = *length+4;  //msg段数据长度：1字节命令+3字节地址
@@ -230,8 +230,8 @@ unsigned	short PaketDownMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* 
 unsigned char ackcheck(unsigned char* pframe)
 { 
   unsigned  char Cmd  = 0;
-
   stampphydef *ampframe;
+  
   if(NULL ==  pframe)
     return  0;
   

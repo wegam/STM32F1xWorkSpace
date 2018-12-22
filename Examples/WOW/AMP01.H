@@ -35,7 +35,8 @@
 
 #define ccsize    64          //串口最大数据包容量
 #define arrysize  50          //每个发送端口待发送缓存排序个数
-#define SendWait  500         //发送间隔时间单位ms
+#define ReSendWaitTime  500   //重发间隔时间单位ms
+#define SendNopTime  5        //发送等待时间单位ms
 #define maxresendcount    5   //最大发送次数
 
 typedef enum  _CCPort
@@ -115,7 +116,6 @@ void Send_Server(void);
 
 void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);        //柜消息处理
 void CMD_Process(unsigned char* pBuffer,unsigned short length);
-void ICcardData_Process(unsigned char* pBuffer,unsigned short length);         //读卡器数据处理
 
 unsigned short Check_SendBuff(enCCPortDef Port);                                //检查相应端口待发送缓存
 
