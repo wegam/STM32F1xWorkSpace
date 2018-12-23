@@ -30,6 +30,26 @@ stSysdef  AMP;
 
 
 unsigned  short seril=0;
+unsigned  char  ackupfarme[]=
+{
+  0x7E,
+  0x02,
+  0x81,
+  0x00,
+  0xB0,
+  0x50,
+  0x7F
+};
+unsigned  char  ackdownfarme[]=
+{
+  0x7E,
+  0x02,
+  0x01,
+  0x00,
+  0xD1,
+  0x90,
+  0x7F
+};
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -154,13 +174,22 @@ unsigned short Check_SendBuff(enCCPortDef Port)
 { 
   unsigned  char  i  = 0;
   unsigned  short  SendLen  = 0;
-  
+  unsigned  char  ackflag =0;
+  unsigned  char  ackdir =0;
   unsigned  char* SendAddr = NULL;  
   unsigned  char*  ReSendCount;      //PC上传重发计数
   
   unsigned  short*  SendTime=NULL;
   
   stTxdef* Txd  = NULL;
+  
+  if(LayPort  ==  Port) //层板：需要检查供电有无打开
+  {
+    if(0  ==  AMP.Flag.LayPownOn) //供电未打开
+    {
+      return  0;
+    }
+  }
   
   //------------------------------检查重发
   switch(Port)
@@ -169,20 +198,52 @@ unsigned short Check_SendBuff(enCCPortDef Port)
     case  PcPort    : ReSendCount = &AMP.ReSend.PcCount;
                       Txd=AMP.buffer.PcTx;    //PC接口发送缓存
                       SendTime  = &AMP.Time.PcSendTime;
+                      ackflag = AMP.AckQ.PcAck;
+                      ackdir  = AMP.AckQ.PcDir;
       break;
     case  CabPort   : ReSendCount = &AMP.ReSend.CabCount;
                       Txd=AMP.buffer.CabTx;   //柜接口发送缓存
                       SendTime  = &AMP.Time.CabSendTime;
+                      ackflag = AMP.AckQ.CabAck;
+                      ackdir  = AMP.AckQ.CabDir;
       break;
     case  LayPort   : ReSendCount = &AMP.ReSend.LayCount;
                       Txd=AMP.buffer.LayTx;   //层接口发送缓存
                       SendTime  = &AMP.Time.LaySendTime;
+                      ackflag = AMP.AckQ.LayAck;
+                      ackdir  = AMP.AckQ.LayDir;
       break;
     case  CardPort  : ReSendCount = &AMP.ReSend.CardCount;
                       Txd=AMP.buffer.CardTx;  //读卡器接口发送缓存
                       SendTime  = &AMP.Time.CardSendTime;
+                      ackflag = 0;
       break;
     default :return 0;      //不继续执行 
+  }
+  if(ackflag) //有应答请求，先应答
+  {
+    if(ackdir)  //向上应答
+      SendLen = HW_SendBuff(Port,ackupfarme,sizeof(ackupfarme));   //返回已发送字节
+    else
+      SendLen = HW_SendBuff(Port,ackdownfarme,sizeof(ackdownfarme));   //返回已发送字节
+    if(SendLen)   //应答发送成功---清除标志请求
+    {
+      switch(Port)
+      {
+        case  NonPort   : return 0;   //不继续执行
+        case  PcPort    : AMP.AckQ.PcAck = 0;
+          break;
+        case  CabPort   : AMP.AckQ.CabAck = 0;
+          break;
+        case  LayPort   : AMP.AckQ.LayAck = 0;
+          break;
+        case  CardPort  : AMP.AckQ.CardAck  = 0;
+          break;
+        default :return 0;      //不继续执行 
+      }
+    }
+    *SendTime  = 10;
+    return  0;
   }
   if(*SendTime>0)   //不到重发时间，退出
   {
@@ -200,14 +261,21 @@ unsigned short Check_SendBuff(enCCPortDef Port)
     {
       SendAddr  = Txd[i].data;    //起始地址
       SendLen   = Txd[i].size;    //大小
-      *ReSendCount +=1;
-      *SendTime  =ReSendWaitTime; //重发时间
     }
   }
   //-----------------------------有发数据 
   if(NULL!= SendAddr)
   {
-    HW_SendBuff(Port,SendAddr,SendLen);
+    SendLen = HW_SendBuff(Port,SendAddr,SendLen);   //返回已发送字节
+    if(SendLen)   //成功发送到缓存
+    {
+      *ReSendCount +=1;
+      *SendTime = ReSendWaitTime;
+    }
+    else
+    {
+      *SendTime = ReSendWaitTime;
+    }
     return  SendLen;
   }
   return  0;
@@ -272,7 +340,8 @@ void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
     Releas_OneBuffer(Port);        //释放一个发送缓存
     return;
   }
-
+  
+  
   //-------------------------根据地址转发数据：广播数据发送到副柜和本柜层板
   ampframe  = (stampphydef*)pBuffer;
   Cmd = ampframe->msg.cmd;
@@ -280,6 +349,7 @@ void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
   //-------------------------下发数据
   if(0  ==  Cmd.dir)
   {
+    ackFrame(Port,1);
     if(PcPort == Port)
     {
       if(AMP.SwData.ID  ==  ampframe->msg.addr.address1)    //柜地址
@@ -309,6 +379,7 @@ void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
   //-------------------------上传数据
   else
   {
+    ackFrame(Port,0);
     if(PcPort == Port)    //PC口只下发消息
     {
       return;
@@ -410,7 +481,44 @@ void CMD_Process(unsigned char* pBuffer,unsigned short length)
     return;
   }
 }
-
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	dir:0向下应答，1向上应答
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void ackFrame(enCCPortDef Port,unsigned char dir)
+{
+  switch(Port)
+  {
+    case  NonPort   : return;   //不继续执行
+    case  PcPort    : AMP.AckQ.PcAck  = 1;
+                      AMP.AckQ.PcDir  = dir;
+      break;
+    case  CabPort   : AMP.AckQ.CabAck  = 1;
+                      AMP.AckQ.CabDir  = dir;
+      break;
+    case  LayPort   : AMP.AckQ.LayAck  = 1;
+                      AMP.AckQ.LayDir  = dir;
+      break;
+    //case  CardPort  : AMP.AckQ.CardAck  = 1;
+    //                    AMP.AckQ.CardDir  = dir;
+      //break;
+    default :return;      //不继续执行 
+  }
+//  unsigned  short crc = 0;
+//  ackBuffe[0]=0x7E;   //head
+//  ackBuffe[1]=0x02;   //len
+//  ackBuffe[2]=0x81;   //cmd
+//  ackBuffe[3]=0x00;   //subcmd
+//  crc = CRC16_MODBUS(&ackBuffe[1],3);				//多项式x16+x15+x5+1（0x8005），初始值0xFFFF，低位在前，高位在后，结果与0x0000异或
+//  memcpy(&ackBuffe[4],&crc,2);
+//  ackBuffe[6]=0x7F;   //end
+//  RS485_DMASend(&RS485,ackBuffe,7);	//RS485-DMA发送程序
+}
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -424,21 +532,26 @@ unsigned short Releas_OneBuffer(enCCPortDef Port)
 {
   unsigned  char  i  = 0;
   stTxdef* Txd  = NULL;
+  unsigned  char*  ReSendCount;      //PC上传重发计数
   unsigned  short*  SendTime=NULL;
   
   switch(Port)
   {
     case  NonPort   : return 0;   //不继续执行
-    case  PcPort    : Txd=AMP.buffer.PcTx;    //PC接口发送缓存
+    case  PcPort    : ReSendCount = &AMP.ReSend.PcCount;
+                      Txd=AMP.buffer.PcTx;    //PC接口发送缓存
                       SendTime  = &AMP.Time.PcSendTime;
       break;
-    case  CabPort   : Txd=AMP.buffer.CabTx;   //柜接口发送缓存
-                       SendTime  = &AMP.Time.CabSendTime;
+    case  CabPort   : ReSendCount = &AMP.ReSend.CabCount;
+                      Txd=AMP.buffer.CabTx;   //柜接口发送缓存
+                      SendTime  = &AMP.Time.CabSendTime;
       break;
-    case  LayPort   : Txd=AMP.buffer.LayTx;   //层接口发送缓存
+    case  LayPort   : ReSendCount = &AMP.ReSend.LayCount;
+                      Txd=AMP.buffer.LayTx;   //层接口发送缓存
                       SendTime  = &AMP.Time.LaySendTime;
       break;
-    case  CardPort  : Txd=AMP.buffer.CardTx;  //读卡器接口发送缓存
+    case  CardPort  : ReSendCount = &AMP.ReSend.CardCount;
+                      Txd=AMP.buffer.CardTx;  //读卡器接口发送缓存
                       SendTime  = &AMP.Time.CardSendTime;
       break;
     default :return 0;      //不继续执行 
@@ -449,6 +562,7 @@ unsigned short Releas_OneBuffer(enCCPortDef Port)
     {
       Txd[i].arry--;
       *SendTime  = SendNopTime;   //释放一个缓存后等待SendNopTime时间后再发下一帧
+      *ReSendCount  = 0;
     }
   }
   return  0;
@@ -550,10 +664,12 @@ unsigned short Cabinet_Send(unsigned char* pBuffer,unsigned short length)
 *******************************************************************************/
 unsigned short Laynet_Send(unsigned char* pBuffer,unsigned short length)
 {
-  UnLock;
-  LayPowerOn;
-  BackLightOn;
-  AMPdelaymS(1000);
+  if(1  ==  AMP.Flag.LockFlg) //锁关状态：未开
+  {
+    UnLock;
+    LayPowerOn;
+    BackLightOn;
+  }
   return(AddSendBuffer(LayPort,pBuffer,length));
 }
 /*******************************************************************************
@@ -623,20 +739,22 @@ void Receive_Server(void)
 *******************************************************************************/
 unsigned short HW_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
 { 
+  unsigned  short   sendedlen = 0;
   switch(Port)
   {
     case  NonPort   : return 0;   //不继续执行
-    case  PcPort    : USART_DMASend(USART1,pBuffer,length);
+    case  PcPort    : sendedlen = USART_DMASend(USART1,pBuffer,length);
       break;
-    case  CabPort   : RS485_DMASend(&stRS485Cb,pBuffer,length);	//RS485-DMA发送程序
+    case  CabPort   : sendedlen = RS485_DMASend(&stRS485Cb,pBuffer,length);	//RS485-DMA发送程序
       break;
-    case  LayPort   : RS485_DMASend(&stRS485Ly,pBuffer,length);	//RS485-DMA发送程序
+    case  LayPort   : sendedlen = RS485_DMASend(&stRS485Ly,pBuffer,length);	//RS485-DMA发送程序
       break;
-    case  CardPort  : USART_DMASend(USART3,pBuffer,length);
+    case  CardPort  : sendedlen = USART_DMASend(USART3,pBuffer,length);
       break;
     default :return 0;      //不继续执行
   }
-  return  0;
+
+  return  sendedlen;
 }
 /*******************************************************************************
 *函数名			:	function
@@ -676,20 +794,29 @@ void SwitchID_Server(void)
 *******************************************************************************/
 void LockServer(void)
 {
-  static unsigned  char locktime = 0;
+  static unsigned  short locktime = 0;
   if(GetLockSts)    //锁未开
   {
     locktime  = 0;
+    AMP.Flag.LockFlg    = 1;
+    AMP.Flag.LayPownOn  = 0;
     BackLightOff;
     LayPowerOff;
   }
   else
   {
-    if(locktime++>100)  //延迟10ms释放锁驱动
+    LayPowerOn;
+    BackLightOn;
+    if(locktime++>50) //延迟50ms释放锁驱动
     {
-      locktime  = 0;
-      BackLightOn;      //打开背光
       ResLock;
+    }
+    if(locktime++>500)  //延迟100ms打开层供电
+    {
+      AMP.Flag.LockFlg    = 0;
+      AMP.Flag.LayPownOn  = 1;
+      locktime  = 0;
+      BackLightOn;      //打开背光      
     }
   }    
 }

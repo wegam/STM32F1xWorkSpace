@@ -35,9 +35,9 @@
 
 #define ccsize    64          //串口最大数据包容量
 #define arrysize  50          //每个发送端口待发送缓存排序个数
-#define ReSendWaitTime  500   //重发间隔时间单位ms
-#define SendNopTime  5        //发送等待时间单位ms
-#define maxresendcount    5   //最大发送次数
+#define ReSendWaitTime  50   //重发间隔时间单位ms
+#define SendNopTime     5        //发送等待时间单位ms
+#define maxresendcount  5   //最大发送次数
 
 typedef enum  _CCPort
 {
@@ -57,8 +57,20 @@ typedef struct _stSW        //拨码数据：
 typedef struct _stFlg        //拨码数据：
 {
   unsigned char MainIDLE  :1;   //主柜空闲标志：0-空闲，1-非空闲状态
-  unsigned char LockFlg   :1;   //锁标志：0-开状态，1-关状态
+  unsigned char LockFlg   :1;   //锁标志：0-开状态，1-关状态.
+  unsigned char LayPownOn :1;   //层板通电标志：0-未通电，1-已通电
 }stFlgdef;
+typedef struct _stAckQ        //需要应答标志
+{
+  unsigned char PcAck     :1;   //PC接口需要应答：0-空闲，1-需要应答
+  unsigned char PcDir     :1;   //PC接口应答方向：0-向下应答，1-向上应答
+  unsigned char CabAck    :1;   //柜接口需要应答：0-空闲，1-需要应答
+  unsigned char CabDir    :1;   //柜接口应答方向：0-向下应答，1-向上应答
+  unsigned char LayAck    :1;   //层接口需要应答：0-空闲，1-需要应答
+  unsigned char LayDir    :1;   //层接口应答方向：0-向下应答，1-向上应答
+  unsigned char CardAck   :1;   //读卡器接口需要应答：0-空闲，1-需要应答
+  unsigned char CardDir   :1;   //读卡器接口应答方向：0-向下应答，1-向上应答
+}stAckQdef;
 typedef struct _stSendCount   //重发计数器
 {
   unsigned char PcCount;      //PC上传重发计数
@@ -74,7 +86,7 @@ typedef struct _stTx       //拨码数据：
 }stTxdef;
 typedef struct _stBuffer       //拨码数据：
 {  
-//  stTxdef   Amprx[1];           //所有端口接收缓存  
+//  stTxdef   Amprx[1];           //所有端口接收缓存
   stTxdef   PcTx[arrysize];     //串口1发送缓存--PC接口
   stTxdef   CabTx[arrysize];    //串口4发送缓存--副柜
   stTxdef   LayTx[arrysize];    //串口2发送缓存--层板接口
@@ -94,7 +106,8 @@ typedef struct _stSys
 {
   stTimsdef         Time;         //相关时间变量
   stSWdef           SwData;       //主机标志
-  stFlgdef          Flag;         //相关标志位  
+  stFlgdef          Flag;         //相关标志位
+  stAckQdef         AckQ;         //标志应答标志，0-不需要，1-需要应答相应接口
   stBufferdef       buffer;       //串口数据缓存
   stSendCountdef    ReSend;
 }stSysdef;
@@ -116,26 +129,15 @@ void Send_Server(void);
 
 void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);        //柜消息处理
 void CMD_Process(unsigned char* pBuffer,unsigned short length);
-
+void ackFrame(enCCPortDef Port,unsigned char dir);
+//=================================软件接口ST=============================================================
 unsigned short Check_SendBuff(enCCPortDef Port);                                //检查相应端口待发送缓存
-
 unsigned short Releas_OneBuffer(enCCPortDef Port);        //释放一个发送缓存
 unsigned short AddSendData(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);
 unsigned short PCnet_Send(unsigned char* pBuffer,unsigned short length);      //往PC发送消息
 unsigned short Cabinet_Send(unsigned char* pBuffer,unsigned short length);    //往副柜发送消息
 unsigned short Laynet_Send(unsigned char* pBuffer,unsigned short length);     //往层板发送消息
 unsigned short CardPort_Send(unsigned char* pBuffer,unsigned short length);   //往读卡器接口发数据
-
-
-
-
-
-
-
-//=================================软件接口ST=============================================================
-
-
-
 
 //=================================硬件接口ST==============================================================
 void Receive_Server(void);

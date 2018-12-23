@@ -1632,7 +1632,8 @@ u16 RS485_DMASend(
 {
 	//----发送前检查相关串口发送状态，如果下在发送其它数据，则等待（返回0），否则清除相关标志位后开启发送
 	
-//	u32	DMA_status=0;			//DMA状态	
+//	u32	DMA_status=0;			//DMA状态
+  unsigned short sendedlen  =0;
 	USARTStatusDef	Status;
 	USART_TypeDef* USARTx=pRS485->USARTx;
 	
@@ -1644,8 +1645,8 @@ u16 RS485_DMASend(
 //	SysTick_DeleymS(1);				//SysTick延时nmS
 	RS485_TX_EN(pRS485);
 //	USART_DMASend	(USARTx,(u8*)tx_buffer,BufferSize);		//串口DMA发送程序
-	USART_DMASend(USARTx,(u8*)tx_buffer,BufferSize);		//串口DMA发送程序
-	return 0;
+	sendedlen = USART_DMASend(USARTx,(u8*)tx_buffer,BufferSize);		//串口DMA发送程序
+	return sendedlen;
 }
 
 
