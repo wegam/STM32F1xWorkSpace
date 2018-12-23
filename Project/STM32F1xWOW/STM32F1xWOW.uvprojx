@@ -644,6 +644,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -2070,6 +2085,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -3504,6 +3534,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -4930,6 +4975,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -6364,6 +6424,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -7790,6 +7865,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -9224,6 +9314,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -10650,6 +10755,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -12084,6 +12204,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -13510,6 +13645,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -14944,6 +15094,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -16370,6 +16535,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -17804,6 +17984,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -19230,6 +19425,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -20664,6 +20874,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -22090,6 +22315,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -23524,6 +23764,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -24950,6 +25205,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -26384,6 +26654,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -27810,6 +28095,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -29244,6 +29544,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -30670,6 +30985,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -32104,6 +32434,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -33530,6 +33875,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -34964,6 +35324,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -36390,6 +36765,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -37824,6 +38214,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -39250,6 +39655,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -40684,6 +41104,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -42110,6 +42545,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -43544,6 +43994,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -44970,6 +45435,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -46404,6 +46884,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -47834,6 +48329,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -49260,6 +49770,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -50822,6 +51347,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -52380,6 +52920,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -53900,6 +54455,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -55462,6 +56032,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Lib/STM32F10x</GroupName>
           <Files>
             <File>
@@ -57016,6 +57601,21 @@
               <FileName>AMPLED02V13.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLED02V13.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP/AMP</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP_CAB.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_CAB.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP_LAY.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP_LAY.C</FilePath>
             </File>
           </Files>
         </Group>

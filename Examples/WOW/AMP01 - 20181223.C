@@ -27,9 +27,6 @@ RS485Def stRS485Cb;   //uart4,pc12    //副柜接口
 SwitchDef stSwitch;
 
 stSysdef  AMP;
-
-unsigned  short testcrc = 0;
-unsigned char tetbff[] = { 0x7E,0x07,0x02,0x02,0x01,0x01,0x01,0x01,0x01,0x00,0xA1,0x7F };
 unsigned  long*  MCUMEMaddr = (unsigned  long*)(0x1FFFF7E0);
 unsigned  short  MCUMEMsize  = 0;
 unsigned  short seril=0;
@@ -65,7 +62,6 @@ unsigned  char  ackdownfarme[]=
 void AMP01_Configuration(void)
 {	
   MCUMEMsize  = *MCUMEMaddr;
-  testcrc = CRC16_MODBUS(&tetbff[1],8);
   if(0x0100 ==  MCUMEMsize) //256K Flash 柜控制板STM32F103RC
   {
     AMP.Flag.CabBD  = 1;
@@ -749,7 +745,7 @@ unsigned short CardPort_Send(unsigned char* pBuffer,unsigned short length)
 void Receive_Server(void)
 {
   unsigned short RxNum  = 0;
-  unsigned char rxd[256]={0};
+  unsigned char rxd[ccsize]={0};
   //==========================================================接收查询
   //---------------------PC接口 USART1
   RxNum = USART_ReadBufferIDLE(USART1,rxd);
