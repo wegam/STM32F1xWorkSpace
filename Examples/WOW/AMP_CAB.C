@@ -1,4 +1,4 @@
-#ifdef AMP_CAB
+#ifdef AMP01CAB
 
 #include "AMP_CAB.H"
 
@@ -27,8 +27,10 @@ RS485Def stRS485Cb;   //uart4,pc12    //副柜接口
 SwitchDef stSwitch;
 
 stSysdef  AMP;
-unsigned  long*  MCUMEMaddr = (unsigned  long*)(0x1FFFF7E0);
-unsigned  short  MCUMEMsize  = 0;
+
+unsigned  short testcrc = 0;
+unsigned char tetbff[] = { 0x7E,0x07,0x02,0x02,0x01,0x01,0x01,0x01,0x01,0x00,0xA1,0x7F };
+
 unsigned  short seril=0;
 unsigned  char  ackupfarme[]=
 {
@@ -59,21 +61,8 @@ unsigned  char  ackdownfarme[]=
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMP01_Configuration(void)
+void AMPCAB_Configuration(void)
 {	
-  MCUMEMsize  = *MCUMEMaddr;
-  if(0x0100 ==  MCUMEMsize) //256K Flash 柜控制板STM32F103RC
-  {
-    AMP.Flag.CabBD  = 1;
-    AMP.Flag.LayBD  = 0;
-    AMP.Flag.SetBD  = 0;
-  }
-  else if(0x0080 ==  MCUMEMsize) //128K Flash 层控制板STM32F103CB
-  {
-    AMP.Flag.CabBD  = 0;
-    AMP.Flag.LayBD  = 1;
-    AMP.Flag.SetBD  = 1;
-  }
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	 
 	
 //  IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
@@ -86,7 +75,7 @@ void AMP01_Configuration(void)
     
   COMM_Configuration();  
  
-	PWM_OUT(TIM2,PWM_OUTChannel1,2,950);						//PWM设定-20161127版本
+//	PWM_OUT(TIM2,PWM_OUTChannel1,1000,950);						//PWM设定-20161127版本
 
   while(1)
   {
@@ -136,12 +125,18 @@ void AMP01_Loop(void)
 {
   if(0  ==  AMP.SwData.ID)
   {
-    if(AMP.Time.runningtime>=500)
+    if(AMP.Flag.CabBD)  //柜控制板
     {
-      GPIO_Toggle	(BackLightPort,BackLightPin);		//将GPIO相应管脚输出翻转----V20170605
-      AMP.Time.runningtime  = 0;
+      if(AMP.Time.runningtime>=500)
+      {
+        GPIO_Toggle	(BackLightPort,BackLightPin);		//将GPIO相应管脚输出翻转----V20170605
+        AMP.Time.runningtime  = 0;
+      }
+      return;
     }
-    return;
+    else if(AMP.Flag.LayBD)
+    {
+    }
   }
   Receive_Server();
   Send_Server();
@@ -174,25 +169,26 @@ void MainCabinet_IDLEServer(void)
 *******************************************************************************/
 void Send_Server(void)
 {
-  //----------------PC发送
-  if(0  ==  AMP.Time.PcSendTime)
-  {
-    Check_SendBuff(PcPort);
-  }
-  //----------------柜发送
-  if(0  ==  AMP.Time.CabSendTime)
-  {
-    Check_SendBuff(CabPort);
-  }
-  //----------------层发送
-  if(0  ==  AMP.Time.LaySendTime)
-  {
-    Check_SendBuff(LayPort);
-  }
-  //----------------读卡器发送
-  if(0  ==  AMP.Time.CardSendTime)
-  {
-    Check_SendBuff(CardPort);
+    //----------------PC发送
+    if(0  ==  AMP.Time.PcSendTime)
+    {
+      Check_SendBuff(PcPort);
+    }
+    //----------------柜发送
+    if(0  ==  AMP.Time.CabSendTime)
+    {
+      Check_SendBuff(CabPort);
+    }
+    //----------------层发送
+    if(0  ==  AMP.Time.LaySendTime)
+    {
+      Check_SendBuff(LayPort);
+    }
+    //----------------读卡器发送
+    if(0  ==  AMP.Time.CardSendTime)
+    {
+      Check_SendBuff(CardPort);
+    }
   }
 }
 
@@ -523,15 +519,15 @@ void CMD_Process(unsigned char* pBuffer,unsigned short length)
   //---------------------------开背光灯命令
   if(LED ==  (*cmd&Down)) //最高位为0表示上往下发
   {
-    if(0  !=  ampframe->msg.data[0])    //1为开LED
-    {
-      BackLightOn;   //开LED
-    }
-    else
-    {
-      BackLightOff;  //关LED
-    }
-    return;
+      if(0  !=  ampframe->msg.data[0])    //1为开LED
+      {
+        BackLightOn;   //开LED
+      }
+      else
+      {
+        BackLightOff;  //关LED
+      }
+      return;
   }
 }
 /*******************************************************************************
@@ -708,13 +704,13 @@ unsigned short Cabinet_Send(unsigned char* pBuffer,unsigned short length)
 *******************************************************************************/
 unsigned short Laynet_Send(unsigned char* pBuffer,unsigned short length)
 {
-  if(1  ==  AMP.Flag.LockFlg) //锁关状态：未开
-  {
-    UnLock;
-    LayPowerOn;
-    BackLightOn;
-  }
-  return(AddSendBuffer(LayPort,pBuffer,length));
+    if(1  ==  AMP.Flag.LockFlg) //锁关状态：未开
+    {
+      UnLock;
+      LayPowerOn;
+      BackLightOn;
+    }
+    return(AddSendBuffer(LayPort,pBuffer,length));
 }
 /*******************************************************************************
 *函数名			:	function
@@ -745,33 +741,32 @@ unsigned short CardPort_Send(unsigned char* pBuffer,unsigned short length)
 void Receive_Server(void)
 {
   unsigned short RxNum  = 0;
-  unsigned char rxd[ccsize]={0};
+  unsigned char rxd[256]={0};
   //==========================================================接收查询
-  //---------------------PC接口 USART1
-  RxNum = USART_ReadBufferIDLE(USART1,rxd);
-  if(RxNum)
-  {
-    Msg_Process(PcPort,rxd,RxNum);                //柜消息处理
-  }
-  //---------------------副柜接口 UART4
-  RxNum = RS485_ReadBufferIDLE(&stRS485Cb,rxd);
-  if(RxNum)
-  {
-    Msg_Process(CabPort,rxd,RxNum);
-  }  
-  //---------------------层板接口 USART2
-  RxNum = RS485_ReadBufferIDLE(&stRS485Ly,rxd);
-  if(RxNum)
-  {
-    Msg_Process(LayPort,rxd,RxNum);              //柜消息处理
-  }
-  //---------------------读卡器接口 USART3
-  RxNum = USART_ReadBufferIDLE(USART3,rxd);
-  if(RxNum)
-  {
-    Msg_Process(CardPort,rxd,RxNum);
-  }
-  
+    //---------------------PC接口 USART1
+    RxNum = USART_ReadBufferIDLE(USART1,rxd);
+    if(RxNum)
+    {
+      Msg_Process(PcPort,rxd,RxNum);                //柜消息处理
+    }
+    //---------------------副柜接口 UART4
+    RxNum = RS485_ReadBufferIDLE(&stRS485Cb,rxd);
+    if(RxNum)
+    {
+      Msg_Process(CabPort,rxd,RxNum);
+    }  
+    //---------------------层板接口 USART2
+    RxNum = RS485_ReadBufferIDLE(&stRS485Ly,rxd);
+    if(RxNum)
+    {
+      Msg_Process(LayPort,rxd,RxNum);              //柜消息处理
+    }
+    //---------------------读卡器接口 USART3
+    RxNum = USART_ReadBufferIDLE(USART3,rxd);
+    if(RxNum)
+    {
+      Msg_Process(CardPort,rxd,RxNum);
+    }
 }
 /*******************************************************************************
 *函数名			:	function
@@ -839,31 +834,31 @@ void SwitchID_Server(void)
 *******************************************************************************/
 void LockServer(void)
 {
-  static unsigned  short locktime = 0;
-  if(GetLockSts)    //锁未开
-  {
-    locktime  = 0;
-    AMP.Flag.LockFlg    = 1;
-    AMP.Flag.LayPownOn  = 0;
-    BackLightOff;
-    LayPowerOff;
-  }
-  else
-  {
-    LayPowerOn;
-    BackLightOn;
-    if(locktime++>50) //延迟50ms释放锁驱动
+    static unsigned  short locktime = 0;
+    if(GetLockSts)    //锁未开
     {
-      ResLock;
-    }
-    if(locktime++>500)  //延迟100ms打开层供电
-    {
-      AMP.Flag.LockFlg    = 0;
-      AMP.Flag.LayPownOn  = 1;
       locktime  = 0;
-      BackLightOn;      //打开背光      
+      AMP.Flag.LockFlg    = 1;
+      AMP.Flag.LayPownOn  = 0;
+      BackLightOff;
+      LayPowerOff;
     }
-  }    
+    else
+    {
+      LayPowerOn;
+      BackLightOn;
+      if(locktime++>50) //延迟50ms释放锁驱动
+      {
+        ResLock;
+      }
+      if(locktime++>500)  //延迟100ms打开层供电
+      {
+        AMP.Flag.LockFlg    = 0;
+        AMP.Flag.LayPownOn  = 1;
+        locktime  = 0;
+        BackLightOn;      //打开背光      
+      }
+    }
 }
 //=================================硬件接口End=============================================================
 
@@ -881,25 +876,25 @@ void LockServer(void)
 *******************************************************************************/
 void COMM_Configuration(void)
 {
-  //-----------------------------PC接口USART1
-  USART_DMA_ConfigurationNR	(USART1,19200,ccsize);	//USART_DMA配置--查询方式，不开中断
-  
-  //-----------------------------读卡器接口USART3
-  if(0==AMP.SwData.ICreadFlg) //sw2未拨码，默认19200
-    USART_DMA_ConfigurationNR	(USART3,19200,ccsize);	//USART_DMA配置--查询方式，不开中断
-  else
-    USART_DMA_ConfigurationNR	(USART3,9600,ccsize);	//USART_DMA配置--查询方式，不开中断
+    //-----------------------------PC接口USART1
+    USART_DMA_ConfigurationNR	(USART1,19200,ccsize);	//USART_DMA配置--查询方式，不开中断
+    
+    //-----------------------------读卡器接口USART3
+    if(0==AMP.SwData.ICreadFlg) //sw2未拨码，默认19200
+      USART_DMA_ConfigurationNR	(USART3,19200,ccsize);	//USART_DMA配置--查询方式，不开中断
+    else
+      USART_DMA_ConfigurationNR	(USART3,9600,ccsize);	//USART_DMA配置--查询方式，不开中断
 
-  //-----------------------------层板接口USART2
-  stRS485Ly.USARTx  = USART2;
-  stRS485Ly.RS485_CTL_PORT  = GPIOA;
-  stRS485Ly.RS485_CTL_Pin   = GPIO_Pin_1;
-  RS485_DMA_ConfigurationNR			(&stRS485Ly,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-  //-----------------------------副柜接口UART4
-  stRS485Cb.USARTx  = UART4;
-  stRS485Cb.RS485_CTL_PORT  = GPIOC;
-  stRS485Cb.RS485_CTL_Pin   = GPIO_Pin_12;
-  RS485_DMA_ConfigurationNR			(&stRS485Cb,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+    //-----------------------------层板接口USART2
+    stRS485Ly.USARTx  = USART2;
+    stRS485Ly.RS485_CTL_PORT  = GPIOA;
+    stRS485Ly.RS485_CTL_Pin   = GPIO_Pin_1;
+    RS485_DMA_ConfigurationNR			(&stRS485Ly,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+    //-----------------------------副柜接口UART4
+    stRS485Cb.USARTx  = UART4;
+    stRS485Cb.RS485_CTL_PORT  = GPIOC;
+    stRS485Cb.RS485_CTL_Pin   = GPIO_Pin_12;
+    RS485_DMA_ConfigurationNR			(&stRS485Cb,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -913,8 +908,6 @@ void COMM_Configuration(void)
 void SwitchID_Configuration(void)
 {
   unsigned  char* tempsw = NULL;
-  if(AMP.Flag.CabBD)  //柜控制板
-  {
     stSwitch.NumOfSW	=	8;
     
     stSwitch.SW1_PORT	=	GPIOC;
@@ -940,35 +933,7 @@ void SwitchID_Configuration(void)
     
     stSwitch.SW8_PORT	=	GPIOC;
     stSwitch.SW8_Pin	=	GPIO_Pin_7;
-  }
-  else if(AMP.Flag.LayBD) //层控制板
-  {
-    stSwitch.NumOfSW	=	8;
-    
-    stSwitch.SW1_PORT	=	GPIOA;
-    stSwitch.SW1_Pin	=	GPIO_Pin_7;
-    
-    stSwitch.SW2_PORT	=	GPIOA;
-    stSwitch.SW2_Pin	=	GPIO_Pin_6;
-    
-    stSwitch.SW3_PORT	=	GPIOA;
-    stSwitch.SW3_Pin	=	GPIO_Pin_5;
-    
-    stSwitch.SW4_PORT	=	GPIOA;
-    stSwitch.SW4_Pin	=	GPIO_Pin_4;
-    
-    stSwitch.SW5_PORT	=	GPIOB;
-    stSwitch.SW5_Pin	=	GPIO_Pin_11;
-    
-    stSwitch.SW6_PORT	=	GPIOB;
-    stSwitch.SW6_Pin	=	GPIO_Pin_10;
-    
-    stSwitch.SW7_PORT	=	GPIOB;
-    stSwitch.SW7_Pin	=	GPIO_Pin_2;
-    
-    stSwitch.SW8_PORT	=	GPIOB;
-    stSwitch.SW8_Pin	=	GPIO_Pin_1;
-  }
+ 
 	SwitchIdInitialize(&stSwitch);						//
 
 	
@@ -986,16 +951,17 @@ void SwitchID_Configuration(void)
 *******************************************************************************/
 void GenyConfiguration(void)
 {
-  //---------------------锁接口配置
-  GPIO_Configuration_OPP50(LockDrPort,LockDrPin);
-  GPIO_Configuration_IPU(LockSiPort,LockSiPin);
-  ResLock;    //释放锁驱动
-  //---------------------背光接口配置
-  GPIO_Configuration_OPP50(BackLightPort,BackLightPin);
-  BackLightOn;
-  //---------------------层板供电接口配置
-  GPIO_Configuration_OPP50(LayPowerPort,LayPowerPin);
-  LayPowerOn;
+
+    //---------------------锁接口配置
+    GPIO_Configuration_OPP50(LockDrPort,LockDrPin);
+    GPIO_Configuration_IPU(LockSiPort,LockSiPin);
+    ResLock;    //释放锁驱动
+    //---------------------背光接口配置
+    GPIO_Configuration_OPP50(BackLightPort,BackLightPin);
+    BackLightOn;
+    //---------------------层板供电接口配置
+    GPIO_Configuration_OPP50(LayPowerPort,LayPowerPin);
+    LayPowerOn;
 }
 //=================================配置函数End=============================================================
 
@@ -1013,26 +979,26 @@ void GenyConfiguration(void)
 *******************************************************************************/
 void Tim_Server(void)
 {
-  //----------------PC发送
-  if(AMP.Time.PcSendTime>0)
-  {
-    AMP.Time.PcSendTime--;
-  }
-  //----------------柜发送
-  if(AMP.Time.CabSendTime>0)
-  {
-    AMP.Time.CabSendTime--;
-  }
-  //----------------层发送
-  if(AMP.Time.LaySendTime>0)
-  {
-    AMP.Time.LaySendTime--;
-  }
-  //----------------读卡器发送
-  if(AMP.Time.CardSendTime>0)
-  {
-    AMP.Time.CardSendTime--;
-  }
+    //----------------PC发送
+    if(AMP.Time.PcSendTime>0)
+    {
+      AMP.Time.PcSendTime--;
+    }
+    //----------------柜发送
+    if(AMP.Time.CabSendTime>0)
+    {
+      AMP.Time.CabSendTime--;
+    }
+    //----------------层发送
+    if(AMP.Time.LaySendTime>0)
+    {
+      AMP.Time.LaySendTime--;
+    }
+    //----------------读卡器发送
+    if(AMP.Time.CardSendTime>0)
+    {
+      AMP.Time.CardSendTime--;
+    }
 }
 /*******************************************************************************
 *函数名			:	function
