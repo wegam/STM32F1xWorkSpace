@@ -290,6 +290,10 @@ void WOW_Configuration(void)
 	TLE5012B_Configuration();
 #endif
 
+//*********************************Vl53l0x_TEST*********************************//
+#ifdef Vl53l0x_TEST
+	Vl53l0xTest_Configuration();
+#endif
 
 }
 
@@ -573,6 +577,10 @@ void WOW_Server(void)
 	TLE5012B_Server();
 #endif
 
+//*********************************Vl53l0x_TEST*********************************//
+#ifdef Vl53l0x_TEST
+	Vl53l0xTest_Server();
+#endif
 
 //IWDG_Feed();								//∂¿¡¢ø¥√≈π∑Œππ∑
 

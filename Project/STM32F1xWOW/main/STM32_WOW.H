@@ -86,6 +86,10 @@
 	#include "TLE5012B.H"
 #endif
 
+//*********************************Vl53l0x_TEST*********************************//
+#ifdef Vl53l0x_TEST
+	#include "Vl53l0x_TEST.H"
+#endif
 
 
 
