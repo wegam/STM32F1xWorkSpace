@@ -15,6 +15,9 @@
 //#include	"stdarg.h"			//用于获取不确定个数的参数
 //#include	"stdlib.h"			//malloc动态申请内存空间
 //------------------锁接口J10
+#define SYSLEDPort    GPIOA         //锁控制接口，高电平开锁
+#define SYSLEDPin     GPIO_Pin_0
+//------------------锁接口J10
 #define LockDrPort    GPIOB         //锁控制接口，高电平开锁
 #define LockDrPin     GPIO_Pin_7
 #define LockSiPort    GPIOC         //锁信号，检测到低电平表示锁已开
@@ -33,10 +36,10 @@
 #define LayPowerOn    LayPowerPort->BSRR = LayPowerPin   //启动电源
 #define LayPowerOff   LayPowerPort->BRR  = LayPowerPin   //关闭电源
 
-#define ccsize    64          //串口最大数据包容量
-#define arrysize  50          //每个发送端口待发送缓存排序个数
-#define ReSendWaitTime  50   //重发间隔时间单位ms
-#define SendNopTime     5        //发送等待时间单位ms
+#define ccsize    128      	//串口最大数据包容量
+#define arrysize  25       	//每个发送端口待发送缓存排序个数
+#define ReSendWaitTime  50 	//重发间隔时间单位ms
+#define SendNopTime     5  	//发送等待时间单位ms
 #define maxresendcount  5   //最大发送次数
 
 typedef enum  _CCPort

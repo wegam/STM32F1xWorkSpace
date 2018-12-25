@@ -180,6 +180,44 @@ unsigned char vl53l0x_ReadBit(void)
 unsigned char vl53l0x_ReadData(void)
 {
 	unsigned char data=0;
+	
+	vl53l0x->i2c.Start();
+	vl53l0x->i2c.WriteOneByte(0x52);
+	vl53l0x->i2c.WaitAck();
+	
+	
+	vl53l0x->i2c.WriteOneByte(0xC0);
+	vl53l0x->i2c.WaitAck();	
+	vl53l0x->i2c.Stop();
+	
+	vl53l0x->i2c.Start();
+	vl53l0x->i2c.WriteOneByte(0x53);
+	vl53l0x->i2c.WaitAck();
+	
+//	vl53l0x->i2c.Start();
+	
+	data	=	vl53l0x->i2c.ReadOneByte();
+	vl53l0x->i2c.Ack();
+	
+	data	=	vl53l0x->i2c.ReadOneByte();
+	vl53l0x->i2c.Ack();
+	
+	data	=	vl53l0x->i2c.ReadOneByte();
+	vl53l0x->i2c.Ack();
+	
+	data	=	vl53l0x->i2c.ReadOneByte();
+	vl53l0x->i2c.Ack();
+	
+	data	=	vl53l0x->i2c.ReadOneByte();
+	vl53l0x->i2c.Ack();
+
+	vl53l0x->i2c.Stop();
+	
+	return	data;
+}
+unsigned char vl53l0x_ReadDatabac(void)
+{
+	unsigned char data=0;
 	vl53l0x->i2c.Start();
 	vl53l0x->i2c.WriteOneByte(0x52);
 	if(0	==	vl53l0x->i2c.WaitAck())	//ÓÐÓ¦´ð
@@ -211,5 +249,4 @@ unsigned char vl53l0x_ReadData(void)
 	
 	return	data;
 }
-
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/     

@@ -81,7 +81,7 @@ void AMP01_Configuration(void)
   }
 	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	 
 	
-//  IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
+  IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
   
   SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS
   
@@ -90,8 +90,16 @@ void AMP01_Configuration(void)
   GenyConfiguration();   //常规接口配置，背光，锁，电源控制
     
   COMM_Configuration();  
- 
-//	PWM_OUT(TIM2,PWM_OUTChannel1,1000,950);						//PWM设定-20161127版本
+	
+	if(AMP.Flag.CabBD)
+	{
+		if(AMP.SwData.ID)		//已拨码
+			PWM_OUT(TIM2,PWM_OUTChannel1,1,900);						//PWM设定-20161127版本
+		else
+			PWM_OUT(TIM2,PWM_OUTChannel1,5,900);						//PWM设定-20161127版本
+	}
+	else
+		GPIO_Configuration_OPP50(SYSLEDPort,SYSLEDPin);
 
   while(1)
   {
@@ -109,20 +117,25 @@ void AMP01_Configuration(void)
 *******************************************************************************/
 void AMP01_Server(void)
 {  
+	IWDG_Feed();								//独立看门狗喂狗
+	
   SwitchID_Server();
-  if(0  ==  AMP.SwData.ID)
-  {
-    AMP.Time.runningtime++;
-    if(GetLockSts)  //如果锁为关闭状态，则开锁
-    {
-      UnLock;
-    }
-    else
-    {
-      ResLock;
-    }
-    return;
-  }
+	if(AMP.Flag.CabBD)
+	{
+		if(0  ==  AMP.SwData.ID)
+		{
+			AMP.Time.runningtime++;
+			if(GetLockSts)  //如果锁为关闭状态，则开锁
+			{
+				UnLock;
+			}
+			else
+			{
+				ResLock;
+			}
+			return;
+		}
+	}
   LockServer();
   Tim_Server();
 }
@@ -139,21 +152,26 @@ void AMP01_Server(void)
 *******************************************************************************/
 void AMP01_Loop(void)
 {
-  if(0  ==  AMP.SwData.ID)
-  {
     if(AMP.Flag.CabBD)  //柜控制板
     {
-      if(AMP.Time.runningtime>=500)
-      {
-        GPIO_Toggle	(BackLightPort,BackLightPin);		//将GPIO相应管脚输出翻转----V20170605
-        AMP.Time.runningtime  = 0;
-      }
-      return;
+			if(0  ==  AMP.SwData.ID)		//未拨码
+			{
+				if(AMP.Time.runningtime>=500)
+				{
+					GPIO_Toggle	(BackLightPort,BackLightPin);		//将GPIO相应管脚输出翻转----V20170605
+					AMP.Time.runningtime  = 0;
+				}
+				return;
+			}
     }
     else if(AMP.Flag.LayBD)
     {
+				if(AMP.Time.runningtime%500==0)
+				{
+					GPIO_Toggle	(SYSLEDPort,SYSLEDPin);		//将GPIO相应管脚输出翻转----V20170605
+				}				
     }
-  }
+
   Receive_Server();
   Send_Server();
 }
@@ -887,6 +905,14 @@ void SwitchID_Server(void)
       SwitchID_Configuration();  
       GenyConfiguration();   //常规接口配置，背光，锁，电源控制    
       COMM_Configuration();
+			
+			if(AMP.Flag.CabBD)	//柜
+			{
+				if(AMP.SwData.ID)		//已拨码
+					PWM_OUT(TIM2,PWM_OUTChannel1,1,900);						//PWM设定-20161127版本
+				else
+					PWM_OUT(TIM2,PWM_OUTChannel1,5,900);						//PWM设定-20161127版本
+			}
     }
   }
 }
@@ -1118,6 +1144,7 @@ void GenyConfiguration(void)
 *******************************************************************************/
 void Tim_Server(void)
 {
+	AMP.Time.runningtime++;
   if(AMP.Flag.CabBD)  //柜控制板
   {
     //----------------PC发送
