@@ -120,22 +120,6 @@ void AMP01_Server(void)
 	IWDG_Feed();								//独立看门狗喂狗
 	
   SwitchID_Server();
-	if(AMP.Flag.CabBD)
-	{
-		if(0  ==  AMP.SwData.ID)
-		{
-			AMP.Time.runningtime++;
-			if(GetLockSts)  //如果锁为关闭状态，则开锁
-			{
-				UnLock;
-			}
-			else
-			{
-				ResLock;
-			}
-			return;
-		}
-	}
   LockServer();
   Tim_Server();
 }
@@ -156,17 +140,17 @@ void AMP01_Loop(void)
     {
 			if(0  ==  AMP.SwData.ID)		//未拨码
 			{
-				if(AMP.Time.runningtime>=500)
+				if(AMP.Time.SYSLEDTime>=500)
 				{
 					GPIO_Toggle	(BackLightPort,BackLightPin);		//将GPIO相应管脚输出翻转----V20170605
-					AMP.Time.runningtime  = 0;
+					AMP.Time.SYSLEDTime  = 0;
 				}
 				return;
 			}
     }
     else if(AMP.Flag.LayBD)
     {
-				if(AMP.Time.runningtime%500==0)
+				if(AMP.Time.SYSLEDTime%500==0)
 				{
 					GPIO_Toggle	(SYSLEDPort,SYSLEDPin);		//将GPIO相应管脚输出翻转----V20170605
 				}				
@@ -324,12 +308,8 @@ unsigned short Check_SendBuff(enCCPortDef Port)
   {
     return  0;
   }
-  if(*ReSendCount>=maxresendcount) //超出重发次数：放弃发送
-  {
-    Releas_OneBuffer(Port);
-    *ReSendCount  = 0;      //重发清零
-  }
-  //------------------------------检查发送缓存
+  
+  //------------------------------检查发送缓存:先发送排序为1的缓存
   for(i=0;i<arrysize;i++)
   {
     if(1  ==  Txd[i].arry)
@@ -346,6 +326,12 @@ unsigned short Check_SendBuff(enCCPortDef Port)
     {
       *ReSendCount +=1;
       *SendTime = ReSendWaitTime;
+      
+      if(*ReSendCount>=maxresendcount) //超出重发次数：放弃发送
+      {
+        Releas_OneBuffer(Port);
+        *ReSendCount  = 0;      //重发清零
+      }
     }
     else
     {
@@ -368,6 +354,22 @@ unsigned short Check_SendBuff(enCCPortDef Port)
 * 其它			: wegam@sina.com
 *******************************************************************************/
 void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
+{ 
+ if(AMP.Flag.CabBD) //柜控制板  
+  Msg_ProcessCB(Port,pBuffer,length);       //柜消息处理
+ else
+  Msg_ProcessLY(Port,pBuffer,length);      //层消息处理
+}
+/*******************************************************************************
+* 函数名			:	Cabinetmsg_Process
+* 功能描述		:	柜消息处理：处理上位机下发消息，处理主柜下发消息，处理层板消息 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void Msg_ProcessCB(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
 {  
   unsigned  char result       = 0; 
   unsigned  char address      = 0;  
@@ -376,7 +378,7 @@ void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
   
   stampphydef* ampframe=NULL;
   stcmddef    Cmd;
-  //-------------------------读卡器端口
+  //-------------------------读卡器端口:读卡器接口接收的数据只通过柜接口或者PC接口上传
   if(CardPort  == Port)   //读卡器接口无协议，只打包数据透传
   {
     unsigned  char  databuffer[64]={0};   
@@ -410,23 +412,17 @@ void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
     memset(paddrbac,0x00,ccsize);             //清除数据
     return;
   }
-  result  = ackcheck(pBuffer);                //检查是否为应答消息,应答消息返回1
+  result  = ackcheck(pBuffer);                //检查是否为应答消息,应答消息返回1  
   if(1==result)
   {
     Releas_OneBuffer(Port);        //释放一个发送缓存
     return;
   }
-  if(AMP.Flag.LayBD)//层控制板
-  {
-    if(0==addr2check(pBuffer,addr2))
-      return;
-    if(0==addr3check(pBuffer,addr3))
-      return;
-  }
   
   //-------------------------根据地址转发数据：广播数据发送到副柜和本柜层板
   ampframe  = (stampphydef*)pBuffer;
   Cmd = ampframe->msg.cmd;
+  
   
   //-------------------------下发数据
   if(0  ==  Cmd.dir)
@@ -466,9 +462,10 @@ void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
       }
       goto CabinetSelfDownDataProcess;
     }
-    else if(LayPort == Port)
+    else if(LayPort == Port)  //层控制接口无下发数据，只有上传数据
     {
-      CMD_Process((unsigned char*)ampframe,framlength);
+      //CMD_Process((unsigned char*)ampframe,framlength);
+      return;
     }    
   }
   //-------------------------上传数据
@@ -480,7 +477,7 @@ void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
     }
     else if(CabPort == Port)  //柜接口接收到数据，如果为主机，则应答，再上传到PC端口，如果是副柜，上传到PC端口，不应答
     {
-      if(AMP.SwData.MainFlg)
+      if(AMP.SwData.MainFlg)  //主柜接收到上柜端口数据需要应答
       {
         ackFrame(Port,0);   //向下应答
       }
@@ -530,6 +527,71 @@ void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
   return;
 }
 /*******************************************************************************
+* 函数名			:	Cabinetmsg_Process
+* 功能描述		:	柜消息处理：处理上位机下发消息，处理主柜下发消息，处理层板消息 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void Msg_ProcessLY(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
+{  
+  unsigned  char result       = 0; 
+  unsigned  char address      = 0;  
+  unsigned  short framlength  = 0;  
+  unsigned  char* paddrbac    = pBuffer;         //备份数据缓存起始地址
+  
+  stampphydef* ampframe=NULL;
+  stcmddef    Cmd;
+  //-------------------------如果此不为层控制板，不执行以下步骤
+  if(0==AMP.Flag.LayBD)//层控制板
+  {
+    return;
+  }
+  //-------------------------检查端口是否为层接口及缓存地址是否为空
+  if(LayPort!=Port||NULL==pBuffer)
+  {
+    return;
+  }
+  //-------------------------协议检查
+  framlength	=	getframe(pBuffer,&length);    //判断帧消息内容是否符合协议
+  if(0== framlength)
+  {
+    memset(paddrbac,0x00,ccsize);             //清除数据
+    return;
+  }
+  //-------------------------检查是否为应答帧
+  result  = ackcheck(pBuffer);                //检查是否为应答消息,应答消息返回1
+  if(1==result)
+  {
+    Releas_OneBuffer(Port);        //释放一个发送缓存
+    return;
+  }
+  //-------------------------地址检查
+
+  if(0==addr2check(pBuffer,addr2))
+    return;
+  if(0==addr3check(pBuffer,addr3))
+    return;
+
+  
+  //-------------------------根据地址转发数据：广播数据发送到副柜和本柜层板
+  ampframe  = (stampphydef*)pBuffer;
+  Cmd = ampframe->msg.cmd;
+  
+  //-------------------------下发数据
+  if(0  ==  Cmd.dir)
+  {
+    CMD_Process((unsigned char*)ampframe,framlength);
+  }
+  //-------------------------上传数据
+  else
+  {    
+    return;   //层板端口只接收下发数据，如有上发数据，则为其它层上传，其它层板不处理
+  }
+}
+/*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
 *输入				: 
@@ -558,11 +620,15 @@ void CMD_Process(unsigned char* pBuffer,unsigned short length)
   {
     if(0  ==  ampframe->msg.data[0])    //0为开锁命令
     {
-      UnLock;   //开锁
+//      UnLock;   //开锁
+      AMP.Lock.unlockqust = 1;
+      AMP.Lock.reslock    = 0;
     }
     else
     {
-      ResLock;  //释放锁
+//      ResLock;  //释放锁
+      AMP.Lock.unlockqust = 0;
+      AMP.Lock.reslock    = 1;      
     }
     return;
   }
@@ -772,11 +838,13 @@ unsigned short Laynet_Send(unsigned char* pBuffer,unsigned short length)
 {
   if(AMP.Flag.CabBD)  //柜控制板
   {
-    if(1  ==  AMP.Flag.LockFlg) //锁关状态：未开
+    if(1  ==  AMP.Lock.lockstd) //锁关状态：未开
     {
-      UnLock;
-      LayPowerOn;
-      BackLightOn;
+//      UnLock;
+      AMP.Lock.unlockqust = 1;
+      AMP.Lock.reslock    = 0;
+//      LayPowerOn;
+//      BackLightOn;
     }
     return(AddSendBuffer(LayPort,pBuffer,length));
   }
@@ -930,33 +998,67 @@ void LockServer(void)
   if(AMP.Flag.CabBD)  //柜控制板
   {
     static unsigned  short locktime = 0;
-    if(GetLockSts)    //锁未开
+
+    if(0  ==  AMP.SwData.ID)    //未拨码--自动开锁
     {
-      locktime  = 0;
-      AMP.Flag.LockFlg    = 1;
-      AMP.Flag.LayPownOn  = 0;
-      BackLightOff;
-      LayPowerOff;
-    }
-    else
-    {
-      LayPowerOn;
-      BackLightOn;
-      if(locktime++>50) //延迟50ms释放锁驱动
+      if(GetLockSts)  //如果锁为关闭状态，则开锁
+      {
+        UnLock;
+      }
+      else
       {
         ResLock;
       }
-      if(locktime++>500)  //延迟100ms打开层供电
-      {
-        AMP.Flag.LockFlg    = 0;
-        AMP.Flag.LayPownOn  = 1;
-        locktime  = 0;
-        BackLightOn;      //打开背光      
-      }
+      return;
     }
-  }
-  else
-  {
+    if(1==AMP.Lock.unlockrun)   //正在执行开锁动作
+    {
+      if(AMP.Time.LockTime>unlocktime-10)//10ms后开始检查锁状态
+      {
+        return;
+      }
+      if(GetLockSts)    //锁未开
+      {
+        AMP.Lock.lockstd  = 1;
+        if(AMP.Time.LockTime==0)//超过开锁时间
+        {
+          AMP.Lock.unlockrun  = 0;
+          AMP.Lock.unlockerr  = 1;
+          AMP.Time.LockTime   = 0;
+          ResLock;
+        }
+      }
+      else
+      {
+        AMP.Lock.lockstd    = 0;
+        AMP.Lock.unlockrun  = 0;
+        AMP.Lock.unlockerr  = 0;
+        AMP.Time.LockTime   = 0;
+        AMP.Flag.LayPownOn  = 1;
+        BackLightOn;      //打开背光
+        LayPowerOn;
+        ResLock;        
+      }      
+    }
+    if(1==AMP.Lock.unlockqust)  //开锁请求
+    {
+      AMP.Lock.unlockrun  = 1;
+      AMP.Lock.unlockqust = 0;
+      AMP.Lock.reslock    = 0;
+      AMP.Lock.unlockerr  = 0;
+      AMP.Time.LockTime   = unlocktime;
+      UnLock;
+    }
+    
+    if(GetLockSts)    //锁未开
+    {
+      AMP.Lock.lockstd  = 1;
+    }
+    else
+    {
+      AMP.Flag.LayPownOn  = 1;
+      AMP.Lock.lockstd  = 0;
+    }
   }
 }
 //=================================硬件接口End=============================================================
@@ -1144,9 +1246,10 @@ void GenyConfiguration(void)
 *******************************************************************************/
 void Tim_Server(void)
 {
-	AMP.Time.runningtime++;
+	AMP.Time.SYSLEDTime++;
   if(AMP.Flag.CabBD)  //柜控制板
   {
+//    AMP.Time.LockTime++;
     //----------------PC发送
     if(AMP.Time.PcSendTime>0)
     {
@@ -1166,6 +1269,11 @@ void Tim_Server(void)
     if(AMP.Time.CardSendTime>0)
     {
       AMP.Time.CardSendTime--;
+    }
+    //----------------锁
+    if(AMP.Time.LockTime>0)
+    {
+      AMP.Time.LockTime--;
     }
   }
   else if(AMP.Flag.LayBD) //层控制板
