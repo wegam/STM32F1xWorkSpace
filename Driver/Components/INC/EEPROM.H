@@ -8,8 +8,6 @@
 
 #include "I2C.H"
 
-
-
 void AT24C02_Write(sI2CDef *sI2C,unsigned char Addr,unsigned char Data);
 unsigned char AT24C02_Read(sI2CDef *sI2C,unsigned char Addr);
 

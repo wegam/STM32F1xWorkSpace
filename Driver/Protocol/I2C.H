@@ -52,8 +52,13 @@ unsigned char I2C_ReadBit(sI2CDef *sI2C);
 void I2C_Start(sI2CDef *sI2C);
 void I2C_Stop(sI2CDef *sI2C);
 
-void I2C_SendByte(sI2CDef *sI2C,unsigned char ucByte);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB） 
-unsigned char I2C_ReadByte(sI2CDef *sI2C);							//从I2C总线读取8个bits的数据  ,首先读出的是数据的最高位（MSB）
+void I2C_SendByte(sI2CDef *sI2C,unsigned char ucByte);
+void I2C_WriteOneByte(sI2CDef *sI2C,unsigned short address,unsigned char ucByte);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB）
+void I2C_WriteBuffer(sI2CDef *sI2C,unsigned short address,const unsigned char* pBuffer,const unsigned short length);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB）
+
+unsigned char I2C_ReadByte(sI2CDef *sI2C);
+unsigned char I2C_ReadOneByte(sI2CDef *sI2C,unsigned short address);							//从I2C总线读取8个bits的数据  ,首先读出的是数据的最高位（MSB）
+unsigned short I2C_ReadBuffer(sI2CDef *sI2C,unsigned short address,unsigned char* pBuffer,const unsigned short length);
 
 
 #endif

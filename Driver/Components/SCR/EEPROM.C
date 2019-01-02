@@ -1,6 +1,6 @@
-#include "AT24C02.H"	
+#include "EEPROM.H"	
 
-
+#include	"IIC.H"
 	
 #include "STM32_GPIO.H"
 #include "STM32_SYSTICK.H"
@@ -11,7 +11,6 @@
 
 
 //AT24C02 2048位，256字节，8字节/页,共32页
-
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	在at24c02中的指定地址写入数据
@@ -23,9 +22,9 @@
 *******************************************************************************/
 void AT24C02_Write(sI2CDef *sI2C,unsigned char Addr,unsigned char Data)
 {
-	I2C_Start(sI2C);
+	IIC_Start();
 	
-	I2C_SendByte(sI2C,Write_24C02Addr);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB）
+	IIC_WriteOneByte(Write_24C02Addr);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB）
 	
 	I2C_WaitAck(sI2C);
 	

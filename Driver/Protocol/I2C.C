@@ -249,6 +249,7 @@ unsigned char I2C_ReadBit(sI2CDef *sI2C)
 *******************************************************************************/
 void I2C_Start(sI2CDef *sI2C)
 {
+	I2C_SDASetOut(sI2C);
 	//=====================================SDA,SCL设置为高
 	I2C_SDAHigh(sI2C);
 	I2C_SCLHigh(sI2C);
@@ -270,6 +271,7 @@ void I2C_Start(sI2CDef *sI2C)
 *******************************************************************************/
 void I2C_Stop(sI2CDef *sI2C)
 {
+	I2C_SDASetOut(sI2C);
 	//=====================================SDA设置为低,SCL设置为高
 	I2C_SDALow(sI2C);
 	I2C_SCLHigh(sI2C);
@@ -292,9 +294,9 @@ void I2C_Stop(sI2CDef *sI2C)
 void I2C_SendByte(sI2CDef *sI2C,unsigned char ucByte)
 {
 	unsigned char i	=	0;
+	I2C_SCLLow(sI2C);
 	for(i=0;i<8;i++)
 	{
-//		I2C_SCLLow(sI2C);
 		if(ucByte & 0x80)
 		{
 			I2C_SDAHigh(sI2C);
@@ -308,13 +310,98 @@ void I2C_SendByte(sI2CDef *sI2C,unsigned char ucByte)
 		I2C_Delay();
 		I2C_SCLLow(sI2C);
 		
-//		if(i	==	7)	// 8位数据发送完毕后，主机释放SDA，以检测从机应答
-//		{
-//			I2C_SDASetIn(sI2C);	//设置为上拉输入模式
-//			return;			//退出不往下执行
-//		}
 		ucByte<<=1;		//左移1个bit
 		I2C_Delay();
+	}
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB） 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void I2C_WriteOneByte(sI2CDef *sI2C,const unsigned short address,const unsigned char ucByte)
+{
+	unsigned char i	=	0;
+	unsigned char temp	=	0xA0;
+	I2C_Start(sI2C);
+	//---------------------------写器件地址
+	I2C_SendByte(sI2C,temp);
+
+	if(!I2C_WaitAck(sI2C))
+	{		
+		I2C_Stop(sI2C);
+		return;
+	}
+	//---------------------------写内存地址
+	temp	=	address;
+	
+	I2C_SDASetOut(sI2C);
+	I2C_SendByte(sI2C,temp);
+	
+	if(!I2C_WaitAck(sI2C))
+	{
+		I2C_Stop(sI2C);
+		return;
+	}
+	//---------------------------写数据
+	temp	=	ucByte;
+	
+	I2C_SDASetOut(sI2C);
+	I2C_SendByte(sI2C,temp);
+	
+	if(!I2C_WaitAck(sI2C))
+	{
+		I2C_Stop(sI2C);
+		return;
+	}
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB） 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void I2C_WriteBuffer(sI2CDef *sI2C,unsigned short address,const unsigned char* pBuffer,const unsigned short length)
+{
+	unsigned short i	=	0;
+	unsigned char temp	=	0xA0;
+	I2C_Start(sI2C);
+	//---------------------------写器件地址
+	I2C_SendByte(sI2C,temp);
+	if(!I2C_WaitAck(sI2C))
+	{		
+		I2C_Stop(sI2C);
+		return;
+	}
+	//---------------------------写内存地址
+	temp	=	address;
+	
+	I2C_SDASetOut(sI2C);
+	I2C_SendByte(sI2C,temp);
+	
+	if(!I2C_WaitAck(sI2C))
+	{
+		I2C_Stop(sI2C);
+		return;
+	}
+	//---------------------------写数据
+	I2C_SDASetOut(sI2C);
+	for(i=0;i<length;i++)
+	{
+		temp=pBuffer[i];
+		I2C_SendByte(sI2C,temp);
+		if(!I2C_WaitAck(sI2C))
+		{
+			I2C_Stop(sI2C);
+			return;
+		}
 	}
 }
 /*******************************************************************************
@@ -330,20 +417,129 @@ unsigned char I2C_ReadByte(sI2CDef *sI2C)
 {
 	unsigned char ucByte;
 	unsigned char i	=	0;
-	
-	I2C_Delay();
 	for(i=0;i<8;i++)
 	{
 		ucByte<<=1;
+		I2C_SCLLow(sI2C);
+		I2C_Delay();
+		
 		I2C_SCLHigh(sI2C);
 		I2C_Delay();
+		
 		if(I2C_ReadBit(sI2C))
 		{
 			ucByte+=1;
-		}
-		I2C_SCLLow(sI2C);
-		I2C_Delay();
+		}				
 	}
+	I2C_SCLLow(sI2C);
 	return ucByte;
 }
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	从I2C总线读取8个bits的数据  ,首先读出的是数据的最高位（MSB） 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned char I2C_ReadOneByte(sI2CDef *sI2C,unsigned short address)
+{
+	unsigned char ucByte;
+	unsigned char i	=	0;
+	unsigned char temp	=	0xA1;
+	I2C_Start(sI2C);
+	//---------------------------写器件地址
+	I2C_SendByte(sI2C,temp);
+	if(!I2C_WaitAck(sI2C))
+	{		
+		I2C_Stop(sI2C);
+		return 0;
+	}
+	//---------------------------写内存地址
+	temp	=	address;
+	
+	I2C_SDASetOut(sI2C);
+	I2C_SendByte(sI2C,temp);
+	if(!I2C_WaitAck(sI2C))
+	{
+		I2C_Stop(sI2C);
+		return 0;
+	}
+	//---------------------------启动读
+	temp	=	0xA1;
+	I2C_Start(sI2C);
+	I2C_SendByte(sI2C,temp);
+	if(!I2C_WaitAck(sI2C))
+	{		
+		I2C_Stop(sI2C);
+		return 0;
+	}
+	//---------------------------读数据
+	I2C_SDASetIn(sI2C);	//设置为上拉输入模式
+	ucByte	=	 I2C_ReadByte(sI2C);
+	
+	I2C_NAck(sI2C);								//CPU产生一个NACK信号(NACK即无应答信号)
+	I2C_Stop(sI2C);
 
+	return ucByte;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	从I2C总线读取8个bits的数据  ,首先读出的是数据的最高位（MSB） 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+unsigned short I2C_ReadBuffer(sI2CDef *sI2C,unsigned short address,unsigned char* pBuffer,unsigned short length)
+{
+	unsigned char ucByte;
+	unsigned short i	=	0;
+	unsigned char temp	=	0xA0;
+	I2C_Start(sI2C);
+	//---------------------------写器件地址
+	I2C_SendByte(sI2C,temp);
+	if(!I2C_WaitAck(sI2C))
+	{		
+		I2C_Stop(sI2C);
+		return 0;
+	}
+	//---------------------------写内存地址
+	temp	=	address;
+	
+	I2C_SDASetOut(sI2C);
+	I2C_SendByte(sI2C,temp);
+	if(!I2C_WaitAck(sI2C))
+	{
+		I2C_Stop(sI2C);
+		return 0;
+	}
+	//---------------------------启动读
+	temp	=	0xA1;
+	I2C_Start(sI2C);
+	I2C_SendByte(sI2C,temp);
+	if(!I2C_WaitAck(sI2C))
+	{		
+		I2C_Stop(sI2C);
+		return 0;
+	}
+	//---------------------------读数据
+	I2C_SDASetIn(sI2C);	//设置为上拉输入模式
+	for(i=0;i<length;i++)
+	{
+		pBuffer[i]=I2C_ReadByte(sI2C);
+		if(i>=length-1)
+		{
+			I2C_NAck(sI2C);								//CPU产生一个NACK信号(NACK即无应答信号)
+		}
+		else
+		{
+			I2C_Ack(sI2C);								//CPU产生一个ACK信号
+		}
+	}	
+	I2C_Stop(sI2C);
+
+	return ucByte;
+}

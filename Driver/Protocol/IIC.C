@@ -54,6 +54,8 @@ void IIC_Start(void)
 	
 	softiic->SDALow();	
 	IIC_Delayus(IICTime);
+	
+	softiic->SCLLow();
 }
 /*******************************************************************************
 *	函数名			:	IIC_Stop
@@ -76,6 +78,8 @@ void IIC_Stop(void)
 	
 	softiic->SDAHigh();
 	IIC_Delayus(IICTime);
+	
+	softiic->SCLLow();
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -247,19 +251,17 @@ unsigned char IIC_ReadOneByte(void)
 	unsigned char i	=	0;
 	unsigned char receive	=	0;
 	
-	
 	softiic->SDAReadEn();
 	softiic->SCLLow();
 	IIC_Delayus(IICTime);
 	
 	for(i=0;i<8;i++)
 	{
+		receive<<=1;
 		if(softiic->SDAStd())	//高电平
 			receive|=0x01;
 		else
-			receive&=0xFE;
-		receive<<=1;
-		
+			receive&=0xFE;		
 		//----------------产生一个时钟信号
 		softiic->SCLHigh();
 		IIC_Delayus(IICTime);

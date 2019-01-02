@@ -91,6 +91,10 @@
 	#include "Vl53l0x_TEST.H"
 #endif
 
+//*********************************EepromTest*********************************//
+#ifdef EepromTest
+	#include "EepromTest.H"
+#endif
 
 
 

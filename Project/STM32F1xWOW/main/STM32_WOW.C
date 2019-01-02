@@ -295,6 +295,11 @@ void WOW_Configuration(void)
 	Vl53l0xTest_Configuration();
 #endif
 
+//*********************************EepromTest*********************************//
+#ifdef EepromTest
+	EepromTest_Configuration();
+#endif
+
 }
 
 
@@ -582,6 +587,10 @@ void WOW_Server(void)
 	Vl53l0xTest_Server();
 #endif
 
+//*********************************EepromTest*********************************//
+#ifdef EepromTest
+	EepromTest_Server();
+#endif
 //IWDG_Feed();								//∂¿¡¢ø¥√≈π∑Œππ∑
 
 }
