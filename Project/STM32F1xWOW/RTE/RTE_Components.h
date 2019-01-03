@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xWOW' 
- * Target:  'EepromTest' 
+ * Target:  'TLE5012B' 
  */
 
 #ifndef RTE_COMPONENTS_H

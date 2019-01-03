@@ -48,6 +48,7 @@ unsigned	short time	=	0;
 unsigned	short dstime	=	0;
 unsigned  short seril	=	0;
 unsigned	short readdelay	=	0;
+unsigned	short timedelay=0;
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
 //->功能描述	:	 
@@ -71,6 +72,9 @@ void TLE5012B_Configuration(void)
 	
 	GPIO_Configuration_OPP50(GPIOB,GPIO_Pin_6);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
 	GPIO_Configuration_OPP50(GPIOB,GPIO_Pin_7);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	
+	GPIO_Configuration_IPU(CWtargePort,CWtargePin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
+	GPIO_Configuration_IPU(CCWtargePort,CCWtargePin);		//将GPIO相应管脚配置为上拉输入模式----V20170605
 	
 	PWM_OUT(TIM2,PWM_OUTChannel1,2,300);						//PWM设定-20161127版本
 	
@@ -105,39 +109,74 @@ void TLE5012B_Configuration(void)
 //->返回 		:
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 void TLE5012B_Server(void)
-{
+{	
+	unsigned char result=0;
+	goto targe;
 	
+	test:
 	if(time++>8000)
 	{		
 		time	=	0;
 	}
 	if(0	==	time)
-	{
-		
+	{		
 		angle1	=	ReadAngle();
 		angle1	=	ReadAngle();
 		angle2	=	angle1;
 		
-		cwflg	=	1;
+		cwflg	=	1;		//正转
 		anglecount	=	0;
 	}
 	else if(3000	==	time)
-	{
-		
+	{		
 		angle1	=	ReadAngle();
 		angle1	=	ReadAngle();
 		angle2	=	angle1;
 		
-		cwflg	=	2;
+		cwflg	=	2;		//反转
 		anglecount	=	0;
 	}
 	else if(6000<time)
 	{
 		cwflg	=	0;
 		anglecount	=	0;
+	}	
+	goto updatadsp;
+	
+	targe:
+	if(timedelay>0)
+	{
+		timedelay--;
+		goto updatadsp;
 	}
+	result=GPIO_ReadInputDataBit(CWtargePort,CWtargePin);
+	if(0==result)
+	{
+		angle1	=	ReadAngle();
+		angle1	=	ReadAngle();
+		angle2	=	angle1;
+		
+		cwflg	=	1;		//正转
+		anglecount	=	0;
+		timedelay=50;
+	}
+	result=GPIO_ReadInputDataBit(CCWtargePort,CCWtargePin);
+	if(0==result)
+	{
+		angle1	=	ReadAngle();
+		angle1	=	ReadAngle();
+		angle2	=	angle1;
+		
+		cwflg	=	2;		//反转
+		anglecount	=	0;
+		timedelay=50;
+	}
+
+	
+	updatadsp:
 	if(dstime++>100)
 	{
+		dstime=0;
 //		unsigned	short temp	=	0;
 //		dstime=0;
 //		TM1616_Display(&Seg1,angle1);
@@ -146,9 +185,11 @@ void TLE5012B_Server(void)
 //		TM1616_Display(&Seg2,anglecount);
 		
 //		displaycount(anglecount);
+		
 		TM1616_Display(&Seg1,angle1);
 		TM1616_Display(&Seg2,anglecount);
 	}
+	
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -449,7 +490,7 @@ void SPI5012B_Init(void)
 	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
 	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
 	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
 	SPI_InitStructure.SPI_CRCPolynomial = 7;
 	

@@ -24,6 +24,14 @@
 #define GPIO_CS_Pin_Name  GPIO_Pin_4
 #define GPIO_CS_Pin_Type  GPIOA
 
+//---------------正转触发
+#define	CWtargePort	GPIOA
+#define	CWtargePin	GPIO_Pin_9
+#define	ReadCW	(CWtargePort->IDR & CWtargePin)
+//---------------反转触发
+#define	CCWtargePort	GPIOA
+#define	CCWtargePin		GPIO_Pin_10
+#define	ReadCCW	(CCWtargePort->IDR & CCWtargePin)
 //以下内容一般不需变动
 #define SPI_CS_ENABLE  GPIO_ResetBits(GPIO_CS_Pin_Type, GPIO_CS_Pin_Name)       //片选脚电平拉低
 #define SPI_CS_DISABLE GPIO_SetBits(GPIO_CS_Pin_Type, GPIO_CS_Pin_Name)         //片选脚电平拉高
