@@ -35,7 +35,7 @@ void I2C_Start(sI2CDef *sI2C);
 
 
 
-void I2C_Delay(void);
+
 void I2C_SCLHigh(sI2CDef *sI2C);
 void I2C_SCLLow(sI2CDef *sI2C);
 void I2C_SDAHigh(sI2CDef *sI2C);
@@ -61,5 +61,9 @@ unsigned char I2C_ReadOneByte(sI2CDef *sI2C,unsigned short address);							//´ÓI
 unsigned short I2C_ReadBuffer(sI2CDef *sI2C,unsigned short address,unsigned char* pBuffer,const unsigned short length);
 
 
+
+
+void I2C_Delayus(unsigned	short Time);
+void I2C_Delayms(unsigned	short Time);
 #endif
 

@@ -299,6 +299,93 @@ void GPIO_Configuration_IPU(
 	GPIO_Init(GPIOx,&GPIO_InitStructure);			//GPIOA	
 }
 /*******************************************************************************
+* 函数名		:	GPIO_Configuration_IPU
+* 功能描述	:	将GPIO相应管脚配置为上拉输入模式----V20170605
+* 输入		:	GPIOx--GPIO端口，GPIO_Pin_n--GPIO管脚号
+* 输出		:
+* 返回 		:
+*******************************************************************************/
+void GPIO_RegConfiguration_IPU(
+														GPIO_TypeDef* GPIOx,							//GPIO端口,x=A/B/C/D/E/F/G
+														u16 GPIO_Pin_n										//GPIO管脚号n=0~15/All
+														)
+{
+u32 currentmode = 0x00, currentpin = 0x00, pinpos = 0x00, pos = 0x00;
+  u32 tmpreg = 0x00, pinmask = 0x00;
+	if(0	==	GPIOx)
+	{
+		return;
+	}
+  /* Check the parameters */
+  assert_param(IS_GPIO_ALL_PERIPH(GPIOx));
+  assert_param(IS_GPIO_MODE(GPIO_InitStruct->GPIO_Mode));
+  assert_param(IS_GPIO_PIN(GPIO_InitStruct->GPIO_Pin));
+	assert_param(IS_GET_GPIO_PIN(GPIO_InitStruct->GPIO_Pin));   
+  
+/*---------------------------- GPIO Mode Configuration -----------------------*/
+
+/*---------------------------- GPIO CRL Configuration ------------------------*/
+  /* Configure the eight low port pins */
+  if ((GPIO_Pin_n & ((u32)0x00FF)) != 0x00)
+  {
+    tmpreg = GPIOx->CRL;
+
+    for (pinpos = 0x00; pinpos < 0x08; pinpos++)
+    {
+      pos = ((u32)0x01) << pinpos;
+      /* Get the port pins position */
+      currentpin = GPIO_Pin_n & pos;
+
+      if (currentpin == pos)
+      {
+        pos = pinpos << 2;
+        /* Clear the corresponding low control register bits */
+        pinmask = ((u32)0x0F) << pos;
+        tmpreg &= ~pinmask;
+
+        /* Write the mode configuration in the corresponding bits */
+        tmpreg |= (currentmode << pos);
+
+        /* Set the corresponding ODR bit */
+
+          GPIOx->BSRR = (((u32)0x01) << pinpos);
+
+      }
+    }
+    GPIOx->CRL = tmpreg;
+  }
+
+/*---------------------------- GPIO CRH Configuration ------------------------*/
+  /* Configure the eight high port pins */
+  if (GPIO_Pin_n > 0x00FF)
+  {
+    tmpreg = GPIOx->CRH;
+    for (pinpos = 0x00; pinpos < 0x08; pinpos++)
+    {
+      pos = (((u32)0x01) << (pinpos + 0x08));
+      /* Get the port pins position */
+      currentpin = ((GPIO_Pin_n) & pos);
+      if (currentpin == pos)
+      {
+        pos = pinpos << 2;
+        /* Clear the corresponding high control register bits */
+        pinmask = ((u32)0x0F) << pos;
+        tmpreg &= ~pinmask;
+
+        /* Write the mode configuration in the corresponding bits */
+        tmpreg |= (currentmode << pos);
+
+
+        /* Set the corresponding ODR bit */
+
+          GPIOx->BSRR = (((u32)0x01) << (pinpos + 0x08));
+
+      }
+    }
+    GPIOx->CRH = tmpreg;
+  }
+}
+/*******************************************************************************
 * 函数名		:	GPIO_Configuration_OOD2
 * 功能描述	:	将GPIO相应管脚配置为OD(开漏)输出模式，最大速度2MHz----V20170605
 * 输入		:	GPIOx--GPIO端口，GPIO_Pin_n--GPIO管脚号
@@ -435,6 +522,82 @@ void GPIO_Configuration_OPP50(
 	GPIO_ClockConf(GPIOx,GPIO_Pin_n);
 	//3）初始化GPIO
 	GPIO_Init(GPIOx,&GPIO_InitStructure);			//GPIOA	
+}
+/*******************************************************************************
+* 函数名		:	GPIO_Configuration_OPP50
+* 功能描述	:	将GPIO相应管脚配置为PP(推挽)输出模式，最大速度10MHz----V20170605
+* 输入		:	GPIOx--GPIO端口，GPIO_Pin_n--GPIO管脚号
+* 输出		:
+* 返回 		:
+*******************************************************************************/
+void GPIO_RegConfiguration_OPP50(
+														GPIO_TypeDef* GPIOx,							//GPIO端口,x=A/B/C/D/E/F/G
+														u16 GPIO_Pin_n										//GPIO管脚号n=0~15/All
+														)
+{
+u32 currentmode = 0x00, currentpin = 0x00, pinpos = 0x00, pos = 0x00;
+  u32 tmpreg = 0x00, pinmask = 0x00;
+	if(0	==	GPIOx)
+	{
+		return;
+	}
+  /* Check the parameters */
+  assert_param(IS_GPIO_ALL_PERIPH(GPIOx));
+  assert_param(IS_GPIO_MODE(GPIO_InitStruct->GPIO_Mode));
+  assert_param(IS_GPIO_PIN(GPIO_InitStruct->GPIO_Pin));
+	assert_param(IS_GET_GPIO_PIN(GPIO_InitStruct->GPIO_Pin));   
+  
+/*---------------------------- GPIO Mode Configuration -----------------------*/
+    currentmode |= GPIO_Speed_50MHz;
+
+/*---------------------------- GPIO CRL Configuration ------------------------*/
+  /* Configure the eight low port pins */
+  if ((GPIO_Pin_n & ((u32)0x00FF)) != 0x00)
+  {
+    tmpreg = GPIOx->CRL;
+
+    for (pinpos = 0x00; pinpos < 0x08; pinpos++)
+    {
+      pos = ((u32)0x01) << pinpos;
+      /* Get the port pins position */
+      currentpin = (GPIO_Pin_n) & pos;
+
+      if (currentpin == pos)
+      {
+        pos = pinpos << 2;
+        /* Clear the corresponding low control register bits */
+        pinmask = ((u32)0x0F) << pos;
+        tmpreg &= ~pinmask;
+
+        /* Write the mode configuration in the corresponding bits */
+        tmpreg |= (currentmode << pos);
+      }
+    }
+    GPIOx->CRL = tmpreg;
+  }
+/*---------------------------- GPIO CRH Configuration ------------------------*/
+  /* Configure the eight high port pins */
+  if (GPIO_Pin_n > 0x00FF)
+  {
+    tmpreg = GPIOx->CRH;
+    for (pinpos = 0x00; pinpos < 0x08; pinpos++)
+    {
+      pos = (((u32)0x01) << (pinpos + 0x08));
+      /* Get the port pins position */
+      currentpin = ((GPIO_Pin_n) & pos);
+      if (currentpin == pos)
+      {
+        pos = pinpos << 2;
+        /* Clear the corresponding high control register bits */
+        pinmask = ((u32)0x0F) << pos;
+        tmpreg &= ~pinmask;
+
+        /* Write the mode configuration in the corresponding bits */
+        tmpreg |= (currentmode << pos);
+      }
+    }
+    GPIOx->CRH = tmpreg;
+  }
 }
 /*******************************************************************************
 * 函数名		:	GPIO_Configuration_AOD2

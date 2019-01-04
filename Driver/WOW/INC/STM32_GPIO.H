@@ -50,6 +50,7 @@ void GPIO_Configuration_INF(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);			//½«GPIOÏàÓ¦
 
 void GPIO_Configuration_IPD(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªÏÂÀ­ÊäÈëÄ£Ê½----V20170605
 void GPIO_Configuration_IPU(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªÉÏÀ­ÊäÈëÄ£Ê½----V20170605
+void GPIO_RegConfiguration_IPU(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªÉÏÀ­ÊäÈëÄ£Ê½----V20190104--¼Ä´æÆ÷°æ±¾
 
 
 //Êä³öÄ£Ê½
@@ -60,6 +61,7 @@ void GPIO_Configuration_OOD50	(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);			//½«GPIOÏ
 void GPIO_Configuration_OPP2	(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È2MHz----V20170605
 void GPIO_Configuration_OPP10	(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È10MHz----V20170605
 void GPIO_Configuration_OPP50	(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È50MHz----V20170605
+void GPIO_RegConfiguration_OPP50	(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);	//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªPP(ÍÆÍì)Êä³öÄ£Ê½£¬×î´óËÙ¶È50MHz----V20190104--¼Ä´æÆ÷°æ±¾
 
 void GPIO_Configuration_AOD2	(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªAOD(¸´ÓÃ¿ªÂ©)Êä³öÄ£Ê½£¬×î´óËÙ¶È2MHz----V20170605
 void GPIO_Configuration_AOD10	(GPIO_TypeDef* GPIOx,	u16 GPIO_Pin_n);			//½«GPIOÏàÓ¦¹Ü½ÅÅäÖÃÎªAOD(¸´ÓÃ¿ªÂ©)Êä³öÄ£Ê½£¬×î´óËÙ¶È10MHz----V20170605

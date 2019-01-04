@@ -27,7 +27,7 @@
 
 sI2CDef At24c02;
 
-unsigned	char ReadBuffer[128]={0};
+unsigned	char ReadBuffer[5000]={0};
 	
 unsigned	short time=	0;
 
@@ -65,13 +65,13 @@ void EepromTest_Server(void)
 	if(time==1)
 	{
 		
-		I2C_ReadBuffer(&At24c02,0,ReadBuffer,128);
+		I2C_ReadBuffer(&At24c02,0,ReadBuffer,256);
 	}
-	else if(time==2000)
+	else if(time==5000)
 	{
-		memset(ReadBuffer,0x00,128);
+		//memset(ReadBuffer,0x00,2048);
 	}
-	else if(time>=4000)
+	else if(time>=6000)
 	{
 		time=	0;
 	}

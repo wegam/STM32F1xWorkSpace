@@ -3,7 +3,7 @@
 
 #include "STM32_GPIO.H"
 #include "STM32_SYSTICK.H"
-
+#include "STM32_SYSTICK.H"
 
 //void I2CDelay(unsigned short Time);
 //void I2C_SCLHigh(sI2CDef *sI2C);
@@ -12,7 +12,7 @@
 //void I2C_SDALow(sI2CDef *sI2C);
 //void I2C_SDASetOut(sI2CDef *sI2C);
 //void I2C_SDASetIn(sI2CDef *sI2C);
-
+unsigned	char i2cdelaytime=100;
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
@@ -46,20 +46,7 @@ void I2C_Server(sI2CDef *sI2C)
 	
 }
 
-/*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-void I2C_Delay(void)
-{
-	unsigned short Time	=	1;
-	while(Time--);
-}
+
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
@@ -123,7 +110,8 @@ void I2C_SDALow(sI2CDef *sI2C)
 *******************************************************************************/
 void I2C_SDASetOut(sI2CDef *sI2C)
 {
-	GPIO_Configuration_OPP50	(sI2C->SDA_Port,sI2C->SDA_Pin);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	I2C_SDALow(sI2C);
+	GPIO_RegConfiguration_OPP50	(sI2C->SDA_Port,sI2C->SDA_Pin);	//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20190104--寄存器版本
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -136,7 +124,8 @@ void I2C_SDASetOut(sI2CDef *sI2C)
 *******************************************************************************/
 void I2C_SDASetIn(sI2CDef *sI2C)
 {
-	GPIO_Configuration_IPU	(sI2C->SDA_Port,sI2C->SDA_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
+	I2C_SDALow(sI2C);
+	GPIO_Configuration_INF	(sI2C->SDA_Port,sI2C->SDA_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -151,13 +140,10 @@ unsigned char I2C_WaitAck(sI2CDef *sI2C)
 {
 	I2CACKDef ack;
 	unsigned short i	=	0;
-	
-	I2C_SDAHigh(sI2C);
-	I2C_SDASetIn(sI2C);	//设置为上拉输入模式
-	
 
+	I2C_SDASetIn(sI2C);	//设置为上拉输入模式
 	I2C_SCLHigh(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 	while((GPIO_ReadInputDataBit(sI2C->SDA_Port,sI2C->SDA_Pin))&&i++<=20020)
 	if(i>=20000)		//应答超时
 	{
@@ -188,15 +174,15 @@ void I2C_Ack(sI2CDef *sI2C)
 	I2C_SDASetOut(sI2C);
 	
 	I2C_SDALow(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 	
 	I2C_SCLHigh(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 	
 	I2C_SCLLow(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 	I2C_SDAHigh(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -212,13 +198,13 @@ void I2C_NAck(sI2CDef *sI2C)
 	I2C_SDASetOut(sI2C);
 	
 	I2C_SDAHigh(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 	
 	I2C_SCLHigh(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 	
 	I2C_SCLLow(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 	
 	I2C_SDALow(sI2C);
 }
@@ -249,16 +235,17 @@ unsigned char I2C_ReadBit(sI2CDef *sI2C)
 *******************************************************************************/
 void I2C_Start(sI2CDef *sI2C)
 {
+	I2C_SCLLow(sI2C);
 	I2C_SDASetOut(sI2C);
 	//=====================================SDA,SCL设置为高
 	I2C_SDAHigh(sI2C);
 	I2C_SCLHigh(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 	//=====================================SDA向低电平跳变
 	I2C_SDALow(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 	I2C_SCLLow(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -275,10 +262,10 @@ void I2C_Stop(sI2CDef *sI2C)
 	//=====================================SDA设置为低,SCL设置为高
 	I2C_SDALow(sI2C);
 	I2C_SCLHigh(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 	//=====================================SDA由低电平向高电平跳变
 	I2C_SDAHigh(sI2C);
-	I2C_Delay();
+	I2C_Delayus(i2cdelaytime);
 //	I2C_SCLLow(sI2C);
 //	I2C_Delay();
 }
@@ -305,13 +292,13 @@ void I2C_SendByte(sI2CDef *sI2C,unsigned char ucByte)
 		{
 			I2C_SDALow(sI2C);
 		}
-		I2C_Delay();
+		I2C_Delayus(i2cdelaytime);
 		I2C_SCLHigh(sI2C);
-		I2C_Delay();
+		I2C_Delayus(i2cdelaytime);
 		I2C_SCLLow(sI2C);
 		
 		ucByte<<=1;		//左移1个bit
-		I2C_Delay();
+		I2C_Delayus(i2cdelaytime);
 	}
 }
 /*******************************************************************************
@@ -419,19 +406,21 @@ unsigned char I2C_ReadByte(sI2CDef *sI2C)
 	unsigned char i	=	0;
 	for(i=0;i<8;i++)
 	{
-		ucByte<<=1;
+		ucByte<<=1;	
 		I2C_SCLLow(sI2C);
-		I2C_Delay();
+		I2C_Delayus(i2cdelaytime);
 		
 		I2C_SCLHigh(sI2C);
-		I2C_Delay();
+		I2C_Delayus(i2cdelaytime);
 		
 		if(I2C_ReadBit(sI2C))
 		{
 			ucByte+=1;
-		}				
+		}		
 	}
 	I2C_SCLLow(sI2C);
+	I2C_Delayus(i2cdelaytime);
+	
 	return ucByte;
 }
 /*******************************************************************************
@@ -526,9 +515,9 @@ unsigned short I2C_ReadBuffer(sI2CDef *sI2C,unsigned short address,unsigned char
 		return 0;
 	}
 	//---------------------------读数据
-	I2C_SDASetIn(sI2C);	//设置为上拉输入模式
 	for(i=0;i<length;i++)
 	{
+		I2C_SDASetIn(sI2C);	//设置为上拉输入模式
 		pBuffer[i]=I2C_ReadByte(sI2C);
 		if(i>=length-1)
 		{
@@ -542,4 +531,31 @@ unsigned short I2C_ReadBuffer(sI2CDef *sI2C,unsigned short address,unsigned char
 	I2C_Stop(sI2C);
 
 	return ucByte;
+}
+
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void I2C_Delayus(unsigned	short Time)
+{
+	SysTick_DeleyuS(Time);				//SysTick延时nmS
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void I2C_Delayms(unsigned	short Time)
+{
+	SysTick_DeleymS(Time);				//SysTick延时nmS
 }
