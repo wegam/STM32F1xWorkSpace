@@ -341,9 +341,6 @@ unsigned short Check_SendBuff(enCCPortDef Port)
   }
   return  0;
 }
-
-
-
 /*******************************************************************************
 * 函数名			:	Cabinetmsg_Process
 * 功能描述		:	柜消息处理：处理上位机下发消息，处理主柜下发消息，处理层板消息 
@@ -500,6 +497,7 @@ void Msg_ProcessCB(enCCPortDef Port,unsigned char* pBuffer,unsigned short length
   if(0x00 != ampframe->msg.addr.address2)   //层地址不为0表示需要转发
   {
     Laynet_Send((unsigned char*)ampframe,framlength);     //往层板发送消息
+    CMD_Process(pBuffer,framlength);
   }
   //---------------------不需要转发，消息内容针对柜控制板
   else
@@ -632,18 +630,36 @@ void CMD_Process(unsigned char* pBuffer,unsigned short length)
     }
     return;
   }
+  //---------------------------层板供电控制
+  if(PWD ==  (*cmd&Down)) //最高位为0表示上往下发
+  {
+    if(0==AMP.Flag.CabBD)  //柜控制板
+      return;
+    if(0  ==  ampframe->msg.data[0])    //0为开锁命令
+    {       
+      LayPowerOff;//关闭层板供电
+    }
+    else
+    {
+      LayPowerOn;//打开层板供电
+    }
+    return;
+  }
   //---------------------------开背光灯命令
   if(LED ==  (*cmd&Down)) //最高位为0表示上往下发
   {
     if(AMP.Flag.CabBD)  //柜控制板
     {
-      if(0  !=  ampframe->msg.data[0])    //1为开LED
-      {
-        BackLightOn;   //开LED
-      }
-      else
-      {
-        BackLightOff;  //关LED
+      if(0==ampframe->msg.addr.address2)
+       {
+        if(0  !=  ampframe->msg.data[0])    //1为开LED
+        {
+          BackLightOn;   //开LED
+        }
+        else
+        {
+          BackLightOff;  //关LED
+        }
       }
       return;
     }
@@ -739,7 +755,6 @@ unsigned short Releas_OneBuffer(enCCPortDef Port)
   }
   return  0;
 }
-
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	AddSendData
