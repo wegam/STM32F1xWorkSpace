@@ -110,6 +110,7 @@ void I2C_SDALow(sI2CDef *sI2C)
 *******************************************************************************/
 void I2C_SDASetOut(sI2CDef *sI2C)
 {
+	I2C_SCLLow(sI2C);
 	I2C_SDALow(sI2C);
 	GPIO_RegConfiguration_OPP50	(sI2C->SDA_Port,sI2C->SDA_Pin);	//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20190104--寄存器版本
 }
@@ -124,6 +125,7 @@ void I2C_SDASetOut(sI2CDef *sI2C)
 *******************************************************************************/
 void I2C_SDASetIn(sI2CDef *sI2C)
 {
+	I2C_SCLLow(sI2C);
 	I2C_SDALow(sI2C);
 	GPIO_Configuration_INF	(sI2C->SDA_Port,sI2C->SDA_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
 }
@@ -140,7 +142,7 @@ unsigned char I2C_WaitAck(sI2CDef *sI2C)
 {
 	I2CACKDef ack;
 	unsigned short i	=	0;
-
+	I2C_SCLLow(sI2C);
 	I2C_SDASetIn(sI2C);	//设置为上拉输入模式
 	I2C_SCLHigh(sI2C);
 	I2C_Delayus(i2cdelaytime);
