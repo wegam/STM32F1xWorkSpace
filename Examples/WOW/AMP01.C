@@ -120,7 +120,8 @@ void AMP01_Server(void)
 	IWDG_Feed();								//独立看门狗喂狗
 	
   SwitchID_Server();
-  LockServer();
+  RequestServer();
+  StatusServer();
   Tim_Server();
 }
 /*******************************************************************************
@@ -368,6 +369,260 @@ void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
 *******************************************************************************/
 void Msg_ProcessCB(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
 {  
+  switch(Port)
+  {
+        case PcPort:Msg_ProcessPcPort(Port,pBuffer,length);     //PC端口
+          break;
+        case CabPort:Msg_ProcessCbPort(Port,pBuffer,length);    //柜端口
+          break;
+        case LayPort:Msg_ProcessLyPort(Port,pBuffer,length);    //层端口
+          break;
+        case CardPort:Msg_ProcessCaPort(Port,pBuffer,length);   //读卡器端口
+          break;
+        default:
+          break;
+  }
+}
+/*******************************************************************************
+* 函数名			:	Cabinetmsg_Process
+* 功能描述		:	柜消息处理：处理上位机下发消息，处理主柜下发消息，处理层板消息 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
+{  
+  unsigned  char result       = 0; 
+  unsigned  char address      = 0;  
+  unsigned  short framlength  = 0; 
+  unsigned  char  Cmd         = 0;  
+  unsigned  char* paddrbac    = pBuffer;         //备份数据缓存起始地址
+  
+  stampphydef* ampframe=NULL;
+  
+  //-------------------------协议检查
+  framlength	=	getframe(pBuffer,&length);    //判断帧消息内容是否符合协议
+  if(0== framlength)
+  {
+    memset(paddrbac,0x00,gDatasize);             //清除数据
+    return;
+  }
+  result  = ackcheck(pBuffer);                //检查是否为应答消息,应答消息返回1  
+  if(1==result)
+  {
+    if(AMP.Flag.WaitAck)      //如果为等待应答状态，则释放一个缓存
+    {
+      AMP.Flag.WaitAck=0;
+      Releas_OneBuffer(Port);        //释放一个发送缓存
+    }
+    return;
+  }  
+  //-------------------------根据地址转发数据：广播数据发送到副柜和本柜层板
+  ampframe  = (stampphydef*)pBuffer;
+  Cmd = ampframe->msg.cmd.cmd;  
+  
+  //-------------------------上传数据:柜接口
+  //主柜：接收到的数据上传到PC并向下应答
+  //副柜：接收到下发数据判断地址,如果地址为本地址，向上应答(广播地址不应答)，如果是上传数据，不处理
+  //1）-----------------上传数据:主柜接收到的数据上传到PC，并向下应答，副柜不处理
+  if(1==ampframe->msg.cmd.dir)
+  {
+    if(1==AMP.SwData.MainFlg)
+    {
+      ackFrame(Port,0);   //向下应答
+      PCnet_Send((unsigned char*)ampframe,framlength);     //往PC发送消息
+      return;
+    }    
+    else
+      return;
+  }
+  //2）-----------------下发数据：地址为本地址或者广播地址(0xFF)需要进行处理，如果地址为本地址，向上应答(广播地址不应答)
+  address=ampframe->msg.addr.address1;
+  if(0==address)  //柜地址为空
+  {
+    return;
+  }
+  if((AMP.SwData.ID!=address))  //不属于主柜消息
+  {
+    Cabinet_Send((unsigned char*)ampframe,framlength);//往副柜发送
+    if(0xFF==address) //广播地址
+    {
+      AMP.Flag.WaitAck=0;   //不需要副柜应答      
+    }
+    else
+    {
+      AMP.Flag.WaitAck=1;   //需要副柜应答
+      return;
+    }
+  }
+  //===================================柜接口接收到的下发数据处理
+  if(0xFF!=address)   //非广播地址，向上应答
+  {
+    ackFrame(Port,1); //向上应答
+  }
+  //1)-----------------检查层地址，判断是否需要将数据发往层，发往层时，需要开锁，开背光灯
+  address=ampframe->msg.addr.address2;
+  if(0!=address)
+  {
+    AMP.Req.unlockqust=1;//请求开锁
+    AMP.Req.reslock=0;
+    AMP.Req.BLon=1;
+    AMP.Req.BLoff=0;
+    AMP.Req.PLon=1; 
+    AMP.Req.PLoff=0; 
+    AMP.Flag.WaitAck=1;   //需要应答
+    Laynet_Send((unsigned char*)ampframe,framlength);     //往层板发送消息
+  }
+  //2)-----------------命令处理：灯控制/锁控制/供电
+  if(LED ==  Cmd)   //背光控制命令
+  {
+    AMP.Req.BLon=0;
+    AMP.Req.BLoff=0;
+    if(ampframe->msg.data[0])
+      AMP.Req.BLon=1;
+    else
+      AMP.Req.BLoff=1;
+  }
+  else if(PWD ==  Cmd)   //层板供电控制命令
+  {
+    AMP.Req.PLon  =0;
+    AMP.Req.PLoff =0;
+    if(ampframe->msg.data[0])
+      AMP.Req.PLon=1;
+    else
+      AMP.Req.PLoff=1;
+  }
+  else if(CTL ==  Cmd)   //锁控制命令
+  {
+    AMP.Req.reslock  =0;
+    AMP.Req.unlockqust =0;
+    if(ampframe->msg.data[0])
+      AMP.Req.unlockqust=1;
+    else
+      AMP.Req.reslock=1;
+  }
+}
+/*******************************************************************************
+* 函数名			:	Cabinetmsg_Process
+* 功能描述		:	柜消息处理：处理上位机下发消息，处理主柜下发消息，处理层板消息 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
+{  
+  unsigned  char result       = 0; 
+  unsigned  char address      = 0;  
+  unsigned  short framlength  = 0; 
+  unsigned  char  Cmd         = 0;  
+  unsigned  char* paddrbac    = pBuffer;         //备份数据缓存起始地址
+  
+  stampphydef* ampframe=NULL;
+  
+  //-------------------------协议检查
+  framlength	=	getframe(pBuffer,&length);    //判断帧消息内容是否符合协议
+  if(0== framlength)
+  {
+    memset(paddrbac,0x00,gDatasize);             //清除数据
+    return;
+  }
+  result  = ackcheck(pBuffer);                //检查是否为应答消息,应答消息返回1  
+  if(1==result)
+  {
+    if(AMP.Flag.WaitAck)      //如果为等待应答状态，则释放一个缓存
+    {
+      AMP.Flag.WaitAck=0;
+      Releas_OneBuffer(Port);        //释放一个发送缓存
+    }
+    return;
+  }  
+  //-------------------------根据地址转发数据：广播数据发送到副柜和本柜层板
+  ampframe  = (stampphydef*)pBuffer;
+  Cmd = ampframe->msg.cmd.cmd;  
+  
+  //-------------------------上传数据:柜接口
+  //主柜：接收到的数据上传到PC并向下应答
+  //副柜：接收到下发数据判断地址,如果地址为本地址，向上应答(广播地址不应答)，如果是上传数据，不处理
+  //1）-----------------上传数据:主柜接收到的数据上传到PC，并向下应答，副柜不处理
+  if(1==ampframe->msg.cmd.dir)
+  {
+    if(1==AMP.SwData.MainFlg)
+    {
+      ackFrame(Port,0);   //向下应答
+      PCnet_Send((unsigned char*)ampframe,framlength);     //往PC发送消息
+      return;
+    }    
+    else
+      return;
+  }
+  //2）-----------------下发数据：地址为本地址或者广播地址(0xFF)需要进行处理，如果地址为本地址，向上应答(广播地址不应答)
+  address=ampframe->msg.addr.address1;
+  if((0xFF!=address)&&(AMP.SwData.ID!=address))
+  {
+    return;   //地址不对，不处理
+  }
+  //===================================柜接口接收到的下发数据处理
+  if(0xFF!=address)   //非广播地址，向上应答
+  {
+    ackFrame(Port,1); //向上应答
+  }
+  //1)-----------------检查层地址，判断是否需要将数据发往层，发往层时，需要开锁，开背光灯
+  address=ampframe->msg.addr.address2;
+  if(0!=address)
+  {
+    AMP.Req.unlockqust=1;//请求开锁
+    AMP.Req.reslock=0;
+    AMP.Req.BLon=1;
+    AMP.Req.BLoff=0;
+    AMP.Req.PLon=1; 
+    AMP.Req.PLoff=0;    
+    Laynet_Send((unsigned char*)ampframe,framlength);     //往层板发送消息
+  }
+  //2)-----------------命令处理：灯控制/锁控制/供电
+  if(LED ==  Cmd)   //背光控制命令
+  {
+    AMP.Req.BLon=0;
+    AMP.Req.BLoff=0;
+    if(ampframe->msg.data[0])
+      AMP.Req.BLon=1;
+    else
+      AMP.Req.BLoff=1;
+  }
+  else if(PWD ==  Cmd)   //层板供电控制命令
+  {
+    AMP.Req.PLon  =0;
+    AMP.Req.PLoff =0;
+    if(ampframe->msg.data[0])
+      AMP.Req.PLon=1;
+    else
+      AMP.Req.PLoff=1;
+  }
+  else if(CTL ==  Cmd)   //锁控制命令
+  {
+    AMP.Req.reslock  =0;
+    AMP.Req.unlockqust =0;
+    if(ampframe->msg.data[0])
+      AMP.Req.unlockqust=1;
+    else
+      AMP.Req.reslock=1;
+  }
+  //CMD_Process(pBuffer,framlength);
+}
+/*******************************************************************************
+* 函数名			:	Cabinetmsg_Process
+* 功能描述		:	柜消息处理：处理上位机下发消息，处理主柜下发消息，处理层板消息 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void Msg_ProcessCaPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
+{  
   unsigned  char result       = 0; 
   unsigned  char address      = 0;  
   unsigned  short framlength  = 0;  
@@ -406,7 +661,174 @@ void Msg_ProcessCB(enCCPortDef Port,unsigned char* pBuffer,unsigned short length
   framlength	=	getframe(pBuffer,&length);    //判断帧消息内容是否符合协议
   if(0== framlength)
   {
-    memset(paddrbac,0x00,ccsize);             //清除数据
+    memset(paddrbac,0x00,gDatasize);             //清除数据
+    return;
+  }
+  result  = ackcheck(pBuffer);                //检查是否为应答消息,应答消息返回1  
+  if(1==result)
+  {
+    Releas_OneBuffer(Port);        //释放一个发送缓存
+    return;
+  }
+  
+  //-------------------------根据地址转发数据：广播数据发送到副柜和本柜层板
+  ampframe  = (stampphydef*)pBuffer;
+  Cmd = ampframe->msg.cmd;
+  
+  
+  //-------------------------下发数据
+  if(0  ==  Cmd.dir)
+  {    
+    if(PcPort == Port)
+    {
+      ackFrame(Port,1); //向上应答
+      if(AMP.SwData.ID  ==  ampframe->msg.addr.address1)    //柜地址
+      {
+        goto CabinetSelfDownDataProcess;
+      }
+      else if(0xFF  ==  ampframe->msg.addr.address1)      //广播地址--对所有柜
+      {
+        Cabinet_Send((unsigned char*)ampframe,framlength);           //往副柜发送消息
+        goto CabinetSelfDownDataProcess;
+      }
+      else
+      {
+        Cabinet_Send((unsigned char*)ampframe,framlength);           //往副柜发送消息
+        return;
+      }
+    }
+    else if(CabPort == Port)    //柜接口接收到下发数据要做地址判断
+    {
+      if(AMP.SwData.ID  ==  ampframe->msg.addr.address1)
+      {
+        ackFrame(CabPort,1); //向上应答
+        //goto CabinetSelfDownDataProcess;
+      }
+      else if(0xFF  ==  ampframe->msg.addr.address1)  //广播数据
+      {
+        //goto CabinetSelfDownDataProcess;
+      }
+      else    //其它柜数据：退出，不处理
+      {
+        return;
+      }
+      goto CabinetSelfDownDataProcess;
+    }
+    else if(LayPort == Port)  //层控制接口无下发数据，只有上传数据
+    {
+      //CMD_Process((unsigned char*)ampframe,framlength);
+      return;
+    }    
+  }
+  //-------------------------上传数据
+  else
+  {    
+    if(PcPort == Port)    //PC口只下发消息
+    {
+      return;
+    }
+    else if(CabPort == Port)  //柜接口接收到数据，如果为主机，则应答，再上传到PC端口，如果是副柜，上传到PC端口，不应答
+    {
+      if(AMP.SwData.MainFlg)  //主柜接收到上柜端口数据需要应答
+      {
+        ackFrame(Port,0);   //向下应答
+      }
+      PCnet_Send((unsigned char*)ampframe,framlength);     //往PC发送消息
+      return;
+    }
+    else if(LayPort == Port)
+    {
+      ackFrame(Port,0);   //向下应答
+      goto CabinetSelfUpDataProcess;
+    }
+  }
+  
+  return;
+  
+  //----------------------下发消息需要本柜处理时会执行此过程
+  CabinetSelfDownDataProcess:     //本柜接收到的上级下发消息处理：根据第二级地址确定是否需要转发
+  
+  //---------------------检查此消息是否需要转发到层
+  if(0x00 != ampframe->msg.addr.address2)   //层地址不为0表示需要转发
+  {
+    Laynet_Send((unsigned char*)ampframe,framlength);     //往层板发送消息
+    CMD_Process(pBuffer,framlength);
+  }
+  //---------------------不需要转发，消息内容针对柜控制板
+  else
+  {
+    CMD_Process(pBuffer,framlength);
+  }
+  return;
+  
+  //----------------------上报类型的消息address1为0时会执行此过程
+  CabinetSelfUpDataProcess:     //接收到层上报的消息：需要添加柜地址，如果本柜为主柜，则上传到PC，如果为副柜，则上传到主柜
+  //----------------------补充数据
+  ampframe->msg.addr.address1 = AMP.SwData.ID;    //添加ID
+  ampframe->msg.cmd.dir       = 1;                //传输方向设定为上传模式
+  SetCrc((unsigned char*)ampframe,&framlength);   //重新计算CRC
+  //----------------------根据是否为主柜选择消息传输接口
+  if(AMP.SwData.MainFlg)        //主柜：通过PC接口上传
+  {
+    PCnet_Send((unsigned char*)ampframe,framlength);     //往PC发送消息
+  }
+  else    //辅柜：上传到PC端口和副柜接口
+  {
+    PCnet_Send((unsigned char*)ampframe,framlength);     //往PC发送消息
+    Cabinet_Send((unsigned char*)ampframe,framlength);  //通过柜接口向主柜发送消息
+  }
+  return;
+}
+/*******************************************************************************
+* 函数名			:	Cabinetmsg_Process
+* 功能描述		:	柜消息处理：处理上位机下发消息，处理主柜下发消息，处理层板消息 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
+{  
+  unsigned  char result       = 0; 
+  unsigned  char address      = 0;  
+  unsigned  short framlength  = 0;  
+  unsigned  char* paddrbac    = pBuffer;         //备份数据缓存起始地址
+  
+  stampphydef* ampframe=NULL;
+  stcmddef    Cmd;
+  //-------------------------读卡器端口:读卡器接口接收的数据只通过柜接口或者PC接口上传
+  if(CardPort  == Port)   //读卡器接口无协议，只打包数据透传
+  {
+    unsigned  char  databuffer[64]={0};   
+    //-------------------------读卡器端口接收到数据
+    memcpy(databuffer,pBuffer,length);
+    framlength  = length;
+    framlength  = PaketUpMsg(databuffer,ICR,&framlength);
+    //-------------------------设置地址:柜控制板地址段为address1
+    ampframe  = (stampphydef*)databuffer;
+    ampframe->msg.addr.address1 = AMP.SwData.ID;
+    ampframe->msg.addr.address2 = 0;
+    ampframe->msg.addr.address3 = 0;
+    //-------------------------设置CRC和结束符
+    SetCrc(databuffer,&framlength);
+    //-------------------------检查本柜是否为主柜
+    if(1==AMP.SwData.MainFlg)   //主柜--通过PC接口上传
+    {
+      PCnet_Send(databuffer,framlength);
+    }
+    else  //副柜--通过副柜接口上传
+    {
+      //PCnet_Send(databuffer,framlength);
+      Cabinet_Send(databuffer,framlength);     //往副柜发送消息
+    }
+    return;
+  }
+  //-------------------------协议检查
+  framlength	=	getframe(pBuffer,&length);    //判断帧消息内容是否符合协议
+  if(0== framlength)
+  {
+    memset(paddrbac,0x00,gDatasize);             //清除数据
     return;
   }
   result  = ackcheck(pBuffer);                //检查是否为应答消息,应答消息返回1  
@@ -556,7 +978,7 @@ void Msg_ProcessLY(enCCPortDef Port,unsigned char* pBuffer,unsigned short length
   framlength	=	getframe(pBuffer,&length);    //判断帧消息内容是否符合协议
   if(0== framlength)
   {
-    memset(paddrbac,0x00,ccsize);             //清除数据
+    memset(paddrbac,0x00,gDatasize);             //清除数据
     return;
   }
   //-------------------------检查是否为应答帧
@@ -619,14 +1041,14 @@ void CMD_Process(unsigned char* pBuffer,unsigned short length)
     if(0  ==  ampframe->msg.data[0])    //0为开锁命令
     {
 //      UnLock;   //开锁
-      AMP.Lock.unlockqust = 1;
-      AMP.Lock.reslock    = 0;
+      AMP.Req.unlockqust = 1;
+      AMP.Req.reslock    = 0;
     }
     else
     {
 //      ResLock;  //释放锁
-      AMP.Lock.unlockqust = 0;
-      AMP.Lock.reslock    = 1;      
+      AMP.Req.unlockqust = 0;
+      AMP.Req.reslock    = 1;      
     }
     return;
   }
@@ -853,14 +1275,6 @@ unsigned short Laynet_Send(unsigned char* pBuffer,unsigned short length)
 {
   if(AMP.Flag.CabBD)  //柜控制板
   {
-    if(1  ==  AMP.Lock.lockstd) //锁关状态：未开
-    {
-//      UnLock;
-      AMP.Lock.unlockqust = 1;
-      AMP.Lock.reslock    = 0;
-//      LayPowerOn;
-//      BackLightOn;
-    }
     return(AddSendBuffer(LayPort,pBuffer,length));
   }
   else if(AMP.Flag.LayBD) //层控制板
@@ -1026,7 +1440,7 @@ void LockServer(void)
       }
       return;
     }
-    if(1==AMP.Lock.unlockrun)   //正在执行开锁动作
+    if(1==AMP.Req.unlockrun)   //正在执行开锁动作
     {
       if(AMP.Time.LockTime>unlocktime-10)//10ms后开始检查锁状态
       {
@@ -1034,46 +1448,140 @@ void LockServer(void)
       }
       if(GetLockSts)    //锁未开
       {
-        AMP.Lock.lockstd  = 1;
+        AMP.Sta.lockstd  = 1;
         if(AMP.Time.LockTime==0)//超过开锁时间
         {
-          AMP.Lock.unlockrun  = 0;
-          AMP.Lock.unlockerr  = 1;
+          AMP.Req.unlockrun  = 0;
+          AMP.Sta.unlockerr  = 1;
           AMP.Time.LockTime   = 0;
           ResLock;
         }
       }
       else
       {
-        AMP.Lock.lockstd    = 0;
-        AMP.Lock.unlockrun  = 0;
-        AMP.Lock.unlockerr  = 0;
+        AMP.Sta.lockstd    = 0;
+        AMP.Req.unlockrun  = 0;
+        AMP.Sta.unlockerr  = 0;
         AMP.Time.LockTime   = 0;
-        AMP.Flag.LayPownOn  = 1;
-        BackLightOn;      //打开背光
-        LayPowerOn;
         ResLock;        
       }      
     }
-    if(1==AMP.Lock.unlockqust)  //开锁请求
+    if(1==AMP.Req.unlockqust)  //开锁请求
     {
-      AMP.Lock.unlockrun  = 1;
-      AMP.Lock.unlockqust = 0;
-      AMP.Lock.reslock    = 0;
-      AMP.Lock.unlockerr  = 0;
+      AMP.Req.unlockrun   = 1;
+      AMP.Req.unlockqust  = 0;
+      AMP.Req.reslock     = 0;
+      AMP.Sta.unlockerr  = 0;
+      
+      AMP.Req.BLon=1;   //开锁需要开背光
+      AMP.Req.PLon=1;   //开锁层板需要供电
+      
       AMP.Time.LockTime   = unlocktime;
       UnLock;
     }
     
+    //-----------------------------关锁动作
     if(GetLockSts)    //锁未开
     {
-      AMP.Lock.lockstd  = 1;
+      //检查是否为关锁动作
+      if(0==AMP.Sta.lockstd)//原状态为锁已打开
+      {
+        AMP.Req.BLoff = 1;  //请求关背光
+        AMP.Req.PLoff = 1;  //请求关闭层板电源
+        AMP.Flag.LayPownOn=0; 
+      }
+      AMP.Sta.lockstd  = 1;
     }
     else
     {
-      AMP.Flag.LayPownOn  = 1;
-      AMP.Lock.lockstd  = 0;
+      if(1==AMP.Sta.lockstd) //原状态锁为关闭---手动开锁
+      {
+        AMP.Req.BLon = 1;  //请求打开背光
+        AMP.Req.PLon = 1;  //请求打开层板电源
+        AMP.Flag.LayPownOn=1;
+      }
+      AMP.Sta.lockstd  = 0;
     }
+  }
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void RequestServer(void)
+{
+  if(AMP.Flag.CabBD)      //柜控制板
+  {
+    if(AMP.Req.BLon)      //背光开关控制
+    {
+      BackLightOn;
+      AMP.Req.BLon=0;
+    }
+    else if(AMP.Req.BLoff)
+    {
+      BackLightOff;
+      AMP.Req.BLoff=0;
+    }
+    if(AMP.Req.PLon)    //层板供电控制
+    {      
+      LayPowerOn;
+      AMP.Req.PLon=0;
+      AMP.Flag.LayPownOn=1;
+    }
+    else if(AMP.Req.PLoff)
+    {
+      LayPowerOff;
+      AMP.Req.PLoff=0;
+      AMP.Flag.LayPownOn=0;
+    }
+    //if(AMP.Req.unlockqust)
+    //{      
+      //LockServer();
+    //}
+    LockServer();
+  }
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void StatusServer(void)
+{
+  static unsigned long statustemp=0;
+  unsigned short* ptemp=0;
+  ptemp=(unsigned short*)&AMP.Sta;
+  if(statustemp!=*ptemp)//状态有变化
+  {
+    unsigned short framlength=3;
+    unsigned char databuffer[32]={0};
+    
+    stampphydef* ampframe=NULL;
+    stcmddef*   Cmd=NULL;
+    
+    statustemp=*ptemp;
+    
+
+    memcpy(databuffer,ptemp,2);
+    
+    framlength  = PaketUpMsg(databuffer,STA,&framlength);    
+    ampframe  = (stampphydef*)databuffer;
+    
+    ampframe->msg.addr.address1 = AMP.SwData.ID;
+    ampframe->msg.addr.address2 = 0;
+    ampframe->msg.addr.address3 = 0;
+    //-------------------------设置CRC和结束符
+    SetCrc(databuffer,&framlength);
+    Cabinet_Send(databuffer,framlength);    //往副柜发送消息
   }
 }
 //=================================硬件接口End=============================================================
@@ -1095,24 +1603,24 @@ void COMM_Configuration(void)
   if(AMP.Flag.CabBD)  //柜控制板
   {
     //-----------------------------PC接口USART1
-    USART_DMA_ConfigurationNR	(USART1,19200,ccsize);	//USART_DMA配置--查询方式，不开中断
+    USART_DMA_ConfigurationNR	(USART1,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断
     
     //-----------------------------读卡器接口USART3
     if(0==AMP.SwData.ICreadFlg) //sw2未拨码，默认19200
-      USART_DMA_ConfigurationNR	(USART3,19200,ccsize);	//USART_DMA配置--查询方式，不开中断
+      USART_DMA_ConfigurationNR	(USART3,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断
     else
-      USART_DMA_ConfigurationNR	(USART3,9600,ccsize);	//USART_DMA配置--查询方式，不开中断
+      USART_DMA_ConfigurationNR	(USART3,9600,gDatasize);	//USART_DMA配置--查询方式，不开中断
 
     //-----------------------------层板接口USART2
     stRS485Ly.USARTx  = USART2;
     stRS485Ly.RS485_CTL_PORT  = GPIOA;
     stRS485Ly.RS485_CTL_Pin   = GPIO_Pin_1;
-    RS485_DMA_ConfigurationNR			(&stRS485Ly,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+    RS485_DMA_ConfigurationNR			(&stRS485Ly,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
     //-----------------------------副柜接口UART4
     stRS485Cb.USARTx  = UART4;
     stRS485Cb.RS485_CTL_PORT  = GPIOC;
     stRS485Cb.RS485_CTL_Pin   = GPIO_Pin_12;
-    RS485_DMA_ConfigurationNR			(&stRS485Cb,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+    RS485_DMA_ConfigurationNR			(&stRS485Cb,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
   }
   else if(AMP.Flag.LayBD) //层控制板
   {
@@ -1120,7 +1628,7 @@ void COMM_Configuration(void)
     stRS485Ly.USARTx  = USART1;
     stRS485Ly.RS485_CTL_PORT  = GPIOA;
     stRS485Ly.RS485_CTL_Pin   = GPIO_Pin_12;
-    RS485_DMA_ConfigurationNR			(&stRS485Ly,19200,ccsize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+    RS485_DMA_ConfigurationNR			(&stRS485Ly,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
     GPIO_Configuration_OPP50	(GPIOA,GPIO_Pin_11);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
     GPIO_ResetBits(GPIOA,GPIO_Pin_11);
   }

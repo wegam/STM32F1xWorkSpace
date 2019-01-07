@@ -36,7 +36,7 @@
 #define LayPowerOn    LayPowerPort->BSRR = LayPowerPin   //启动电源
 #define LayPowerOff   LayPowerPort->BRR  = LayPowerPin   //关闭电源
 
-#define ccsize    128      	//串口最大数据包容量
+#define gDatasize    128      	//串口最大数据包容量
 #define arrysize  25       	//每个发送端口待发送缓存排序个数
 #define ReSendWaitTime  50 	//重发间隔时间单位ms
 #define SendNopTime     5  	//发送等待时间单位ms
@@ -58,13 +58,19 @@ typedef struct _stSW        //拨码数据：
 }stSWdef;
 typedef struct _stFlg        //拨码数据：
 {
-  unsigned char MainIDLE  :1;   //主柜空闲标志：0-空闲，1-非空闲状态
-  unsigned char CabBD     :1;   //柜控制板标志：0-非柜控制板，1-柜控制板
-  unsigned char LayBD     :1;   //层控制制板标志：0-非层控制板，1-层控制板
-  unsigned char SetBD     :1;   //位控制板标志：0-非位控制板，1-位控制板
-//  unsigned char LockFlg   :1;   //锁标志：0-开状态，1-关状态
-  unsigned char LayPownOn :1;   //层板通电标志：0-未通电，1-已通电
+  unsigned short MainIDLE  :1;   //主柜空闲标志：0-空闲，1-非空闲状态
+  unsigned short CabBD     :1;   //柜控制板标志：0-非柜控制板，1-柜控制板
+  unsigned short LayBD     :1;   //层控制制板标志：0-非层控制板，1-层控制板
+  unsigned short SetBD     :1;   //位控制板标志：0-非位控制板，1-位控制板
+  unsigned short LayPownOn :1;   //层板通电标志：0-未通电，1-已通电
+  unsigned short WaitAck   :1;   //等待应答--发送完后需要等待应答，如果接收到应答，则清除一个发送缓存：0-未标志，1-在等待应答  
 }stFlgdef;
+typedef struct _stStatus        //拨码数据：
+{
+  unsigned short lockstd    :1;  //锁状态：0-开状态，1-锁状态
+  unsigned short unlockerr  :1;  //开锁错误/失败:0-无，1-开锁失败
+  unsigned short Online     :1;  //设备掉线:0-掉线，1-在线
+}stStadef;
 typedef struct _stAckQ        //需要应答标志
 {
   unsigned char PcAck     :1;   //PC接口需要应答：0-空闲，1-需要应答
@@ -87,11 +93,11 @@ typedef struct _stTx       //拨码数据：
 {
   unsigned char arry;           //发送排序：0时为空，从第1个开始发送，发送完一个，排序减1，直到0，增加时，增加一个待发送缓存，新缓存排最后
   unsigned char size;           //当前缓存有效数据个数(待发送字节数)
-  unsigned char data[ccsize];   //缓存
+  unsigned char data[gDatasize];   //缓存
 }stTxdef;
 typedef struct _stBuffer       //拨码数据：
 {  
-//  stTxdef   Amprx[1];           //所有端口接收缓存
+  unsigned char rxdbuffer[gDatasize]; //所有端口接收缓存
   stTxdef   PcTx[arrysize];     //串口1发送缓存--PC接口
   stTxdef   CabTx[arrysize];    //串口4发送缓存--副柜
   stTxdef   LayTx[arrysize];    //串口2发送缓存--层板接口
@@ -108,21 +114,23 @@ typedef struct _stTims       //拨码数据：
   unsigned short LaySendTime;     //运行计数器
   unsigned short CardSendTime;    //运行计数器  
 }stTimesdef;
-typedef struct _stLock            //锁
+typedef struct _stRequest            //锁
 {
-  unsigned char  unlockqust :1;//开锁请求：0-无请求，1-有请求
-  unsigned char  unlockrun  :1;//执行开锁：0-无，1-正在执行
-  unsigned char  unlockerr  :1;//开锁错误/失败:0-无，1-开锁失败
-  unsigned char  reslock    :1;//释放锁驱动请求：0-无请求，1-有请求
-  unsigned char  lockstd    :1;//锁状态：0-开状态，1-锁状态
-//  unsigned short LockTime;        //锁计时器
-}stLockdef;
+  unsigned short  unlockqust  :1;//开锁请求：0-无请求，1-有请求
+  unsigned short  unlockrun   :1;//执行开锁：0-无，1-正在执行  
+  unsigned short  reslock     :1;//释放锁驱动请求：0-无请求，1-有请求
+  unsigned short  BLon        :1;//开背光请求：0-无请求，1-有请求
+  unsigned short  BLoff       :1;//关背光请求：0-无请求，1-有请求
+  unsigned short  PLon        :1;//层板供电开请求：0-无请求，1-有请求
+  unsigned short  PLoff       :1;//层板供电关请求：0-无请求，1-有请求
+}stReqdef;
 
 typedef struct _stSys
 {
   stTimesdef        Time;         //相关时间变量
   stSWdef           SwData;       //主机标志
-  stLockdef         Lock;
+  stReqdef          Req;         //请求类标志
+  stStadef          Sta;          //状态码
   stFlgdef          Flag;         //相关标志位
   stAckQdef         AckQ;         //标志应答标志，0-不需要，1-需要应答相应接口
   stBufferdef       buffer;       //串口数据缓存
@@ -147,6 +155,12 @@ void Send_Server(void);
 void Msg_Process(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);        //消息处理
 void Msg_ProcessCB(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);      //柜消息处理
 void Msg_ProcessLY(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);//层消息处理
+
+void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);
+void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);
+void Msg_ProcessCaPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);
+void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);
+
 void CMD_Process(unsigned char* pBuffer,unsigned short length);
 void ackFrame(enCCPortDef Port,unsigned char dir);
 //=================================软件接口ST=============================================================
@@ -163,6 +177,8 @@ void Receive_Server(void);
 unsigned short HW_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);    //通过相应端口发送数据
 void SwitchID_Server(void);
 void LockServer(void);
+void RequestServer(void);
+void StatusServer(void);
 
 //=================================配置函数ST==============================================================
 void COMM_Configuration(void);
