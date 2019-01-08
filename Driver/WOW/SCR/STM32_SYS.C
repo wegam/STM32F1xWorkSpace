@@ -60,8 +60,7 @@ void RCC_Configuration_HSE(void)
 	
 	while(time++<0xFFFF);
 	
-	Restart:
-	
+		
 	/* Wait till HSE is ready */
 	HSEStartUpStatus = RCC_WaitForHSEStartUp();		//等待外部高速时钟启动
 	
@@ -100,10 +99,11 @@ void RCC_Configuration_HSE(void)
 		while(RCC_GetSYSCLKSource() != 0x08)				//返回用作系统时钟的时钟源
 		{
 		}
+		return;		//
 	}
-	else if(retry++<2000)
+	else		//启动内部晶振
 	{
-		goto Restart;
+		RCC_Configuration_HSI();
 	}
 //	GPIO_DeInitAll();				//将所有的GPIO关闭----V20170605
 }
