@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xWOW' 
- * Target:  'AMP01' 
+ * Target:  'TLE5012BV2' 
  */
 
 #ifndef RTE_COMPONENTS_H

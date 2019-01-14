@@ -21,18 +21,21 @@
 
 #include 	"CRC.H"
 
-
+#define	ErrAngle	10	//允许偏差角度范围(正负偏差)
+#define	divisor		360	//求余除数
 
 
 SPIDef	TLE5012;
 
 //--------------------------标志变量
 char	cwflg	=	0;					//正反转标志,0-不支行，1-正转，2-反转
+short	testflg	=	0;				//正反转标志,0-停止，1-正转，-1-反转
 unsigned char SetFlag=0;	//设置标志：0--正常状态，1-设置状态
 
 //--------------------------角度变量
 unsigned	short organgle	=	0;							//原点角度值
 unsigned	short angle1	=	0,angle2	=	0;		//角度值，通过对比两个角度值确认旋转方向
+unsigned	short	DeviationAngle	=	0;				//当前角度与原点偏移值
 unsigned	short anglecount	=	0;						//角度计数器，每次启动电机前需要清零
 
 //--------------------------时间变量
@@ -40,6 +43,8 @@ unsigned	short testtime	=	0;
 unsigned	short readdelay	=	0;
 unsigned	short timedelay	=	0;
 unsigned	short SYSLEDtime=	0;
+
+
 
 //--------------------------临时变量
 unsigned	short i=0;
@@ -67,6 +72,8 @@ void TLE5012BV2_Configuration(void)
 	//-----------------------电机控制接口
 	GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_1);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
 	GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_2);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	//GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_9);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	//GPIO_Toggle	(GPIOA,GPIO_Pin_9);		//将GPIO相应管脚输出翻转----V20170605
 	MSTP();
 	//-----------------------模组控制接口(原模组控制电机接口)
 	GPIO_Configuration_IPU(CWtargePort,CWtargePin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
@@ -261,7 +268,8 @@ void MOTORT(void)
 	readdelay	=	0;
 	angle2	=	ReadAngle();
 	
-	if(1==cwflg)	//增量方向运行：正转角度计数，angle2>angle1
+	//---------------------旋转角度计数会根据磁铁安装正反面不一样
+	if(2==cwflg)					//增量方向运行：正转角度计数，angle2>angle1
 	{	
 		//--------------------超过180度：
 		if(angle2-angle1>120)
@@ -280,7 +288,7 @@ void MOTORT(void)
 				anglecount-=angle1-angle2;
 		}
 	}
-	else if(2==cwflg)	//减量方向运行：反转角度计数
+	else if(1==cwflg)	//减量方向运行：反转角度计数
 	{
 		//--------------------超过180度：
 		if(angle1-angle2>120)
@@ -321,9 +329,40 @@ void MOTORT(void)
 *******************************************************************************/
 void SetOrig(void)
 {
+	//DeviationAngle	//允许偏差角度范围(正负偏差)
+	
 	if(0!=cwflg)		//电机运行中，
 		return;
 	angle1	=	ReadAngle();
+	
+	DeviationAngle	=	((angle1+organgle)>>1)%(divisor);
+	
+	goto SetOrigtest2;
+		
+	//-----------------test2
+	SetOrigtest2:
+	
+	DeviationAngle=360-organgle;		//原点偏差
+	DeviationAngle=(angle1+DeviationAngle)%(divisor);	//
+	if(DeviationAngle<=ErrAngle||(360-DeviationAngle)<=ErrAngle)		//在允许误差范围内
+	{
+		MSTP();
+	}
+	else			//大于允许误差
+	{
+		if(DeviationAngle>180)
+		{
+			MCCW();
+		}
+		else if(DeviationAngle<180)
+		{
+			MCW();
+		}
+	}	
+	return;
+	
+	//-----------------test1
+	SetOrigtest1:
 	if((angle1>organgle)&&(angle1-organgle>10))
 	{
 		MCCW();
@@ -336,6 +375,7 @@ void SetOrig(void)
 	{
 		MSTP();
 	}
+	return;
 }
 
 
@@ -446,6 +486,7 @@ void SPI5012B_Init(void)
 *******************************************************************************/
 void MCW(void)
 {
+	testflg=1;	//正反转标志,0-停止，1-正转，-1-反转
 	PA1	=	0;
 	PA2	=	1;
 }
@@ -460,6 +501,7 @@ void MCW(void)
 *******************************************************************************/
 void MCCW(void)
 {
+	testflg=-1;	//正反转标志,0-停止，1-正转，-1-反转
 	PA1	=	1;
 	PA2	=	0;
 }
@@ -474,6 +516,7 @@ void MCCW(void)
 *******************************************************************************/
 void MSTP(void)
 {
+	testflg=0;	//正反转标志,0-停止，1-正转，-1-反转
 	PA1	=	0;
 	PA2	=	0;
 }
