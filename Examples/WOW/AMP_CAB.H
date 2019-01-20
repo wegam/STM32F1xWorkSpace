@@ -73,6 +73,8 @@ void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
 void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);
 void Msg_ProcessCaPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);
 void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);
+void CardDataSendUp(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);
+
 
 
 

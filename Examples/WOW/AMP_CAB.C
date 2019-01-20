@@ -563,16 +563,21 @@ void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   {
     return;
   }
+  //----------------------------PC接口都要应答
+  ackFrame(Port,1);             //向上应答
+  
   if((CabAddr!=address))  //不属于主柜消息
   {
+    
     Cabinet_Send((unsigned char*)ampframe,framlength);//往副柜发送
     if(0xFF==address) //广播地址
     {
+      
       AMPPro.buffer.WaitAck.Cab=0;   //不需要副柜应答      
     }
     else
     {
-      ackFrame(Port,1);             //向上应答
+      //ackFrame(Port,1);             //向上应答
       AMPPro.buffer.WaitAck.Cab=1;  //需要副柜应答
       return;       //其它柜数据，退出
     }
@@ -791,13 +796,17 @@ void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   
   stampphydef* ampframe=NULL;
   
+  framlength=length;
+  
   //-------------------------协议检查
-  framlength	=	getframe(pBuffer,&length);    //判断帧消息内容是否符合协议
-  if(0== framlength)
+  framlength	=	getframe(paddrbac,&framlength);    //判断帧消息内容是否符合协议
+  if(0== framlength)    //不符合协议，做透传---读卡器
   {
-    memset(paddrbac,0x00,gDatasize);             //清除数据
+    CardDataSendUp(Port,pBuffer,length);
     return;
   }
+  
+  pBuffer=paddrbac;  
   result  = ackcheck(pBuffer);                //检查是否为应答消息,应答消息返回1  
   if(1==result)
   {
@@ -851,7 +860,51 @@ void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     return;
   }
 }
-
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void CardDataSendUp(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
+{
+  //unsigned  char result       = 0; 
+  //unsigned  char address      = 0;  
+  unsigned  short framlength  = 0;  
+  //unsigned  char* paddrbac    = pBuffer;         //备份数据缓存起始地址
+  
+  stampphydef* ampframe=NULL;
+  stcmddef    Cmd;
+  
+  unsigned  char  databuffer[64]={0};   
+  //-------------------------读卡器端口接收到数据
+  memcpy(databuffer,pBuffer,length);
+  framlength  = length;
+  framlength  = PaketUpMsg(databuffer,ICR,&framlength);
+  
+  //-------------------------设置地址:柜控制板地址段为address1
+  ampframe  = (stampphydef*)databuffer;
+  ampframe->msg.addr.address1 = CabAddr;    //柜地址
+  ampframe->msg.addr.address2 = 0;
+  ampframe->msg.addr.address3 = 0;
+  //-------------------------设置CRC和结束符
+  SetFrame(databuffer,&framlength);//补充消息的CRC和结束符，返回帧长度
+  
+  if(MainFlag)  //0--副柜，1--主柜
+  {
+    AMPPro.buffer.WaitAck.Pc=1;   //需要应答
+    PCnet_Send(databuffer,framlength);    //往副柜发送消息
+  }
+  else
+  {
+    AMPPro.buffer.WaitAck.Cab=1;   //需要应答
+    Cabinet_Send(databuffer,framlength);    //往副柜发送消息
+  }
+  return;
+}
 /*******************************************************************************
 *函数名			:	RequestServer
 *功能描述		:	请求命令处理
@@ -862,8 +915,7 @@ void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
 *注释				:	wegam@sina.com
 *******************************************************************************/
 void RequestServer(void)
-{
-    
+{    
     if(AMPPro.Req.PLon)    //层板供电控制
     {      
       LayPowerOn;
