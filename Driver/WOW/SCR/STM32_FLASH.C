@@ -22,7 +22,22 @@
 
 //#include "STM32F10x_BitBand.H"
 
+#define STM32_FLASH_SIZE 128 	 		//ËùÑ¡STM32µÄFLASHÈİÁ¿´óĞ¡(µ¥Î»ÎªK)---´æ´¢¿é´óĞ¡128K
+#define STM32_FLASH_WREN 1        //Ê¹ÄÜFLASHĞ´Èë(0£¬²»ÊÇÄÜ;1£¬Ê¹ÄÜ)
 
+#define STM_SECTOR_SIZE 1024			//×Ö½Úµ¥Î»-----ÉÈÇø´óĞ¡/Ò³´óĞ¡
+
+//#if	(STM32_FLASH_SIZE<256)					//Ğ¡ÈİÁ¿
+//	#define STM_SECTOR_SIZE 1024			//×Ö½Úµ¥Î»-----ÉÈÇø´óĞ¡/Ò³´óĞ¡
+//#else 
+//	#define STM_SECTOR_SIZE	2048			//×Ö½Úµ¥Î»-----ÉÈÇø´óĞ¡/Ò³´óĞ¡
+//#endif
+
+
+
+//FLASHÆğÊ¼µØÖ·
+#define STM32_FLASH_BASE	0x08000000 				//STM32 FLASHµÄÆğÊ¼µØÖ·
+#define STM32_FLASH_UsedAddr	0x08010000		//±¸·İÊı¾İ´æ´¢ÆğÊ¼»ùµØÖ·
 
 u16 STM32_FLASH_BUF[STM_SECTOR_SIZE/2];//×î¶àÊÇ2K×Ö½Ú
 
@@ -80,14 +95,19 @@ void STM32_FLASH_Write(u32 StartAddr,u16 *pBuffer,u16 NumToWrite)		//´ÓÖ¸¶¨µØÖ·Ğ
 	u16 TotalHaveWritten	=	0;	//ÒÑĞ´ÈëµÄ³¤¶È(16Î»×Ö¼ÆËã)
  	u16 i;    
 
-	if(StartAddr<STM32_FLASH_BASE||(StartAddr>=(STM32_FLASH_BASE+1024*STM32_FLASH_SIZE)))		//µØÖ·²»ÔÚºÏ·¨·¶Î§ÄÚ
+	if((StartAddr<STM32_FLASH_BASE)||(StartAddr>=(STM32_FLASH_BASE+1024*STM32_FLASH_SIZE)))		//µØÖ·²»ÔÚºÏ·¨·¶Î§ÄÚ
 		return;					//·Ç·¨µØÖ·	
 	
 	FLASH_Unlock();		//½âËø
-	
-	PageAddress				=	(StartAddr-STM32_FLASH_BASE)/STM_SECTOR_SIZE	+	STM32_FLASH_BASE;		//¼ÆËãÆğÊ¼Ò³µØÖ·----²Á³ıÊÇ°´Ò³²Á³ı
-	PageAddressOffset	=	((StartAddr-STM32_FLASH_BASE)%STM_SECTOR_SIZE)/2;		//ÔÚÉÈÇøÄÚµÄÆ«ÒÆ(2¸ö×Ö½ÚÎª»ù±¾µ¥Î».)----¼ÆËãÔÚÉÈÇøÄÚµÄÆğÊ¼µØÖ·
-	RemainderSpace		=	STM_SECTOR_SIZE/2	-	PageAddressOffset;							//Ò³ÄÚÊ£Óà´æ´¢¿Õ¼ä(16Î»×Ö¼ÆËã)
+	//FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
+	if(StartAddr>STM32_FLASH_BASE)
+	{
+		PageAddress				=	StartAddr-(StartAddr-STM32_FLASH_BASE)%STM_SECTOR_SIZE;		//¼ÆËãÆğÊ¼Ò³µØÖ·----²Á³ıÊÇ°´Ò³²Á³ı
+	}
+	//PageAddress				=	(StartAddr-STM32_FLASH_BASE)/STM_SECTOR_SIZE	+	STM32_FLASH_BASE;		//¼ÆËãÆğÊ¼Ò³µØÖ·----²Á³ıÊÇ°´Ò³²Á³ı
+	//PageAddress				=	0x08008000;		//¼ÆËãÆğÊ¼Ò³µØÖ·----²Á³ıÊÇ°´Ò³²Á³ı
+	PageAddressOffset	=	((StartAddr-STM32_FLASH_BASE)%STM_SECTOR_SIZE)/2;									//ÔÚÉÈÇøÄÚµÄÆ«ÒÆ(2¸ö×Ö½ÚÎª»ù±¾µ¥Î».)----¼ÆËãÔÚÉÈÇøÄÚµÄÆğÊ¼µØÖ·
+	RemainderSpace		=	STM_SECTOR_SIZE/2	-	PageAddressOffset;															//Ò³ÄÚÊ£Óà´æ´¢¿Õ¼ä(16Î»×Ö¼ÆËã)
 
 	//---------------------¿¼ÂÇ¿çÒ³Ğ´Çé¿ö
 	while(TotalHaveWritten<NumToWrite)
@@ -112,10 +132,11 @@ void STM32_FLASH_Write(u32 StartAddr,u16 *pBuffer,u16 NumToWrite)		//´ÓÖ¸¶¨µØÖ·Ğ
 		if(i<NumWaitToWrite)
 		{
 			//²Á³ıÕû¸öÒ³---ÉÁ´æ²Á³ı²Ù×÷¿ÉÒÔ°´Ò³Ãæ²Á³ı»òÍêÈ«²Á³ı(È«²Á³ı)
-			FLASH_ErasePage(PageAddress);			//²Á³ıÕâ¸öÉÈÇø
+			//FLASH_ErasePage(PageAddress);			//²Á³ıÕâ¸öÉÈÇø
+			FLASH_ErasePage(PageAddress);				//²Á³ıÕâ¸öÉÈÇø
 			//½«´ıĞ´ÈëÊı¾İ¼°Ô­ÉÈÇø±£ÁôÊı¾İ·ÅÈëĞ´Èë»º³åÇø
 			memcpy(&STM32_FLASH_BUF[PageAddressOffset],pBuffer,NumWaitToWrite);												//¸´ÖÆÊı¾İ
-			STM32_FLASH_Write_NoCheck(PageAddress,STM32_FLASH_BUF,PageAddressOffset+NumWaitToWrite);	//½«Ô­±£ÁôÊı¾İºÍĞÂÔö¼ÓÊı¾İĞ´ÈëÉÈÇø
+			STM32_FLASH_Write_NoCheck(PageAddress,STM32_FLASH_BUF,PageAddressOffset+NumWaitToWrite);		//½«Ô­±£ÁôÊı¾İºÍĞÂÔö¼ÓÊı¾İĞ´ÈëÉÈÇø
 		}
 		else		//²»ĞèÒª²Á³ı
 		{
@@ -288,10 +309,10 @@ void STM32_FLASH_Erase(u32 WriteAddr,u16 NumToWrite)	//²Á³ıFLASH
 *ĞŞ¸ÄËµÃ÷		:	ÎŞ
 *×¢ÊÍ				:	wegam@sina.com
 *******************************************************************************/
-void Test_Write(u32 StartAddr,u16 WriteData)   	
-{
-	STM32_FLASH_Write(StartAddr,&WriteData,1);//Ğ´ÈëÒ»¸ö×Ö 
-}
+//void Test_Write(u32 StartAddr,u16 WriteData)   	
+//{
+//	STM32_FLASH_Write(StartAddr,&WriteData,1);//Ğ´ÈëÒ»¸ö×Ö 
+//}
 
 
 
