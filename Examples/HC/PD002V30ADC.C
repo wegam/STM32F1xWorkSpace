@@ -13,7 +13,7 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
-#ifdef PD002V30ADC				//称重托盘控制器
+#ifdef PD002V30ADC				//称重托盘控制器---盒剂测距应用
 
 
 #include "PD002V30ADC.H"

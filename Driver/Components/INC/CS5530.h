@@ -5,9 +5,9 @@
 #include "stm32f10x_gpio.h"
 
 
-#define DataNum											20	//计算时需要获取的数据个数
-#define GetFiltDataDelayTime				DataNum*150	//获取稳定AD值需要的延时单位ms（单次取数时间*取数个数+多增加时间3000）
-#define	WeighCmpMax									3000	//相邻AD值允许差值大小
+#define WeighDataNum											20	//计算时需要获取的数据个数
+#define GetFiltDataDelayTime				WeighDataNum*150	//获取稳定AD值需要的延时单位ms（单次取数时间*取数个数+多增加时间3000）
+#define	WeighCmpMax									1000	//相邻AD值允许差值大小
 #define	WeighVarMax									20000	//允许最大方差
 #define CS5530_OF_MAX_NUM						10	/*最近连续采样的10次都溢出,表示数据已经溢出了*/
 #define CS5530_CONTINUOUS_IGNORE		10	/*开始连续转换时,要忽略前10(资料上推荐是5)个不准确的数据*/
@@ -112,7 +112,7 @@ typedef struct	_CS5530Data
 	unsigned long 	WeighLive;				//实时AD值
 	unsigned long 	WeighFilt;				//滤波后AD值	
 	unsigned long 	WeighPie;					//单重
-	unsigned long		Buffer[DataNum];	//数据缓存
+	unsigned long		Buffer[WeighDataNum];	//数据缓存
 	unsigned long		Time;							//计时器
 }CS5530DataDef;
 typedef struct	_CS5530Flag		//0为无标识

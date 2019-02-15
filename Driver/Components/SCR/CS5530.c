@@ -241,7 +241,7 @@ void CS5530_PowerUp(CS5530Def *pInfo)
 //	CS5530_Status=0x00400000;		//300	
 //	CS5530_Status=0x00200000;		//150	
 //	CS5530_Status=0x01000000;		//1200	
-	CS5530_Status=0x3FFF0000;		//test    //参数越大，放大倍数越小
+	CS5530_Status=0x01000000;		//test    //参数越大，放大倍数越小
 	//3.3)写入增益值
   CS5530_WriteRegister(CS5530_WRITE_GAIN,CS5530_Status);			//增益寄存器	
   //3.4)检查写入值
@@ -430,10 +430,11 @@ unsigned long CS5530_GetWeightUseMedinaFilter(CS5530Def *pInfo)
 *******************************************************************************/
 unsigned long CS5530_GetWeigh(CS5530Def *pInfo)
 {
+	static unsigned char ReadErrorNum=0;
 	if(pInfo->Data.Time++>=5)	//5Hz 0.2S
 	{
 		unsigned long		ADC	=	0;
-		unsigned short	Num			=	0;			//计数器		
+		unsigned short	Num			=	0;					//计数器		
 		unsigned short	*Quantity	=	NULL;			//数量	
 		unsigned long		*WeighFilt	=	NULL;		//滤波后AD值	
 		unsigned long		*Origin		=	NULL;			//原点值
@@ -453,37 +454,58 @@ unsigned long CS5530_GetWeigh(CS5530Def *pInfo)
 		
 		if(ADC	!=	0xFFFFFFFF)
 		{
-			unsigned long	ADC_CMP	=	0;			
-			Buffer[Num]	=	ADC;			
-			if(Num>0)		//判断相邻AD值之前的偏差
+			unsigned long	ADC_CMP	=	0;	//此次数据与上次数据的比较值
+			ReadErrorNum=0;		//连接错误计数清零
+			
+			//-------------------------------判断此数值与上次数值的偏差值
+			if(0==Num)	//数据缓存为空,
 			{
-				if(Buffer[Num]>Buffer[Num-1])
+				Buffer[Num]	=	ADC;
+				pInfo->Data.Num++;	//计数增加---目前已采样到的数据个数
+				return 0;						//退出此函数
+			}
+			//-------------------------------需要与前次采样比较
+			else
+			{
+				if(Buffer[Num-1]>ADC)	//此次采样值比上次小
 				{
-					ADC_CMP	=	Buffer[Num]-Buffer[Num-1];
+					ADC_CMP	=	Buffer[Num-1]-ADC;
 				}
 				else
 				{
-					ADC_CMP	=	Buffer[Num-1]-Buffer[Num];
+					ADC_CMP	=	ADC-Buffer[Num-1];
 				}
-				if(ADC_CMP>WeighCmpMax)	//相邻数据差太大，取数无效
+				//-----------------------------检查相邻差是否超出允许范围
+				if(ADC_CMP>WeighCmpMax)			//相邻数据差太大，取数无效
 				{
-					*WeighFilt	=	0xFFFFFFFF;
-					pInfo->Data.Num	=	0;
-					return 0;						//退出此函数
-				}				
+					*WeighFilt	=	0xFFFFFFFF;	//数据无效
+					pInfo->Data.Num	=	0;			//清除所有采样值，重新开始
+					return 0;									//退出此函数
+				}
+				else
+				{
+					Buffer[Num]	=	ADC;
+					pInfo->Data.Num++;				//计数增加---目前已采样到的数据个数
+				}
 			}
-			pInfo->Data.Num++;
-			if(Num>=DataNum-1)		//缓存已满
+			//-------------------------------采样数据达到计算值时的处理:如果计数满，则计算平均值
+			if(pInfo->Data.Num>=WeighDataNum)		//缓存已满
 			{
 				*WeighFilt	=	CS5530_GetWeightUseMedinaFilter(pInfo);
 				pInfo->Data.Num	=	0;
 				return *WeighFilt;
 			}
 		}
+		//-------------------------------连续多次读数失败，则清除
 		else
 		{
-//			*WeighFilt	=	0xFFFFFFFF;
-			return 0xFFFFFFFF;
+			if(ReadErrorNum++>50)
+			{
+				pInfo->Data.Num	=	0;
+				*WeighFilt=0xFFFFFFFF;
+				
+				ReadErrorNum=0;		//连接错误计数清零
+			}
 		}
 	}	
 	return 0xFFFFFFFF;
@@ -560,18 +582,21 @@ unsigned long CS5530_GetQuant(CS5530Def *pInfo)
 			unsigned long AD1,AD2,AD3;
 			
 			Quq	=	pInfo->Data.Quantity;
-			AD1	=	pInfo->Data.Origin;
-			AD2	=	pInfo->Data.WeighFilt;
-			AD3	=	pInfo->Data.WeighPie;
-			if((Quq>0)&&(AD1>0)&&((AD2+AD3/5)>=AD1)&&(AD3>0))
+			AD1	=	pInfo->Data.Origin;			//原点值
+			AD2	=	pInfo->Data.WeighFilt;	//当前AD值
+			AD3	=	pInfo->Data.WeighPie;		//单重值
+			if(AD2<=AD1)	//当前AD值等于原点
 			{
-				pInfo->Flag.GetQua		=	0;
-				pInfo->Data.Quantity	=	(AD2-AD1+(AD3)/5)/AD3;
-				return pInfo->Data.Quantity;
+				pInfo->Data.Quantity		=	0;
 			}
-		}
+			else
+			{
+				pInfo->Data.Quantity=((pInfo->Data.WeighFilt-pInfo->Data.Origin)+pInfo->Data.WeighPie/2)/pInfo->Data.WeighPie;	//50%
+			}
+			pInfo->Flag.GetQua=0;	//清除标志
+		}		
 	}
-	return 0xFFFFFFFF;
+	return pInfo->Data.Quantity;
 }
 /*******************************************************************************
 * 函数名			:	CS5530_Clear
@@ -604,7 +629,7 @@ void CS5530_Process(CS5530Def *pInfo)
 	CS5530_GetWeigh(pInfo);	
 	CS5530_GetOrigin(pInfo);
 	CS5530_GetCalib(pInfo);
-	CS5530_GetQuant(pInfo);
+	CS5530_GetQuant(pInfo);		//获取数量
 //	pInfo->Flag.GetQua		=	1;
 }
 

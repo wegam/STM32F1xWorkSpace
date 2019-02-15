@@ -13,7 +13,7 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
-#ifdef PD002V30				//称重托盘控制器
+#ifdef PD002V30				//称重托盘控制器--终端管控柜应用
 
 
 #include "PD002V30.H"
@@ -143,7 +143,7 @@ void PD002V30_Configuration(void)
 	
 	SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
 	
-	PWM_OUT(TIM2,PWM_OUTChannel1,1,500);						//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,10,500);						//PWM设定-20161127版本
 	
 	CS5530_Configuration();					//CS5530初始化
 	IWDG_Configuration(1000);			//独立看门狗配置---参数单位ms	
@@ -152,7 +152,7 @@ void PD002V30_Configuration(void)
 	
 	AT24C02_Configuration();
 	
-	PWM_OUT(TIM2,PWM_OUTChannel1,8000000,500);						//PWM设定-20161127版本
+	PWM_OUT(TIM2,PWM_OUTChannel1,2,500);						//PWM设定-20161127版本
 }
 /*******************************************************************************
 * 函数名		:	
@@ -173,7 +173,7 @@ void PD002V30_Server(void)
 		memcpy(DebugTx,DebugRx,Num);
 		USART_DMASend	(USART1,DebugTx,Num);		//串口DMA发送程序		
 	}
-	USART_DMASend	(USART1,DebugTx,4096);		//串口DMA发送程序
+	USART_DMASend	(USART1,DebugTx,4096);			//串口DMA发送程序
 	return;
 #endif	
 	
@@ -205,7 +205,7 @@ void PD002V30_Server(void)
 //			Wedata	=	0;		
 //	}
 	
-	SwitchID	=	SWITCHID_Read(&MS200.SWITCHID);		//
+	SwitchID	=	SWITCHID_ReadRight(&MS200.SWITCHID);		//
 	
 	
 }
@@ -219,15 +219,15 @@ void PD002V30_Server(void)
 * 其它			: wegam@sina.com
 *******************************************************************************/
 void AT24C02_Configuration(void)
-{
-	sI2CDef	*Port	=	&MS200.AT24C02.Port;
+{	
+	sI2CHWDef	*Port	=	&MS200.AT24C02.Port.HW;
 	Port->SDA_Port	=	GPIOB;
 	Port->SDA_Pin	=	GPIO_Pin_7;
 	
 	Port->SCL_Port	=	GPIOB;
 	Port->SCL_Pin	=	GPIO_Pin_6;
 	
-	I2C_Configuration(Port);		//启用锁--配置
+	I2C_Configuration(&MS200.AT24C02.Port);		//启用锁--配置
 }
 
 /*******************************************************************************
@@ -365,7 +365,7 @@ void SwitchID_Configuration(void)
 	
 	SwitchIdInitialize(pInfo);							//
 	
-	SwitchID	=	SWITCHID_Read(pInfo);		//
+	SwitchID	=	SWITCHID_ReadRight(pInfo);		//
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -858,7 +858,7 @@ void PD002V30_WORK_Server(void)
 				Data->Time	=	0;
 				ADC->Data.WeighFilt	=	0xFFFFFFFF;
 				ADC->Data.Time	=	0;
-				memset(&ADC->Data.Buffer,0xFF,DataNum);
+				memset(&ADC->Data.Buffer,0xFF,WeighDataNum);
 				*WorkState	=	StateGetFiltDataWait;
 			}
 			break;		
@@ -1065,7 +1065,7 @@ void CS5530_Server(void)
 {
 #if 1
 	CS5530_Process(&MS200.CH1SS3.ADC);		//SS3接口，外面
-//	CS5530_Process(&MS200.CH2SS4.ADC);		//SS4接口，里面
+	CS5530_Process(&MS200.CH2SS4.ADC);		//SS4接口，里面
 	
 //	if(((CS5530_1.Data.WeighFilt	!=0xFFFFFFFF)&&(CS5530_2.Data.WeighFilt	!=0xFFFFFFFF))
 //		&&((CS5530_1.Data.WeighFilt	!=0x00)&&(CS5530_2.Data.WeighFilt	!=0x00)))
