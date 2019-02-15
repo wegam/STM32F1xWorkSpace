@@ -84,19 +84,19 @@ void EepromTest_Server(void)
 	time++;
 	if(time==1)
 	{	
-		//I2C_WriteBuffer(&At24c02,0,WriteBuffer,2);
-		I2C_WritePage(&At24c02,0,WriteBuffer);
+		I2C_WriteBuffer(&At24c02,2,WriteBuffer,128);
+		//I2C_WritePage(&At24c02,0,WriteBuffer);
 		//memset(ReadBuffer,0x00,256);
 	}
 	else if(time==20)
 	{
-		//I2C_ReadBuffer(&At24c02,0,ReadBuffer,1);
-		I2C_ReadPage(&At24c02,0,ReadBuffer);
-		if(0!=memcmp(WriteBuffer,ReadBuffer,1))
+		I2C_ReadBuffer(&At24c02,2,ReadBuffer,128);
+		//I2C_ReadPage(&At24c02,6,ReadBuffer);
+		if(0!=memcmp(WriteBuffer,ReadBuffer,128))
 		{
 			PWM_OUT(TIM2,PWM_OUTChannel1,8,500);						//PWM设定-20161127版本
 			//STM32_FLASH_Write(STARTADDR,(unsigned short*)&WriteCount,2);						//从指定地址写入指定长度的数据
-			EEPROMReadERROR();
+			//EEPROMReadERROR();
 		}
 		else
 		{
@@ -108,7 +108,7 @@ void EepromTest_Server(void)
 		}
 		//memset(ReadBuffer,0x00,2048);
 	}
-	else if(time>=100)
+	else if(time>=500)
 	{
 		//STM32_FLASH_Write(STARTADDR,(unsigned short*)&WriteCount,2);						//从指定地址写入指定长度的数据
 		//STM32_FLASH_Read(STARTADDR,(unsigned short*)&WriteCount,2);							//从指定地址开始读出指定长度的数据

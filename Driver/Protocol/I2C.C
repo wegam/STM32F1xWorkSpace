@@ -13,6 +13,7 @@
 //void I2C_SDASetOut(sI2CDef *sI2C);
 //void I2C_SDASetIn(sI2CDef *sI2C);
 unsigned	char i2cdelaytime=1;
+
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
@@ -43,6 +44,7 @@ void I2C_Configuration(sI2CDef *sI2C)		//启用锁--配置
 	{//24C04、24C08、24C16是16个字节一页
 		sI2C->DATA.PageSize=16;
 	}
+	sI2C->DATA.DeviceAddr	=	0xA0;	//设备地址
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -153,7 +155,7 @@ void I2C_SDASetIn(sI2CDef *sI2C)
 *******************************************************************************/
 unsigned char I2C_WaitAck(sI2CDef *sI2C)
 {
-	I2CACKDef ack;
+	I2CACKDef ack=I2C_ACK;
 	unsigned long i	=	0;
 	I2C_SCLLow(sI2C);
 	I2C_SDASetIn(sI2C);	//设置为上拉输入模式
@@ -172,7 +174,7 @@ unsigned char I2C_WaitAck(sI2CDef *sI2C)
 	
 	I2C_SDASetOut(sI2C);
 	
-	return ack;
+	return (unsigned char)ack;
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -435,31 +437,24 @@ void I2C_WritePage(sI2CDef *sI2C,unsigned short PageAddress,const unsigned char*
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-void I2C_WriteBuffer(sI2CDef *sI2C,unsigned short address,const unsigned char* pBuffer,unsigned short length)
+void I2C_WriteNbyte(sI2CDef *sI2C,unsigned short address,const unsigned char* pBuffer,unsigned short length)
 {
-	unsigned short i				=	0;
-	unsigned char temp			=	0xA0;		//bit0=0:write;bit0=1:read
-	unsigned char	PageSize	=	8;	//24C01、24C02这两个型号是8个字节一个页，而24C04、24C08、24C16是16个字节一页
-	unsigned char	WriteLen	=0;
-	unsigned char	StartAddress	=0;
+	unsigned short i						=	0;
+//	unsigned char	PageSize			=	8;	//24C01、24C02这两个型号是8个字节一个页，而24C04、24C08、24C16是16个字节一页
+	//unsigned char	WriteLen			=	0;
+	//unsigned short WWritelen		=	0;	//剩余待写入长度
+	//unsigned char	StartAddress	=	0;
 	//---------------------------启动I2C
 	I2C_Start(sI2C);
 	//---------------------------写器件地址
-	I2C_SendByte(sI2C,temp);
+	I2C_SendByte(sI2C,sI2C->DATA.DeviceAddr);	//bit0=0:write;bit0=1:read
 	if(!I2C_WaitAck(sI2C))
 	{		
 		goto stopI2C;
 	}
 	//---------------------------写内存地址
-	temp	=	address;
-	if(0!=address%sI2C->DATA.PageSize)	//起始地址非页起始地址：先将不完整页写完
-	{
-		WriteLen=address%sI2C->DATA.PageSize;
-		StartAddress=address/sI2C->DATA.PageSize+address%sI2C->DATA.PageSize;
-	}
-	
 	I2C_SDASetOut(sI2C);
-	I2C_SendByte(sI2C,temp);
+	I2C_SendByte(sI2C,address);
 	
 	if(!I2C_WaitAck(sI2C))
 	{
@@ -469,16 +464,91 @@ void I2C_WriteBuffer(sI2CDef *sI2C,unsigned short address,const unsigned char* p
 	I2C_SDASetOut(sI2C);
 	for(i=0;i<length;i++)
 	{
-		temp=pBuffer[i];
-		I2C_SendByte(sI2C,temp);
+		I2C_SendByte(sI2C,pBuffer[i]);
 		if(!I2C_WaitAck(sI2C))
 		{
 			goto stopI2C;
 		}
 	}
+	//---------------------------
 	//---------------------------停止I2C
 	stopI2C:
 	I2C_Stop(sI2C);
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB） 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void I2C_WriteBuffer(sI2CDef *sI2C,unsigned short address,const unsigned char* pBuffer,unsigned short length)
+{
+	unsigned short i						=	0;
+//	unsigned char	PageSize			=	8;	//24C01、24C02这两个型号是8个字节一个页，而24C04、24C08、24C16是16个字节一页
+	unsigned char	WriteLen			=	0;
+	unsigned short WWritelen		=	0;	//剩余待写入长度
+	unsigned char	StartAddress	=	0;
+	unsigned char* DataAddr;
+	//---------------------------启动I2C
+	I2C_Start(sI2C);
+	//---------------------------写器件地址
+	I2C_SendByte(sI2C,sI2C->DATA.DeviceAddr);	//bit0=0:write;bit0=1:read
+	if(!I2C_WaitAck(sI2C))
+	{		
+		goto stopI2C;
+	}
+	StartAddress=address;			//
+	WWritelen=length;
+	DataAddr=(unsigned char*)&pBuffer[0];
+	
+	StartWrite:
+	//---------------------------判断数据地址是否为整页起始地址
+
+	if(0!=StartAddress%sI2C->DATA.PageSize)	//起始地址非页起始地址：先将不完整页写完
+	{
+		WriteLen=(address/sI2C->DATA.PageSize+1)*sI2C->DATA.PageSize-StartAddress;	//不完整页的起始待写入数据个数
+		
+		I2C_WriteNbyte(sI2C,StartAddress,DataAddr,WriteLen);		
+	}
+	else	//起始地址为页地址
+	{
+		//-----------------------是否为整页大小
+		if(WWritelen>=sI2C->DATA.PageSize)
+		{			
+			WriteLen=sI2C->DATA.PageSize;
+			
+			I2C_WritePage(sI2C,StartAddress,DataAddr);
+		}
+		else
+		{
+			WriteLen=WWritelen;	//不完整页的起始待写入数据个数
+			
+			I2C_WriteNbyte(sI2C,StartAddress,DataAddr,WriteLen);
+		}
+	}
+	//-------------------------------剩余待写入长度
+	WWritelen=WWritelen-WriteLen;		//剩余待写入长度
+	if(WWritelen>0)
+	{
+		StartAddress=StartAddress+WriteLen;		//下一个待写入数据的起始地址
+		DataAddr=&DataAddr[WriteLen];	//新地址
+		I2C_Delayms(5);		//等待5ms完成写入EEPROM内部存储
+		do		//检查器件是否完成写入
+		{
+			I2C_Start(sI2C);
+			//---------------------------写器件地址
+			I2C_SendByte(sI2C,sI2C->DATA.DeviceAddr);	//bit0=0:write;bit0=1:read
+		}
+		while(I2C_NACK==I2C_WaitAck(sI2C));
+		goto StartWrite;
+	}
+	//---------------------------停止I2C
+	stopI2C:
+	I2C_Stop(sI2C);
+	I2C_Delayms(5);		//等待5ms完成写入EEPROM内部存储
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -638,7 +708,7 @@ unsigned short I2C_ReadPage(sI2CDef *sI2C,unsigned short PageAddress,unsigned ch
 }
 /*******************************************************************************
 * 函数名			:	I2C_ReadBuffer
-* 功能描述		:	从I2C总线连续读取n个数据  ,首先读出的是数据的最高位（MSB） 
+* 功能描述		:	从I2C总线连续读取n个数据  ,首先读出的是数据的最高位（MSB），读数据可以自动分页
 * 输入			: void
 * 返回值			: void
 * 修改时间		: 无

@@ -41,6 +41,7 @@ typedef	struct	_I2CDATA				//带反馈锁控制标志及吸合时间
 	unsigned short WPageAddr;		//当前写入的页地址
 	unsigned short WDataTotal;	//需要写入的数据总数
 	unsigned short WDataSize;		//剩余待写入的数据个数
+	unsigned char  DeviceAddr;	//设备地址：bit0=0:write;bit0=1:read
 	unsigned char* WDataAddr;		//待写入的数据起始地址
 }sI2CDATADef;
 typedef	struct	_I2C				//带反馈锁控制标志及吸合时间
@@ -82,6 +83,7 @@ void I2C_Stop(sI2CDef *sI2C);
 void I2C_SendByte(sI2CDef *sI2C,unsigned char ucByte);
 void I2C_WriteOneByte(sI2CDef *sI2C,unsigned short address,unsigned char ucByte);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB）
 void I2C_WritePage(sI2CDef *sI2C,unsigned short PageAddress,const unsigned char* pBuffer);		//页写：
+void I2C_WriteNbyte(sI2CDef *sI2C,unsigned short address,const unsigned char* pBuffer,unsigned short length);
 void I2C_WriteBuffer(sI2CDef *sI2C,unsigned short address,const unsigned char* pBuffer,unsigned short length);	//向I2C总线设备发送8bits的数据 ,首先传输的是数据的最高位（MSB）
 
 unsigned char I2C_ReadByte(sI2CDef *sI2C);
