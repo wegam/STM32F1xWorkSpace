@@ -18,6 +18,7 @@
 #define SendNopTime     3  	      //发送等待时间单位ms---应答等待时间
 #define maxresendcount  5         //最大发送次数
 #define unlockOuttime   2000      //开锁倒计时超时时间
+#define reslockdelaytime   200   //检测到锁已打开后延时关闭驱动时间ms
 #define checkswitchidtime 2000    //检查拨码开关时间间隔
 #define GetOnlinetime   5000      //获取在线设备时间间隔
 
@@ -86,12 +87,12 @@ typedef struct _stSW        //拨码数据：
   unsigned char ICreadFlg :1;   //sw2 未拨时，读卡器的波特率为19200，拨上时波特率为9600
   unsigned char MainFlg   :1;   //sw1 未拨时，此柜为副柜，拨上时为主柜
 }stSWdef;
-typedef struct _stFlg        //拨码数据：
+typedef struct _stFlg        //标志位：
 {
   unsigned short LayPownOn :1;   //层板通电标志：0-未通电，1-已通电
 //  unsigned short WaitAck   :1;   //等待应答--发送完后需要等待应答，如果接收到应答，则清除一个发送缓存：0-未标志，1-在等待应答  
 }stFlgdef;
-typedef struct _stStatus        //拨码数据：
+typedef struct _stStatus        //状态标志：
 {
   unsigned short lockstd    :1;  //锁状态：0-开状态，1-锁状态
   unsigned short unlockerr  :1;  //开锁错误/失败:0-无，1-开锁失败
@@ -152,6 +153,7 @@ typedef struct _stRequest            //锁
   unsigned short  unlockqust  :1;//开锁请求：0-无请求，1-有请求
   unsigned short  unlockrun   :1;//执行开锁：0-无，1-正在执行  
   unsigned short  reslock     :1;//释放锁驱动请求：0-无请求，1-有请求
+  unsigned short  reslockqust :1;//释放锁请求，0-无请求，1-有请求，检测到锁状态为打开时，延时一段时间再关闭驱动
   unsigned short  BLon        :1;//开背光请求：0-无请求，1-有请求
   unsigned short  BLoff       :1;//关背光请求：0-无请求，1-有请求
   unsigned short  PLon        :1;//层板供电开请求：0-无请求，1-有请求

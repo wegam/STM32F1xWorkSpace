@@ -221,6 +221,7 @@ void AMPCAB_BackLight(void)
 *******************************************************************************/
 void LockServer(void)
 {
+    //-----------------------------------未拨码自动开锁
     if(0  ==  CabAddr)    //未拨码--自动开锁
     {
       if(GetLockSts)  //如果锁为关闭状态，则开锁
@@ -233,6 +234,7 @@ void LockServer(void)
       }
       return;
     }
+    //-----------------------------------正在执行开锁动作
     if(1==AMPPro.Req.unlockrun)   //正在执行开锁动作
     {
       if(AMPPro.Time.LockTime>unlockOuttime-10)//10ms后开始检查锁状态
@@ -241,30 +243,46 @@ void LockServer(void)
       }
       if(GetLockSts)    //锁未开
       {
-        AMPPro.Sta.lockstd  = 1;
-        if(AMPPro.Time.LockTime==0)//超过开锁时间
+        AMPPro.Sta.lockstd  = 1;    //锁状态为ON--锁住
+        if(AMPPro.Time.LockTime==0) //超过开锁时间
         {
-          AMPPro.Req.unlockrun  = 0;
-          AMPPro.Sta.unlockerr  = 1;  //
-          AMPPro.Time.LockTime  = 0;
+          AMPPro.Req.unlockrun  = 0;  //开锁标志关闭
+          AMPPro.Sta.unlockerr  = 1;  //开锁异常
+          AMPPro.Time.LockTime  = 0;  //开锁时间清除
           ResLock;
         }
       }
+      //----------------------------锁已打开，需要延时关闭锁驱动
       else
       {
-        AMPPro.Sta.lockstd    = 0;
-        AMPPro.Req.unlockrun  = 0;
-        AMPPro.Sta.unlockerr  = 0;
-        AMPPro.Time.LockTime   = 0;
-        ResLock;        
+        if(0==AMPPro.Req.reslockqust) //延时释放锁驱动
+        {
+          AMPPro.Req.reslockqust  = 1;  //释放锁驱动请求
+          AMPPro.Time.LockTime    = reslockdelaytime;  //延时Nms
+        }
+        else
+        {
+          if(0==AMPPro.Time.LockTime)//延时计时时间到
+          {
+            AMPPro.Sta.lockstd    = 0;  //锁状态为打开
+            AMPPro.Req.unlockrun  = 0;
+            AMPPro.Req.reslockqust= 0;  //释放锁驱动请求标志清除
+            AMPPro.Sta.unlockerr  = 0;
+            AMPPro.Time.LockTime  = 0;
+            ResLock;
+          }
+        }                
       }      
     }
+    //-----------------------------------有开锁请求时数据处理
     if(1==AMPPro.Req.unlockqust)  //开锁请求
     {
-      AMPPro.Req.unlockrun   = 1;
-      AMPPro.Req.unlockqust  = 0;
-      AMPPro.Req.reslock     = 0;
+      AMPPro.Req.unlockrun  = 1;
+      AMPPro.Req.unlockqust = 0;
+      AMPPro.Req.reslock    = 0;
+      AMPPro.Req.reslockqust=0;   //释放锁驱动请求标志清除
       AMPPro.Sta.unlockerr  = 0;
+      
       
       AMPPro.Req.BLon=1;   //开锁需要开背光
       AMPPro.Req.PLon=1;   //开锁层板需要供电
