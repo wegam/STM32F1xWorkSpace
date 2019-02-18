@@ -1020,7 +1020,8 @@ void CS5530_Configuration(void)
 	
 	CS5530		=	&MS200.CH1SS3.ADC;
 	Port			=	&CS5530->Port;
-	//SS3接口，外面
+	//SS3接口，外面	
+	
 	Port->CS_PORT=GPIOB;
 	Port->CS_Pin=GPIO_Pin_12;
 	
@@ -1038,8 +1039,7 @@ void CS5530_Configuration(void)
 	
 	//SS4接口，里面
 	CS5530		=	&MS200.CH2SS4.ADC;
-	Port			=	&CS5530->Port;
-	
+	Port			=	&CS5530->Port;	
 	
 	Port->CS_PORT=GPIOA;
 	Port->CS_Pin=GPIO_Pin_8;
