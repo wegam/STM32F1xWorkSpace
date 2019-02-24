@@ -4,7 +4,7 @@
  *      *** Do not modify ! ***
  *
  * Project: 'STM32F1xWOW' 
- * Target:  'AMP01' 
+ * Target:  'IOTReaderTest' 
  */
 
 #ifndef RTE_COMPONENTS_H

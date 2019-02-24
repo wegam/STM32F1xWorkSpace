@@ -37,8 +37,8 @@ unsigned  char  ackdownfarme[]=
 };
 
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	function
+*函数名			:	getframe
+*功能描述		:	获取帧地址，返回帧长度
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -59,8 +59,8 @@ unsigned short getframe(unsigned char* pbuffer,unsigned short* length)
   return  farmelength;
 }
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	function
+*函数名			:	getheadaddr
+*功能描述		:	获取头标识地址
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
@@ -111,8 +111,8 @@ unsigned char* getheadaddr(unsigned char* pbuffer,unsigned short* length)
 }
 
 /*******************************************************************************
-*函数名			:	function
-*功能描述		:	function
+*函数名			:	crccheck
+*功能描述		:	crc校验
 *输入				: 
 *返回值			:	无
 *修改时间		:	无

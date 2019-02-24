@@ -304,6 +304,11 @@ void WOW_Configuration(void)
 	EepromTest_Configuration();
 #endif
 
+//*********************************IOTReaderTest*********************************//
+#ifdef IOTReaderTest
+	IOTReaderTest_Configuration();
+#endif
+
 }
 
 
@@ -598,6 +603,12 @@ void WOW_Server(void)
 //*********************************EepromTest*********************************//
 #ifdef EepromTest
 	EepromTest_Server();
+#endif
+
+
+//*********************************IOTReaderTest*********************************//
+#ifdef IOTReaderTest
+	IOTReaderTest_Server();
 #endif
 //IWDG_Feed();								//∂¿¡¢ø¥√≈π∑Œππ∑
 

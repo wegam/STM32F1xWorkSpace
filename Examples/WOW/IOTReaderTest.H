@@ -1,5 +1,5 @@
-#ifndef __EepromTest_H
-#define __EepromTest_H
+#ifndef __IOTReaderTest_H
+#define __IOTReaderTest_H
 
 #include "STM32_USART.H"
 #include "STM32_TIM.H"
@@ -16,10 +16,13 @@
 
 
 
-void EepromTest_Configuration(void);
-void EepromTest_Server(void);
+void IOTReaderTest_Configuration(void);
+void IOTReaderTest_Server(void);
 
 
+
+void IOTReaderTestCOMM_Configuration(void);
+void IOTReaderTestCOMM_Server(void);
 
 #endif
 

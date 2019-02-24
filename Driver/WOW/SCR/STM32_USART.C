@@ -402,11 +402,11 @@ void	USART_DMA_ConfigurationNR(
 	
 	//3.3)**********初始化串口参数
 	USART_DeInit(USARTx);
-	USART_InitStructure.USART_BaudRate = USART_BaudRate; 					//波特率
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;		//数据位
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;				//停止位
-	USART_InitStructure.USART_Parity = USART_Parity_No ; 					//奇偶校验
-	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	USART_InitStructure.USART_BaudRate    = USART_BaudRate; 					  //波特率
+	USART_InitStructure.USART_WordLength  = USART_WordLength_8b;		    //数据位
+	USART_InitStructure.USART_StopBits    = USART_StopBits_1;				    //停止位
+	USART_InitStructure.USART_Parity      = USART_Parity_No ; 					//奇偶校验
+	USART_InitStructure.USART_Mode        = USART_Mode_Rx | USART_Mode_Tx;
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//流控
 	USART_Init(USARTx, &USART_InitStructure);											//初始化串口
 	
@@ -515,11 +515,11 @@ void	USART_DMA_ConfigurationIDLEIT(
 	
 	//3.3)**********初始化串口参数
 	USART_DeInit(USARTx);
-	USART_InitStructure.USART_BaudRate = USART_BaudRate; 					//波特率
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;		//数据位
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;				//停止位
-	USART_InitStructure.USART_Parity = USART_Parity_No ; 					//奇偶校验
-	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	USART_InitStructure.USART_BaudRate    = USART_BaudRate; 					      //波特率
+	USART_InitStructure.USART_WordLength  = USART_WordLength_8b;		        //数据位
+	USART_InitStructure.USART_StopBits    = USART_StopBits_1;				        //停止位
+	USART_InitStructure.USART_Parity      = USART_Parity_No ; 					    //奇偶校验
+	USART_InitStructure.USART_Mode        = USART_Mode_Rx | USART_Mode_Tx;
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//流控
 	USART_Init(USARTx, &USART_InitStructure);											//初始化串口	
 

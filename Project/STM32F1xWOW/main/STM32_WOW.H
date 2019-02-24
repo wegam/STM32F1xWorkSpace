@@ -100,6 +100,10 @@
 	#include "EepromTest.H"
 #endif
 
+//*********************************IOTReaderTest*********************************//
+#ifdef IOTReaderTest
+	#include "IOTReaderTest.H"
+#endif
 
 
 
