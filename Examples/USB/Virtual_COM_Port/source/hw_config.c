@@ -138,16 +138,18 @@ void Set_System(void)
   GPIO_Init(USB_DISCONNECT, &GPIO_InitStructure);
 	GPIO_SetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
 
-  /* Configure USART1 Rx (PA.10) as input floating */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+//  /* Configure USART1 Rx (PA.10) as input floating */
+//  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+//  GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-  /* Configure USART1 Tx (PA.09) as alternate function push-pull */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+//  /* Configure USART1 Tx (PA.09) as alternate function push-pull */
+//  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+//  GPIO_Init(GPIOA, &GPIO_InitStructure);
+	
+	USART_DMA_ConfigurationNR(ComPort,115200,VIRTUAL_COM_PORT_DATA_SIZE);
 }
 
 /*******************************************************************************
@@ -289,7 +291,7 @@ void USART_Config_Default(void)
 //	USART_DMA_Configuration(USART1,115200,0,0,(u32*)buffer_rx,(u32*)buffer_tx,VIRTUAL_COM_PORT_DATA_SIZE);
 //	DMA_ITConfig(DMA1_Channel4,DMA_IT_TC, DISABLE);
 //	USART_ITConfig(USART1,USART_IT_IDLE, DISABLE);					//使用空闲中断，DMA自动接收，检测到总线空闲表示发送端已经发送完成，数据保存在DMA缓冲器中
-	USART_DMA_ConfigurationNR	(USART1,115200,VIRTUAL_COM_PORT_DATA_SIZE);	//USART_DMA配置--查询方式，不开中断
+	USART_DMA_ConfigurationNR	(ComPort,115200,VIRTUAL_COM_PORT_DATA_SIZE);	//USART_DMA配置--查询方式，不开中断
 }
 
 /*******************************************************************************
@@ -364,8 +366,8 @@ bool USART_Config(void)
   USART_InitStructure.USART_BaudRate = linecoding.bitrate;													//设置波特率
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;		//设置没有硬件数据流控制
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;										//使能接收、发送
-  USART_Init(USART1, &USART_InitStructure);																					//初始化串口
-  USART_Cmd(USART1, ENABLE);																												//使能串口
+  USART_Init(ComPort, &USART_InitStructure);																					//初始化串口
+  USART_Cmd(ComPort, ENABLE);																												//使能串口
   return (TRUE);
 }
 /*******************************************************************************
@@ -378,7 +380,7 @@ bool USART_Config(void)
 void USB_To_USART_Send_Data(u8* data_buffer, u8 Nb_bytes)
 {
 	Usart_tx_flg=1;
-	USART_DMASend(USART1,data_buffer,(u16)Nb_bytes);		//自定义printf串口DMA发送程序
+	USART_DMASend(ComPort,data_buffer,(u16)Nb_bytes);		//自定义printf串口DMA发送程序
 }
 /*******************************************************************************
 * Function Name  : USB_To_UART_Send_Data.
@@ -403,8 +405,8 @@ void USB_To_USART_Send_DataBAC1(u8* data_buffer, u8 Nb_bytes)
 	{
 		for (i = 0; i < Nb_bytes; i++)									//串口发送数据
 		{
-			USART_SendData(USART1, *(data_buffer + i));
-			while((USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET));
+			USART_SendData(ComPort, *(data_buffer + i));
+			while((USART_GetFlagStatus(ComPort, USART_FLAG_TXE) == RESET));
 		}
 		count_out = 0;
 	}
@@ -417,7 +419,7 @@ void USB_To_USART_Send_DataBAC1(u8* data_buffer, u8 Nb_bytes)
 *******************************************************************************/
 void USART_To_USB_Send_Data(void)
 {	
-	u16	num	=	USART_ReadBufferIDLE(USART1,buffer_in);
+	u16	num	=	USART_ReadBufferIDLE(ComPort,buffer_in);
 	if(num)
 	{
 		UserToPMABufferCopy(buffer_in, ENDP1_TXADDR, num);
@@ -509,39 +511,13 @@ void USART_To_USB_Send_Databac1(void)
 *******************************************************************************/
 void Handle_USBAsynchXfer (void)
 {
-	if(DMA_GetFlagStatus(DMA1_FLAG_GL4))
+	count_in=USART_ReadBufferIDLE(ComPort,buffer_rx);
+	if(count_in)
 	{
-		if(Usart_tx_flg)
-		{
-			if(USART_GetFlagStatus(USART1,USART_FLAG_TXE))
-			{
-				USART_ClearFlag(USART1,USART_FLAG_TXE);
-				DMA_ClearFlag(DMA1_FLAG_GL4);								//清除标志
-				DMA_Cmd(DMA1_Channel4,DISABLE);							//DMA发送关闭
-			}
-		}
-	}
-	if(USART_GetFlagStatus(USART1,USART_FLAG_IDLE))
-	{
-		USART_ClearFlag(USART1,USART_FLAG_IDLE);
-		DMA_Cmd(DMA1_Channel5,DISABLE);    																//关闭接收DMA
-		count_in = USART1->DR; 																								//读出数据以完成清除标志			
-		count_in = VIRTUAL_COM_PORT_DATA_SIZE -  DMA_GetCurrDataCounter(DMA1_Channel5);	//得到真正接收数据个数
-
-		memcpy(buffer_in, buffer_rx, count_in);
-		memset(buffer_rx, 0x00, VIRTUAL_COM_PORT_DATA_SIZE);
-
-		DMA1_Channel5->CMAR=(u32)buffer_rx;																//重新设置DMA接收地址
-		DMA1_Channel5->CNDTR=VIRTUAL_COM_PORT_DATA_SIZE;														//重新设置接收数据个数			
-		DMA_Cmd(DMA1_Channel5,ENABLE);  																	//开启接收DMA
-		
-		Usart_tx_flg=1;
 		UserToPMABufferCopy(buffer_in, ENDP1_TXADDR, count_in);
 		SetEPTxCount(ENDP1, count_in);
 		SetEPTxValid(ENDP1);
 	}
-		
-
 }
 /*******************************************************************************
 * Function Name  : Handle_USBAsynchXfer.
