@@ -42,6 +42,8 @@
 void AMPCAB_Configuration(void);
 void AMPCAB_Server(void);
 void AMPCAB_Loop(void);
+void CardReaderInitLoop(void);
+void CardReaderInitServer(void);
 void AMPCAB_Receive(void);
 void AMPCAB_SwitchIDServer(void);
 void AMPCAB_SYSLED(void);

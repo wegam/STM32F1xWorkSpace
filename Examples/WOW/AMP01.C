@@ -10,7 +10,6 @@
 #include "STM32_WDG.H"
 
 
-
 unsigned  long*  MCUMEMaddr = (unsigned  long*)(0x1FFFF7E0);
 unsigned  short  MCUMEMsize  = 0;
 
@@ -27,21 +26,6 @@ unsigned  char gCbFlag=0;   //0--¹ñ°å£¬1--²ã°å
 *******************************************************************************/
 void AMP01_Configuration(void)
 {	
-//  static stAMPProdef AMP1[200000];
-//  static stAMPProdef AMP2;
-//  static stAMPProdef AMP3;
-//  static stAMPProdef AMP4;
-//  static stAMPProdef AMP5;
-//  static stAMPProdef AMP6;
-//  static stAMPProdef AMP7;
-//  static stAMPProdef AMP8;
-//  static stAMPProdef AMP9;
-//  static stAMPProdef AMP11;
-//  static stAMPProdef AMP12;
-//  static stAMPProdef AMP13;
-//  static stAMPProdef AMP14;
-//  static stAMPProdef AMP15;
-//  static stAMPProdef AMP16;
   MCUMEMsize  = *MCUMEMaddr;
   if(0x0100 ==  MCUMEMsize) //256K Flash ¹ñ¿ØÖÆ°åSTM32F103RC
   {

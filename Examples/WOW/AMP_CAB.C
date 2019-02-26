@@ -5,6 +5,8 @@
 
 #include	"AMP_PHY.H"
 
+#include "IOTReader.H"
+
 #include "STM32F10x_BitBand.H"
 #include "STM32_GPIO.H"
 #include "STM32_SYS.H"
@@ -23,6 +25,14 @@
 RS485Def stCbRS485Ly;   //usart2,pa1    //层板接口
 RS485Def stCbRS485Cb;   //uart4,pc12    //副柜接口
 SwitchDef stCbSwitch;
+
+unsigned char CardData[64]={0}; //读卡器接收缓存
+unsigned char CardNum=0;  //读卡器读数计数
+unsigned short InitCardReaderTimeOut=0; //读卡器配置超时时间 10秒
+unsigned char InitCardReaderFlag=0; //读卡器配置标识：0-未配置，1-已配置
+unsigned long InitCardUSART_BaudRate=0; //配置读卡器时使用的波特率
+
+
 
 unsigned char CabAddr   =0;
 unsigned char MainFlag  =0; //0--副柜，1--主柜
@@ -45,10 +55,9 @@ void AMPCAB_Configuration(void)
   AMPCAB_GenyConfiguration();   //常规接口配置，背光，锁，电源控制
     
   AMPCABCOMM_Configuration();   //通讯配置
- 
-//	PWM_OUT(TIM2,PWM_OUTChannel1,1000,950); //PWM设定-20161127版本  
-//  IWDG_Configuration(1000);							  //独立看门狗配置---参数单位ms
-//  SysTick_Configuration(1000);            //系统嘀嗒时钟配置72MHz,单位为uS
+  
+  SysTick_DeleymS(1000);				//SysTick延时nmS--等上电稳定
+
 }
 /*******************************************************************************
 *函数名			:	function
@@ -61,6 +70,13 @@ void AMPCAB_Configuration(void)
 *******************************************************************************/
 void AMPCAB_Server(void)
 {
+  //========================读卡器未配置
+  if(0==InitCardReaderFlag)
+  {    
+    CardReaderInitServer();
+    return;
+  }
+  //========================读卡器已配置
   LockServer();
   RequestServer();    //请求命令处理
   StatusServer();     //状态服务
@@ -80,9 +96,118 @@ void AMPCAB_Server(void)
 *注释				:	wegam@sina.com
 *******************************************************************************/
 void AMPCAB_Loop(void)
-{  
+{ 
+  //========================读卡器未配置
+  if(0==InitCardReaderFlag)
+  {
+    CardReaderInitLoop(); 
+    return;
+  }
+  //========================读卡器已配置
   AMPCAB_Receive();
   Send_Server();
+}
+/*******************************************************************************
+*函数名			:	CardReaderInitLoop
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void CardReaderInitLoop(void)
+{
+  unsigned char data[64]={0};
+  unsigned char RxNum  = 0;
+  //---------------------层板接口 USART2
+  RxNum = RS485_ReadBufferIDLE(&stCbRS485Ly,data);
+  if(RxNum)
+  {
+    unsigned char i=0;
+    if(RxNum>64)
+      RxNum=64;
+    
+    memcpy(&CardData[CardNum],data,RxNum);
+    CardNum+=RxNum;
+    if(CardNum>=64)
+    {
+      CardNum=0;
+    }
+    for(i=0;i<64;i++)
+    {
+      if(CardData[i]==0xAA)
+      {
+        if((CardData[i+2]==0x02)  /*长度*/
+          &&(CardData[i+3]==0x00) /*状态*/
+        &&(CardData[i+4]==0x01)   /*波特率代码19200*/
+        &&(CardData[i+6]==0xBB))  /*结束符*/
+        {
+          InitCardReaderFlag=1;
+          InitCardUSART_BaudRate=19200;
+          RS485_DMA_ConfigurationNR(&stCbRS485Ly,InitCardUSART_BaudRate,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+        }
+      }
+    }
+  } 
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void CardReaderInitServer(void)
+{  
+  //----------------------读卡器超时
+  if(InitCardReaderTimeOut>10000)
+  {
+    InitCardReaderFlag=1;
+    return;
+  }
+  //---------------------1秒设置一次波特率,将波特率设置为19200
+  if(InitCardReaderTimeOut%1000==0)
+  {    
+    if(0==InitCardUSART_BaudRate)
+    {
+      InitCardUSART_BaudRate=9600;
+    }
+    else if(9600==InitCardUSART_BaudRate)
+    {
+      InitCardUSART_BaudRate=19200;
+    }
+    else if(19200==InitCardUSART_BaudRate)
+    {
+      InitCardUSART_BaudRate=38400;
+    }
+    else if(38400==InitCardUSART_BaudRate)
+    {
+      InitCardUSART_BaudRate=57600;
+    }
+    else if(57600==InitCardUSART_BaudRate)
+    {
+      InitCardUSART_BaudRate=115200;
+    }
+    else if(115200==InitCardUSART_BaudRate)
+    {
+      InitCardUSART_BaudRate=19200;
+    }     
+    RS485_DMA_ConfigurationNR			(&stCbRS485Ly,InitCardUSART_BaudRate,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+    
+  }
+  //---------------------0.5秒发送一次配置
+  if(InitCardReaderTimeOut%500==0)
+  {
+    unsigned char TxdBuffer[64]={0};
+    unsigned char TxdLen  = 0;
+    //CardReaderInitLoop();
+    TxdLen  = IOT5302WSetBaudrate(TxdBuffer,1);    //设置读卡器波特率
+    TxdLen = RS485_DMASend(&stCbRS485Ly,TxdBuffer,TxdLen);	//RS485-DMA发送程序
+  }
+  InitCardReaderTimeOut++;
 }
 /*******************************************************************************
 *函数名			:	function
@@ -384,7 +509,7 @@ void AMPCAB_GenyConfiguration(void)
   BackLightOn;
   //---------------------层板供电接口配置
   GPIO_Configuration_OPP50(LayPowerPort,LayPowerPin);
-  LayPowerOn;
+  LayPowerOn;   //开供电，配置读卡器
 }
 
 /*******************************************************************************
@@ -411,7 +536,7 @@ void AMPCABCOMM_Configuration(void)
   stCbRS485Ly.USARTx  = USART2;
   stCbRS485Ly.RS485_CTL_PORT  = GPIOA;
   stCbRS485Ly.RS485_CTL_Pin   = GPIO_Pin_1;
-  RS485_DMA_ConfigurationNR			(&stCbRS485Ly,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+  RS485_DMA_ConfigurationNR			(&stCbRS485Ly,9600,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
   //-----------------------------副柜接口UART4
   stCbRS485Cb.USARTx  = UART4;
   stCbRS485Cb.RS485_CTL_PORT  = GPIOC;

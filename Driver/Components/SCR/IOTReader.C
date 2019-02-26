@@ -40,7 +40,7 @@ unsigned short IOT5302WGetSNR(unsigned char* Buffer)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-unsigned short IOT5302WSetBaudrate(unsigned char* Buffer)
+unsigned short IOT5302WSetBaudrate(unsigned char* Buffer,unsigned char Num)
 {
   unsigned short FrameLen=7;
   
@@ -48,7 +48,7 @@ unsigned short IOT5302WSetBaudrate(unsigned char* Buffer)
   Buffer[1]   = 0x00;         //设备地址
   Buffer[2]   = 0x02;         //长度：不包括STX,ETX,BCC,设备地址
   Buffer[3]   = SetBaudrate;  //命令
-  Buffer[4]   = 0x01;         //0x00：9600
+  Buffer[4]   = Num;         //0x00：9600
                               //0x01：19200
                               //0x02：38400
                               //0x03：57600

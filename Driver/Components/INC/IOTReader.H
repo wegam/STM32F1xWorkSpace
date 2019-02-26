@@ -79,7 +79,7 @@ typedef struct _IOTReader
 
 
 unsigned short IOT5302WGetSNR(unsigned char* Buffer);    //寻卡模式，获取UID
-unsigned short IOT5302WSetBaudrate(unsigned char* Buffer);  //设置读卡器波特率
+unsigned short IOT5302WSetBaudrate(unsigned char* Buffer,unsigned char Num);  //设置读卡器波特率
 unsigned short IotMifareGetCmdFrame(Cmddef Cmd,unsigned char Sec,unsigned char* Buffer,unsigned char* KeyBuffer);
 
 
