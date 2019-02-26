@@ -19,7 +19,7 @@
 
 
 
-#define	TLE5012StartAddr	0x08007000		//原点值在MCU内部FLASH的存储地址
+#define	TLE5012StartAddr	0x08008000		//原点值在MCU内部FLASH的存储地址
 
 #define	ErrAngle	10						//允许偏差角度范围(正负偏差)
 
@@ -32,21 +32,20 @@ SPIDef	TLE5012;
 
 //--------------------------标志变量
 unsigned short	testflg	=	0;				//正反转标志,0-停止，1-正转，-1-反转
-unsigned char	MotorRunFlg	=	0;		//电机运行标志,0-不运行，1-正转，2-反转
+unsigned char	MotorRunFlg	=	0;		//电机运行标志,0-不支行，1-正转，2-反转
 
 unsigned char SetFlag=0;	//设置标志：0--正常状态，1-设置状态
 
 //--------------------------角度变量
 unsigned	short Organgle	=	0;							//原点角度值
-unsigned	short angle1		=	0;							//角度值，通过对比两个角度值确认旋转方向
-unsigned	short anglelive	=	0;							//实时角度值，通过对比两个角度值确认旋转方向
+unsigned	short angle1		=	0,angle2	=	0;	//角度值，通过对比两个角度值确认旋转方向
 unsigned	short	DeviationAngle	=	0;				//当前角度与原点偏移值
 unsigned	short anglecount	=	0;						//角度计数器，每次启动电机前需要清零
 
 //--------------------------时间变量
 unsigned	short testtime	=	0;
 unsigned	short readdelay	=	0;
-//unsigned	short	Triggerdelay	=	0;	//触发信号延时
+unsigned	short timedelay	=	0;
 unsigned	short SYSLEDtime=	0;
 
 
@@ -62,41 +61,37 @@ unsigned	short i=0;
 //<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
 void TLE5012BV2_Configuration(void)
 {	
-	//-----------------------系统配置---打开系统时钟 STM32_SYS.H
-	SYS_Configuration();
-	
-	//-----------------------TLE5012 SPI配置
-	SPI5012B_Init();	
-	//-----------------------TLE5012 CLK脚
-	PWM_OUT(TIM2,PWM_OUTChannel4,80000,500);						//PWM设定-20161127版本
+	SYS_Configuration();					//系统配置---打开系统时钟 STM32_SYS.H	
 	
 	//-----------------------SYSLED脚
-	GPIO_Configuration_OPP50(SYSLED_Port,SYSLED_Pin);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605	
+	GPIO_Configuration_OPP50(SYSLED_Port,SYSLED_Pin);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	//-----------------------TLE CLK脚
+	PWM_OUT(TIM2,PWM_OUTChannel4,80000,500);						//PWM设定-20161127版本
 
-	//-----------------------触发信号输入接口
-	GPIO_Configuration_IPU(CWtargePort,CWtargePin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
-	GPIO_Configuration_IPU(CCWtargePort,CCWtargePin);		//将GPIO相应管脚配置为上拉输入模式----V20170605
-	
 	//-----------------------SetKey脚:设定原点值按键
-	GPIO_Configuration_IPU(SetKey_Port,SetKey_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605	
+	GPIO_Configuration_IPU(SetKey_Port,SetKey_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
 	
+	//-----------------------TLE5012 SPI配置
+	SPI5012B_Init();
 	//-----------------------电机控制接口
 	GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_1);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
 	GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_2);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
-
-	MSTP();	
-  
-	SysTick_DeleymS(500);				//SysTick延时nmS
+	//GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_9);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	//GPIO_Toggle	(GPIOA,GPIO_Pin_9);		//将GPIO相应管脚输出翻转----V20170605
+	MSTP();
+	//-----------------------模组控制接口(原模组控制电机接口)
+	GPIO_Configuration_IPU(CWtargePort,CWtargePin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
+	GPIO_Configuration_IPU(CCWtargePort,CCWtargePin);		//将GPIO相应管脚配置为上拉输入模式----V20170605
 	
-	//-----------------------------读取备份原点值
-	STM32_FLASH_Read(TLE5012StartAddr,(unsigned short*)&Organgle,1);							//从指定地址开始读出指定长度的数据
-	//-----------------------------转换为角度值(防止读出的数据大于360)
-	Organgle=Organgle%360;	
+  
+	SysTick_DeleymS(1000);				//SysTick延时nmS
+	
+	//-----------------------------读取原点值
+	STM32_FLASH_Read(TLE5012StartAddr,(unsigned short*)&Organgle,2);							//从指定地址开始读出指定长度的数据
 	
 	//-----------------------等待计读数稳定
-	SysTick_DeleymS(500);				//SysTick延时nmS
 	for(i=0;i<30;i++)
-		angle1	=	ReadAngle();	//读后读取的角度值认为是原点值
+	angle1	=	ReadAngle();	//读后读取的角度值认为是原点值
 	//-----------------------初始化相关数据
 	SysTick_DeleymS(200);				//SysTick延时nmS
 	IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
@@ -112,6 +107,10 @@ void TLE5012BV2_Configuration(void)
 			MOTORT();	
 			//---------------------原点定位程序
 			SetOrig();
+			if(anglecount>=AngleCountStopDr)		//预设一个触发旋转角度：到达角度后停，由原点定位程序来控制停止位
+			{
+				MotorRunFlg	=	0;
+			}	
 		}		
 	}
 }
@@ -144,8 +143,9 @@ void TLE5012BV2_Server(void)
 		MotorRunFlg	=	0;			//正反转标志
 		Organgle	=	ReadAngle();	//读后读取的角度值认为是原点值
 		angle1=Organgle;
-		anglelive=Organgle;
-		
+		angle2=Organgle;
+		//-----------------------------保存原点值
+		STM32_FLASH_Write(TLE5012StartAddr,(unsigned short*)&Organgle,2);						//从指定地址写入指定长度的数据
 		return;		
 	}
 	//=====================================运行LED：正常运行时闪烁周期为1秒
@@ -155,10 +155,6 @@ void TLE5012BV2_Server(void)
 		GPIO_Toggle	(SYSLED_Port,SYSLED_Pin);		//将GPIO相应管脚输出翻转----V20170605
 	}
 	
-	if(0!=MotorRunFlg)	//电机忙，不检查触发信号
-	{
-		return;
-	}
 	goto ActivateModel;	//外部触发模式
 	
 	//=====================================测试模式：定时正反转
@@ -171,7 +167,7 @@ void TLE5012BV2_Server(void)
 	{		
 		angle1	=	ReadAngle();
 		angle1	=	ReadAngle();
-		anglelive	=	angle1;
+		angle2	=	angle1;
 		
 		MotorRunFlg	=	1;		//正转
 		anglecount	=	0;
@@ -180,7 +176,7 @@ void TLE5012BV2_Server(void)
 	{		
 		angle1	=	ReadAngle();
 		angle1	=	ReadAngle();
-		anglelive	=	angle1;
+		angle2	=	angle1;
 		
 		MotorRunFlg	=	2;		//反转
 		anglecount	=	0;
@@ -194,27 +190,34 @@ void TLE5012BV2_Server(void)
 	
 	//=====================================外部触发模式：根据触发信号控制正反转
 	ActivateModel:			//外部触发模式
+	if(timedelay>0)			//读到触发信号后需要等待一段时间才可以两次读触发信号:单位ms
+	{
+		timedelay--;
+		return;
+	}
 	//---------------------读触发信号：正转触发
 	result=GPIO_ReadInputDataBit(CWtargePort,CWtargePin);
 	if(0==result)
 	{
 		angle1	=	ReadAngle();
-		anglelive	=	angle1;
+		//angle1	=	ReadAngle();
+		angle2	=	angle1;
 		
 		MotorRunFlg	=	1;		//正转
 		anglecount	=	0;
-		return;
+		timedelay=50;
 	}
 	//---------------------读触发信号：反转触发
 	result=GPIO_ReadInputDataBit(CCWtargePort,CCWtargePin);
 	if(0==result)
 	{
 		angle1	=	ReadAngle();
-		anglelive	=	angle1;
+		//angle1	=	ReadAngle();
+		angle2	=	angle1;
 		
 		MotorRunFlg	=	2;		//反转
 		anglecount	=	0;
-		return;
+		timedelay=50;
 	}
 	return;
 }
@@ -239,14 +242,12 @@ unsigned char SetKeyServer(void)
 			if(keytime++>20)	//按键防抖时间ms
 			{
 				keyon=1;
-				if(0==SetFlag)	//原来为正常状态
+				if(0==SetFlag)	//原来为设置状态
 				{
 					SetFlag=1;		//进入设置状态
 				}
 				else
 				{
-					//-----------------------------保存原点值
-					STM32_FLASH_Write(TLE5012StartAddr,(unsigned short*)&Organgle,1);						//从指定地址写入指定长度的数据
 					SetFlag=0;		//设置完成，进入正常状态
 				}
 			}			
@@ -275,86 +276,59 @@ void MOTORT(void)
 	{
 		return;
 	}
-	//---------------------等电机运行一段时间后再开始读角度数据
-//	if(readdelay++<2)
-//	{
-//		return;
-//	}
-//	readdelay	=	0;
+	//---------------------
+	if(readdelay++<2)
+	{
+		return;
+	}
+	readdelay	=	0;
 	//---------------------读取当前位置角度值
-	anglelive	=	ReadAngle();
+	angle2	=	ReadAngle();
 	
 	//=====================================电机正转角度计数：角度增量方向运行：正转角度计数，angle2>angle1，注意角度到达360度后会归零
-	if(2==MotorRunFlg)	//正转标志--角度增加
+	if(2==MotorRunFlg)	//正转标志
 	{	
-		unsigned	short AngleTemp=0;
-		//--------------------角度顺序增加(未过360度临界值)+2的误差
-		if(anglelive>angle1+2)
+		//--------------------角度顺序增加(未过360度临界值)
+		if(angle2>angle1)
 		{
-			AngleTemp=anglelive-angle1;
-			if(AngleTemp<60)	//角度偏差太大
-			{
-				anglecount+=AngleTemp;
-			}
+			anglecount+=angle2-angle1;
 		}
-		//--------------------已过临界点(过临界点时，按转速估计，上次读取的数据应该接近临界点)
-		else if((angle1>anglelive)&&(angle1>270)&&(anglelive<90))
+		//--------------------已过临界点
+		else
 		{
 			unsigned	short AngleTemp=0;
 			//------------------计算上次角度与临界点差值
 			AngleTemp=360-angle1;
 			//------------------角度计数：
-			AngleTemp=AngleTemp+anglelive;
-			if(AngleTemp<60)	//角度偏差太大
-			{
-				anglecount+=AngleTemp;
-			}
-		}
-		else
-		{
-			goto MotorRunning;
+			anglecount+=AngleTemp+angle2;
 		}
 	}	
 	//=====================================电机反转角度计数：角度减量方向运行：反转角度计数，angle2<angle1，注意角度到达0度后会变成360
-	else if(1==MotorRunFlg)	//反转标志-角度减小
+	else if(1==MotorRunFlg)	//反转标志
 	{
-		unsigned	short AngleTemp=0;
-		//--------------------角度顺序减小(未过0度临界值)+2的误差
-		if(angle1>anglelive+2)
+		//--------------------角度顺序减小(未过0度临界值)
+		if(angle1>angle2)
 		{
-			AngleTemp=angle1-anglelive;
-			if(AngleTemp<60)	//角度偏差太大
-			{
-				anglecount+=AngleTemp;
-			}
+			anglecount+=angle1-angle2;
 		}
-		//--------------------已过临界点(过临界点时，按转速估计，上次读取的数据应该接近临界点)
-		else if((anglelive>angle1)&&(angle1<90)&&(anglelive>270))
-		{			
-			//------------------计算此次角度与临界点差值+5的误差
-			AngleTemp=360-anglelive;
-			//------------------角度差计数：
-			AngleTemp=AngleTemp+angle1;
-			if(AngleTemp<60)	//角度偏差太大
-			{
-				anglecount+=AngleTemp;
-			}
-		}
+		//--------------------已过临界点
 		else
 		{
-			goto MotorRunning;
+			unsigned	short AngleTemp=0;
+			//------------------计算此次角度与临界点差值
+			AngleTemp=360-angle2;
+			//------------------角度计数：
+			anglecount+=AngleTemp+angle1;
 		}
 	}
 	//--------------------更新对比角度值
-	angle1	=	anglelive;
+	angle1	=	angle2;
 	//--------------------判断角度计数有无达到预期
 	if(anglecount>=AngleCountStopDr)		//预设一个触发旋转角度：到达角度后停，由原点定位程序来控制停止位
 	{
 		MotorRunFlg	=	0;
-		//anglecount=0;
 	}
 	//=====================================电机驱动控制
-	MotorRunning:
 	if(1	==	MotorRunFlg)
 		MCW();
 	else if(2	==	MotorRunFlg)
@@ -363,7 +337,82 @@ void MOTORT(void)
 		MSTP();	
 	return;
 }
-
+/*******************************************************************************
+* 函数名			:	MOTORT
+* 功能描述		:	电机控制程序 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 20190101
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void MOTORTBAC(void)
+{	
+	//---------------------电机没有运行
+	if(0==MotorRunFlg)
+	{
+		return;
+	}
+	//---------------------
+	if(readdelay++<2)
+	{
+		return;
+	}
+	readdelay	=	0;
+	//---------------------读取当前位置角度值
+	angle2	=	ReadAngle();
+	
+	//=====================================电机正转角度计数：角度增量方向运行：正转角度计数，angle2>angle1，注意角度到达360度后会归零
+	if(2==MotorRunFlg)
+	{	
+		//--------------------超过180度：
+		if(angle2-angle1>120)
+			anglecount+=360-angle2+angle1;
+		
+		//--------------------角度增加：增加角度计数
+		else if(angle2>angle1)
+			anglecount+=angle2-angle1;
+		
+		//--------------------回调时(无效，由原点校正函数处理)：角度计数需要减
+		else if(anglecount>0)
+		{
+			if(angle1-angle2>120)
+				anglecount-=360-angle1+angle2;
+			else
+				anglecount-=angle1-angle2;
+		}
+	}	
+	//=====================================电机反转角度计数：角度减量方向运行：反转角度计数，angle2<angle1，注意角度到达0度后会变成360
+	else if(1==MotorRunFlg)	//减量方向运行：反转角度计数
+	{
+		//--------------------超过180度：
+		if(angle1-angle2>120)
+			anglecount+=360-angle1+angle2;
+		
+		//--------------------角度增加：增加角度计数
+		else if(angle1>angle2)
+			anglecount+=angle1-angle2;
+		
+		//--------------------回调时(无效，由原点校正函数处理)：角度计数需要减
+		else if(anglecount>0)
+		{
+			if(angle2-angle1>120)
+				anglecount-=360-angle2+angle1;
+			else
+				anglecount-=angle2-angle1;
+		}
+	}
+	//--------------------更新对比角度值
+	angle1	=	angle2;
+	//=====================================电机驱动控制
+	if(1	==	MotorRunFlg)
+		MCW();
+	else if(2	==	MotorRunFlg)
+		MCCW();
+	else
+		MSTP();	
+	return;
+}
 /*******************************************************************************
 * 函数名			:	SetOrig
 * 功能描述		:	原点定位程序
@@ -381,19 +430,19 @@ void SetOrig(void)
 		return;
 	
 	//--------------------读取当前角度
-	anglelive	=	ReadAngle();
+	angle1	=	ReadAngle();
 	//--------------------
-	DeviationAngle	=	((anglelive+Organgle)>>1)%(Divisor);
+	DeviationAngle	=	((angle1+Organgle)>>1)%(Divisor);
 	
 	goto SetOrigtest2;	//选用模式2测试
 	
 	//=============================测试模式1
 	SetOrigtest1:
-	if((anglelive>Organgle)&&(anglelive-Organgle>ErrAngle))
+	if((angle1>Organgle)&&(angle1-Organgle>ErrAngle))
 	{
 		MCCW();
 	}
-	else if((anglelive<Organgle)&&(Organgle-anglelive>ErrAngle))
+	else if((angle1<Organgle)&&(Organgle-angle1>ErrAngle))
 	{
 		MCW();
 	}
@@ -407,7 +456,7 @@ void SetOrig(void)
 	SetOrigtest2:
 	
 	DeviationAngle=360-Organgle;		//原点偏差
-	DeviationAngle=(anglelive+DeviationAngle)%(Divisor);	//
+	DeviationAngle=(angle1+DeviationAngle)%(Divisor);	//
 	if(DeviationAngle<=ErrAngle||(360-DeviationAngle)<=ErrAngle)		//在允许误差范围内
 	{
 		MSTP();

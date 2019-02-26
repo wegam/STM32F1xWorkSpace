@@ -130,6 +130,8 @@ void Set_System(void)
 
   /* Enable USB_DISCONNECT GPIO clock */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIO_DISCONNECT, ENABLE);
+	
+	
 
   /* Configure USB pull-up pin */
   GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
