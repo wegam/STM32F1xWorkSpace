@@ -43,8 +43,8 @@
 //------------------背光接口J11的VCC和EN脚
 #define BackLightPort GPIOC         //高电平关闭，低电平点亮
 #define BackLightPin  GPIO_Pin_5
-#define BackLightOn   BackLightPort->BRR   = BackLightPin
-#define BackLightOff  BackLightPort->BSRR  = BackLightPin
+#define BackLightOn   BackLightPort->BSRR   = BackLightPin
+#define BackLightOff  BackLightPort->BRR  = BackLightPin
 //------------------层板电源控制J5、J6、J9共用一个控制电源
 #define LayPowerPort  GPIOB         //高电启动电源，低电平关闭电源
 #define LayPowerPin   GPIO_Pin_1

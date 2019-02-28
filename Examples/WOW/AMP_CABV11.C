@@ -467,7 +467,7 @@ void AMPCABCOMM_Configuration(void)
   stCbRS485Ly.USARTx  = CommLayPort;
   stCbRS485Ly.RS485_CTL_PORT  = CommLayCTLPort;
   stCbRS485Ly.RS485_CTL_Pin   = CommLayCTLPin;
-  RS485_DMA_ConfigurationNR			(&stCbRS485Ly,9600,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+  RS485_DMA_ConfigurationNR			(&stCbRS485Ly,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
   //-----------------------------副柜接口UART4
   stCbRS485Cb.USARTx  = CommCbPort;
   stCbRS485Cb.RS485_CTL_PORT  = CommCbCTLPort;
@@ -682,7 +682,7 @@ void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     return;     //任务完成，退出
   }
   //2)-----------------层地址为0，不需要往下发，只在柜控制板处理：灯控制/锁控制/供电
-  if(LED ==  Cmd)   //背光控制命令
+  if(AmpCmdLed ==  Cmd)   //背光控制命令
   {
     AMPPro.Req.BLon=0;
     AMPPro.Req.BLoff=0;
@@ -691,7 +691,7 @@ void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     else
       AMPPro.Req.BLoff=1;
   }
-  else if(PWD ==  Cmd)   //层板供电控制命令
+  else if(AmpCmdPwr ==  Cmd)   //层板供电控制命令
   {
     AMPPro.Req.PLon  =0;
     AMPPro.Req.PLoff =0;
@@ -700,7 +700,7 @@ void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     else
       AMPPro.Req.PLoff=1;
   }
-  else if(CTL ==  Cmd)   //锁控制命令
+  else if(AmpCmdLock ==  Cmd)   //锁控制命令
   {
     AMPPro.Req.reslock  =0;
     AMPPro.Req.unlockqust =0;
@@ -806,7 +806,7 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     return;     //任务完成，退出
   }
   //2)-----------------层地址为0，不需要往下发，只在柜控制板处理：灯控制/锁控制/供电
-  if(LED ==  Cmd)   //背光控制命令
+  if(AmpCmdLed ==  Cmd)   //背光控制命令
   {
     AMPPro.Req.BLon=0;
     AMPPro.Req.BLoff=0;
@@ -815,7 +815,7 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     else
       AMPPro.Req.BLoff=1;
   }
-  else if(PWD ==  Cmd)   //层板供电控制命令
+  else if(AmpCmdPwr ==  Cmd)   //层板供电控制命令
   {
     AMPPro.Req.PLon  =0;
     AMPPro.Req.PLoff =0;
@@ -824,7 +824,7 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     else
       AMPPro.Req.PLoff=1;
   }
-  else if(CTL ==  Cmd)   //锁控制命令
+  else if(AmpCmdLock ==  Cmd)   //锁控制命令
   {
     AMPPro.Req.reslock  =0;
     AMPPro.Req.unlockqust =0;
@@ -833,7 +833,7 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     else
       AMPPro.Req.reslock=1;
   }
-  else if(GetOnline ==  Cmd)   //获取在线设备：前面语句有应答，此处不处理
+  else if(AmpCmdGetOnline ==  Cmd)   //获取在线设备：前面语句有应答，此处不处理
   {
     return;
   }
@@ -909,7 +909,7 @@ void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     //-------------------------读卡器端口接收到数据
     memcpy(databuffer,pBuffer,length);
     framlength  = length;
-    framlength  = PaketUpMsg(databuffer,ICR,&framlength);
+    framlength  = PaketUpMsg(databuffer,AmpCmdCard,&framlength);
     //-------------------------设置地址:柜控制板地址段为address1
     ampframe  = (stampphydef*)databuffer;
     ampframe->msg.addr.address1 = CabAddr;
@@ -951,13 +951,13 @@ void CardDataSendUp(enCCPortDef Port,unsigned char* pBuffer,unsigned short lengt
   //unsigned  char* paddrbac    = pBuffer;         //备份数据缓存起始地址
   
   stampphydef* ampframe=NULL;
-  stcmddef    Cmd;
+  //stcmddef    Cmd;
   
   unsigned  char  databuffer[64]={0};   
   //-------------------------读卡器端口接收到数据
   memcpy(databuffer,pBuffer,length);
   framlength  = length;
-  framlength  = PaketUpMsg(databuffer,ICR,&framlength);
+  framlength  = PaketUpMsg(databuffer,AmpCmdCard,&framlength);
   
   //-------------------------设置地址:柜控制板地址段为address1
   ampframe  = (stampphydef*)databuffer;
@@ -1035,7 +1035,7 @@ void StatusServer(void)
 
     memcpy(databuffer,ptemp,2);
     
-    framlength  = PaketUpMsg(databuffer,STA,&framlength);    
+    framlength  = PaketUpMsg(databuffer,AmpCmdSta,&framlength);    
     ampframe  = (stampphydef*)databuffer;
     
     ampframe->msg.addr.address1 = CabAddr;

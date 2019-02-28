@@ -24,14 +24,15 @@
 
 typedef enum eucmd
 {
-  NoneCmd   = 0,  //不支持的命令/空命令
-  AMPACK  = 1,    //应答类型，只带一个数据，不带地址，数据表示状态
-  LED     = 2,    //LED控制，带三个数据，带地址，0-表示关，1-表示开
-  CTL     = 3,    //开锁命令，只带一个数据，带地址，0-表示读锁状态，1表示开锁
-  ICR     = 4,    //读卡器，带地址，第一个数据为0表示读卡，为1表示写卡，后面跟随卡数据
-  PWD     = 5,    //层板供电控制
-  STA     = 6,    //状态：主要为上报状态
-  GetOnline = 7,    //检查在线设备，接收到后应答表示在线
+  AmpCmdNone      = 0,  //不支持的命令/空命令
+  AmpCmdAck       = 1,  //应答类型，只带一个数据，不带地址，数据表示状态
+  AmpCmdLed       = 2,  //LED控制，带三个数据，带地址，0-表示关，1-表示开
+  AmpCmdLock      = 3,  //开锁命令，只带一个数据，带地址，0-表示读锁状态，1表示开锁
+  AmpCmdCard      = 4,  //读卡器，带地址，第一个数据为0表示读卡，为1表示写卡，后面跟随卡数据
+  AmpCmdPwr       = 5,  //层板供电控制
+  AmpCmdSta       = 6,  //状态：主要为上报状态
+  AmpCmdGetOnline = 7,  //检查在线设备，接收到后应答表示在线
+  AmpCmdBKligth   = 8,  //背光灯控制
   Up      = 0x80, //上传标志
   Down    = 0x7F  //下发与标志
 }eucmddef;
@@ -40,8 +41,7 @@ typedef struct _stcmd
 {
   unsigned char cmd :6;   //CMD1~CMD63---低6位  
   unsigned char rw  :1;   //0-write,1-read--高7位
-  unsigned char dir :1;   //0-down,1-up---高8位
-  
+  unsigned char dir :1;   //0-down,1-up---高8位  
 }stcmddef;
 typedef struct _stampaddr
 {

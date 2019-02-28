@@ -35,7 +35,74 @@ unsigned  char  ackdownfarme[]=
   0x90,
   0x7F
 };
-
+/*******************************************************************************
+*函数名			:	API_AmpCheckFrame
+*功能描述		:	检查协议
+*输入				: pbuffer-数据地址
+              length-数据长度地址
+*返回值			:	消息帧类型
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned  char API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length)
+{
+  unsigned  char  Cmd         = 0;
+  unsigned  char* headaddr    = NULL;
+  unsigned  char* endaddr     = NULL;
+  unsigned short	HeadCodeValidLength	=	*length;    //头标识有效查找长度
+  unsigned short	EndCodeValidLength	=	*length;    //尾标识有效查找长度
+  unsigned short	FrameValidLength	  =	*length;    //当前帧最大有效长度
+  
+ 
+  if(NULL  ==  pbuffer)
+  {
+    goto ExitAmpCheckFrame;   //退出此函数--空地址
+  }
+  if(FrameValidLength<7)  //小于最小帧长度
+  {
+    goto ExitAmpCheckFrame;   //退出此函数--帧长度不够
+  }  
+  startcheckdata:
+  //---------------------查找头标识地址
+  headaddr	=	(unsigned char*)memchr(pbuffer,headcode,HeadCodeValidLength);   //找头标识
+  if(NULL==headaddr)
+  {
+    goto ExitAmpCheckFrame;   //退出此函数--未找到头标识符
+  }
+  //---------------------查找尾标识地址
+  EndCodeValidLength  = HeadCodeValidLength-((unsigned long)headaddr-(unsigned long)pbuffer);
+  if(EndCodeValidLength<7)
+  {
+    goto ExitAmpCheckFrame;   //退出此函数--帧长度不够
+  }
+  endaddr		=	(unsigned char*)memchr(headaddr,endcode,EndCodeValidLength);   //找尾标识---从头标识后开始查找
+  if((NULL==endaddr)
+  {
+    //return  0;
+    //goto ExitAmpCheckFrame;   //退出此函数--未找到尾标识符
+  }
+  //======================================
+//  else
+//  {
+    //======================================根据协议做CRC校验
+    //--------------------------------------应答帧校验
+//    if(crccheck(headaddr,&ValidLength))
+//    {
+//      *length = ValidLength;
+//    }
+//    else
+//    {
+//      pbuffer = &headaddr[1];
+//      ValidLength = ValidLength-1;
+//      goto startcheckdata;
+//    }    
+//  }
+  ExitAmpCheckFrame:  //退出此函数
+//  *length  = 0;       //长度清零
+//  Cmd =  0;
+  return  0;
+}
 /*******************************************************************************
 *函数名			:	getframe
 *功能描述		:	获取帧地址，返回帧长度
@@ -95,6 +162,7 @@ unsigned char* getheadaddr(unsigned char* pbuffer,unsigned short* length)
   }
   else
   {
+    
     if(crccheck(headaddr,&ValidLength))
     {
       *length = ValidLength;
@@ -264,7 +332,7 @@ unsigned char ackcheck(unsigned char* pframe)
   Cmd = (unsigned  char)ampframe->msg.cmd.cmd;
   Cmd&=0x3F;            //去掉高2位
   
-  if(AMPACK  ==  Cmd)
+  if(AmpCmdAck  ==  Cmd)
     return  1;        //应答消息
   return 0;
 }

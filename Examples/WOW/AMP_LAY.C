@@ -296,7 +296,7 @@ void Msg_ProcessLY(enCCPortDef Port,unsigned char* pBuffer,unsigned short length
     //CMD_Process((unsigned char*)ampframe,framlength);
     ackFrame(LayPort,1); //向上应答
     //---------------------------开背光灯命令
-    if(LED ==  Cmd) //最高位为0表示上往下发
+    if(AmpCmdLed ==  Cmd) //最高位为0表示上往下发
     {
       if(LayAddr&&SegAddr)
       {
