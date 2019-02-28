@@ -1,8 +1,9 @@
-#ifndef __IOTReader_H
-#define __IOTReader_H
+#ifndef __IOT5302W_H
+#define __IOT5302W_H
 
 
 #include "stm32f10x_type.h"
+#include "STM32_USART.H"      //
 
 //#include "font.h"
 
@@ -18,8 +19,13 @@ M1卡：总容量1Kbyte
 每个块16字节
 */
 
-#define IotReaderSTX  (unsigned char)0xAA
-#define IotReaderETX  (unsigned char)0xBB
+#define IotReaderSTX  (unsigned char)0xAA   //协议头标识
+#define IotReaderETX  (unsigned char)0xBB   //协议尾标志
+  
+#define IOT5302WReadCycle   300     //读周期，单位ms
+#define IOT5302WReadTimeOut 1500    //读超时时间
+#define IOT5302WInitializeTimeOut 1500    //读超时时间
+#define IOT5302WBufferSize  128    //
 
 //--------------------读卡器命令
 typedef enum  _Cmd //STATUS
@@ -73,7 +79,30 @@ typedef struct _IOTReader
   unsigned char BCC;  //8bits的校验字节.它包括除STX, ETX外所有字节的异或校验.
   unsigned char ETX;  //0xBB:’终止字节’ – 标准控制字节，表示数据包的结束.
 }IRDdef;
-
+//--------------------读卡器使用前需要配置的参数
+typedef struct _IOT5302WConf
+{
+  RS485Def  IOT5302WPort;         //通讯接口
+  unsigned long USART_BaudRate;   //实际应用需要的波特率
+}IOT5302WConfWdef;
+//--------------------读卡器数据结构体
+typedef struct _IOT5302WData
+{
+  unsigned char   UID[4];         //卡片UID
+  unsigned char   Data[IOT5302WBufferSize]; //读卡器数据接收缓存
+  unsigned char   DataCount;      //读卡器数据接收计数
+  unsigned char   Initialized;    //初始化标志，0-未初始化成功，1-初始化成功
+  unsigned short  Time;           //计时器
+  unsigned short  TimeOut;        //超时计时器
+  unsigned long   USART_BaudRate; //正在使用的波特率
+  unsigned char   BaudRateSetStep; //设置波特率步骤
+}IOT5302WDataWdef;
+//--------------------读卡器数据结构体
+typedef struct _IOT5302W
+{
+  IOT5302WConfWdef  Conf;   //读卡器使用前需要配置的参数
+  IOT5302WDataWdef  Data;  
+}IOT5302Wdef;
 
 
 
@@ -81,6 +110,14 @@ typedef struct _IOTReader
 unsigned short IOT5302WGetSNR(unsigned char* Buffer);    //寻卡模式，获取UID
 unsigned short IOT5302WSetBaudrate(unsigned char* Buffer,unsigned char Num);  //设置读卡器波特率
 unsigned short IotMifareGetCmdFrame(Cmddef Cmd,unsigned char Sec,unsigned char* Buffer,unsigned char* KeyBuffer);
+
+
+
+
+void API_IOT5302WConfiguration(IOT5302Wdef* pIOT5302W);
+void API_IOT5302WServer(void);
+
+unsigned short API_IOT5302WGetUID(unsigned char* Buffer);
 
 
 #endif

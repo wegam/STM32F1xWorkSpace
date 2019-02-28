@@ -1530,6 +1530,8 @@ void	RS485_DMA_ConfigurationNR(
 																u16 BufferSize							//设定接收缓冲区大小
 )	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 {
+  GPIO_Configuration_OPP50	(pRS485->RS485_CTL_PORT,pRS485->RS485_CTL_Pin);			//将GPIO相应管脚配置为APP(复用推挽)输出模式，最大速度50MHz----V20170605
+	pRS485->RS485_CTL_PORT->BRR 		= pRS485->RS485_CTL_Pin;				//RS485接收开启
 	USART_DMA_ConfigurationNR	(pRS485->USARTx,USART_BaudRate,BufferSize);		//USART_DMA配置--查询方式，不开中断
 	GPIO_Configuration_OPP50	(pRS485->RS485_CTL_PORT,pRS485->RS485_CTL_Pin);			//将GPIO相应管脚配置为APP(复用推挽)输出模式，最大速度50MHz----V20170605
 	pRS485->RS485_CTL_PORT->BRR 		= pRS485->RS485_CTL_Pin;				//RS485接收开启
