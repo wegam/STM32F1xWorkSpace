@@ -1,6 +1,7 @@
 #include	"AMP_PHY.H"
 
-#include "AMP01.H"
+//#include "AMP01V11.H"
+#include "AMP_CABV11.H"
 
 #include	"CRC.H"		//
 
@@ -10,22 +11,23 @@
 #include	"stdlib.h"		//malloc动态申请内存空间
 
 #include	"stdbool.h"
-unsigned  short crc16;
+//unsigned  short crc16;
 stampphydef* phy  = NULL;
 unsigned	char AmpBaket[maxmsgsize]={0};
 stAMPProdef   AMPPro;
 
-unsigned  char  ackupfarme[]=
+
+unsigned  char  ackupfarme[AmpMinFrameSize]=
 {
-  0x7E,
-  0x02,
-  0x81,
-  0x00,
-  0xB0,
-  0x50,
-  0x7F
+  0x7E,   //头起始符
+  0x02,   //长度
+  0x81,   //CMD=1：应答，DIR=1：上传
+  0x00,   //状态
+  0xB0,   //CRC16L
+  0x50,   //CRC16H
+  0x7F    //尾结束符
 };
-unsigned  char  ackdownfarme[]=
+unsigned  char  ackdownfarme[AmpMinFrameSize]=
 {
   0x7E,
   0x02,
@@ -45,7 +47,7 @@ unsigned  char  ackdownfarme[]=
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-unsigned  char API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length)
+unsigned char API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length)
 {
   unsigned  char  Cmd         = 0;
   unsigned  char* headaddr    = NULL;
@@ -53,8 +55,11 @@ unsigned  char API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length)
   unsigned short	HeadCodeValidLength	=	*length;    //头标识有效查找长度
   unsigned short	EndCodeValidLength	=	*length;    //尾标识有效查找长度
   unsigned short	FrameValidLength	  =	*length;    //当前帧最大有效长度
+  unsigned short	DataValidLength	    =	*length;    //当前缓存数据长度
   
- 
+  stampphydef* ampframe;
+  
+  //=====================基本检查(空地址或者长度不足最小帧)
   if(NULL  ==  pbuffer)
   {
     goto ExitAmpCheckFrame;   //退出此函数--空地址
@@ -63,44 +68,87 @@ unsigned  char API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length)
   {
     goto ExitAmpCheckFrame;   //退出此函数--帧长度不够
   }  
-  startcheckdata:
-  //---------------------查找头标识地址
+  FrameGetHeadCodeAddr:
+  //=====================查找头标识地址
   headaddr	=	(unsigned char*)memchr(pbuffer,headcode,HeadCodeValidLength);   //找头标识
   if(NULL==headaddr)
   {
     goto ExitAmpCheckFrame;   //退出此函数--未找到头标识符
   }
-  //---------------------查找尾标识地址
-  EndCodeValidLength  = HeadCodeValidLength-((unsigned long)headaddr-(unsigned long)pbuffer);
-  if(EndCodeValidLength<7)
+  
+  
+  //=====================查找尾标识地址
+  //---------------------剩余有效数据长度
+  DataValidLength  = FrameValidLength-((unsigned long)headaddr-(unsigned long)pbuffer); //剩余数据长度
+  if(DataValidLength<7)
   {
     goto ExitAmpCheckFrame;   //退出此函数--帧长度不够
   }
-  endaddr		=	(unsigned char*)memchr(headaddr,endcode,EndCodeValidLength);   //找尾标识---从头标识后开始查找
-  if((NULL==endaddr)
+  
+  EndCodeValidLength  = DataValidLength-1; //剩余数据内结束符可查找的范围
+  endaddr=&headaddr[1];        //从下一个位置开始查找
+  
+  FrameGetEndCodeAddr:
+  //---------------------查找结束符
+  endaddr		=	(unsigned char*)memchr(endaddr,endcode,EndCodeValidLength);   //找尾标识---从头标识后开始查找
+  if(NULL==endaddr)
   {
-    //return  0;
-    //goto ExitAmpCheckFrame;   //退出此函数--未找到尾标识符
+    goto ExitAmpCheckFrame;   //退出此函数--未找到尾标识符
   }
-  //======================================
-//  else
-//  {
-    //======================================根据协议做CRC校验
-    //--------------------------------------应答帧校验
-//    if(crccheck(headaddr,&ValidLength))
-//    {
-//      *length = ValidLength;
-//    }
-//    else
-//    {
-//      pbuffer = &headaddr[1];
-//      ValidLength = ValidLength-1;
-//      goto startcheckdata;
-//    }    
-//  }
+  //======================================查找到结束符，检查协议格式
+  else
+  {
+    FrameValidLength  = (unsigned long)endaddr-(unsigned long)headaddr+1;
+    //------------------------------------检查帧长度
+    if(AmpMinFrameSize>FrameValidLength)      //小于最小帧长度，重新查找结束符
+    {
+      if(AmpMinFrameSize<EndCodeValidLength)  //数据还有未查找完-继续查找
+      {
+        endaddr=&endaddr[1];        //从下一个位置开始查找
+        EndCodeValidLength=EndCodeValidLength-FrameValidLength;      //可查找的范围减1
+        goto FrameGetEndCodeAddr;   //重新查找结束符---
+      }
+      else
+      {
+        goto ExitAmpCheckFrame;   //退出此函数--剩余未检查的数据长度为0
+      }
+    }
+    //------------------------------------检查是否为应答帧
+    else if(AmpMinFrameSize==FrameValidLength)  //应答帧长度
+    {
+      if(AmpCrc16Check(headaddr,&FrameValidLength))  //检查CRC--通过检查
+      {
+        pbuffer = headaddr;
+        return DataValidLength;
+      }
+      else    //不是应答帧，重新查找结束符
+      {
+        endaddr=&endaddr[1];        //从下一个位置开始查找
+        EndCodeValidLength=EndCodeValidLength-FrameValidLength;      //可查找的范围减1
+        goto FrameGetEndCodeAddr;   //重新查找结束符---
+      }
+    }
+    else
+    {
+    }
+    
+//    //======================================根据协议做CRC校验
+//    //--------------------------------------应答帧校验
+    if(AmpCmdAck  ==  ampframe->msg.cmd.cmd)  //应答帧
+    {
+    }
+    if(AmpCrc16Check(headaddr,&FrameValidLength))
+    {
+      *length = FrameValidLength;
+    }
+    else
+    {
+      pbuffer = &headaddr[1];
+      FrameValidLength = FrameValidLength-1;
+      goto FrameGetEndCodeAddr;
+    }    
+  }
   ExitAmpCheckFrame:  //退出此函数
-//  *length  = 0;       //长度清零
-//  Cmd =  0;
   return  0;
 }
 /*******************************************************************************
@@ -161,9 +209,8 @@ unsigned char* getheadaddr(unsigned char* pbuffer,unsigned short* length)
     return  NULL;
   }
   else
-  {
-    
-    if(crccheck(headaddr,&ValidLength))
+  {    
+    if(AmpCrc16Check(headaddr,&ValidLength))
     {
       *length = ValidLength;
       return headaddr;
@@ -187,10 +234,12 @@ unsigned char* getheadaddr(unsigned char* pbuffer,unsigned short* length)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-unsigned char crccheck(unsigned char* pframe,unsigned short* length)
+unsigned char AmpCrc16Check(unsigned char* pframe,unsigned short* length)
 {  
   unsigned  short msglen  = 0;  
-  unsigned  short	ValidLength	=	*length;  
+  unsigned  short	ValidLength	=	*length; 
+  unsigned  short crc16; 
+  
   if(NULL  ==  pframe)
   {
     return 0;
@@ -419,6 +468,47 @@ unsigned short sendbuffer(unsigned char* pbuffer,unsigned short length)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
+unsigned short SendTimeOut(enCCPortDef Port)
+{
+  unsigned  char  i  = 0;
+  stTxdef* Txd  = NULL;
+  unsigned  char*  ReSendCount;      //PC上传重发计数
+  unsigned  short*  SendTime=NULL;
+  stampphydef* ampframe=NULL;
+  
+  switch(Port)
+  {
+    case  NonPort   : return 0;   //不继续执行
+    case  PcPort    : Txd=AMPPro.buffer.PcTx;    //PC接口发送缓存
+      break;
+    case  CabPort   : Txd=AMPPro.buffer.CabTx;   //柜接口发送缓存
+      break;
+    case  LayPort   : Txd=AMPPro.buffer.LayTx;   //层接口发送缓存
+      break;
+    case  CardPort  : Txd=AMPPro.buffer.CardTx;  //读卡器接口发送缓存
+      break;
+    default :return 0;      //不继续执行 
+  }
+  for(i=0;i<arrysize;i++)
+  {
+    if(1==Txd[i].arry>0)  //当前已发送超时的消息
+    {
+      ampframe  = (stampphydef*)Txd[i].data;
+      CommTimeOutUpdata(Port,ampframe->msg.addr);   //设置超时
+      Releas_OneBuffer(Port);     //释放缓存
+    }
+  }
+  return  0;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 unsigned short Releas_OneBuffer(enCCPortDef Port)
 {
   unsigned  char  i  = 0;
@@ -625,6 +715,13 @@ unsigned short Check_SendBuff(enCCPortDef Port)
       *SendTime = ReSendWaitTime;
       
       if(*ReSendCount>=maxresendcount) //超出重发次数：放弃发送
+      {
+        
+        SendTimeOut(Port);      //发送超时
+        //Releas_OneBuffer(Port);
+        *ReSendCount  = 0;      //重发清零
+      }
+      if(PcPort ==  Port) //上传到上位机不做重发
       {
         Releas_OneBuffer(Port);
         *ReSendCount  = 0;      //重发清零

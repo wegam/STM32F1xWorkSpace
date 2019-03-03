@@ -89,11 +89,13 @@ typedef struct _IOT5302WConf
 typedef struct _IOT5302WData
 {
   unsigned char   UID[4];         //卡片UID
+  unsigned char   UIDbac[4];      //卡片UID备份，如果数据有变化，跟备份区不一致时，外发
   unsigned char   Data[IOT5302WBufferSize]; //读卡器数据接收缓存
   unsigned char   DataCount;      //读卡器数据接收计数
   unsigned char   Initialized;    //初始化标志，0-未初始化成功，1-初始化成功
   unsigned short  Time;           //计时器
   unsigned short  TimeOut;        //超时计时器
+  unsigned short  TimeCmp;        //UID与UIDbac对比数据相同时，超过2秒，再上传数据
   unsigned long   USART_BaudRate; //正在使用的波特率
   unsigned char   BaudRateSetStep; //设置波特率步骤
 }IOT5302WDataWdef;

@@ -81,6 +81,10 @@
 	#include "AMP01V11.H"
 #endif
 
+//*********************************AMPLCDV11*********************************//
+#ifdef AMPLCDV11
+	#include "AMPLCDV11.H"
+#endif
 //*********************************AMPLED02V13*********************************//
 #ifdef AMPLED02V13
 	#include "AMPLED02V13.H"

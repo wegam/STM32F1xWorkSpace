@@ -5,7 +5,7 @@
 
 #include "stm32f10x_type.h"
 
-
+#define AmpMinFrameSize 7   //最小帧长度---7应答帧
 
 #define maxmsgsize 133  //5+128
 #define headcode  (unsigned char)0x7E
@@ -22,21 +22,35 @@
 #define checkswitchidtime 2000    //检查拨码开关时间间隔
 #define GetOnlinetime   5000      //获取在线设备时间间隔
 
-typedef enum eucmd
+typedef enum _eucmd
 {
-  AmpCmdNone      = 0,  //不支持的命令/空命令
-  AmpCmdAck       = 1,  //应答类型，只带一个数据，不带地址，数据表示状态
-  AmpCmdLed       = 2,  //LED控制，带三个数据，带地址，0-表示关，1-表示开
-  AmpCmdLock      = 3,  //开锁命令，只带一个数据，带地址，0-表示读锁状态，1表示开锁
-  AmpCmdCard      = 4,  //读卡器，带地址，第一个数据为0表示读卡，为1表示写卡，后面跟随卡数据
-  AmpCmdPwr       = 5,  //层板供电控制
-  AmpCmdSta       = 6,  //状态：主要为上报状态
-  AmpCmdGetOnline = 7,  //检查在线设备，接收到后应答表示在线
-  AmpCmdBKligth   = 8,  //背光灯控制
-  Up      = 0x80, //上传标志
-  Down    = 0x7F  //下发与标志
+  AmpCmdNone      = 0,    //不支持的命令/空命令
+  AmpCmdAck       = 1,    //应答类型，只带一个数据，不带地址，数据表示状态
+  AmpCmdLed       = 2,    //LED/LCD控制，带三个数据，带地址，0-表示关，1-表示开
+  AmpCmdLock      = 3,    //开锁命令，只带一个数据，带地址，0-表示读锁状态，1表示开锁
+  AmpCmdCard      = 4,    //读卡器，带地址，第一个数据为0表示读卡，为1表示写卡，后面跟随卡数据
+  AmpCmdPwr       = 5,    //层板供电控制
+  AmpCmdSta       = 6,    //状态：主要为上报状态
+  AmpCmdGetOnline = 7,    //检查在线设备，接收到后应答表示在线
+  AmpCmdBKligth   = 8,    //背光灯控制
 }eucmddef;
-
+typedef enum _eSts
+{
+  AmpStsNone      = 0,    //不支持的命令/空命令
+  AmpStsLock      = 1,    //锁状态,0--
+  AmpStsComm      = 2,    //连接状态
+}eStsdef;
+typedef enum _eLockSts
+{
+  AmpLockOpen       = 0,    //锁打开  
+  AmpLockOn         = 1,    //锁关上
+  AmpLockOpenFailed = 2,    //开锁失败
+}eLockStsdef;
+typedef enum _eCommSts
+{
+  AmpCommOK       = 0,    //连接正常 
+  AmpCommTimeOut  = 1,    //连接超时/失败
+}eCommStsdef;
 typedef struct _stcmd
 {
   unsigned char cmd :6;   //CMD1~CMD63---低6位  
@@ -170,9 +184,13 @@ typedef struct _stAMPPrl
   stBufferdef       buffer;       //串口数据缓存
   stSendCountdef    ReSend;
 }stAMPProdef;
+
+
+unsigned char API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length);
+  
 unsigned short getframe(unsigned char* pbuffer,unsigned short* length);
 unsigned char* getheadaddr(unsigned char* pbuffer,unsigned short* length);
-unsigned char crccheck(unsigned char* pframe,unsigned short* length);
+unsigned char AmpCrc16Check(unsigned char* pframe,unsigned short* length);
 unsigned short SetFrame(unsigned char* pframe,unsigned short* length);    //补充消息的CRC和结束符，返回帧长度
 
 
@@ -184,8 +202,10 @@ unsigned char addr1check(unsigned char* pframe,unsigned char addr1);
 unsigned char addr2check(unsigned char* pframe,unsigned char addr2);
 unsigned char addr3check(unsigned char* pframe,unsigned char addr3);
 
- 
+unsigned short SendTimeOut(enCCPortDef Port); 
 unsigned short Releas_OneBuffer(enCCPortDef Port);
+
+
 void ackFrame(enCCPortDef Port,unsigned char dir);
 void Send_Server(void);
 unsigned short Check_SendBuff(enCCPortDef Port); 

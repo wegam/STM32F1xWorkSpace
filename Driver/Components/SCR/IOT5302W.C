@@ -71,7 +71,7 @@ void API_IOT5302WServer(void)
     unsigned char TxdLen  = 0;
     IOT5302W.Data.Time=0; //清零
     IOT5302WGetSNR(CmdBuffer);
-    TxdLen  = IOT5302WGetSNR(CmdBuffer);  //设置读卡器波特率
+    TxdLen  = IOT5302WGetSNR(CmdBuffer);                    //设置读卡器波特率
     TxdLen  = IOT5302W_HWSendData(CmdBuffer,TxdLen);	      //寻卡，获取卡的UID，每个M1卡都有一个唯一的序列号，我们称为“UID”，是32位的，也就是4个字节。
   }
 }
@@ -96,21 +96,27 @@ unsigned short API_IOT5302WGetUID(unsigned char* Buffer)
   }
   if(0!=n)  //有数据
   {
-    memcpy(Buffer,IOT5302W.Data.UID,4);
-    memset(IOT5302W.Data.UID,0x00,4);
-    return 4; //4字节UID
+    if(memcmp(IOT5302W.Data.UID,IOT5302W.Data.UIDbac,4)) //对比两组数据不一样
+    {
+      memcpy(Buffer,IOT5302W.Data.UID,4);
+      memcpy(IOT5302W.Data.UIDbac,IOT5302W.Data.UID,4);
+      memset(IOT5302W.Data.UID,0x00,4);
+      IOT5302W.Data.TimeCmp = 0;
+      return 4; //4字节UID
+    }
+    else if(IOT5302W.Data.TimeCmp++>2000)
+    {
+      memcpy(Buffer,IOT5302W.Data.UID,4);
+      IOT5302W.Data.TimeCmp = 0;
+      return 4; //4字节UID
+    }
+  }
+  else
+  {
+    memset(IOT5302W.Data.UIDbac,0x00,4);
   }
   return 0;
 }
-
-
-
-
-
-
-
-
-
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function

@@ -95,8 +95,8 @@ typedef struct _DisplayDriver
   void ( *WriteData)(unsigned short Data);
   void ( *WriteCommand)(unsigned short Index,unsigned short Command);
 	
-	void ( *BackLightOn )(void);
-  void ( *BackLightOff )(void);
+	void ( *LcdBackLightOn )(void);
+  void ( *LcdBackLightOff )(void);
 	
 	//---------------------------
 	void ( *PowerOn )(void);
