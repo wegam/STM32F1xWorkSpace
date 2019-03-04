@@ -47,6 +47,9 @@ LCDDef	*pST7789V	=	0;		//内部驱动使用，不可删除
 
 #define	ST7789VSet(n)	ST7789V_##n##_HIGH
 #define	ST7789VCrl(n)	ST7789V_##n##_LOW
+
+unsigned short ST7789VBColor  = LCD565_BLACK;   //默认背景色
+unsigned short ST7789VPColor  = LCD565_WHITE;   //默认画笔色
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	函数功能说明
@@ -72,6 +75,9 @@ void ST7789V_Initialize(void*	pInfo)
 //	GPIO_Configuration_OPP50	(Port->sTE_PORT,				Port->sTE_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sDATABUS_PORT,		Port->sDATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 
+  pST7789V->Display.PowerOn   = ST7789V_PowerOn;
+  pST7789V->Display.ShowChar  = ST7789V_ShowChar;
+  pST7789V->Display.ShowWord  = ST7789V_ShowWord;
 
 	ST7789V_PowerOn();
 }
@@ -179,11 +185,6 @@ void ST7789V_WriteCommand(unsigned short Command)
   ST7789V_WR_HIGH;  //Read
   
   ST7789V_DC_HIGH;   //WriteCommand:DC/RS-LOW
-  
-  
-//  ST7789V_DATABUS_PORT->ODR = Command;
-//  ST7789V_WR_LOW;   //WriteEnable
-//  ST7789V_WR_HIGH;  //Read
 }
 /*******************************************************************************
 * 函数名			:	ST7789V_WriteIndex
@@ -220,26 +221,7 @@ unsigned short ST7789V_ReadData(void)
   ST7789V_RD_HIGH;  //ReadEnable
 	return Data;
 }
-/*******************************************************************************
-* 函数名			:	ST7789V_WriteGRAM
-* 功能描述		:	写指定寄存器 
-* 输入			: void
-* 返回值			: void
-* 修改时间		: 无
-* 修改内容		: 无
-* 其它			: wegam@sina.com
-*******************************************************************************/
-void ST7789V_WriteGRAM(unsigned	short* RAM,unsigned long length)
-{
-	unsigned	long	i	=	0;
-//	ST7789VCrl(CS);	//LCD_CS_LOW;
-//	pST7789V->Display.WriteIndex(0X3C);
-//	for(i=0;i<length;i++)
-//	{
-//		pST7789V->Display.WriteData(RAM[i]);
-//	}
-//	ST7789VSet(CS);	//LCD_CS_HIGH;
-}
+
 /*******************************************************************************
 * 函数名			:	ST7789V_WriteGRAM
 * 功能描述		:	写指定寄存器 
@@ -290,7 +272,7 @@ void ST7789V_PowerOn(void)
   LCD_DelaymS(120); 	   //Delay 120ms 
   //----------------------------------Display Setting-----------------------------------------------// 
   ST7789V_WriteCommand(0x36); 
-  ST7789V_WriteData(0x00); 
+  ST7789V_WriteData(0x14);    //ST7789V_WriteData(0x00);   
 
   ST7789V_WriteCommand(0x3a); 
   ST7789V_WriteData(0x55); 
@@ -371,6 +353,7 @@ void ST7789V_EnterSleep(void)
   ST7789V_WriteCommand(0x28); // Standby out
   LCD_DelaymS(10);
   ST7789V_WriteCommand(0x10); // Display on
+  LCD_BL_OFF;		//关背光
 }
 
 
@@ -388,6 +371,7 @@ void ST7789V_ExitSleep(void)
   ST7789V_WriteCommand(0x11); // Standby out
   LCD_DelaymS(180);
   ST7789V_WriteCommand(0x29); // Display on
+  LCD_BL_ON;		//关背光
 }
 
 /*******************************************************************************
@@ -401,19 +385,77 @@ void ST7789V_ExitSleep(void)
 *******************************************************************************/
 void ST7789V_SetWindowAddress(unsigned short xs,unsigned short ys,unsigned short xe,unsigned short ye)
 {
+  unsigned short MaxH,MaxV;
+  unsigned short HSX,HEX;
+  unsigned short VSY,VEY;
+	unsigned short Model	=	0x5030;
+	
+	eRotate	Rotate	=	Draw_Rotate_90D;
+	
+	MaxH	=	ST7789V_H;
+	MaxV	=	ST7789V_V;
+	
+if	(Rotate	==Draw_Rotate_0D)
+{
+	HSX	=	xs;
+	HEX	=	xe;
+	VSY	=	ys;
+	VEY	=	ye;
+	
+	LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
+	LCDSYS->Data.VYA	=	LCDSYS->Data.VSY;
+	
+	Model	=	0X00;
+}
+else if (Rotate	==Draw_Rotate_90D)
+{
+	HSX	=	ys;
+	HEX	=	ye;	
+	VSY	=	MaxV	-	xe	-	1;
+	VEY	=	MaxV	-	xs	-	1;
+	
+	LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
+	LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;
+	Model	=	0XA0;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
+}
+else if (Rotate	==Draw_Rotate_180D)	
+{
+	HSX	=	MaxH	-	xe	-	1;
+	HEX	=	MaxH	-	xs	-	1;
+	VSY	=	MaxV	-	ye	-	1;
+	VEY	=	MaxV	-	ys	-	1;
+	
+	LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
+	LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;
+	
+	Model	=	0XC0;
+}
+else //(Rotate	==Draw_Rotate_270D)
+{
+	HSX	=	ys;
+	HEX	=	ye;
+	VSY	=	xs;
+	VEY	=	xe;
+	
+	LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
+	LCDSYS->Data.VYA	=	LCDSYS->Data.VSY;
+
+	Model	=	0X22;
+}
+
   //--------------------设置X
   ST7789V_WriteCommand(0x2A);
-  ST7789V_WriteData(xs>>8);
-  ST7789V_WriteData(xs&0xFF);
-  ST7789V_WriteData(xe>>8);
-  ST7789V_WriteData(xe&0xFF);
+  ST7789V_WriteData(HSX>>8);
+  ST7789V_WriteData(HSX&0xFF);
+  ST7789V_WriteData(HEX>>8);
+  ST7789V_WriteData(HEX&0xFF);
   
   //--------------------设置Y
   ST7789V_WriteCommand(0x2B);
-  ST7789V_WriteData(ys>>8);
-  ST7789V_WriteData(ys&0xFF);
-  ST7789V_WriteData(ye>>8);
-  ST7789V_WriteData(ye&0xFF);
+  ST7789V_WriteData(VSY>>8);
+  ST7789V_WriteData(VSY&0xFF);
+  ST7789V_WriteData(VEY>>8);
+  ST7789V_WriteData(VEY&0xFF);
   
   ST7789V_WriteCommand(0x2C);	  
 }
@@ -432,8 +474,10 @@ void ST7789V_DrawDot(
 									unsigned short Color		//点颜色*/	
 								)
 {
+  ST7789V_Enable();	//LCD_CS_LOW;
 	ST7789V_SetWindowAddress(HSX,HSY,HSX,HSY);	//设置光标位置
-	ST7789V_WriteGRAM(&Color,1);
+	ST7789V_WriteData(Color);
+  ST7789V_Disable();	//LCD_CS_HIGH;
 }
 /*******************************************************************************
 *函数名		:	LCD_DrawLine
@@ -480,10 +524,13 @@ void ST7789V_DrawLine(
 		distance=delta_x; 								//选取基本增量坐标轴 
 	else
 		distance=delta_y;
-	
+  
+	ST7789V_Enable();	//LCD_CS_LOW;
 	for(t=0;t<distance+1;t++ )					//画线输出 
 	{  
-		ST7789V_DrawDot(uRow,uCol,Color);			//画点 
+    ST7789V_SetWindowAddress(uRow,uCol,uRow,uCol);	//设置光标位置
+    ST7789V_WriteData(Color);
+    
 		xerr+=delta_x ; 
 		yerr+=delta_y ; 
 		if(xerr>distance) 
@@ -497,6 +544,7 @@ void ST7789V_DrawLine(
 			uCol+=incy; 
 		} 
 	}
+  ST7789V_Disable();	//LCD_CS_HIGH;
 }
 /**************************************************************************************************
 * [Function] LCD_DrawCircle:  函数功能、注意事项等的描述
@@ -590,17 +638,16 @@ void ST7789V_Fill(
 {          
 	unsigned int x;
 	unsigned int y;	
+  ST7789V_Enable();	//LCD_CS_LOW;
 	ST7789V_SetWindowAddress(x1,y1,x2,y2);
-	pST7789V->Display.WriteIndex( 0X2C );
-	ST7789VCrl(CS);	//LCD_CS_LOW;
 	for(x=0;x<=x2-x1;x++)
 	{
 		for(y=0;y<=y2-y1;y++)
 		{
-			pST7789V->Display.WriteData(Color);							//写数据
+			ST7789V_WriteData(Color);							//写数据
 		}
-	}	
-	ST7789VSet(CS);	//LCD_CS_HIGH;
+	}
+  ST7789V_Disable();	//LCD_CS_HIGH;
 }
 /*******************************************************************************
 * 函数名			:	ILI9326_Clean
@@ -618,8 +665,8 @@ void ST7789V_Clean(u16 Color)	//清除屏幕函数
 	unsigned long	length	=	0;
 	eRotate	Rotate	=	pST7789V->Flag.Rotate;
 	
-	MaxH	=	pST7789V->Data.MaxH;
-	MaxV	=	pST7789V->Data.MaxV;	
+	MaxH	=	ST7789V_H;
+	MaxV	=	ST7789V_V;	
 	switch(Rotate)
 	{
 		case 	Draw_Rotate_0D:
@@ -655,7 +702,7 @@ void ST7789V_Clean(u16 Color)	//清除屏幕函数
 **************************************************************************************************/
 void ST7789V_SetBackground(  u16 BackColor )
 {
-	pST7789V->Data.BColor	=	BackColor;
+	ST7789VBColor=	BackColor;
 	ST7789V_Clean(BackColor);	//清除屏幕函数
 }
 
@@ -688,9 +735,10 @@ void ST7789V_ShowChar(
 	x2	=	x+font/2-1;		//
 	y2	=	y+font-1;
 	
+  ST7789V_Enable();	//LCD_CS_LOW;
+  
 	ST7789V_SetWindowAddress(x1,y1,x2,y2);//设置显示区域	
-	pST7789V->Display.WriteIndex( 0X2C );
-	ST7789VCrl(CS);	//LCD_CS_LOW;
+
 	for(i=0;i<num;i++)
 	{ 
 		temp=Buffer[i];		 					//调用1608字体--二维数组形式--字库使用时取消
@@ -701,8 +749,8 @@ void ST7789V_ShowChar(
 				LCD_PEN_COLOR=color;
 			}
 			else
-				LCD_PEN_COLOR=pST7789V->Data.BColor;
-			pST7789V->Display.WriteData(LCD_PEN_COLOR);
+				LCD_PEN_COLOR=ST7789VBColor;
+			ST7789V_WriteData(LCD_PEN_COLOR);
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
@@ -716,14 +764,14 @@ void ST7789V_ShowChar(
           LCD_PEN_COLOR=color;
         }
         else
-          LCD_PEN_COLOR=pST7789V->Data.BColor;
-        pST7789V->Display.WriteData(LCD_PEN_COLOR);
+          LCD_PEN_COLOR=ST7789VBColor;
+        ST7789V_WriteData(LCD_PEN_COLOR);
         temp=temp<<1;
       }
       i++;
     }		
 	}
-	ST7789VSet(CS);	//LCD_CS_HIGH;
+	ST7789V_Disable();	//LCD_CS_HIGH;
 }
 /*******************************************************************************
 * 函数名			:	function
@@ -749,9 +797,10 @@ void ST7789V_ShowWord(
 	y1	=	y;
   x2	=	x+font-1;
   y2	=	y+font-1;
+  
+  ST7789V_Enable();	//LCD_CS_LOW;
 	ST7789V_SetWindowAddress(x1,y1,x2,y2);//设置显示区域
-	pST7789V->Display.WriteIndex( 0X2C );
-	ST7789VCrl(CS);	//LCD_CS_LOW;
+
 	for(i=0;i<num;i++)
 	{ 
 		temp=Buffer[i];		 				
@@ -762,8 +811,8 @@ void ST7789V_ShowWord(
 				LCD_PEN_COLOR=color;
 			}
 			else
-				LCD_PEN_COLOR=pST7789V->Data.BColor;
-			pST7789V->Display.WriteData(LCD_PEN_COLOR);
+				LCD_PEN_COLOR=ST7789VBColor;
+			ST7789V_WriteData(LCD_PEN_COLOR);
 			temp=temp<<1;
 		}
     //=======================未满8位的补充定入
@@ -777,14 +826,14 @@ void ST7789V_ShowWord(
           LCD_PEN_COLOR=color;
         }
         else
-          LCD_PEN_COLOR=pST7789V->Data.BColor;
-        pST7789V->Display.WriteData(LCD_PEN_COLOR);
+          LCD_PEN_COLOR=ST7789VBColor;
+        ST7789V_WriteData(LCD_PEN_COLOR);
         temp=temp<<1;
       }
       i++;
     }			
 	}
-	ST7789VSet(CS);	//LCD_CS_HIGH;
+	ST7789V_Disable();	//LCD_CS_HIGH;
 }
 
 

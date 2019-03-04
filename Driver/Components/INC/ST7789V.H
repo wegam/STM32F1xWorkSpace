@@ -172,7 +172,7 @@ unsigned short ST7789V_ReadRegister(unsigned	short	Addr);
 
 
 
-void ST7789V_WriteGRAM(unsigned	short* RAM,unsigned long length);				//Ð´ÏÔÊ¾¼Ä´æÆ÷
+
 void ST7789V_ReadGRAM(unsigned	short* RAM,unsigned long length);
 //--------------------------------------------½Ó¿Ú²ã
 
