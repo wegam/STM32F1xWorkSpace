@@ -21,8 +21,9 @@
 
 #define	TLE5012StartAddr	0x0800C800		//原点值在MCU内部FLASH的存储地址50K地址，按64Kflash应用
 
+#define TOPSMT	1			//0--原安装方式，传感器芯片反而装，1--传感器芯片与MCU同面装
 
-#define WeiNum  2     //两/四片拨片
+#define WeiNum  4     //两/四片拨片
 
 #if WeiNum==2   //两拨片，拨一次405度
   #define	OrigErrAngle	20			  //原点调整允许偏差角度范围(正负偏差)
@@ -34,13 +35,12 @@
   #define	AngleCountPerCycle 	360	//一个运行周期需要的角度计数(四拨片分拣机拨一次需要360，二拨片的为405度)
 #endif
 
-#define	Divisor		360						//求余除数
+//#define	Divisor		360						//求余除数
 #define	AngleCountStopDr 			(AngleCountPerCycle-StopAngle)	//计数到达AngleCountStopDr后停止电机驱动，剩下角度偏差由原点控制程序处理
 
 SPIDef	TLE5012;
 
 //--------------------------标志变量
-unsigned short	testflg	=	0;				//正反转标志,0-停止，1-正转，-1-反转
 unsigned char	MotorRunFlg	=	0;		//电机运行标志,0-不运行，1-正转，2-反转
 
 unsigned char SetFlag=0;	//设置标志：0--正常状态，1-设置状态
@@ -137,8 +137,8 @@ void TLE5012BV2_Configuration(void)
 }
 
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
-//->函数名		:	
-//->功能描述	:	 
+//->函数名		:	TLE5012BV2_Server
+//->功能描述	:	触发及设置，程序扫描周期1ms
 //->输入		:	
 //->输出		:
 //->返回 		:
@@ -179,8 +179,7 @@ void TLE5012BV2_Server(void)
 	}
 	
 	if(0!=MotorRunFlg)	//电机忙，不检查触发信号
-	{
-    
+	{    
 		return;
 	}
   if(delaytime>0)   //电机停止后等待时间才可以再次触发运行
@@ -194,36 +193,6 @@ void TLE5012BV2_Server(void)
   //goto TestModel3;	//反转测试
 	
 	//=====================================测试模式：定时正反转
-	TestModel:				//测试模式
-	if(testtime++>8000)
-	{		
-		testtime	=	0;
-	}
-	if(0	==	testtime)
-	{		
-		angleCmp	=	ReadAngle();
-		angleCmp	=	ReadAngle();
-		anglelive	=	angleCmp;
-		
-		MotorRunFlg	=	1;		//正转
-		anglecount	=	0;
-	}
-	else if(3000	==	testtime)
-	{		
-		angleCmp	=	ReadAngle();
-		angleCmp	=	ReadAngle();
-		anglelive	=	angleCmp;
-		
-		MotorRunFlg	=	2;		//反转
-		anglecount	=	0;
-	}
-	else if(6000<testtime)
-	{
-		MotorRunFlg	=	0;
-		anglecount	=	0;
-	}	
-	return;
-  
   TestModel2:				//正转测试
 	if(testtime++>200)
 	{		
@@ -339,8 +308,6 @@ unsigned char SetKeyServer(void)
           while(i++<10&&Organgle!=tempAngle)
           {            
             STM32_FLASH_Write(TLE5012StartAddr,(unsigned short*)&Organgle,2);						//从指定地址写入指定长度的数据
-            SysTick_DeleymS(2);				//SysTick延时nmS
-            STM32_FLASH_Read(TLE5012StartAddr,(unsigned short*)&tempAngle,2);							//从指定地址开始读出指定长度的数据
             SysTick_DeleymS(2);				//SysTick延时nmS
           }
 					SetFlag=0;		//设置完成，进入正常状态
@@ -461,7 +428,7 @@ void MOTORT(void)
 	//--------------------判断角度计数有无达到预期
 	if(anglecount>=AngleCountStopDr)		//预设一个触发旋转角度：到达角度后停，由原点定位程序来控制停止位
 	{
-		MotorRunFlg	=	0;
+		MotorRunFlg	=	0;		//0停止，1反转,2正转
     SampleCount=0;
 		//anglecount=0;
 	}
@@ -499,9 +466,6 @@ void SetOrig(void)
 	readdelay	=	0;
 	//--------------------读取当前角度
 	anglelive	=	ReadAngle();
-  //return;
-	//--------------------
-//	DeviationAngle	=	((anglelive+Organgle)>>1)%(Divisor);
 	
 	goto SetOrigtest2;	//选用模式2测试
 	
@@ -524,24 +488,18 @@ void SetOrig(void)
 	//=============================测试模式2
 	SetOrigtest2:
 	
-	DeviationAngle=360-Organgle;		//原点值离0角度点的偏差
-	//DeviationAngle=(anglelive+DeviationAngle)%(Divisor);	//当前角度与原点的偏差
-  DeviationAngle=DeviationAngle+anglelive;    //当前位置与原点之和
-  
-  DeviationAngle=(DeviationAngle-(DeviationAngle/360)*360); //求出低于360度的数据
-  
-  //DeviationAngle=360-DeviationAngle;    //求出偏离原点数据
+	DeviationAngle=360-Organgle;																//原点值离0角度点的偏差
+  DeviationAngle=DeviationAngle+anglelive;    								//当前位置与原点之和  
+  DeviationAngle=(DeviationAngle-(DeviationAngle/360)*360); 	//求出低于360度的数据
   
   if(DeviationAngle>180)  //超过原点位置
   {
     RFWflag = 0;  //反转调
     DeviationAngle=360-DeviationAngle;    //求出偏离原点数据
-    //DeviationAngle=DeviationAngle%Divisor;  //求出超过位置多少
   }
   else
   {
     RFWflag = 1;  //正转调 
-    //DeviationAngle=(360*(DeviationAngle/360+1)-DeviationAngle)%Divisor;  //求出还差多少度到达原点位置
   }
 
   RecordData(DeviationAngle);   //记录数据
@@ -591,7 +549,15 @@ unsigned short ReadSpeed(void)
 	return ReadValue(READ_SPEED_VALUE);
 }
 
-
+/*******************************************************************************
+* 函数名			:	ReadValue
+* 功能描述		:	读数据
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
 unsigned short ReadValue(unsigned short u16RegValue)
 {
 	unsigned short u16Data;
@@ -602,14 +568,22 @@ unsigned short ReadValue(unsigned short u16RegValue)
   SPI_TX_OFF;
 //	while(i--);
 	//发送 0xFFFF 是无用的，可能是为了有时钟
-	u16Data = ( SPIx_ReadWriteByte(0xffff) & 0x7FFF ) << 1;//0x12/0xff*100k
+	u16Data = ( SPIx_ReadWriteByte(0xFFFF) & 0x7FFF ) << 1;//0x12/0xff*100k
 	
 	SPI_CS_DISABLE;
   SPI_TX_ON;
 	
 	return(u16Data);
 }
-
+/*******************************************************************************
+* 函数名			:	SPIx_ReadWriteByte
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
 unsigned short SPIx_ReadWriteByte(unsigned short byte)
 {
 	unsigned short retry = 0;
@@ -628,6 +602,15 @@ unsigned short SPIx_ReadWriteByte(unsigned short byte)
 	}
 	return SPI1->DR;          //读一下缓冲区，清标志
 }
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
 void SPI5012B_Init(void)
 {
 	SPI_InitTypeDef  SPI_InitStructure;
@@ -686,9 +669,13 @@ void SPI5012B_Init(void)
 *******************************************************************************/
 void MCW(void)
 {
-	testflg=1;	//正反转标志,0-停止，1-正转，-1-反转
+#if TOPSMT==1			//传感器芯片与MCU安装在同一面
+	PA1	=	1;
+	PA2	=	0;
+#else 
 	PA1	=	0;
 	PA2	=	1;
+#endif
   delaytime=50;  //ms
 }
 /*******************************************************************************
@@ -702,9 +689,13 @@ void MCW(void)
 *******************************************************************************/
 void MCCW(void)
 {
-	testflg=-1;	//正反转标志,0-停止，1-正转，-1-反转
+#if TOPSMT==1			//传感器芯片与MCU安装在同一面
+	PA1	=	0;
+	PA2	=	1;
+#else 
 	PA1	=	1;
 	PA2	=	0;
+#endif
   delaytime=50;  //ms
 }
 /*******************************************************************************
@@ -718,13 +709,12 @@ void MCCW(void)
 *******************************************************************************/
 void MSTP(void)
 {
-	testflg=0;	//正反转标志,0-停止，1-正转，-1-反转
 	PA1	=	0;
 	PA2	=	0;
 }
 /*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
+* 函数名			:	ReadError
+* 功能描述		:	读数异常停止运行 
 * 输入			: void
 * 返回值			: void
 * 修改时间		: 无
@@ -741,8 +731,8 @@ void ReadError(void)
 //  }
 }
 /*******************************************************************************
-* 函数名			:	function
-* 功能描述		:	函数功能说明 
+* 函数名			:	RecordData
+* 功能描述		:	记录数据，调试观察数据使用 
 * 输入			: void
 * 返回值			: void
 * 修改时间		: 无
@@ -757,7 +747,7 @@ void RecordData(unsigned short data)
     SampleCount=0;
   if(data>120)
   {
-    ReadError();
+    ReadError();	//读数异常停止运行，观察记录的数据内容
   }
 }
 #endif
