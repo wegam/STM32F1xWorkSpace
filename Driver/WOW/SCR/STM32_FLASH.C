@@ -135,7 +135,7 @@ void STM32_FLASH_Write(u32 StartAddr,u16 *pBuffer,u16 NumToWrite)		//´ÓÖ¸¶¨µØÖ·Ğ
 			//FLASH_ErasePage(PageAddress);			//²Á³ıÕâ¸öÉÈÇø
 			FLASH_ErasePage(PageAddress);				//²Á³ıÕâ¸öÉÈÇø
 			//½«´ıĞ´ÈëÊı¾İ¼°Ô­ÉÈÇø±£ÁôÊı¾İ·ÅÈëĞ´Èë»º³åÇø
-			memcpy(&STM32_FLASH_BUF[PageAddressOffset],pBuffer,NumWaitToWrite);												//¸´ÖÆÊı¾İ
+			memcpy(&STM32_FLASH_BUF[PageAddressOffset],pBuffer,NumWaitToWrite*2);		//Êı¾İ¿½±´ÊÇ°´×Ö½Ú¿½±´									//¸´ÖÆÊı¾İ
 			STM32_FLASH_Write_NoCheck(PageAddress,STM32_FLASH_BUF,PageAddressOffset+NumWaitToWrite);		//½«Ô­±£ÁôÊı¾İºÍĞÂÔö¼ÓÊı¾İĞ´ÈëÉÈÇø
 		}
 		else		//²»ĞèÒª²Á³ı

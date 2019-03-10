@@ -58,20 +58,20 @@ typedef struct	_SPIPort
 	unsigned short 	SPI_BaudRatePrescaler_x;		//x=2/4/8/16/32/64/128/256
 	
 }SPIPortDef;
-typedef struct _SPIDriver
-{
-	void ( *SPIWriteByte )( unsigned char Byte);
-	void ( *SPIReadByte )( unsigned short HSX,unsigned short HSY,unsigned short HEX,unsigned short HEY);
-	
-	void ( *PowerOn )(void);
-	void ( *PowerOff )(void);
-	void ( *DispOff )(void);
+//typedef struct _SPIDriver
+//{
+//	void ( *SPIWriteByte )( unsigned char Byte);
+//	void ( *SPIReadByte )( unsigned short HSX,unsigned short HSY,unsigned short HEX,unsigned short HEY);
+//	
+//	void ( *PowerOn )(void);
+//	void ( *PowerOff )(void);
+//	void ( *DispOff )(void);
 
-}SPIDriverDef;
+//}SPIDriverDef;
 typedef struct	_SPI
 {
 	SPIPortDef		Port;
-	SPIDriverDef	SPIDr;	
+	//SPIDriverDef	SPIDr;	
 }SPIDef;
 
 

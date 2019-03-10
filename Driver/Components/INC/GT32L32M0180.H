@@ -45,7 +45,9 @@
 #define GT32L32_CLK_SpeedL	0
 #define GT32L32_CLK_SpeedH	1
 
-
+#define	GT32L32M0180_PageSize		256			//Ò³´óĞ¡-×Ö½Ú
+#define	GT32L32M0180_SectorSize	4096		//ÉÈÇø´óĞ¡4K(16Ò³)-×Ö½Ú
+#define	GT32L32M0180_BlockSize	65536		//¿é´óĞ¡64K(16ÉÈÇø£¬256Ò³)-×Ö½Ú
 
 //----×Ö·ûµãÕó×Ö¿â»ùµØÖ·±í------------------------------------------------------------
 typedef enum
@@ -96,8 +98,8 @@ typedef enum
 	AntennaCode_BaseAddr_12X12	=	(u32)0x47AD32,			//12x12ÌìÏß·ûºÅ
 	BatteryCode_BaseAddr_12X12	=	(u32)0x47ADAA,			//12x12µç³Ø·ûºÅ
 	
-	Reserved_BaseAddr_LSB				=	(u32)0x7F8760,			//±£ÁôÇøµÍµØÖ·
-	Reserved_BaseAddr_MSB				=	(u32)0x7FFFFF,			//±£ÁôÇø¸ßµØÖ·		
+	Reserved_BaseAddr_LSB				=	(u32)0x7F8760,			//ÓÃ»§ÇøµÍµØÖ·(µÚ2040.5ÉÈÇø)
+	Reserved_BaseAddr_MSB				=	(u32)0x7FFFFF,			//ÓÃ»§Çø¸ßµØÖ·(¹²2048ÉÈÇø)	112Ò³
 }	GT32L32BaseAddrTypeDef;		//×Ö·ûµãÕó×Ö¿â»ùµØÖ·±í
 //----´íÎóÁĞ±í------------------------------------------------------------
 typedef enum
@@ -123,6 +125,7 @@ typedef struct      _GT32L32/*Card Identification Data*/
 	GT32L32DataDef				Data;	
 	GT32L32FlagDef				Flag;			//´íÎóÁĞ±í
 }GT32L32Def;			//GT32L32M0180
+
 /* Exported macro ------------------------------------------------------------*/
 
 
@@ -144,7 +147,8 @@ u16	GT32L32_GetCode(u8 font,u16 word,u8 *ReadBuffer);		//´Ó×Ö¿âÖĞ¶ÁÊı¾İ²¢·µ»ØÊı¾
 //void GT32L32_SendByte(GT32L32Def *pInfo,u8 ByteData);		//·¢ËÍÒ»¸ö×Ö½ÚÊı¾İ,ÏÈ·¢ËÍ¸ßÎ»
 //u8 GT32L32_ReadByte(GT32L32Def *pInfo);		//¶ÁÒ»¸ö×Ö½Ú,ÏÈ¶Á¸ßÎ»
 
-
+void API_GT32L32M0180_SectorErase(unsigned short UserSectorNum);
+void API_GT32L32M0180_PageWrite(unsigned short UserPageNum,unsigned char* UserData);
 
 #endif
 

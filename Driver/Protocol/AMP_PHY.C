@@ -42,114 +42,49 @@ unsigned  char  ackdownfarme[AmpMinFrameSize]=
 *功能描述		:	检查协议
 *输入				: pbuffer-数据地址
               length-数据长度地址
-*返回值			:	消息帧类型
+*返回值			:	消息帧头标识符地址
 *修改时间		:	无
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-unsigned char API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length)
+unsigned char* API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length)
 {
   unsigned  char  Cmd         = 0;
-  unsigned  char* headaddr    = NULL;
-  unsigned  char* endaddr     = NULL;
-  unsigned short	HeadCodeValidLength	=	*length;    //头标识有效查找长度
-  unsigned short	EndCodeValidLength	=	*length;    //尾标识有效查找长度
-  unsigned short	FrameValidLength	  =	*length;    //当前帧最大有效长度
+  unsigned  char* headaddr    = pbuffer;
   unsigned short	DataValidLength	    =	*length;    //当前缓存数据长度
   
   stampphydef* ampframe;
   
   //=====================基本检查(空地址或者长度不足最小帧)
-  if(NULL  ==  pbuffer)
+  if(NULL  ==  headaddr||DataValidLength<7)
   {
-    goto ExitAmpCheckFrame;   //退出此函数--空地址
+    return  NULL;   //退出此函数--空地址或者长度不够
   }
-  if(FrameValidLength<7)  //小于最小帧长度
-  {
-    goto ExitAmpCheckFrame;   //退出此函数--帧长度不够
-  }  
   FrameGetHeadCodeAddr:
   //=====================查找头标识地址
-  headaddr	=	(unsigned char*)memchr(pbuffer,headcode,HeadCodeValidLength);   //找头标识
+  headaddr	=	(unsigned char*)memchr(headaddr,headcode,DataValidLength);   //找头标识
   if(NULL==headaddr)
   {
-    goto ExitAmpCheckFrame;   //退出此函数--未找到头标识符
-  }
-  
-  
-  //=====================查找尾标识地址
+    return NULL;   //退出此函数--未找到头/尾标识符
+  }  
   //---------------------剩余有效数据长度
-  DataValidLength  = FrameValidLength-((unsigned long)headaddr-(unsigned long)pbuffer); //剩余数据长度
+  DataValidLength  = DataValidLength-((unsigned long)headaddr-(unsigned long)pbuffer); //剩余数据长度
   if(DataValidLength<7)
   {
-    goto ExitAmpCheckFrame;   //退出此函数--帧长度不够
+    return  NULL;   //退出此函数--帧长度不够
   }
-  
-  EndCodeValidLength  = DataValidLength-1; //剩余数据内结束符可查找的范围
-  endaddr=&headaddr[1];        //从下一个位置开始查找
-  
-  FrameGetEndCodeAddr:
-  //---------------------查找结束符
-  endaddr		=	(unsigned char*)memchr(endaddr,endcode,EndCodeValidLength);   //找尾标识---从头标识后开始查找
-  if(NULL==endaddr)
-  {
-    goto ExitAmpCheckFrame;   //退出此函数--未找到尾标识符
-  }
-  //======================================查找到结束符，检查协议格式
-  else
-  {
-    FrameValidLength  = (unsigned long)endaddr-(unsigned long)headaddr+1;
-    //------------------------------------检查帧长度
-    if(AmpMinFrameSize>FrameValidLength)      //小于最小帧长度，重新查找结束符
-    {
-      if(AmpMinFrameSize<EndCodeValidLength)  //数据还有未查找完-继续查找
-      {
-        endaddr=&endaddr[1];        //从下一个位置开始查找
-        EndCodeValidLength=EndCodeValidLength-FrameValidLength;      //可查找的范围减1
-        goto FrameGetEndCodeAddr;   //重新查找结束符---
-      }
-      else
-      {
-        goto ExitAmpCheckFrame;   //退出此函数--剩余未检查的数据长度为0
-      }
-    }
-    //------------------------------------检查是否为应答帧
-    else if(AmpMinFrameSize==FrameValidLength)  //应答帧长度
-    {
-      if(AmpCrc16Check(headaddr,&FrameValidLength))  //检查CRC--通过检查
-      {
-        pbuffer = headaddr;
-        return DataValidLength;
-      }
-      else    //不是应答帧，重新查找结束符
-      {
-        endaddr=&endaddr[1];        //从下一个位置开始查找
-        EndCodeValidLength=EndCodeValidLength-FrameValidLength;      //可查找的范围减1
-        goto FrameGetEndCodeAddr;   //重新查找结束符---
-      }
-    }
-    else
-    {
-    }
-    
-//    //======================================根据协议做CRC校验
-//    //--------------------------------------应答帧校验
-    if(AmpCmdAck  ==  ampframe->msg.cmd.cmd)  //应答帧
-    {
-    }
-    if(AmpCrc16Check(headaddr,&FrameValidLength))
-    {
-      *length = FrameValidLength;
-    }
-    else
-    {
-      pbuffer = &headaddr[1];
-      FrameValidLength = FrameValidLength-1;
-      goto FrameGetEndCodeAddr;
-    }    
-  }
-  ExitAmpCheckFrame:  //退出此函数
-  return  0;
+	if(AmpCrc16Check(headaddr,&DataValidLength))  //检查CRC--通过检查
+	{
+		*length	=	DataValidLength;	//从头标识地址后的有效数据长度
+		return headaddr;						//头标识地址
+	}
+	else
+	{
+		headaddr	=	&headaddr[1];
+		DataValidLength	-=1;				//去掉headaddr[0]长度
+		goto FrameGetHeadCodeAddr;	//重新检测，直到成功或者所有的数据检测完
+	} 
+  return  NULL;
 }
 /*******************************************************************************
 *函数名			:	getframe
@@ -197,17 +132,18 @@ unsigned char* getheadaddr(unsigned char* pbuffer,unsigned short* length)
   startcheckdata:
   headaddr	=	(unsigned char*)memchr(pbuffer,headcode,ValidLength);
 	endaddr		=	(unsigned char*)memchr(headaddr,endcode,ValidLength);
+	if((NULL==headaddr)||(NULL==endaddr))
+  {
+    *length = 0;
+    return  NULL;
+  }
+	
   ValidLength = ValidLength-((unsigned long)headaddr-(unsigned long)pbuffer);
   if(ValidLength<7)   //小于最小帧长度
   {
     *length = 0;
     return  NULL;
-  }
-  if((NULL==headaddr)||(NULL==endaddr))
-  {
-    *length = 0;
-    return  NULL;
-  }
+  }  
   else
   {    
     if(AmpCrc16Check(headaddr,&ValidLength))

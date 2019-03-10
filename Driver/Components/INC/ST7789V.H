@@ -3,11 +3,11 @@
 
 
 #include "stm32f10x_type.h"
-//#include "stm32f10x_gpio.h"
+#include "stm32f10x_gpio.h"
 //#include "stm32f10x_rcc.h"
 //#include "stm32f10x_type.h"
 //#include "STM32_GPIO.H"
-//#include "font.h"
+#include "font.h"
 
 //#include	"stdio.h"			//用于printf
 //#include	"string.h"			//用于printf
@@ -23,39 +23,13 @@
 
 
  //定义LCD的尺寸	
-#define ST7789V_H 320
-#define ST7789V_V 240
+#define ST7789V_H 240		//水平
+#define ST7789V_V 320		//垂直
 
 
 
-#define	Bus_16        //16位数据模式,如果使用8位模式，请注释此语句，如果使用16位模式，请打开此句,修改8位模式之前，请确认你手里的模块是否是8位总线接口
-#define ShowCharAscii	//二维数组查询
-#define Mode8080	//如果CONF引脚连接于VDDIO，单片机接口将被配置在8080模式。
-//#define Mode6800	//如果CONF引脚连接于GND，单片机接口将被配置为6800模式接口
 
 
-//IO连接
-//#define	LCD_DataPortH P2     //高8位数据口,8位模式下只使用高8位 
-//#define	LCD_DataPortL P0     //低8位数据口	,8位模式下低8位可以不接线,请确认P0口已经上拉10K电阻,不宜太小，最小4.7K,推荐10K.
-
-
-
-#define LCD_HDP 799			//水平像素点个数
-#define LCD_HT	928			//显示时长 928
-#define LCD_HPS	46			//消影时长		46
-#define LCD_LPS	15			//15
-#define LCD_HPW	48			//48
-
-#define LCD_VDP	479			//垂直像素点个数
-#define LCD_VT	525
-#define LCD_VPS	16
-#define LCD_FPS	8
-#define LCD_VPW	16
-
-#define	LCD_LR	0X05		//左向右扫描
-#define	LCD_RL	0X04		//左向右扫描
-#define	LCD_UD	0X04		//上往下扫描
-#define	LCD_DU	0X06		//下往上扫描
 
 
 enum ST7789VREG
@@ -141,13 +115,62 @@ enum ST7789VREG
 	ST7789V_RF1_GPDI	=	0XF1,		//get_pixel_data_interface:Get the current pixel data format settings
 };
 
+typedef enum _ST7789VRotateMode		//顺时针旋转角度
+{
+	ST7789V_Rotate_0D	=	0x00,		//
+	ST7789V_Rotate_90D	=	0XA0,		//
+	ST7789V_Rotate_180D	=	0xC0,		//
+	ST7789V_Rotate_270D	=	0x60		//
+}ST7789VRotateDef;
+typedef struct	_ST7789VPort
+{
+	//____________背光控制定义	//1:开背光;0:关背光
+	GPIO_TypeDef* 	sBL_PORT;			//GPIOX
+	unsigned short 	sBL_Pin;				//GPIO_Pin_x
+	
+	//____________读信号;0:读数据
+	GPIO_TypeDef* 	sRD_PORT;							//GPIOX
+	unsigned short 	sRD_Pin;							//GPIO_Pin_x
+	
+	//____________复位信号 1:运行;0:复位
+	GPIO_TypeDef* 	sREST_PORT;						//GPIOX
+	unsigned short 	sREST_Pin;						//GPIO_Pin_x
+	
+	//____________命令/数据：0：命令;1-数据	RS
+	GPIO_TypeDef* 	sDC_PORT;							//GPIOX
+	unsigned short 	sDC_Pin;							//GPIO_Pin_x
+	
+	//____________写信号 在WR的上升沿，使数据写入到LCD里面
+	GPIO_TypeDef* 	sWR_PORT;							//GPIOX
+	unsigned short 	sWR_Pin;							//GPIO_Pin_x
+	
+	//____________片选信号 0:片选;1:失能;
+	GPIO_TypeDef* 	sCS_PORT;							//GPIOX
+	unsigned short 	sCS_Pin;							//GPIO_Pin_x
+	
+	//____________数据接口
+	GPIO_TypeDef* 	sDATABUS_PORT;				//GPIOX
+	unsigned short 	sDATABUS_Pin;					//GPIO_Pin_x
 
-			
+}sST7789VPortDef;	
+
+typedef struct	_ST7789V
+{
+	sST7789VPortDef HWPort;
+	ST7789VRotateDef	ST7789VRotate;		//旋转角度
+	
+	unsigned short ST7789VBColor;   //背景色
+	unsigned short ST7789VPColor;   //画笔色
+	
+
+}sST7789VDef;
 
 
 
 void ST7789V_Initialize(void*	pInfo);
-
+unsigned int ST7789V_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...);				//后边的省略号就是可变参数
+void ST7789V_ShowString(u16 x,u16 y,u8 font,u16 PenColor,u8 num,u8 *Buffer);
+	
 void ST7789V_Test(unsigned short Colr);
 
 void ST7789V_Enable(void);
@@ -193,7 +216,13 @@ void ST7789V_SetBackground(u16 BackColor );
 
 //--------------------------------------------字符显示
 void ST7789V_ShowChar(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
+void ST7789V_ShowChar4836(u16 x,u16 y,u16 color,u8 *Buffer);	  //高通字库测试程序
 void ST7789V_ShowWord(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
+
+
+void ST7789V_DelayuS(u32 xuS);
+void ST7789V_DelaymS(u32 xms);
+void ST7789V_DelayS(u32 xS);
 
 
 #endif

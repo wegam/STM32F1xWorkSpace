@@ -16,7 +16,21 @@ extern unsigned char code_asc2_1608[1520];
 extern volatile unsigned char code_ascii_1608[127][16];
 extern  unsigned char ascii_code0_9748[583];
 
+extern  unsigned char code_ascii_4836[10][240];
+	
+extern	unsigned char code_asc0_4048[240];
+extern	unsigned char code_asc1_4048[240];
+extern	unsigned char code_asc2_4048[240];
+extern	unsigned char code_asc3_4048[240];
+extern	unsigned char code_asc4_4048[240];
+extern	unsigned char code_asc5_4048[240];
+extern	unsigned char code_asc6_4048[240];
+extern	unsigned char code_asc7_4048[240];
+extern	unsigned char code_asc8_4048[240];
+extern	unsigned char code_asc9_4048[240];
+
 extern volatile unsigned char code_nBitmapDot[598];                  // ͼƬ
+
 
 
 

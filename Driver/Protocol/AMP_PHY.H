@@ -7,9 +7,10 @@
 
 #define AmpMinFrameSize 7   //最小帧长度---7应答帧
 
-#define maxmsgsize 133  //5+128
+#define maxmsgsize 133  		//5+128	//通讯最大帧字节数
 #define headcode  (unsigned char)0x7E
 #define endcode   (unsigned char)0x7F
+#define DspMaxNameLen	50		//名字长度--字节
   
 #define gDatasize       128      	//串口最大数据包容量
 #define arrysize        20       	//每个发送端口待发送缓存排序个数
@@ -24,15 +25,17 @@
 
 typedef enum _eucmd
 {
-  AmpCmdNone      = 0,    //不支持的命令/空命令
-  AmpCmdAck       = 1,    //应答类型，只带一个数据，不带地址，数据表示状态
-  AmpCmdLed       = 2,    //LED/LCD控制，带三个数据，带地址，0-表示关，1-表示开
-  AmpCmdLock      = 3,    //开锁命令，只带一个数据，带地址，0-表示读锁状态，1表示开锁
-  AmpCmdCard      = 4,    //读卡器，带地址，第一个数据为0表示读卡，为1表示写卡，后面跟随卡数据
-  AmpCmdPwr       = 5,    //层板供电控制
-  AmpCmdSta       = 6,    //状态：主要为上报状态
-  AmpCmdGetOnline = 7,    //检查在线设备，接收到后应答表示在线
-  AmpCmdBKligth   = 8,    //背光灯控制
+  AmpCmdNone      = 0x00,    	//不支持的命令/空命令
+  AmpCmdAck       = 0x01,    	//应答类型，只带一个数据，不带地址，数据表示状态
+  AmpCmdLed       = 0x02,    	//LED/LCD控制，带三个数据，带地址，0-表示关，1-表示开
+  AmpCmdLock      = 0x03,    	//开锁命令，只带一个数据，带地址，0-表示读锁状态，1表示开锁
+  AmpCmdCard      = 0x04,    	//读卡器，带地址，第一个数据为0表示读卡，为1表示写卡，后面跟随卡数据
+  AmpCmdPwr       = 0x05,    	//层板供电控制
+  AmpCmdSta       = 0x06,    	//状态：主要为上报状态
+  AmpCmdGetOnline = 0x07,    	//检查在线设备，接收到后应答表示在线
+  AmpCmdBKligth   = 0x08,    	//背光灯控制
+	AmpCmdLcdData  	= 0x09,    	//LCD内容显示数据传输命令--物品名称及规格及显示参数
+	AmpCmdLcdBKCL  	= 0x0A,			//LCD修改背景色命令，低8位在前
 }eucmddef;
 typedef enum _eSts
 {
@@ -60,7 +63,7 @@ typedef struct _stcmd
 typedef struct _stampaddr
 {
   unsigned char address1;
-  unsigned char address2;
+  unsigned char address2;		//层地址
   unsigned char address3;
 }stampaddrdef;
 
@@ -83,9 +86,31 @@ typedef struct _stampphy
   stampcrc16def crc16;
   unsigned char end;
 }stampphydef;
-
-
-
+//-----------------------------------LCD显示相关结构体
+typedef struct _DspData			//显示数据结构体
+{
+	unsigned char 	Serial;					//显示序号
+	unsigned char 	Num;						//显示数量
+	unsigned short 	NumColor;				//显示数量字符显示颜色--RGB565
+	//----------------物品名称参数
+	unsigned char 	NameLen;				//物品名称数据长度--字节单位
+	unsigned char 	NameFontSize;		//物品名称显示字体大小
+	unsigned short 	NameColor;			//物品名称显示颜色--RGB565
+	//----------------物品规格参数specifications
+	unsigned char 	SpecLen;				//物品规格数据长度--字节单位
+	unsigned char 	SpecFontSize;		//物品规格显示字体大小
+	unsigned short 	SpecColor;			//物品规格显示颜色--RGB565
+	
+	unsigned char		String[DspMaxNameLen*2];		//名字和规格字符串缓存，名字在前
+}DspDataDef;
+typedef struct _Mana						//耗材数据结构体，名称，规格，数量使用相同的结构体
+{
+	unsigned char 	type;					//类型：01-耗材名称，02-耗材规格，03-耗材数量
+	unsigned char 	len;					//参数长度，不包含type位
+	unsigned char 	FontSize;			//字体大小，如果改背景色命令时无效
+	unsigned short 	Color;				//参数显示颜色
+	unsigned char		String[DspMaxNameLen];		//字体缓存，如果改背景色命令时无效
+}ManaDef;
 
 typedef enum  _CCPort
 {
@@ -186,7 +211,7 @@ typedef struct _stAMPPrl
 }stAMPProdef;
 
 
-unsigned char API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length);
+unsigned char* API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length);
   
 unsigned short getframe(unsigned char* pbuffer,unsigned short* length);
 unsigned char* getheadaddr(unsigned char* pbuffer,unsigned short* length);

@@ -4,34 +4,34 @@
 ***ST7789V LCD屏驱动器
 ********************************************************************************/
 #include "ST7789V.H"
-#include "LCD.H"
+//#include "LCD.H"
 #include "STM32_GPIO.H"
+#include "STM32_SYSTICK.H"
+#include "STM32_PWM.H"
+
+#include "GT32L32M0180.H"
 
 #include	"stdio.h"			//用于printf
 #include	"string.h"		//用于printf
 #include	"stdarg.h"		//用于获取不确定个数的参数
 #include	"stdlib.h"		//malloc动态申请内存空间
 
-//#include <reg51.h>
-//#include "intrins.h"
-//#include "font\font.h"
-//#include "sys\sys.h"
-//#include "lcd\lcd.h"
 
 
-LCDDef	*pST7789V	=	0;		//内部驱动使用，不可删除
 
-#define	ST7789V_CS_HIGH		(pST7789V->Port.sCS_PORT->BSRR	= pST7789V->Port.sCS_Pin)
-#define	ST7789V_CS_LOW		(pST7789V->Port.sCS_PORT->BRR	=	pST7789V->Port.sCS_Pin)
+sST7789VDef	*pST7789V	=	0;		//内部驱动使用，不可删除
 
-#define	ST7789V_DC_HIGH		(pST7789V->Port.sDC_PORT->BSRR	= pST7789V->Port.sDC_Pin)		//RS
-#define	ST7789V_DC_LOW		(pST7789V->Port.sDC_PORT->BRR	= pST7789V->Port.sDC_Pin)		//RS
+#define	ST7789V_CS_HIGH		(pST7789V->HWPort.sCS_PORT->BSRR	= pST7789V->HWPort.sCS_Pin)
+#define	ST7789V_CS_LOW		(pST7789V->HWPort.sCS_PORT->BRR		=	pST7789V->HWPort.sCS_Pin)
 
-#define	ST7789V_WR_HIGH		(pST7789V->Port.sWR_PORT->BSRR	= pST7789V->Port.sWR_Pin)
-#define	ST7789V_WR_LOW		(pST7789V->Port.sWR_PORT->BRR	= pST7789V->Port.sWR_Pin)   //WriteEnable
+#define	ST7789V_DC_HIGH		(pST7789V->HWPort.sDC_PORT->BSRR	= pST7789V->HWPort.sDC_Pin)		//RS
+#define	ST7789V_DC_LOW		(pST7789V->HWPort.sDC_PORT->BRR		= pST7789V->HWPort.sDC_Pin)		//RS
 
-#define	ST7789V_RD_HIGH		(pST7789V->Port.sRD_PORT->BSRR	= pST7789V->Port.sRD_Pin)
-#define	ST7789V_RD_LOW		(pST7789V->Port.sRD_PORT->BRR	= pST7789V->Port.sRD_Pin)   //ReadEnable
+#define	ST7789V_WR_HIGH		(pST7789V->HWPort.sWR_PORT->BSRR	= pST7789V->HWPort.sWR_Pin)
+#define	ST7789V_WR_LOW		(pST7789V->HWPort.sWR_PORT->BRR		= pST7789V->HWPort.sWR_Pin)   //WriteEnable
+
+#define	ST7789V_RD_HIGH		(pST7789V->HWPort.sRD_PORT->BSRR	= pST7789V->HWPort.sRD_Pin)
+#define	ST7789V_RD_LOW		(pST7789V->HWPort.sRD_PORT->BRR		= pST7789V->HWPort.sRD_Pin)   //ReadEnable
 
 //#define	ST7789V_RST_HIGH	(pST7789V->Port.sREST_PORT->BSRR	= pST7789V->Port.sREST_Pin)
 //#define	ST7789V_RST_LOW		(pST7789V->Port.sREST_PORT->BRR	= pST7789V->Port.sREST_Pin)
@@ -39,17 +39,21 @@ LCDDef	*pST7789V	=	0;		//内部驱动使用，不可删除
 //#define	ST7789V_TE_HIGH		(pST7789V->Port.sTE_PORT->BSRR	= pST7789V->Port.sTE_Pin)
 //#define	ST7789V_TE_LOW		(pST7789V->Port.sTE_PORT->BRR	= pST7789V->Port.sTE_Pin)
 
-#define	ST7789V_BL_HIGH		(pST7789V->Port.sBL_PORT->BSRR	= pST7789V->Port.sBL_Pin)
-#define	ST7789V_BL_LOW		(pST7789V->Port.sBL_PORT->BRR	= pST7789V->Port.sBL_Pin)
+//#define	ST7789V_BL_HIGH		(pST7789V->sBL_PORT->BSRR	= pST7789V->sBL_Pin)
+//#define	ST7789V_BL_LOW		(pST7789V->sBL_PORT->BRR	= pST7789V->sBL_Pin)
 
-#define ST7789V_DATABUS_PORT	(pST7789V->Port.sDATABUS_PORT)
-#define ST7789V_DATABUS_Pin		(pST7789V->Port.sDATABUS_Pin)
+#define ST7789V_DATABUS_PORT	(pST7789V->HWPort.sDATABUS_PORT)
+#define ST7789V_DATABUS_Pin		(pST7789V->HWPort.sDATABUS_Pin)
 
 #define	ST7789VSet(n)	ST7789V_##n##_HIGH
 #define	ST7789VCrl(n)	ST7789V_##n##_LOW
 
-unsigned short ST7789VBColor  = LCD565_BLACK;   //默认背景色
-unsigned short ST7789VPColor  = LCD565_WHITE;   //默认画笔色
+#define ST7789V_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel2,1000,10)	//(R61509V_BL_PORT->BSRR = R61509V_BL_PIN)
+#define ST7789V_BL_OFF	PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel2,1,1000)		//(R61509V_BL_PORT->BRR = R61509V_BL_PIN)
+
+
+
+char	ST7789VStringBuffer[256]={0};			//记录format内码
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	函数功能说明
@@ -58,12 +62,12 @@ unsigned short ST7789VPColor  = LCD565_WHITE;   //默认画笔色
 *******************************************************************************/
 void ST7789V_Initialize(void*	pInfo)
 {
-	LCDPortDef*	Port	=	NULL;
+	sST7789VPortDef*	Port	=	NULL;
 	if(NULL==	pInfo)
 		return;
-	pST7789V		=	(LCDDef*)pInfo;		//指针指向	
+	pST7789V		=	(sST7789VDef*)pInfo;		//指针指向	
 
-	Port	=	&pST7789V->Port;
+	Port	=	(sST7789VPortDef*)&pST7789V->HWPort;
 	
 	//==========================GPIO配置
 //	GPIO_Configuration_OPP50	(Port->sBL_PORT,				Port->sBL_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
@@ -75,11 +79,171 @@ void ST7789V_Initialize(void*	pInfo)
 //	GPIO_Configuration_OPP50	(Port->sTE_PORT,				Port->sTE_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sDATABUS_PORT,		Port->sDATABUS_Pin);		//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 
-  pST7789V->Display.PowerOn   = ST7789V_PowerOn;
-  pST7789V->Display.ShowChar  = ST7789V_ShowChar;
-  pST7789V->Display.ShowWord  = ST7789V_ShowWord;
-
+//  pST7789V->Display.PowerOn   = ST7789V_PowerOn;
+//  pST7789V->Display.ShowChar  = ST7789V_ShowChar;
+//  pST7789V->Display.ShowWord  = ST7789V_ShowWord;
+	
+	//------------------------------------------旋转角度
+	//pST7789V->ST7789VRotate	=	ST7789V_Rotate_90D;
+	ST7789V_Clean(pST7789V->ST7789VBColor);	//清除屏幕函数;
 	ST7789V_PowerOn();
+}
+/*******************************************************************************
+*函数名		:	LCD_ShowString
+*功能描述	:	显示字符串高通字库
+*输入			: x,y:起点坐标
+						*p:字符串起始地址
+						用16字体
+*输出			:	无
+*返回值		:	无
+*例程			:
+*******************************************************************************/
+unsigned int ST7789V_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...)				//后边的省略号就是可变参数
+{ 
+	#include	"stdarg.h"		//用于获取不确定个数的参数
+	#include	"stdlib.h"		//malloc动态申请内存空间
+//		va_list ap; 										//VA_LIST 是在C语言中解决变参问题的一组宏，所在头文件：#include <stdarg.h>,用于获取不确定个数的参数
+//		static char string[ 256 ];			//定义数组，
+//  	va_start( ap, format );
+//		vsprintf( string , format, ap );    
+//		va_end( ap );
+	
+	//char	ST7789VStringBuffer[256]={0};			//记录format内码
+	//1)**********获取数据宽度
+  u16 InputDataSize=0;
+	//3)**********vArgList为定义的一个指向可变参数的变量，va_list以及下边要用到的va_start,va_end都是是在定义，可变参数函数中必须要用到宏， 在stdarg.h头文件中定义
+	va_list vArgList; 
+	//5)**********初始化vArgList的函数，使其指向可变参数的第一个参数，format是可变参数的前一个参数
+	va_start(vArgList, format);
+	//6)**********正常情况下返回生成字串的长度(除去\0),错误情况返回负值
+	InputDataSize =vsnprintf(ST7789VStringBuffer,InputDataSize,format,vArgList);
+	//7)**********结束可变参数的获取
+	va_end(vArgList);                                      		
+  if((8!=font)&&(12!=font)&&(16!=font)&&(24!=font)&&(32!=font))
+  {
+    font  = 32;
+  }
+	ST7789V_ShowString(x,y,font,color,InputDataSize,(unsigned char*)ST7789VStringBuffer);
+	return InputDataSize;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void ST7789V_ShowString(
+							u16 x,			//x				:起点x坐标
+							u16 y,			//y				:起点y坐标
+							u8 font,		//font		:字体大小
+							u16 PenColor,//字体颜色
+							u8 num,			//num			:字节数
+							u8 *Buffer	//Buffer	:显示的内容缓存
+)		//高通字库测试程序
+{
+	unsigned short	MaxV=ST7789V_V,MaxH=ST7789V_H;	//边界值
+	unsigned char i=0;
+	unsigned char CodeBuffer[256]={0};
+	switch(pST7789V->ST7789VRotate)
+	{
+		case ST7789V_Rotate_0D:
+			MaxV=ST7789V_V;
+			MaxH=ST7789V_H;
+		break;
+		case ST7789V_Rotate_90D:
+			MaxV=ST7789V_H;
+			MaxH=ST7789V_V;
+		break;
+		case ST7789V_Rotate_180D:
+			MaxV=ST7789V_V;
+			MaxH=ST7789V_H;
+		break;
+		case ST7789V_Rotate_270D:
+			MaxV=ST7789V_H;
+			MaxH=ST7789V_V;
+		break;
+		default:break;		
+	}
+	for(i=0;i<num;i++)
+	{
+		unsigned char GetBufferLength	=	0;
+		unsigned char dst=Buffer[i];
+		
+		//A=====================双字节--汉字
+		if(dst>0x80)
+		{
+			u16 word=dst<<8;
+      
+			dst=Buffer[i+1];
+			word=word|dst;			
+			//A1=====================显示超限换行
+      if(x>MaxH-font)
+      {
+        x=0;
+        y+=font;
+      }
+      //A2=====================显示到屏尾，从原点开始
+      if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+      //A3=====================读取点阵数据
+			GetBufferLength	=	GT32L32_GetCode(font,word,CodeBuffer);		//从字库中读数据并返回数据长度
+			//GetBufferLength	=	GT32L32_GetAntennaCode(3,CodeBuffer);
+			//A4=====================写入屏幕
+			ST7789V_ShowWord(x,y,font,PenColor,GetBufferLength,CodeBuffer);
+			//A5=====================水平显示地址增加
+      x+=font;
+			i++;		//双字节，减两次			
+		}
+		else if(('\r'==dst)||('\n'==dst))
+		{
+			if(('\n'==Buffer[i+1])||('\r'==Buffer[i+1]))
+			{
+				i++;	//去掉回车符长度
+			}
+			if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+			else
+			{
+				x=0;
+				y+=font;
+			}
+			goto LCD_ShowJump;
+		}
+		//B=====================单字节--ASCII字符集
+		else
+		{			
+			//B1=====================显示超限换行
+      if(x>MaxH-font/2)//半个宽度
+      {
+        x=0;
+        y+=font;
+      }
+      //B2=====================显示到屏尾，从原点开始
+      if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+      //B3=====================读取点阵数据
+			GetBufferLength	=	GT32L32_GetCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
+			//GetBufferLength	=	GT32L32_GetBatteryCode(3,CodeBuffer);
+			//=======================水平制表符按空格显示(部分字库会当0xFF输出)
+			if(	('	'	==	(char)dst)		//水平制表符
+				||(' '	==	(char)dst))		//空格
+			{
+				memset(CodeBuffer,0x00,GetBufferLength);
+			}
+			//B4=====================写入屏幕
+			ST7789V_ShowChar(x,y,font,PenColor,GetBufferLength,CodeBuffer);
+			//B5=====================水平显示地址增加
+      x+=font/2;						
+		}
+		LCD_ShowJump:
+			__nop();
+	}
 }
 /*******************************************************************************
 *函数名			:	function
@@ -104,7 +268,10 @@ void ST7789V_Test(unsigned short Colr)
     
   for(i=0;i<240;i++)
     for(j=0;j<320;j++)
+	{
       ST7789V_WriteData(Colr);
+			SysTick_DeleyuS(10);				//SysTick延时nmS
+	}
   
   //ST7789V_WriteCommand(0x29);
   
@@ -233,7 +400,7 @@ unsigned short ST7789V_ReadData(void)
 *******************************************************************************/
 void ST7789V_ReadGRAM(unsigned	short* RAM,unsigned long length)
 {
-	unsigned	long	i	=	0;
+//	unsigned	long	i	=	0;
 //	ST7789VCrl(CS);	//LCD_CS_LOW;
 //	ST7789V_WriteIndex(0X3E);
 //	GPIO_Configuration_IPU	(ST7789V_DATABUS_PORT,ST7789V_DATABUS_Pin);			//将GPIO相应管脚配置为上拉输入模式----V20170605
@@ -250,7 +417,7 @@ void ST7789V_ReadGRAM(unsigned	short* RAM,unsigned long length)
 **************************************************************************************************/
 void ST7789V_PowerOff( void )
 {
-	LCD_BL_OFF;		//关背光
+	ST7789V_BL_OFF;		//关背光
 
 }
 /*******************************************************************************
@@ -269,11 +436,12 @@ void ST7789V_PowerOn(void)
   ST7789V_Enable();	  //
 
   ST7789V_WriteCommand(0x11);           //ExitSleep
-  LCD_DelaymS(120); 	   //Delay 120ms 
+  ST7789V_DelaymS(120); 	   //Delay 120ms 
   //----------------------------------Display Setting-----------------------------------------------// 
   ST7789V_WriteCommand(0x36); 
-  ST7789V_WriteData(0x14);    //ST7789V_WriteData(0x00);   
-
+  ST7789V_WriteData(0x00);    //ST7789V_WriteData(0x00);   
+	
+	
   ST7789V_WriteCommand(0x3a); 
   ST7789V_WriteData(0x55); 
   //--------------------------------ST7789V Frame rate setting----------------------------------// 
@@ -283,6 +451,7 @@ void ST7789V_PowerOn(void)
   ST7789V_WriteData(0x00); 
   ST7789V_WriteData(0x33); 
   ST7789V_WriteData(0x33); 
+	
   ST7789V_WriteCommand(0xb7); 
   ST7789V_WriteData(0x35);		//VGH=13V, VGL=-10.4V 
   //----------------------------------------------------------------------------------------------------// 
@@ -337,6 +506,8 @@ void ST7789V_PowerOn(void)
   ST7789V_WriteCommand(0x2c); 
 
   ST7789V_Disable();	//LCD_CS_HIGH;
+	
+	ST7789V_BL_ON;
  
 }
 /*******************************************************************************
@@ -351,9 +522,9 @@ void ST7789V_PowerOn(void)
 void ST7789V_EnterSleep(void)
 {
   ST7789V_WriteCommand(0x28); // Standby out
-  LCD_DelaymS(10);
+  ST7789V_DelaymS(10);
   ST7789V_WriteCommand(0x10); // Display on
-  LCD_BL_OFF;		//关背光
+  ST7789V_BL_OFF;		//关背光
 }
 
 
@@ -369,9 +540,9 @@ void ST7789V_EnterSleep(void)
 void ST7789V_ExitSleep(void)
 {
   ST7789V_WriteCommand(0x11); // Standby out
-  LCD_DelaymS(180);
+  ST7789V_DelaymS(180);
   ST7789V_WriteCommand(0x29); // Display on
-  LCD_BL_ON;		//关背光
+  ST7789V_BL_ON;		//关背光
 }
 
 /*******************************************************************************
@@ -385,79 +556,25 @@ void ST7789V_ExitSleep(void)
 *******************************************************************************/
 void ST7789V_SetWindowAddress(unsigned short xs,unsigned short ys,unsigned short xe,unsigned short ye)
 {
-  unsigned short MaxH,MaxV;
-  unsigned short HSX,HEX;
-  unsigned short VSY,VEY;
-	unsigned short Model	=	0x5030;
-	
-	eRotate	Rotate	=	Draw_Rotate_90D;
-	
-	MaxH	=	ST7789V_H;
-	MaxV	=	ST7789V_V;
-	
-if	(Rotate	==Draw_Rotate_0D)
-{
-	HSX	=	xs;
-	HEX	=	xe;
-	VSY	=	ys;
-	VEY	=	ye;
-	
-	LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
-	LCDSYS->Data.VYA	=	LCDSYS->Data.VSY;
-	
-	Model	=	0X00;
-}
-else if (Rotate	==Draw_Rotate_90D)
-{
-	HSX	=	ys;
-	HEX	=	ye;	
-	VSY	=	MaxV	-	xe	-	1;
-	VEY	=	MaxV	-	xs	-	1;
-	
-	LCDSYS->Data.HXA	=	LCDSYS->Data.HSX;
-	LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;
-	Model	=	0XA0;								//GRAM(Graphics RAM--图形内存) Data Write (R202h)准备写入
-}
-else if (Rotate	==Draw_Rotate_180D)	
-{
-	HSX	=	MaxH	-	xe	-	1;
-	HEX	=	MaxH	-	xs	-	1;
-	VSY	=	MaxV	-	ye	-	1;
-	VEY	=	MaxV	-	ys	-	1;
-	
-	LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
-	LCDSYS->Data.VYA	=	LCDSYS->Data.VEY;
-	
-	Model	=	0XC0;
-}
-else //(Rotate	==Draw_Rotate_270D)
-{
-	HSX	=	ys;
-	HEX	=	ye;
-	VSY	=	xs;
-	VEY	=	xe;
-	
-	LCDSYS->Data.HXA	=	LCDSYS->Data.HEX;
-	LCDSYS->Data.VYA	=	LCDSYS->Data.VSY;
-
-	Model	=	0X22;
-}
-
   //--------------------设置X
   ST7789V_WriteCommand(0x2A);
-  ST7789V_WriteData(HSX>>8);
-  ST7789V_WriteData(HSX&0xFF);
-  ST7789V_WriteData(HEX>>8);
-  ST7789V_WriteData(HEX&0xFF);
+  ST7789V_WriteData(xs>>8);
+  ST7789V_WriteData(xs&0xFF);
+  ST7789V_WriteData(xe>>8);
+  ST7789V_WriteData(xe&0xFF);
   
   //--------------------设置Y
   ST7789V_WriteCommand(0x2B);
-  ST7789V_WriteData(VSY>>8);
-  ST7789V_WriteData(VSY&0xFF);
-  ST7789V_WriteData(VEY>>8);
-  ST7789V_WriteData(VEY&0xFF);
+  ST7789V_WriteData(ys>>8);
+  ST7789V_WriteData(ys&0xFF);
+  ST7789V_WriteData(ye>>8);
+  ST7789V_WriteData(ye&0xFF);
   
-  ST7789V_WriteCommand(0x2C);	  
+	//----------------------------------Display Setting-----------------------------------------------// 
+  ST7789V_WriteCommand(0x36); 
+  ST7789V_WriteData(pST7789V->ST7789VRotate);    //ST7789V_WriteData(0x00);
+	//----------------------------------write_memory_start
+  ST7789V_WriteCommand(ST7789V_R2C_WMS);	  
 }
 //
 //--------------------------------------------------------------GUI
@@ -631,18 +748,18 @@ void ST7789V_DrawRectangle(u16 x1,u16 y1,u16 x2,u16 y2,u16 color)
 *返回值			:	无
 *******************************************************************************/
 void ST7789V_Fill(
-							unsigned short x1, unsigned short y1, 	//x1,y1:起点坐标
-							unsigned short x2, unsigned short y2,		//x2,y2:终点坐标
+							unsigned short xs, unsigned short ys, 	//x1,y1:起点坐标
+							unsigned short xe, unsigned short ye,		//x2,y2:终点坐标
 							u16 Color
 )
 {          
 	unsigned int x;
 	unsigned int y;	
   ST7789V_Enable();	//LCD_CS_LOW;
-	ST7789V_SetWindowAddress(x1,y1,x2,y2);
-	for(x=0;x<=x2-x1;x++)
+	ST7789V_SetWindowAddress(xs,ys,xe,ye);
+	for(x=0;x<=xe-xs;x++)
 	{
-		for(y=0;y<=y2-y1;y++)
+		for(y=0;y<=ye-ys;y++)
 		{
 			ST7789V_WriteData(Color);							//写数据
 		}
@@ -661,40 +778,31 @@ void ST7789V_Fill(
 void ST7789V_Clean(u16 Color)	//清除屏幕函数
 {
 	unsigned short x,y;
-	unsigned short HSX,HEX,HSY,HEY,MaxH,MaxV;
-	unsigned long	length	=	0;
-	eRotate	Rotate	=	pST7789V->Flag.Rotate;
-	
-	MaxH	=	ST7789V_H;
-	MaxV	=	ST7789V_V;	
-	switch(Rotate)
+	unsigned short HSX=0,HEX=0,VSY=0,VEY=0,MaxH=0,MaxV=0;
+//	unsigned long	length	=	0;
+	switch(pST7789V->ST7789VRotate)
 	{
-		case 	Draw_Rotate_0D:
-					HSX	=	0;
-					HEX	=	MaxH-1;
-					HSY	=	0;
-					HEY	=	MaxV-1;
-			break;
-		case	Draw_Rotate_90D:
-					HSX	=	0;
-					HEX	=	MaxV-1;
-					HSY	=	0;
-					HEY	=	MaxH-1;
-			break;
-		case	Draw_Rotate_180D:
-					HSX	=	0;
-					HEX	=	MaxH-1;
-					HSY	=	0;
-					HEY	=	MaxV-1;
-			break;
-		default:
-					HSX	=	0;
-					HEX	=	MaxV-1;
-					HSY	=	0;
-					HEY	=	MaxH-1;
-			break;			
-	}	
-	ST7789V_Fill(HSX,HSY,HEX,HEY,Color);
+		case ST7789V_Rotate_0D:
+			HEX=ST7789V_H;
+			VEY=ST7789V_V;
+		break;
+		case ST7789V_Rotate_90D:
+			HEX=ST7789V_V;
+			VEY=ST7789V_H;
+		break;
+		case ST7789V_Rotate_180D:
+			HEX=ST7789V_H;
+			VEY=ST7789V_V;
+		break;
+		case ST7789V_Rotate_270D:
+			HEX=ST7789V_V;
+			VEY=ST7789V_H;
+		break;
+		default:break;
+		
+	}
+	pST7789V->ST7789VBColor	=	Color;
+	ST7789V_Fill(0x00,0x00,HEX,VEY,Color);
 }
 /**************************************************************************************************
 * [Function] ILI9326_SetBackground:  设置背景颜色
@@ -702,7 +810,7 @@ void ST7789V_Clean(u16 Color)	//清除屏幕函数
 **************************************************************************************************/
 void ST7789V_SetBackground(  u16 BackColor )
 {
-	ST7789VBColor=	BackColor;
+	pST7789V->ST7789VBColor	=	BackColor;
 	ST7789V_Clean(BackColor);	//清除屏幕函数
 }
 
@@ -749,9 +857,10 @@ void ST7789V_ShowChar(
 				LCD_PEN_COLOR=color;
 			}
 			else
-				LCD_PEN_COLOR=ST7789VBColor;
+				LCD_PEN_COLOR=pST7789V->ST7789VBColor	;
 			ST7789V_WriteData(LCD_PEN_COLOR);
 			temp=temp<<1;
+			
 		}
     //=======================未满8位的补充定入
     if((24==font)||(12==font))
@@ -764,7 +873,7 @@ void ST7789V_ShowChar(
           LCD_PEN_COLOR=color;
         }
         else
-          LCD_PEN_COLOR=ST7789VBColor;
+          LCD_PEN_COLOR=pST7789V->ST7789VBColor	;
         ST7789V_WriteData(LCD_PEN_COLOR);
         temp=temp<<1;
       }
@@ -773,6 +882,68 @@ void ST7789V_ShowChar(
 	}
 	ST7789V_Disable();	//LCD_CS_HIGH;
 }
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void ST7789V_ShowChar4836(
+										u16 x,			//x				:起点x坐标
+										u16 y,			//y				:起点y坐标
+										u16 color,	//字体颜色
+										u8 *Buffer	//Buffer	:显示的内容缓存
+										
+)		//高通字库测试程序
+{
+	u8 temp;
+	unsigned short i=0,j=0;
+	unsigned short x1=0,x2=0,y1=0,y2=0;
+	unsigned short LCD_PEN_COLOR	=	0;   	//画笔色
+	x1	=	x;
+	y1	=	y;
+	x2	=	x+36-1;		//5字节,每行4个半字节
+	y2	=	y+48-1;		//48行
+	
+  ST7789V_Enable();	//LCD_CS_LOW;
+  
+	ST7789V_SetWindowAddress(x1,y1,x2,y2);//设置显示区域	
+	//5*48=240
+	for(i=0;i<240;i++)
+	{ 
+		temp=Buffer[i];		 		//调用1608字体--二维数组形式--字库使用时取消
+		if(i%10==4||i%10==9)	//每行第五个字节时只画半个字节
+		{
+			for(j=0;j<4;j++)
+			{
+				if((temp&0x80)==0X80)
+				{
+					LCD_PEN_COLOR=color;
+				}
+				else
+					LCD_PEN_COLOR=pST7789V->ST7789VBColor	;
+				ST7789V_WriteData(LCD_PEN_COLOR);
+				temp=temp<<1;
+			}
+		}
+		else
+		{
+			for(j=0;j<8;j++)
+			{
+				if((temp&0x80)==0X80)
+				{
+					LCD_PEN_COLOR=color;
+				}
+				else
+					LCD_PEN_COLOR=pST7789V->ST7789VBColor	;
+				ST7789V_WriteData(LCD_PEN_COLOR);
+				temp=temp<<1;
+			}
+		}
+	}
+	ST7789V_Disable();	//LCD_CS_HIGH;
+}
+
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
@@ -811,9 +982,10 @@ void ST7789V_ShowWord(
 				LCD_PEN_COLOR=color;
 			}
 			else
-				LCD_PEN_COLOR=ST7789VBColor;
+				LCD_PEN_COLOR=pST7789V->ST7789VBColor;
 			ST7789V_WriteData(LCD_PEN_COLOR);
 			temp=temp<<1;
+			
 		}
     //=======================未满8位的补充定入
     if((12==font))
@@ -826,7 +998,7 @@ void ST7789V_ShowWord(
           LCD_PEN_COLOR=color;
         }
         else
-          LCD_PEN_COLOR=ST7789VBColor;
+          LCD_PEN_COLOR=pST7789V->ST7789VBColor	;
         ST7789V_WriteData(LCD_PEN_COLOR);
         temp=temp<<1;
       }
@@ -835,6 +1007,35 @@ void ST7789V_ShowWord(
 	}
 	ST7789V_Disable();	//LCD_CS_HIGH;
 }
-
+/*******************************************************************************
+* 函数名			:	LCD_DelayuS
+* 功能描述		:	延时x微秒
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void ST7789V_DelayuS(u32 xuS)
+{
+	SysTick_DeleyuS(xuS);				//SysTick延时nmS;
+}
+/*******************************************************************************
+* 函数名			:	LCD_DelaymS
+* 功能描述		:	延时x毫秒
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void ST7789V_DelaymS(u32 xms)
+{
+	SysTick_DeleymS(xms);				//SysTick延时nmS;
+}
+/*******************************************************************************
+* 函数名			:	LCD_DelayS
+* 功能描述		:	延时x秒
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void ST7789V_DelayS(u32 xS)
+{
+	SysTick_DeleyS(xS);				//SysTick延时nmS;
+}
 
 

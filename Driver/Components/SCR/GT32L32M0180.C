@@ -672,6 +672,73 @@ u8 GT32L32_ReadStatus(GT32L32Def *pInfo)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
+void API_GT32L32M0180_SectorErase(unsigned short UserSectorNum)
+{
+	//____________定义变量
+	u32 i=0;
+	u8	len=255;
+	u8	CMD=0x20;		//扇区擦除命令--一个扇区4K
+	u32	Sector	=	Reserved_BaseAddr_LSB/4096+1+UserSectorNum;
+	u32	Address	=	0;
+	Address			=	Sector*4096;		//起始扇区
+	
+	//____________使能片选
+	SPI_CS_LOW(pSPI);
+	//____________写入命令
+	SPI_ReadWriteByteSPI(pSPI,CMD);						//发送地址
+	//____________写入地址
+	SPI_ReadWriteByteSPI(pSPI,Address>>16);				//发送地址
+	SPI_ReadWriteByteSPI(pSPI,Address>>8);				//发送地址
+	SPI_ReadWriteByteSPI(pSPI,Address);						//发送地址
+	//____________取消片选	
+	SPI_CS_HIGH(pSPI);
+}
+/*******************************************************************************
+* 函数名			:	GT32L32_ChipErase
+* 功能描述		:	 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+void API_GT32L32M0180_PageWrite(unsigned short UserPageNum,unsigned char* UserData)
+{
+	//____________定义变量
+	u32 i=0;
+	u8	len=255;
+	u8	CMD=0x02;		//页写命令--一个扇区4K
+	
+	unsigned char* Buffer=(unsigned char*)UserData;
+	u32	Sector	=	Reserved_BaseAddr_LSB/4096+1+UserPageNum;
+	u32	Address	=	0;
+	Address			=	Sector*4096;		//起始扇区	
+	
+	//____________使能片选
+	SPI_CS_LOW(pSPI);
+	//____________写入命令
+	SPI_ReadWriteByteSPI(pSPI,CMD);								//发送地址
+	//____________写入地址
+	SPI_ReadWriteByteSPI(pSPI,Address>>16);				//发送地址
+	SPI_ReadWriteByteSPI(pSPI,Address>>8);				//发送地址
+	SPI_ReadWriteByteSPI(pSPI,Address);						//发送地址
+	//____________写入数据	
+	for(i=0;i<256;i++)
+	{
+		SPI_ReadWriteByteSPI(pSPI,Buffer[i]);	//从字库读出点阵数据到数组中。
+	}
+	//____________取消片选	
+	SPI_CS_HIGH(pSPI);
+}
+/*******************************************************************************
+* 函数名			:	GT32L32_ChipErase
+* 功能描述		:	 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
 void GT32L32_ChipErase(GT32L32Def *pInfo)
 {
 	//____________定义变量
@@ -679,8 +746,7 @@ void GT32L32_ChipErase(GT32L32Def *pInfo)
 	u8	len=255;
 	u8	Address=0x60;	//0X60 OR 0XC7
 	//____________使能片选
-	GPIO_ResetBits(GPIOC,GPIO_Pin_6);
-	SPI_Cmd(pInfo->SPI.Port.SPIx, ENABLE);
+	SPI_CS_LOW(pSPI);
 
 	SPI_ReadWriteByteSPI(&pInfo->SPI,Address);						//发送地址
 
@@ -689,7 +755,7 @@ void GT32L32_ChipErase(GT32L32Def *pInfo)
 	 SPI_ReadWriteByteSPI(&pInfo->SPI,0XFF);// 从字库读出点阵数据到数组中。
 	}
 	//____________取消片选	
-	GPIO_SetBits(GPIOC,GPIO_Pin_6);
+	SPI_CS_HIGH(pSPI);
 	SPI_Cmd(pInfo->SPI.Port.SPIx,DISABLE);
 }
 /*******************************************************************************
@@ -713,9 +779,9 @@ u16 GT32L32_ReadBuffer(
 //	SPI_Cmd(pInfo->SPI.Port.SPIx, ENABLE);
 	SPI_CS_LOW(pSPI);
 	Address=Address|0x03000000;		//0x03指令字+地址。
-//	Address=Address|0x0B000000;//0x0B指令字+地址。--快速
+	//Address=Address|0x0B000000;//0x0B指令字+地址。--快速
 
-	SPI_ReadWriteByteSPI(pSPI,Address>>24);				//发送地址高8位
+	SPI_ReadWriteByteSPI(pSPI,Address>>24);				//发送高8位---命令
 	SPI_ReadWriteByteSPI(pSPI,Address>>16);				//发送地址
 	SPI_ReadWriteByteSPI(pSPI,Address>>8);				//发送地址
 	SPI_ReadWriteByteSPI(pSPI,Address);						//发送地址
