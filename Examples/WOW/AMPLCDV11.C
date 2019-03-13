@@ -20,23 +20,25 @@
 
 #include "font.h"
 
-#define	BackColorStartAddr	0x0801F800		//原点值在MCU内部FLASH的存储地址126K地址，按128Kflash应用
+
+
 
 sAmpLcdDef	sAmpLcd;
 
 
-unsigned char LcdRS485Rxd[150];
+unsigned char LcdRS485Rxd[512];
 
 unsigned  long*  MCUMEMaddr = (unsigned  long*)(0x1FFFF7E0);
 unsigned  short  MCUMEMsize  = 0;
 
 unsigned  char gCbFlag=0;   //0--柜板，1--层板
-unsigned short colr=0;
+unsigned short FlashTime=0;
 unsigned short Num=0;
 unsigned char testbuffer[]="GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_0);";
 
 
-void AsciiDspTest(void);
+
+
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -54,18 +56,21 @@ void AMPLCDV11_Configuration(void)
   GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_0);
   
   PWM_OUT(TIM2,PWM_OUTChannel2,500,1);	//PWM设定-20161127版本	占空比1/1000
-
+	
+	SysTick_DeleymS(500);				//SysTick延时nmS
+	
   HW_Configuration();  
   
   //IWDG_Configuration(20000);													//独立看门狗配置---参数单位ms
 	
 	//SetBackColor(LCD565_DARKBLUE);
-  
+  ST7789V_Clean(0xFFFF);
+	//AMPLCDV11GUI();
   SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS  
-	
   while(1)
   {
     //AMPLCDV11_Loop();
+		Send_Server();
   }
 }
 /*******************************************************************************
@@ -79,41 +84,31 @@ void AMPLCDV11_Configuration(void)
 *******************************************************************************/
 void AMPLCDV11_Server(void)
 {  
-  colr+=1;
+	static unsigned short color=0;
+  FlashTime+=1;
 	IWDG_Feed();								//独立看门狗喂狗
 	Tim_Server();
-	
-	//return;
-	
-  if(colr==500)
+  if(FlashTime==2000)
   {
-    //ST7789V_Clean(LCD565_GREEN);
-		//ST7789V_Clean(sAmpLcd.LcdPort.ST7789VBColor);
-  }
-  else if(colr==1000)
-  {    
-		unsigned char data[6]={0xaa,0x98,0x89,0x88,0x92,0x92};
-		colr=0;
-		//ST7789V_Clean(LCD565_RED);
-    //ST7789V_Test(LCD565_LBBLUE);
-    //ST7789V_DrawLine(0,0,240,320,LCD565_LBBLUE);
-    //ST7789V_DrawCircle(100,100,70,1,LCD565_LBBLUE);		//画一个圆形框
-    //ST7789V_DrawCircle(20,20,20,1,LCD565_LBBLUE);			//画一个圆形框
-    //ST7789V_Fill(0,0,240,320,LCD565_LBBLUE);
-    //ST7789V_Clean(LCD565_LBBLUE);
-		//ST7789V_DrawLine(120,0,120,320,LCD565_GREEN);						//AB 两个坐标画一条直线
-		//ST7789V_DrawLine(0,9,320,9,LCD565_GREEN);						//AB 两个坐标画一条直线
-		//ST7789V_DrawLine(9,0,9,240,LCD565_GREEN);						//AB 两个坐标画一条直线
-		//ST7789V_Printf(10,210,24,LCD565_RED,"层号%0.2d:位号%0.2d",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-    //ST7789V_Printf(10,10,24,LCD565_RED,"LCD显示测试Printf自动换行",LCD565_GREEN);  //LCD显示测试Printf
-		//ST7789V_Printf(10,20,32,LCD565_RED,"层号%0.2d:位号%0.3d",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-		//ST7789V_Printf(10,155,24,LCD565_RED,"层号%0.2d:位号%0.2d",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-		//ST7789V_Printf(10,180,12,LCD565_RED,"层号%0.2d:位号%0.2d",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-		//ST7789V_Printf(10,200,8,LCD565_RED,"层号%0.2d:位号%0.2d",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-		//ST7789V_ShowString(10,50,24,LCD565_BLACK,6,data);
-		AsciiDspTest();
-    //ST7789V_ShowChar(10,10,16,LCD565_LBBLUE,20,LcdRS485Rxd);	  //高通字库测试程序
-    DisplayMana();
+		FlashTime=0;
+		#if 1==SelectModel
+			DisplayManaStaticTest1();
+		#elif 2==SelectModel
+			DisplayManaStaticTest2();
+		#elif 3==SelectModel
+			DisplayManaModel1();
+		#elif 4==SelectModel
+			DisplayManaModel2();
+		#elif 5==SelectModel
+			DisplayManaModel3();
+		#elif 6==SelectModel
+			DisplayManaModel2();
+		#endif
+//		ST7789V_Clean(0xFFDE);
+		//DisplayManaStaticTest1();
+    //DisplayManaModel1();
+		//DisplayManaModel2();
+		//DisplayStyle();		
   }
   AMPLCDV11_Receive();
 }
@@ -126,38 +121,16 @@ void AMPLCDV11_Server(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AsciiDspTest(void)
+void DisplayAddr(void)
 {
-	static unsigned char i=0;
-	if(i++>=9)
-		i=0;
-	ST7789V_DrawLine(0,10,320,10,LCD565_GREEN);						//AB 两个坐标画一条直线
+	ST7789V_ShowChar4836(30,90,0xFF59,0xFB00,code_ascii_4836[sAmpLcd.Addr.Lay/10]);	  //高通字库测试程序
+	ST7789V_ShowChar4836(66,90,0xFF59,0xFB00,code_ascii_4836[sAmpLcd.Addr.Lay%10]);	  //高通字库测试程序
 	
-	ST7789V_Printf(0,12,24,LCD565_RED,"物品名称:高通字库24",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-	ST7789V_Printf(0,36,24,LCD565_RED,"物品名称:高通字库24",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-	ST7789V_Printf(0,62,16,LCD565_BRRED,"物品规格:高通字库测试程序高通字库测试16",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-	ST7789V_Printf(0,84,16,LCD565_BRRED,"物品规格:高通字库测试程序高通字库测试16",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-	
-	ST7789V_ShowChar4836(237,12,LCD565_RED,code_ascii_4836[i]);	  //高通字库测试程序
-	ST7789V_ShowChar4836(273,12,LCD565_GREEN,code_ascii_4836[i]);	  //高通字库测试程序
-	
-	ST7789V_DrawLine(0,119,320,119,LCD565_GREEN);						//AB 两个坐标画一条直线
-	ST7789V_DrawLine(0,120,320,120,LCD565_GREEN);						//AB 两个坐标画一条直线
-	ST7789V_DrawLine(0,121,320,121,LCD565_GREEN);						//AB 两个坐标画一条直线
-	
-	
-	ST7789V_Printf(0,125,24,LCD565_RED,"物品名称:高通字库24",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-	ST7789V_Printf(0,149,24,LCD565_RED,"物品名称:高通字库24",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-	ST7789V_Printf(0,175,16,LCD565_GREEN,"物品规格:高通字库测试程序高通字库测试16",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-	ST7789V_Printf(0,197,16,LCD565_GREEN,"物品规格:高通字库测试程序高通字库测试16",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
-	
-	ST7789V_ShowChar4836(237,125,LCD565_GREEN,code_ascii_4836[i]);	  //高通字库测试程序
-	ST7789V_ShowChar4836(273,125,LCD565_GREEN,code_ascii_4836[i]);	  //高通字库测试程序
-
-	
-	
-	ST7789V_DrawLine(0,230,320,230,LCD565_GREEN);						//AB 两个坐标画一条直线
+	ST7789V_ShowChar4836(218,90,0xFF59,0xFB00,code_ascii_4836[sAmpLcd.Addr.Seg/10]);	  //高通字库测试程序
+	ST7789V_ShowChar4836(254,90,0xFF59,0xFB00,code_ascii_4836[sAmpLcd.Addr.Seg%10]);	  //高通字库测试程序
 }
+
+
 
 
 
@@ -182,16 +155,10 @@ void AsciiDspTest(void)
 *******************************************************************************/
 unsigned short HW_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
 { 
-//  unsigned  short   sendedlen = 0;
-//  if(gCbFlag) //0--柜板，1--层板
-//  {
-//    sendedlen = AMPLAY_SendBuff(Port,pBuffer,length);
-//  }
-//  else
-//  {
-//    sendedlen = AMPCAB_SendBuff(Port,pBuffer,length);
-//  }
-//  return  sendedlen;
+  unsigned  short   sendedlen = 0;
+	if(LayPort	==	Port)
+		sendedlen	=	RS485_DMASend(&sAmpLcd.RS485Port,pBuffer,length);	//RS485-DMA发送程序
+  return  sendedlen;
 }
 
 
@@ -289,6 +256,12 @@ void AMPLCDV11_Process(unsigned char* ReceDatabuffer,unsigned short datalen)
 {
   unsigned  short framlength  = datalen; 
   unsigned  char* StartAddr    = ReceDatabuffer;         //备份数据缓存起始地址
+	
+	
+	unsigned char	i=0;
+	unsigned char DataLen	=0;		//数据段长度
+	ManaDef*	ManaData;
+	DspDataDef*	DspData;		//
   
   stampphydef* ampframe=NULL;
   //-------------------------检查端口是否为层接口及缓存地址是否为空
@@ -296,6 +269,14 @@ void AMPLCDV11_Process(unsigned char* ReceDatabuffer,unsigned short datalen)
   {
     return;
   }
+	//-------------------------测试代码
+	if(('t'==ReceDatabuffer[0])&&('e'==ReceDatabuffer[1])&&('s'==ReceDatabuffer[2])&&('t'==ReceDatabuffer[3]))
+	{
+		StartAddr=&StartAddr[4];
+		GetManaData(StartAddr,framlength-4);
+		return;
+	}	
+	
 	ReceiveDataCheckStart:	//开始检测接收到的数据
   //-------------------------协议检查
   ampframe	=	(stampphydef*)API_AmpCheckFrame(StartAddr,&framlength);    //判断帧消息内容是否符合协议
@@ -324,55 +305,12 @@ void AMPLCDV11_Process(unsigned char* ReceDatabuffer,unsigned short datalen)
   {
     //---------------------------显示数据命令
     if(AmpCmdLcdData ==  ampframe->msg.cmd.cmd) 
-    {
-			unsigned char	i=0;
-			unsigned char DataLen	=	ampframe->msg.length-4;		//数据段长度
-			ManaDef*	ManaData;
-			DspDataDef*	DspData;		//
-			
-			ManaData=(ManaDef*)ampframe->msg.data;
-			
-			//------------------------------查找空显示缓存
-			for(i=0;i<DspMaxNameTypeCount;i++)
-			{
-				if(0==sAmpLcd.DspData[i].Serial)		//缓存为空，可以拷贝数据
-				{
-					DspData	=	&sAmpLcd.DspData[i];
-					sAmpLcd.ReceivedManaCount+=1;
-					break;
-				}
-			}
-			//------------------------------未查找到空缓存，缓存满
-			if(i>=DspMaxNameTypeCount)
-			{
-				return;
-			}
-			
-			//------------------------------分类拆装数据
+    {	
+			unsigned char* buffer=NULL;
+			DataLen	=	ampframe->msg.length-4;		//数据段长度			
+			buffer=(unsigned char*)ampframe->msg.data;
 			PackManaData:
-			if(0x01	==	ManaData->type)	//名称参数
-			{
-				DspData->NameLen			=	ManaData->len-3;		//名称字符串长度，需要减去一字节大小数据和两字节颜色数据
-				DspData->NameFontSize	=	ManaData->FontSize;	//显示字符大小
-				DspData->NameColor		=	ManaData->Color;
-				memcpy(DspData->String,ManaData->String,DspData->NameLen);	//拷贝名称数据
-			}
-			ManaData=(ManaDef*)&ampframe->msg.data[DspData->NameLen+2];		//包含类型和长度位
-			if(0x02	==	ManaData->type)	//规格参数
-			{
-				DspData->SpecLen			=	ManaData->len-3;		//规格字符串长度，需要减去一字节大小数据和两字节颜色数据
-				DspData->SpecFontSize	=	ManaData->FontSize;	//显示字符大小
-				DspData->SpecColor		=	ManaData->Color;
-				memcpy(&DspData->String[DspData->NameLen],ManaData->String,DspData->SpecLen);	//拷贝名称数据
-			}
-			ManaData=(ManaDef*)&ampframe->msg.data[DspData->SpecLen+2];		//包含类型和长度位
-			if(0x03	==	ManaData->type)	//数量参数
-			{
-				DspData->Num			=	ManaData->String[0];		//数量
-				DspData->NumColor	=	ManaData->Color;				//显示字符大小
-			}
-			sAmpLcd.ReceivedManaCount+=1;
-			sAmpLcd.DspData[i].Serial=sAmpLcd.ReceivedManaCount;
+			GetManaData(buffer,DataLen);
 			ackFrame(LayPort,1); //向上应答
 						
     }
@@ -401,45 +339,820 @@ void AMPLCDV11_Process(unsigned char* ReceDatabuffer,unsigned short datalen)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void DisplayMana(void)
+void GetManaData(unsigned char* Databuffer,unsigned short datalen)
+{
+	unsigned char	i=0;
+	unsigned char DataLen	=0;		//数据段长度
+	unsigned char red	=	0;
+	unsigned char	green	=	0;
+	unsigned char	blue	=	0;
+	unsigned short color=0;
+	unsigned char* buffer;
+	ManaDef*	ManaData;
+	DspDataDef*	DspData;		//
+	
+	ManaData	=	(ManaDef*)Databuffer;
+	
+	for(i=0;i<DspMaxNameTypeCount;i++)
+	{
+		if(0==sAmpLcd.DspData[i].Serial)		//缓存为空，可以拷贝数据
+		{
+			DspData	=	&sAmpLcd.DspData[i];
+			sAmpLcd.ReceivedManaCount+=1;
+			break;
+		}
+	}
+	//------------------------------未查找到空缓存，缓存满
+	if(i>=DspMaxNameTypeCount)
+	{
+		return;
+	}
+	//------------------------------分类拆装数据
+
+	if(0x01	==	ManaData->type)	//名称参数
+	{
+		DspData->NameLen			=	ManaData->len;		//名称字符串长度
+		DspData->NameFontSize	=	ManaData->FontSize;	//显示字符大小
+
+		memcpy(DspData->String,ManaData->String,DspData->NameLen);	//拷贝名称数据
+	}
+	buffer=&ManaData->String[ManaData->len];
+	ManaData=(ManaDef*)buffer;		
+	if(0x02	==	ManaData->type)	//规格参数
+	{
+		DspData->SpecLen			=	ManaData->len;		//名称字符串长度
+		DspData->SpecFontSize	=	ManaData->FontSize;	//显示字符大小
+
+		memcpy(&DspData->String[DspData->NameLen],ManaData->String,DspData->SpecLen);	//拷贝名称数据
+	}
+	buffer=&ManaData->String[ManaData->len];
+	ManaData=(ManaDef*)buffer;		
+	if(0x03	==	ManaData->type)	//数量参数
+	{
+		DataLen	=	ManaData->len;
+		if((0<DataLen)&&(DataLen<2))
+		{
+			DspData->Num			=	(ManaData->String[0]-0x30);		//数量
+		}
+		else if(2==DataLen)
+		{
+			DspData->Num			=	(ManaData->String[0]-0x30)*10;		//数量
+			DspData->Num			+= (ManaData->String[1]-0x30);				//数量
+		}
+		else
+		{
+			DspData->Num=99;
+		}
+	}
+	sAmpLcd.DspData[i].Serial=sAmpLcd.ReceivedManaCount;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void DisplayManaStaticTest1(void)
+{
+	unsigned char i=0;
+	unsigned short x=0,y=0;
+	unsigned short xysbac=0;
+	unsigned char font=0;
+	static unsigned char testnum=0;
+	if(testnum++>=99)
+		testnum=0;
+
+	x	=	0;
+	y	=	8;
+	xysbac=y;
+	//y=ystarttop;	//ystarttop==8
+	//-----------------------------------画上边边线
+	ST7789V_Fill(0,0,320,y+2,0x0000);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	y+=2;
+	ST7789V_Fill(0,y-1,320,y+16,0x865D);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	ST7789V_PrintfBK(x,y,16,0x865D,0x0000,"层号:%0.2d  位号:%0.2d         %d/99::%d/99页",sAmpLcd.Addr.Lay%100,sAmpLcd.Addr.Seg%100,testnum%100,(testnum+1)%100);  //LCD显示测试Printf
+	ST7789V_Fill(x,y+16,320,y+18,0x8450);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	y+=16+3;
+	ST7789V_Fill(ST7789V_V-32*2,y+32+16+4,ST7789V_V,y+32+16+4+32,0xFFFF);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	ST7789V_PrintfBK(ST7789V_V-32*2,y+32+16+4,32,0xFFFF,0xFB00,"%0.2d",testnum%100);  //LCD显示测试Printf
+	ST7789V_PrintfBK(ST7789V_V-32*1,y+31*2,16,0xFFFF,0xFB00,"盒");  //LCD显示测试Printf
+//	y+=32;
+	font=24;
+	ST7789V_PrintfBK(x,y,font,0xFFFF,0x054A,"测试物品名称1测试物品名称1",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+	y+=font;
+	ST7789V_PrintfBK(x,y,font,0xFFFF,0x054A,"一次性套管穿刺器一次性套管",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+	y+=font+2;
+	font=16;
+	ST7789V_Printf(x,y,font,0x5ACA,"Ⅲ型Ф10-MBQ2019FF1299-ACTD-MT",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+	ST7789V_Printf(x,y+16,font,0x5ACA,"#Яβπポほ㈣019FF1299-ACTD-M",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+	y+=font+2;
+	
+	//-----------------------------------画中线
+
+	y	=	(ST7789V_H)/2-4+xysbac;
+	ST7789V_Fill(0,y,320,y+8,0x8450);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	y+=10;
+	
+	ST7789V_Fill(ST7789V_V-32*2,y+32+16+4,ST7789V_V,y+32+16+4+32,0xFFFF);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	ST7789V_PrintfBK(ST7789V_V-32*2,y+32+16+4,32,0xFFFF,0xFB00,"%0.2d",testnum+1%100);  //LCD显示测试Printf
+	ST7789V_PrintfBK(ST7789V_V-32*1,y+31*2,16,0xFFFF,0xFB00,"瓶");  //LCD显示测试Printf
+//	y+=32;
+	font=24;
+	ST7789V_PrintfBK(x,y,font,0xFFFF,0x054A,"测试物品名称2测试物品名称2",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+	y+=font;
+	ST7789V_PrintfBK(x,y,font,0xFFFF,0x054A,"（套管穿刺针）        ",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+	y+=font+2;
+	font=16;
+	ST7789V_Printf(x,y,font,0x5ACA,"Ⅲ型Ф10-MBQ2019FF1299-ACTD-MT",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+	y+=16;
+	ST7789V_Printf(x,y,font,0x5ACA,"#Яβπポほ㈣019FF1299-ACTD-M",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+	y+=16;
+	y+=16;
+	ST7789V_Fill(0,y,320,ST7789V_H,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+
+	testnum+=1;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void DisplayManaStaticTest2(void)
 {
 	unsigned char i	=	0;
 	unsigned char len=0;
 	unsigned char num=0;
 	unsigned char* str;
+	
+	unsigned char TempLay	=	sAmpLcd.Addr.Lay%100;
+	unsigned char TempSeg	=	sAmpLcd.Addr.Seg%100;
+
+	
+	unsigned short xs=0;
+	unsigned short ys=0;
+	unsigned short xe=0;
+	unsigned short ye=0;
+	unsigned short yebac=0;
+	
+	static unsigned char testnum=0;
+	if(testnum++>=99)
+		testnum=0;
+
+	//===============================顶部填充
+	ye=DisplayTopStartY;	
+	ST7789V_Fill(0,0,ST7789V_V,ye,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	//===============================中间分隔线填充
+//	ys	=	(DisplayBotStartY-DisplayTopStartY-DisplayTitleSize-DisplaySeparWidth)/2+DisplayTopStartY+DisplayTitleSize;
+//	ST7789V_Fill(0,ys-DisplaySeparWidth,ST7789V_V,ys+DisplaySeparWidth,DisplaySeparBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	//===============================底部填充
+	ys	=	DisplayBotStartY;
+	ye	=	DisplayBotEndY;
+	ST7789V_Fill(0,ys,ST7789V_V,ST7789V_H,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	//===============================标题填充
+	ys	=	DisplayTopStartY;
+	ye	=	DisplayTopStartY+DisplayTitleSize;
+	ST7789V_Fill(0,ys,ST7789V_V,ye,DisplayTitleBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	//===============================标题分隔线填充
+	ys	=	ye;
+	ye	=	ys+DisplaySeparWidth;
+	ST7789V_Fill(0,ys,ST7789V_V,ye,DisplaySeparBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	//===============================显示地址
+	str=(unsigned char*)&sAmpLcd.Addr;
+	ys	=	DisplayTopStartY;
+	ST7789V_PrintfBK(DisplayStartX,ys,DisplayTitleSize,DisplayTitleBkColor,DisplayTitleFtColor,"%0.2d::%0.2d             01/03页",TempLay,TempSeg);  //LCD显示测试Printf
+	
+	//===============================显示别名/学名
+	ys	=	ys+DisplayTitleSize+DisplaySeparWidth+1;
+	ST7789V_PrintfBK(DisplayStartX,ys,DisplayNameFtSize,DisplayNameBkColor,DisplayNameFtColor,"无纺布食品车间防尘条形帽/医用一次性帽子");  //LCD显示测试Printf
+	//===============================物料编码
+	ys	=	ys+DisplayNameFtSize*2;
+	ST7789V_PrintfBK(DisplayStartX,ys,DisplayCodeFtSize,DisplayCodeBkColor,DisplayCodeFtColor,"编码:POY20190315-M1");  //LCD显示测试Printf
+	//===============================厂家
+	ys	=	ys+DisplayCodeFtSize;
+	ST7789V_PrintfBK(DisplayStartX,ys,DisplayVenderFtSize,DisplayVenderBkColor,DisplayVenderFtColor,"厂家:特斯拉中国 - Tesla");  //LCD显示测试Printf
+	//===============================规格
+	ys	=	ys+DisplayVenderFtSize;
+	ST7789V_PrintfBK(DisplayStartX,ys,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,"规格:Red 1000x40000000cm");  //LCD显示测试Printf
+	//===============================数量
+	xs	=	ST7789V_V-DisplayNumFtSize*2;
+	ys	=	ys+DisplaySpecFtSize-DisplayNumFtSize;
+	ST7789V_PrintfBK(xs,ys,DisplayNumFtSize,DisplayNumBkColor,DisplayNumFtColor,"13包");  //LCD显示测试Printf
+	
+	//-----------------------------------画上边边线
+//	ST7789V_Fill(0,0,320,y+2,0x0000);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+//	
+//	y+=2;
+//	ST7789V_Fill(0,y-1,320,y+16,0x865D);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+//	ST7789V_PrintfBK(x,y,16,0x865D,0x0000,"层号:%0.2d  位号:%0.2d         %d/99::%d/99页",sAmpLcd.Addr.Lay%100,sAmpLcd.Addr.Seg%100,testnum%100,(testnum+1)%100);  //LCD显示测试Printf
+//	ST7789V_Fill(x,y+16,320,y+18,0x8450);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+//	
+//	y+=16+3;
+//	ST7789V_Fill(ST7789V_V-32*2,y+32+16+4,ST7789V_V,y+32+16+4+32,0xFFFF);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+//	ST7789V_PrintfBK(ST7789V_V-32*2,y+32+16+4,32,0xFFFF,0xFB00,"%0.2d",testnum%100);  //LCD显示测试Printf
+//	ST7789V_PrintfBK(ST7789V_V-32*1,y+31*2,16,0xFFFF,0xFB00,"盒");  //LCD显示测试Printf
+////	y+=32;
+//	font=24;
+//	ST7789V_PrintfBK(x,y,font,0xFFFF,0x054A,"测试物品名称1测试物品名称1",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+//	y+=font;
+//	ST7789V_PrintfBK(x,y,font,0xFFFF,0x054A,"一次性套管穿刺器一次性套管",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+//	y+=font+2;
+//	font=16;
+//	ST7789V_Printf(x,y,font,0x5ACA,"Ⅲ型Ф10-MBQ2019FF1299-ACTD-MT",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+//	ST7789V_Printf(x,y+16,font,0x5ACA,"#Яβπポほ㈣019FF1299-ACTD-M",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+//	y+=font+2;
+//	
+//	//-----------------------------------画中线
+
+//	y	=	(ST7789V_H)/2-4+xysbac;
+//	ST7789V_Fill(0,y,320,y+8,0x8450);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+//	y+=10;
+//	
+//	ST7789V_Fill(ST7789V_V-32*2,y+32+16+4,ST7789V_V,y+32+16+4+32,0xFFFF);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+//	ST7789V_PrintfBK(ST7789V_V-32*2,y+32+16+4,32,0xFFFF,0xFB00,"%0.2d",testnum+1%100);  //LCD显示测试Printf
+//	ST7789V_PrintfBK(ST7789V_V-32*1,y+31*2,16,0xFFFF,0xFB00,"瓶");  //LCD显示测试Printf
+////	y+=32;
+//	font=24;
+//	ST7789V_PrintfBK(x,y,font,0xFFFF,0x054A,"测试物品名称2测试物品名称2",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+//	y+=font;
+//	ST7789V_PrintfBK(x,y,font,0xFFFF,0x054A,"（套管穿刺针）        ",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+//	y+=font+2;
+//	font=16;
+//	ST7789V_Printf(x,y,font,0x5ACA,"Ⅲ型Ф10-MBQ2019FF1299-ACTD-MT",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+//	y+=16;
+//	ST7789V_Printf(x,y,font,0x5ACA,"#Яβπポほ㈣019FF1299-ACTD-M",sAmpLcd.Addr.Lay,sAmpLcd.Addr.Seg);  //LCD显示测试Printf
+//	y+=16;
+//	y+=16;
+//	ST7789V_Fill(0,y,320,ST7789V_H,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+
+//	testnum+=1;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void DisplayManaModel1(void)
+{
+	unsigned char i	=	0;
+	unsigned char len=0;
+	unsigned char num=0;
+	unsigned char* str;
+	//unsigned char  FontSize	=	0;
+	
+	unsigned short xs=0;
+	unsigned short ys=0;
+	unsigned short xe=0;
+	unsigned short ye=0;
+	unsigned short yebac=0;
+
+	if(0>=sAmpLcd.ReceivedManaCount)	//没收到数据显示位置号
+	{
+		unsigned char TempLay	=	sAmpLcd.Addr.Lay%100;
+		unsigned char TempSeg	=	sAmpLcd.Addr.Seg%100;
+		ST7789V_PrintfBK(68,ST7789V_H/2-DisplayNumFtSize/2,DisplayNumFtSize,DisplayNumBkColor,DisplayNumFtColor,"层%0.2d    位%0.2d",TempLay,TempSeg);  //LCD显示测试Printf
+		return;
+	}
+	if(0==sAmpLcd.DisplaySerial)
+	{
+		sAmpLcd.DisplaySerial=1;
+	}
+	if(sAmpLcd.DisplaySerial>sAmpLcd.ReceivedManaCount)
+	{
+		sAmpLcd.DisplaySerial=1;
+	}
+	
+	//=====================================清空区域:名称
+	xs	=	0;
+	xe	=	ST7789V_V;
+	ys	=	DisplayTopStartY;
+	ye	=	DisplayBotStartY;
+	
+	ST7789V_Fill(xs,ys,xe,ye,DisplayNameBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)	
+	
+	//===============================顶部填充
+	ye=DisplayTopStartY;	
+	ST7789V_Fill(0,0,ST7789V_V,ye,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	//===============================中间填充
+	//ys=DisplayTopStartY+DisplayNameFtSize*2+DisplaySpecFtSize*3;
+	ys	=	(DisplayBotStartY-DisplayTopStartY)/2+DisplayTopStartY;
+	ST7789V_Fill(0,ys-2,ST7789V_V,ys+2,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	//===============================底部填充
+	ys	=	DisplayBotStartY;
+	ye	=	DisplayBotEndY;
+	ST7789V_Fill(0,ys,ST7789V_V,ST7789V_H,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	ys=DisplayTopStartY+1;
+	
+	DisplayStart:
+	//-------------------------------第一行
+	for(i=0;i<sAmpLcd.ReceivedManaCount;i++)
+	{
+		if(sAmpLcd.DisplaySerial==sAmpLcd.DspData[i].Serial)
+		{
+			yebac	=	ys;
+			
+			
+			
+			//=====================================数量
+			num	=	sAmpLcd.DspData[i].Num;
+			ST7789V_ShowChar4836(248,ys,DisplayNumBkColor,DisplayNumFtColor,code_ascii_4836[num/10]);	 	//高通字库测试程序
+			ST7789V_ShowChar4836(284,ys,DisplayNumBkColor,DisplayNumFtColor,code_ascii_4836[num%10]);	  //高通字库测试程序
+			
+			//=====================================显示名称：10个字(20字节)一行						
+			
+			//-----------------------------------------第一行
+			xs	=	0;
+			str	=	sAmpLcd.DspData[i].String;
+			len	=	sAmpLcd.DspData[i].NameLen;		//字节数
+			num	=	(ST7789V_V-36*2)/(DisplayNameFtSize/2);			//一行能够显示的数量
+			if(len>num)
+			{
+				ST7789V_ShowStringBK(xs,ys,DisplayNameFtSize,DisplayNameBkColor,DisplayNameFtColor,num,str);				
+				len-=num;
+				str=&str[num];
+				ys+=DisplayNameFtSize;
+			}			
+			//-----------------------------------------第二行
+			if(len>0)
+			{
+				if(len>num)
+				{
+					num=num;
+				}
+				else
+				{
+					num=len;
+				}
+				ST7789V_ShowStringBK(xs,ys,DisplayNameFtSize,DisplayNameBkColor,DisplayNameFtColor,num,str);
+				ys+=DisplayNameFtSize;
+			}
+			//=====================================显示序号
+			
+			ys=yebac+DisplayNameFtSize*2+DisplaySpecFtSize*1;
+			
+			xs	=	ST7789V_V-DisplaySerialFtSize*3;
+			ST7789V_PrintfBK(xs,ys,DisplaySerialFtSize,DisplayNameBkColor,DisplayNameFtColor,"%0.2d/%0.2d",sAmpLcd.DisplaySerial,sAmpLcd.ReceivedManaCount);
+			
+			//=====================================显示规格
+			
+			//-----------------------------------------第一行
+			xs	=	0;
+			xe	=	ST7789V_V-DisplaySerialFtSize*3;
+			ys=yebac+DisplayNameFtSize*2+1;
+			
+			len	=	sAmpLcd.DspData[i].NameLen;			//字节数
+			str	=	&sAmpLcd.DspData[i].String[len];
+			len	=	sAmpLcd.DspData[i].SpecLen;
+			
+			num	=	(ST7789V_V-DisplaySerialFtSize*3)/(DisplaySpecFtSize/2);			//一行能够显示的数量
+			if(len>num)
+			{
+				ST7789V_ShowStringBK(0,ys,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,num,str);
+				ys+=DisplaySpecFtSize;
+				len-=num;
+				str=&str[num];
+			}
+			//-----------------------------------------第二行
+			if(len>0)
+			{
+				if(len>num)
+				{
+					num=num;
+				}
+				else
+				{
+					num=len;
+				}
+				ST7789V_ShowStringBK(0,ys,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,num,str);
+			}				
+			sAmpLcd.DisplaySerial+=1;			
+			break;
+		}		
+	}
+	
+	if(ys<ST7789V_H/2)
+	{
+		ys	=	(DisplayBotStartY-DisplayTopStartY)/2+DisplayTopStartY+3;
+		goto DisplayStart;
+	}
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void DisplayManaModel2(void)
+{
+	unsigned char i	=	0;
+	unsigned char len=0;
+	unsigned char num=0;
+	unsigned char* str;
+	
+	unsigned char TempLay	=	sAmpLcd.Addr.Lay%100;
+	unsigned char TempSeg	=	sAmpLcd.Addr.Seg%100;
+
+	
+	unsigned short xs=0;
+	unsigned short ys=0;
+	unsigned short xe=0;
+	unsigned short ye=0;
+	unsigned short yebac=0;
+	
+
+	if(0>=sAmpLcd.ReceivedManaCount)	//没收到数据显示位置号
+	{		
+		ST7789V_PrintfBK(68,ST7789V_H/2-DisplayNumFtSize/2,DisplayNumFtSize,DisplayNumBkColor,DisplayNumFtColor,"层%0.2d    位%0.2d",TempLay,TempSeg);  //LCD显示测试Printf
+		return;
+	}
+	if(0==sAmpLcd.DisplaySerial)
+	{
+		sAmpLcd.DisplaySerial=1;
+	}
+	if(sAmpLcd.DisplaySerial>sAmpLcd.ReceivedManaCount)
+	{
+		sAmpLcd.DisplaySerial=1;
+	}
+	
+	//=====================================清空区域:名称
+	xs	=	0;
+	xe	=	ST7789V_V;
+	ys	=	DisplayTopStartY;
+	ye	=	DisplayBotStartY;
+	
+	ST7789V_Fill(xs,ys,xe,ye,DisplayNameBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)	
+	
+	//===============================顶部填充
+	ye=DisplayTopStartY;	
+	ST7789V_Fill(0,0,ST7789V_V,ye,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	//===============================中间分隔线填充
+	ys	=	(DisplayBotStartY-DisplayTopStartY-DisplayTitleSize-DisplaySeparWidth)/2+DisplayTopStartY+DisplayTitleSize;
+	ST7789V_Fill(0,ys-DisplaySeparWidth,ST7789V_V,ys+DisplaySeparWidth,DisplaySeparBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	//===============================底部填充
+	ys	=	DisplayBotStartY;
+	ye	=	DisplayBotEndY;
+	ST7789V_Fill(0,ys,ST7789V_V,ST7789V_H,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	//===============================标题填充
+	ys	=	DisplayTopStartY;
+	ye	=	DisplayTopStartY+DisplayTitleSize;
+	ST7789V_Fill(0,ys,ST7789V_V,ye,DisplayTitleBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	//===============================标题分隔线填充
+	ys	=	DisplayTopStartY+DisplayTitleSize;
+	ye	=	ys+DisplaySeparWidth;
+	ST7789V_Fill(0,ys,ST7789V_V,ye,DisplaySeparBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	//===============================显示地址
+	str=(unsigned char*)&sAmpLcd.Addr;
+	ST7789V_PrintfBK(1,DisplayTopStartY,16,DisplayTitleBkColor,DisplayTitleFtColor,"层号:%0.2d 位号:%0.2d",TempLay,TempSeg);  //LCD显示测试Printf
+	//===============================显示起始
+	ys=DisplayTopStartY+DisplayTitleSize+DisplaySeparWidth+1;
+	
+	DisplayStart:
+	//-------------------------------第一行
+	for(i=0;i<sAmpLcd.ReceivedManaCount;i++)
+	{
+		if(sAmpLcd.DisplaySerial==sAmpLcd.DspData[i].Serial)
+		{
+			unsigned char Sum			=	sAmpLcd.ReceivedManaCount;
+			unsigned char Serial	=	sAmpLcd.DisplaySerial;
+			yebac	=	ys;			
+			
+			//=====================================显示序号
+			if(ys<DisplayTopStartY*4)
+			{
+				ST7789V_PrintfBK(ST7789V_V-DisplayTitleSize*4,DisplayTopStartY,DisplayTitleSize,DisplayTitleBkColor,DisplayTitleFtColor,"%0.2d/%0.2d页",Serial,Sum);  //LCD显示测试Printf
+			}
+			else
+			{
+				ST7789V_PrintfBK(ST7789V_V-DisplayTitleSize*8,DisplayTopStartY,DisplayTitleSize,DisplayTitleBkColor,DisplayTitleFtColor,"%0.2d/%0.2d页 %0.2d/%0.2d页",Serial-1,Sum,Serial,Sum);  //LCD显示测试Printf
+			}
+			//=====================================显示数量
+			num	=	sAmpLcd.DspData[i].Num;
+			xs	=	ST7789V_V-DisplayNumFtSize*2;
+			ys	=	yebac+DisplayNameFtSize*2;
+			
+			ST7789V_PrintfBK(xs,ys,DisplayNumFtSize,DisplayNumBkColor,DisplayNumFtColor,"%0.2d",num);
+			xs+=DisplayNumFtSize;
+			ST7789V_PrintfBK(xs,ys,32,DisplayNumBkColor,DisplayNumFtColor,"瓶");
+			//=====================================显示名称：10个字(20字节)一行			
+			xs	=	0;
+			ys	=	yebac;
+			str	=	sAmpLcd.DspData[i].String;
+			len	=	sAmpLcd.DspData[i].NameLen;		//字节数
+			num	=	(ST7789V_V)/(DisplayNameFtSize/2);			//一行能够显示的数量
+			if(len>2*num)
+			{
+				num=2*num;
+			}
+			else
+			{
+				num=len;
+			}
+			ST7789V_ShowStringBK(xs,ys,DisplayNameFtSize,DisplayNameBkColor,DisplayNameFtColor,num,str);
+			ys+=DisplayNameFtSize*2;
+			//=====================================显示规格			
+			//-----------------------------------------第一行
+			xs	=	0;
+			xe	=	ST7789V_V-DisplaySerialFtSize*3;
+			ys=yebac+DisplayNameFtSize*2+1;
+			
+			len	=	sAmpLcd.DspData[i].NameLen;			//字节数
+			str	=	&sAmpLcd.DspData[i].String[len];
+			len	=	sAmpLcd.DspData[i].SpecLen;
+			
+			num	=	(ST7789V_V-DisplayNumFtSize/2*5)/(DisplaySpecFtSize/2);			//一行能够显示的数量
+			if(len>num)
+			{
+				ST7789V_ShowStringBK(0,ys,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,num,str);
+				ys+=DisplaySpecFtSize;
+				len-=num;
+				str=&str[num];
+			}
+			//-----------------------------------------第二行
+			if(len>0)
+			{
+				if(len>num)
+				{
+					num=num;
+				}
+				else
+				{
+					num=len;
+				}
+				ST7789V_ShowStringBK(0,ys,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,num,str);
+			}				
+			sAmpLcd.DisplaySerial+=1;			
+			break;
+		}		
+	}
+	
+	if(ys<ST7789V_H/2)
+	{
+		ys	=	(DisplayBotStartY-DisplayTopStartY-DisplayTitleSize-DisplaySeparWidth)/2+DisplayTopStartY+DisplayTitleSize+DisplaySeparWidth*2-1;
+		//ys	=	(DisplayBotStartY-DisplayTopStartY-DisplaySeparWidth)/2+DisplayTopStartY+3;
+		goto DisplayStart;
+	}
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void DisplayManaModel3(void)
+{
+	unsigned char i	=	0;
+	unsigned char len=0;
+	unsigned char num=0;
+	unsigned char* str;
+	
+	unsigned char TempLay	=	sAmpLcd.Addr.Lay%100;
+	unsigned char TempSeg	=	sAmpLcd.Addr.Seg%100;
+
+	
+	unsigned short xs=0;
+	unsigned short ys=0;
+	unsigned short xe=0;
+	unsigned short ye=0;
+	unsigned short yebac=0;
+	
+
+	if(0>=sAmpLcd.ReceivedManaCount)	//没收到数据显示位置号
+	{		
+		ST7789V_PrintfBK(68,ST7789V_H/2-DisplayNumFtSize/2,DisplayNumFtSize,DisplayNumBkColor,DisplayNumFtColor,"层%0.2d    位%0.2d",TempLay,TempSeg);  //LCD显示测试Printf
+		return;
+	}
+	if(0==sAmpLcd.DisplaySerial)
+	{
+		sAmpLcd.DisplaySerial=1;
+	}
+	if(sAmpLcd.DisplaySerial>sAmpLcd.ReceivedManaCount)
+	{
+		sAmpLcd.DisplaySerial=1;
+	}
+	
+	//=====================================清空区域:名称
+	xs	=	0;
+	xe	=	ST7789V_V;
+	ys	=	DisplayTopStartY;
+	ye	=	DisplayBotStartY;
+	
+	ST7789V_Fill(xs,ys,xe,ye,DisplayNameBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)	
+	
+	//===============================顶部填充
+	ye=DisplayTopStartY;	
+	ST7789V_Fill(0,0,ST7789V_V,ye,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+//	//===============================中间分隔线填充
+//	ys	=	(DisplayBotStartY-DisplayTopStartY-DisplayTitleSize-DisplaySeparWidth)/2+DisplayTopStartY+DisplayTitleSize;
+//	ST7789V_Fill(0,ys-DisplaySeparWidth,ST7789V_V,ys+DisplaySeparWidth,DisplaySeparBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	//===============================底部填充
+	ys	=	DisplayBotStartY;
+	ye	=	DisplayBotEndY;
+	ST7789V_Fill(0,ys,ST7789V_V,ST7789V_H,LCD565_BLACK);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	//===============================标题填充
+	ys	=	DisplayTopStartY;
+	ye	=	DisplayTopStartY+DisplayTitleSize;
+	ST7789V_Fill(0,ys,ST7789V_V,ye,DisplayTitleBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	//===============================标题分隔线填充
+	ys	=	DisplayTopStartY+DisplayTitleSize;
+	ye	=	ys+DisplaySeparWidth;
+	ST7789V_Fill(0,ys,ST7789V_V,ye,DisplaySeparBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	//===============================显示地址
+	str=(unsigned char*)&sAmpLcd.Addr;
+	ST7789V_PrintfBK(1,DisplayTopStartY,DisplayTitleSize,DisplayTitleBkColor,DisplayTitleFtColor,"%0.2d::%0.2d",TempLay,TempSeg);  //LCD显示测试Printf
+	//===============================显示起始
+	ys=DisplayTopStartY+DisplayTitleSize+DisplaySeparWidth+1;
+	
+	DisplayStart:
+	//-------------------------------第一行
+	for(i=0;i<sAmpLcd.ReceivedManaCount;i++)
+	{
+		if(sAmpLcd.DisplaySerial==sAmpLcd.DspData[i].Serial)
+		{
+			unsigned char Sum			=	sAmpLcd.ReceivedManaCount;
+			unsigned char Serial	=	sAmpLcd.DisplaySerial;
+			yebac	=	ys;			
+			
+			//=====================================显示序号
+			if(ys<DisplayTopStartY*4)
+			{
+				ST7789V_PrintfBK(ST7789V_V-DisplayTitleSize*4,DisplayTopStartY,DisplayTitleSize,DisplayTitleBkColor,DisplayTitleFtColor,"%0.2d/%0.2d页",Serial,Sum);  //LCD显示测试Printf
+			}
+			//=====================================显示数量
+			num	=	sAmpLcd.DspData[i].Num;
+			xs	=	ST7789V_V-DisplayNumFtSize*2;
+			ys	=	yebac+DisplayNameFtSize*2;
+			
+			ST7789V_PrintfBK(xs,ys,DisplayNumFtSize,DisplayNumBkColor,DisplayNumFtColor,"%0.2d",num);
+			xs+=DisplayNumFtSize;
+			ST7789V_PrintfBK(xs,ys,32,DisplayNumBkColor,DisplayNumFtColor,"瓶");
+			//=====================================显示名称：10个字(20字节)一行			
+			//-----------------------------------------第一行
+			xs	=	0;
+			ys	=	yebac;
+			str	=	sAmpLcd.DspData[i].String;
+			len	=	sAmpLcd.DspData[i].NameLen;		//字节数
+			num	=	(ST7789V_V)/(DisplayNameFtSize/2);			//一行能够显示的数量
+			if(len>num)
+			{
+				ST7789V_ShowStringBK(xs,ys,DisplayNameFtSize,DisplayNameBkColor,DisplayNameFtColor,num,str);				
+				len-=num;
+				str=&str[num];
+				ys+=DisplayNameFtSize;
+			}			
+			//-----------------------------------------第二行
+			if(len>0)
+			{
+				if(len>num)
+				{
+					num=num;
+				}
+				else
+				{
+					num=len;
+				}
+				ST7789V_ShowStringBK(xs,ys,DisplayNameFtSize,DisplayNameBkColor,DisplayNameFtColor,num,str);
+				ys+=DisplayNameFtSize;
+			}			
+			
+			//=====================================显示规格			
+			//-----------------------------------------第一行
+			xs	=	0;
+			xe	=	ST7789V_V-DisplaySerialFtSize*3;
+			ys=yebac+DisplayNameFtSize*2+1;
+			
+			len	=	sAmpLcd.DspData[i].NameLen;			//字节数
+			str	=	&sAmpLcd.DspData[i].String[len];
+			len	=	sAmpLcd.DspData[i].SpecLen;
+			
+			num	=	(ST7789V_V-DisplayNumFtSize/2*5)/(DisplaySpecFtSize/2);			//一行能够显示的数量
+			if(len>num)
+			{
+				ST7789V_ShowStringBK(0,ys,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,num,str);
+				ys+=DisplaySpecFtSize;
+				len-=num;
+				str=&str[num];
+			}
+			//-----------------------------------------第二行
+			if(len>0)
+			{
+				if(len>num)
+				{
+					num=num;
+				}
+				else
+				{
+					num=len;
+				}
+				ST7789V_ShowStringBK(0,ys,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,num,str);
+			}				
+			sAmpLcd.DisplaySerial+=1;			
+			break;
+		}		
+	}
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void DisplayStyle(void)
+{
+	unsigned char i	=	0;
+	unsigned char len=0;
+	unsigned char num=0;
+	unsigned char* str;
+	//-----------------------------------画中线
+	for(i=118;i<122;i++)
+	{
+		ST7789V_DrawLine(0,i,320,i,LCD565_BLACK);						//AB 两个坐标画一条直线
+	}
+	
+	
+	if(0>=sAmpLcd.ReceivedManaCount)
+	{
+		return;
+	}
+	if(0==sAmpLcd.DisplaySerial)
+	{
+		sAmpLcd.DisplaySerial=1;
+	}
 	if(sAmpLcd.DisplaySerial>=sAmpLcd.ReceivedManaCount)
 	{
 		sAmpLcd.DisplaySerial=1;
 	}
 	//-------------------------------第一行
-	for(i=1;i<sAmpLcd.ReceivedManaCount;i++)
+	for(i=0;i<sAmpLcd.ReceivedManaCount;i++)
 	{
-		if(i==sAmpLcd.DspData[i].Serial)
+		if(sAmpLcd.DisplaySerial==sAmpLcd.DspData[i].Serial)
 		{
 			//-----------------------------------------显示名称
 			str	=	sAmpLcd.DspData[i].String;
 			len	=	sAmpLcd.DspData[i].NameLen;			
-			if(len>10)
+			if(len*24/2>320-75)
 			{
-				ST7789V_ShowString(0,12,24,sAmpLcd.DspData[i].NameColor,10,str);
-				ST7789V_ShowString(0,36,24,sAmpLcd.DspData[i].NameColor,len-10,&str[10]);
+				num=20;
+				
+				ST7789V_ShowString(0,12,24,sAmpLcd.DspData[i].NameColor,num,str);
+				if(len/2>20)
+				{
+					num=20;
+				}
+				else
+				{
+					num=len/2-20;
+				}
+				ST7789V_ShowString(0,36,24,sAmpLcd.DspData[i].NameColor,num,&str[20]);
 			}
-			else
+			else if(len>0)
 			{
 				ST7789V_ShowString(0,12,24,sAmpLcd.DspData[i].NameColor,len,sAmpLcd.DspData[i].String);
 			}
 			//-----------------------------------------显示规格
 			str	=	&sAmpLcd.DspData[i].String[len];
 			len	=	sAmpLcd.DspData[i].SpecLen;
-			if(len>10)
+			if(len*16/2>320-75)
 			{
 				ST7789V_ShowString(0,62,16,sAmpLcd.DspData[i].SpecColor,10,str);  //LCD显示测试Printf
 				ST7789V_ShowString(0,86,16,sAmpLcd.DspData[i].SpecColor,10,&str[10]);  //LCD显示测试Printf
 			}
+			else if(len>0)
+			{
+				ST7789V_ShowString(0,62,16,sAmpLcd.DspData[i].SpecColor,len,str);
+			}
 			//-----------------------------------------数量
 			num	=	sAmpLcd.DspData[i].Num;
-			ST7789V_ShowChar4836(237,12,LCD565_RED,code_ascii_4836[num/10]);	  	//高通字库测试程序
-			ST7789V_ShowChar4836(273,12,LCD565_GREEN,code_ascii_4836[num%10]);	  //高通字库测试程序
+//			ST7789V_ShowChar4836(237,12,LCD565_RED,code_ascii_4836[num/10]);	  	//高通字库测试程序
+//			ST7789V_ShowChar4836(273,12,LCD565_GREEN,code_ascii_4836[num%10]);	  //高通字库测试程序
 			
 			sAmpLcd.DisplaySerial+=1;
 		}
@@ -451,10 +1164,9 @@ void DisplayMana(void)
 		if(i==sAmpLcd.DspData[i].Serial)
 		{
 			
-			sAmpLcd.DisplaySerial+=1;
+			//sAmpLcd.DisplaySerial+=1;
 		}
 	}
-
 }
 /*******************************************************************************
 *函数名			:	function
@@ -467,8 +1179,12 @@ void DisplayMana(void)
 *******************************************************************************/
 void SetBackColor(unsigned short BKColor)
 {
-	STM32_FLASH_Write(BackColorStartAddr,(unsigned short*)&BKColor,1);						//从指定地址写入指定长度的数据
-	BKColor	=	GetBackColor();
+	if(sAmpLcd.LcdPort.ST7789VBColor	!=	BKColor)
+	{
+		STM32_FLASH_Write(BackColorStartAddr,(unsigned short*)&BKColor,1);						//从指定地址写入指定长度的数据
+		BKColor	=	GetBackColor();
+		sAmpLcd.LcdPort.ST7789VBColor=BKColor;
+	}	
 	ST7789V_Clean(BKColor);	//清除屏幕函数
 }
 /*******************************************************************************
@@ -603,5 +1319,38 @@ void HW_Configuration(void)
   sAmpLcd.Addr.Lay=(temp>>4)&0X0F;  	//层地址
   sAmpLcd.Addr.Seg=temp&0x0F;      	//位地址
 }
-
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void AMPLCDV11GUI(void)
+{
+	unsigned short xs=0;
+	unsigned short ys=0;
+	unsigned short xe=ST7789V_V-1;
+	unsigned short ye=DisplayTopStartY-1;
+	
+	ST7789V_Clean(DisplayClrColor);
+	ST7789V_Fill(xs,ys,xe,ye,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	xs	=	0;
+	ys	=	ST7789V_H-DisplayTopStartY+2;
+	xe	=	ST7789V_V-1;
+	ye	=	ST7789V_H-1;
+	
+	ST7789V_Fill(xs,ys,xe,ye,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+	xs	=	0;
+	ys	=	ST7789V_H/2-2;
+	xe	=	ST7789V_V-1;
+	ye	=	ST7789V_H/2+2;
+	
+	ST7789V_Fill(xs,ys,xe,ye,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+	
+}
 #endif

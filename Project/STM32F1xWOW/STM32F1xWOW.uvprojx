@@ -1313,6 +1313,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -2869,6 +2884,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -4433,6 +4463,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -5989,6 +6034,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -7553,6 +7613,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -9109,6 +9184,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -10673,6 +10763,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -12229,6 +12334,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -13793,6 +13913,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -15349,6 +15484,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -16913,6 +17063,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -18469,6 +18634,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -20033,6 +20213,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -21589,6 +21784,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -23153,6 +23363,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -24709,6 +24934,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -26273,6 +26513,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -27829,6 +28084,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -29393,6 +29663,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -30949,6 +31234,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -32513,6 +32813,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -34069,6 +34384,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -35633,6 +35963,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -37189,6 +37534,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -38753,6 +39113,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -40309,6 +40684,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -41873,6 +42263,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -43429,6 +43834,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -44993,6 +45413,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -46549,6 +46984,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -48113,6 +48563,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -49669,6 +50134,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -51233,6 +51713,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -51490,6 +51985,7 @@
       <TargetName>MmcSDTest</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pArmCC>5060020::V5.06 (build 20)::ARMCC</pArmCC>
       <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
@@ -51630,7 +52126,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>6</TargetSelection>
+          <TargetSelection>3</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -52155,6 +52651,70 @@
         </Group>
         <Group>
           <GroupName>APP/AMP</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>AMP_CAB.C</FileName>
@@ -52352,6 +52912,70 @@
         </Group>
         <Group>
           <GroupName>Lib/WOW/USB</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>usb_core.c</FileName>
@@ -52457,6 +53081,53 @@
               <FileName>STM32_I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_I2C.C</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>2</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>0</vShortEn>
+                    <vShortWch>0</vShortWch>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
             </File>
             <File>
               <FileName>STM32_NVIC.C</FileName>
@@ -52537,6 +53208,70 @@
         </Group>
         <Group>
           <GroupName>Driver/WOW/USB</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>hw_config.c</FileName>
@@ -52793,6 +53528,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -52879,6 +53629,53 @@
               <FileName>AMP_PHY.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\AMP_PHY.C</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>2</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>0</vShortEn>
+                    <vShortWch>0</vShortWch>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
             </File>
             <File>
               <FileName>IIC.C</FileName>
@@ -52929,6 +53726,70 @@
         </Group>
         <Group>
           <GroupName>VL53L0X_1.0.2/core</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>vl53l0x_api.c</FileName>
@@ -52959,6 +53820,70 @@
         </Group>
         <Group>
           <GroupName>VL53L0X_1.0.2/platform</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>vl53l0x_i2c_win_serial_comms.c</FileName>
@@ -53050,6 +53975,7 @@
       <TargetName>FSMCTest</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pArmCC>5060020::V5.06 (build 20)::ARMCC</pArmCC>
       <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
@@ -53190,7 +54116,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>6</TargetSelection>
+          <TargetSelection>3</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -53715,6 +54641,70 @@
         </Group>
         <Group>
           <GroupName>APP/AMP</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>AMP_CAB.C</FileName>
@@ -54081,6 +55071,53 @@
               <FileName>STM32_I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_I2C.C</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>2</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>0</vShortEn>
+                    <vShortWch>0</vShortWch>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
             </File>
             <File>
               <FileName>STM32_NVIC.C</FileName>
@@ -54481,6 +55518,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -54567,6 +55619,53 @@
               <FileName>AMP_PHY.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\AMP_PHY.C</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>2</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>0</vShortEn>
+                    <vShortWch>0</vShortWch>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
             </File>
             <File>
               <FileName>IIC.C</FileName>
@@ -54617,6 +55716,70 @@
         </Group>
         <Group>
           <GroupName>VL53L0X_1.0.2/core</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>vl53l0x_api.c</FileName>
@@ -54647,6 +55810,70 @@
         </Group>
         <Group>
           <GroupName>VL53L0X_1.0.2/platform</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>vl53l0x_i2c_win_serial_comms.c</FileName>
@@ -54738,6 +55965,7 @@
       <TargetName>AMPTest</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pArmCC>5060020::V5.06 (build 20)::ARMCC</pArmCC>
       <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
@@ -54878,7 +56106,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>6</TargetSelection>
+          <TargetSelection>3</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -55403,6 +56631,70 @@
         </Group>
         <Group>
           <GroupName>APP/AMP</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>AMP_CAB.C</FileName>
@@ -55769,6 +57061,53 @@
               <FileName>STM32_I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_I2C.C</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>2</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>0</vShortEn>
+                    <vShortWch>0</vShortWch>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
             </File>
             <File>
               <FileName>STM32_NVIC.C</FileName>
@@ -56169,6 +57508,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -56255,6 +57609,53 @@
               <FileName>AMP_PHY.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\AMP_PHY.C</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>2</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>0</vShortEn>
+                    <vShortWch>0</vShortWch>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
             </File>
             <File>
               <FileName>IIC.C</FileName>
@@ -56305,6 +57706,70 @@
         </Group>
         <Group>
           <GroupName>VL53L0X_1.0.2/core</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>vl53l0x_api.c</FileName>
@@ -56335,6 +57800,70 @@
         </Group>
         <Group>
           <GroupName>VL53L0X_1.0.2/platform</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>vl53l0x_i2c_win_serial_comms.c</FileName>
@@ -56426,6 +57955,7 @@
       <TargetName>USBDEMO</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pArmCC>5060020::V5.06 (build 20)::ARMCC</pArmCC>
       <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
@@ -56566,7 +58096,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>6</TargetSelection>
+          <TargetSelection>3</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -57091,6 +58621,70 @@
         </Group>
         <Group>
           <GroupName>APP/AMP</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>AMP_CAB.C</FileName>
@@ -57393,6 +58987,53 @@
               <FileName>STM32_I2C.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\WOW\SCR\STM32_I2C.C</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>2</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>0</vShortEn>
+                    <vShortWch>0</vShortWch>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
             </File>
             <File>
               <FileName>STM32_NVIC.C</FileName>
@@ -57823,6 +59464,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -57909,6 +59565,53 @@
               <FileName>AMP_PHY.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Protocol\AMP_PHY.C</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>2</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>0</vShortEn>
+                    <vShortWch>0</vShortWch>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
             </File>
             <File>
               <FileName>IIC.C</FileName>
@@ -57959,6 +59662,70 @@
         </Group>
         <Group>
           <GroupName>VL53L0X_1.0.2/core</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>vl53l0x_api.c</FileName>
@@ -57989,6 +59756,70 @@
         </Group>
         <Group>
           <GroupName>VL53L0X_1.0.2/platform</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
           <Files>
             <File>
               <FileName>vl53l0x_i2c_win_serial_comms.c</FileName>
@@ -59554,6 +61385,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -61562,6 +63408,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -63425,6 +65286,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -65156,6 +67032,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -67083,6 +68974,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -69057,6 +70963,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -70852,6 +72773,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -72766,6 +74702,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -73151,6 +75102,7 @@
       <TargetName>AMP01V11</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pArmCC>5060020::V5.06 (build 20)::ARMCC</pArmCC>
       <pCCUsed>5060020::V5.06 (build 20)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
@@ -73291,7 +75243,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>6</TargetSelection>
+          <TargetSelection>3</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -74676,6 +76628,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Driver/Tool</GroupName>
           <Files>
             <File>
@@ -75425,7 +77392,7 @@
               <MiscControls></MiscControls>
               <Define>AMPLCDV11</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Library\Startup\STM32F10x;..\..\Library\C;..\..\Library\ARM\Include;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Driver\Protocol;..\..\Examples\DEMO\include;..\..\Examples\WOW;.\main;..\..\Driver\Tool;..\..\Driver\FatFs\source</IncludePath>
+              <IncludePath>..\..\Library\STM32F10x_StdPeriph_Driver\INC;..\..\Library\Startup\STM32F10x;..\..\Library\C;..\..\Library\ARM\Include;..\..\Driver\WOW\INC;..\..\Driver\Components\INC;..\..\Driver\Protocol;..\..\Examples\DEMO\include;..\..\Examples\WOW;.\main;..\..\Driver\Tool;..\..\Driver\FatFs\source;..\..\Driver\Lib\GT32L32M0180</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -76583,6 +78550,21 @@
               <FileName>ST7789V.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Driver\Components\SCR\ST7789V.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drive/Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>GT32L32M0180.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.lib</FilePath>
+            </File>
+            <File>
+              <FileName>GT32L32M0180.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Driver\Lib\GT32L32M0180\GT32L32M0180.h</FilePath>
             </File>
           </Files>
         </Group>

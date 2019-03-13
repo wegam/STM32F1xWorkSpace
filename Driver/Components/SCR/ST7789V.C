@@ -127,6 +127,44 @@ unsigned int ST7789V_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...
 	return InputDataSize;
 }
 /*******************************************************************************
+*函数名		:	LCD_ShowString
+*功能描述	:	显示字符串高通字库
+*输入			: x,y:起点坐标
+						*p:字符串起始地址
+						用16字体
+*输出			:	无
+*返回值		:	无
+*例程			:
+*******************************************************************************/
+unsigned int ST7789V_PrintfBK(u16 x,u16 y,u8 font,u16 BKColor,u16 PenColor,const char *format,...)				//后边的省略号就是可变参数
+{ 
+	#include	"stdarg.h"		//用于获取不确定个数的参数
+	#include	"stdlib.h"		//malloc动态申请内存空间
+//		va_list ap; 										//VA_LIST 是在C语言中解决变参问题的一组宏，所在头文件：#include <stdarg.h>,用于获取不确定个数的参数
+//		static char string[ 256 ];			//定义数组，
+//  	va_start( ap, format );
+//		vsprintf( string , format, ap );    
+//		va_end( ap );
+	
+	//char	ST7789VStringBuffer[256]={0};			//记录format内码
+	//1)**********获取数据宽度
+  u16 InputDataSize=0;
+	//3)**********vArgList为定义的一个指向可变参数的变量，va_list以及下边要用到的va_start,va_end都是是在定义，可变参数函数中必须要用到宏， 在stdarg.h头文件中定义
+	va_list vArgList; 
+	//5)**********初始化vArgList的函数，使其指向可变参数的第一个参数，format是可变参数的前一个参数
+	va_start(vArgList, format);
+	//6)**********正常情况下返回生成字串的长度(除去\0),错误情况返回负值
+	InputDataSize =vsnprintf(ST7789VStringBuffer,InputDataSize,format,vArgList);
+	//7)**********结束可变参数的获取
+	va_end(vArgList);                                      		
+  if((8!=font)&&(12!=font)&&(16!=font)&&(24!=font)&&(32!=font))
+  {
+    font  = 32;
+  }
+	ST7789V_ShowStringBK(x,y,font,BKColor,PenColor,InputDataSize,(unsigned char*)ST7789VStringBuffer);
+	return InputDataSize;
+}
+/*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
 * 输入			: void
@@ -168,7 +206,13 @@ void ST7789V_ShowString(
 	{
 		unsigned char GetBufferLength	=	0;
 		unsigned char dst=Buffer[i];
+		unsigned char UnicodeFlag=0;
+		unsigned char UnicodeAddr=0;
+		//==================================Unicode
+		//UnicodeFlag	=	UnicodeCheck(&Buffer[i],num-i);
 		
+		
+		dst=Buffer[i];
 		//A=====================双字节--汉字
 		if(dst>0x80)
 		{
@@ -227,19 +271,151 @@ void ST7789V_ShowString(
       {
         y=x=0;
       }
-      //B3=====================读取点阵数据
-			GetBufferLength	=	GT32L32_GetCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
-			//GetBufferLength	=	GT32L32_GetBatteryCode(3,CodeBuffer);
-			//=======================水平制表符按空格显示(部分字库会当0xFF输出)
-			if(	('	'	==	(char)dst)		//水平制表符
-				||(' '	==	(char)dst))		//空格
+			if(0x00	!=	(char)dst)
 			{
-				memset(CodeBuffer,0x00,GetBufferLength);
+				//B3=====================读取点阵数据
+				GetBufferLength	=	GT32L32_GetCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
+				//GetBufferLength	=	GT32L32_GetBatteryCode(3,CodeBuffer);
+				//=======================水平制表符按空格显示(部分字库会当0xFF输出)
+				if(	('	'	==	(char)dst)		//水平制表符
+					||(' '	==	(char)dst))		//空格
+				{
+					memset(CodeBuffer,0x00,GetBufferLength);
+				}
+				//B4=====================写入屏幕
+				ST7789V_ShowChar(x,y,font,PenColor,GetBufferLength,CodeBuffer);
+				//B5=====================水平显示地址增加
+				x+=font/2;
 			}
-			//B4=====================写入屏幕
-			ST7789V_ShowChar(x,y,font,PenColor,GetBufferLength,CodeBuffer);
-			//B5=====================水平显示地址增加
-      x+=font/2;						
+      						
+		}
+		if(UnicodeFlag)
+		{
+			i+=1;
+		}
+		LCD_ShowJump:
+			__nop();
+	}
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void ST7789V_ShowStringBK(
+							u16 x,			//x				:起点x坐标
+							u16 y,			//y				:起点y坐标
+							u8 font,		//font		:字体大小
+							u16 BKColor,
+							u16 PenColor,//字体颜色
+							u8 num,			//num			:字节数
+							u8 *Buffer	//Buffer	:显示的内容缓存
+)		//高通字库测试程序
+{
+	unsigned short	MaxV=ST7789V_V,MaxH=ST7789V_H;	//边界值
+	unsigned char i=0;
+	unsigned char CodeBuffer[256]={0};
+	switch(pST7789V->ST7789VRotate)
+	{
+		case ST7789V_Rotate_0D:
+			MaxV=ST7789V_V;
+			MaxH=ST7789V_H;
+		break;
+		case ST7789V_Rotate_90D:
+			MaxV=ST7789V_H;
+			MaxH=ST7789V_V;
+		break;
+		case ST7789V_Rotate_180D:
+			MaxV=ST7789V_V;
+			MaxH=ST7789V_H;
+		break;
+		case ST7789V_Rotate_270D:
+			MaxV=ST7789V_H;
+			MaxH=ST7789V_V;
+		break;
+		default:break;		
+	}
+	for(i=0;i<num;i++)
+	{
+		unsigned char GetBufferLength	=	0;
+		unsigned char dst=Buffer[i];
+		
+		//A=====================双字节--汉字
+		if(dst>0x80)
+		{
+			u16 word=dst<<8;
+      
+			dst=Buffer[i+1];
+			word=word|dst;			
+			//A1=====================显示超限换行
+      if(x>MaxH-font)
+      {
+        x=0;
+        y+=font;
+      }
+      //A2=====================显示到屏尾，从原点开始
+      if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+      //A3=====================读取点阵数据
+			GetBufferLength	=	GT32L32_GetCode(font,word,CodeBuffer);		//从字库中读数据并返回数据长度
+			//GetBufferLength	=	GT32L32_GetAntennaCode(3,CodeBuffer);
+			//A4=====================写入屏幕
+			ST7789V_ShowWordBK(x,y,font,BKColor,PenColor,GetBufferLength,CodeBuffer);
+			//A5=====================水平显示地址增加
+      x+=font;
+			i++;		//双字节，减两次			
+		}
+		else if(('\r'==dst)||('\n'==dst))
+		{
+			if(('\n'==Buffer[i+1])||('\r'==Buffer[i+1]))
+			{
+				i++;	//去掉回车符长度
+			}
+			if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+			else
+			{
+				x=0;
+				y+=font;
+			}
+			goto LCD_ShowJump;
+		}
+		//B=====================单字节--ASCII字符集
+		else
+		{			
+			//B1=====================显示超限换行
+      if(x>MaxH-font/2)//半个宽度
+      {
+        x=0;
+        y+=font;
+      }
+      //B2=====================显示到屏尾，从原点开始
+      if(y>MaxV-font)
+      {
+        y=x=0;
+      }
+			if(0x00	!=	(char)dst)
+			{
+				//B3=====================读取点阵数据
+				GetBufferLength	=	GT32L32_GetCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
+				//GetBufferLength	=	GT32L32_GetBatteryCode(3,CodeBuffer);
+				//=======================水平制表符按空格显示(部分字库会当0xFF输出)
+				if(	('	'	==	(char)dst)		//水平制表符
+					||(' '	==	(char)dst))		//空格
+				{
+					memset(CodeBuffer,0x00,GetBufferLength);
+				}
+				//B4=====================写入屏幕
+				ST7789V_ShowCharBK(x,y,font,BKColor,PenColor,GetBufferLength,CodeBuffer);
+				//B5=====================水平显示地址增加
+				x+=font/2;
+			}
+      						
 		}
 		LCD_ShowJump:
 			__nop();
@@ -434,8 +610,11 @@ void ST7789V_PowerOn(void)
   u16	temp=time;
 
   ST7789V_Enable();	  //
-
-  ST7789V_WriteCommand(0x11);           //ExitSleep
+	//----------------------------------Software Reset-----------------------------------------------//
+  //ST7789V_WriteCommand(0x01);  	
+  //ST7789V_DelaymS(520); 	   //Delay 120ms 
+	//----------------------------------ExitSleep-----------------------------------------------//
+  ST7789V_WriteCommand(0x11);           
   ST7789V_DelaymS(120); 	   //Delay 120ms 
   //----------------------------------Display Setting-----------------------------------------------// 
   ST7789V_WriteCommand(0x36); 
@@ -505,6 +684,7 @@ void ST7789V_PowerOn(void)
   ST7789V_WriteCommand(0x29);	   //display on 
   ST7789V_WriteCommand(0x2c); 
 
+//	ST7789V_EnterSleep();
   ST7789V_Disable();	//LCD_CS_HIGH;
 	
 	ST7789V_BL_ON;
@@ -828,7 +1008,7 @@ void ST7789V_ShowChar(
 										u16 x,			//x				:起点x坐标
 										u16 y,			//y				:起点y坐标
 										u8 font,		//font		:字体大小
-										u16 color,	//字体颜色
+										u16 PenColor,	//字体颜色
 										u8 num,			//num			:字节数
 										u8 *Buffer	//Buffer	:显示的内容缓存
 										
@@ -854,7 +1034,7 @@ void ST7789V_ShowChar(
 		{
 			if((temp&0x80)==0X80)
 			{
-				LCD_PEN_COLOR=color;
+				LCD_PEN_COLOR=PenColor;
 			}
 			else
 				LCD_PEN_COLOR=pST7789V->ST7789VBColor	;
@@ -870,7 +1050,7 @@ void ST7789V_ShowChar(
       {
         if((temp&0x80)==0X80)
         {
-          LCD_PEN_COLOR=color;
+          LCD_PEN_COLOR=PenColor;
         }
         else
           LCD_PEN_COLOR=pST7789V->ST7789VBColor	;
@@ -888,10 +1068,76 @@ void ST7789V_ShowChar(
 * 输入			: void
 * 返回值			: void
 *******************************************************************************/
+void ST7789V_ShowCharBK(
+										u16 x,			//x				:起点x坐标
+										u16 y,			//y				:起点y坐标
+										u8 font,		//font		:字体大小
+										u16 BKColor,	//背景颜色
+										u16 PenColor,	//字体颜色
+										u8 num,			//num			:字节数
+										u8 *Buffer	//Buffer	:显示的内容缓存
+										
+)		//高通字库测试程序
+{
+	u8 temp;
+	u8 i=0,j=0;
+	unsigned short x1=0,x2=0,y1=0,y2=0;
+	unsigned short LCD_PEN_COLOR	=	0;   	//画笔色
+	x1	=	x;
+	y1	=	y;
+	x2	=	x+font/2-1;		//
+	y2	=	y+font-1;
+	
+  ST7789V_Enable();	//LCD_CS_LOW;
+  
+	ST7789V_SetWindowAddress(x1,y1,x2,y2);//设置显示区域	
+
+	for(i=0;i<num;i++)
+	{ 
+		temp=Buffer[i];		 					//调用1608字体--二维数组形式--字库使用时取消
+		for(j=0;j<8;j++)
+		{
+			if((temp&0x80)==0X80)
+			{
+				LCD_PEN_COLOR=PenColor;
+			}
+			else
+				LCD_PEN_COLOR=BKColor	;
+			ST7789V_WriteData(LCD_PEN_COLOR);
+			temp=temp<<1;
+			
+		}
+    //=======================未满8位的补充定入
+    if((24==font)||(12==font))
+    {
+      temp=Buffer[i+1];		 					
+      for(j=0;j<4;j++)
+      {
+        if((temp&0x80)==0X80)
+        {
+          LCD_PEN_COLOR=PenColor;
+        }
+        else
+          LCD_PEN_COLOR=BKColor	;
+        ST7789V_WriteData(LCD_PEN_COLOR);
+        temp=temp<<1;
+      }
+      i++;
+    }		
+	}
+	ST7789V_Disable();	//LCD_CS_HIGH;
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
 void ST7789V_ShowChar4836(
 										u16 x,			//x				:起点x坐标
 										u16 y,			//y				:起点y坐标
-										u16 color,	//字体颜色
+										u16 BKColor,	//背景颜色
+										u16 PenColor,	//字体颜色
 										u8 *Buffer	//Buffer	:显示的内容缓存
 										
 )		//高通字库测试程序
@@ -918,10 +1164,10 @@ void ST7789V_ShowChar4836(
 			{
 				if((temp&0x80)==0X80)
 				{
-					LCD_PEN_COLOR=color;
+					LCD_PEN_COLOR=PenColor;
 				}
 				else
-					LCD_PEN_COLOR=pST7789V->ST7789VBColor	;
+					LCD_PEN_COLOR=BKColor	;
 				ST7789V_WriteData(LCD_PEN_COLOR);
 				temp=temp<<1;
 			}
@@ -932,10 +1178,10 @@ void ST7789V_ShowChar4836(
 			{
 				if((temp&0x80)==0X80)
 				{
-					LCD_PEN_COLOR=color;
+					LCD_PEN_COLOR=PenColor;
 				}
 				else
-					LCD_PEN_COLOR=pST7789V->ST7789VBColor	;
+					LCD_PEN_COLOR=BKColor	;
 				ST7789V_WriteData(LCD_PEN_COLOR);
 				temp=temp<<1;
 			}
@@ -954,7 +1200,7 @@ void ST7789V_ShowWord(
 										u16 x,			//x				:起点x坐标
 										u16 y,			//y				:起点y坐标
 										u8 font,		//font		:字体大小
-										u16 color,	//字体颜色
+										u16 PenColor,	//字体颜色
 										u8 num,			//num			:字节数
 										u8 *Buffer	//Buffer	:显示的内容缓存
 										
@@ -979,7 +1225,7 @@ void ST7789V_ShowWord(
 		{
 			if((temp&0x80)==0X80)
 			{
-				LCD_PEN_COLOR=color;
+				LCD_PEN_COLOR=PenColor;
 			}
 			else
 				LCD_PEN_COLOR=pST7789V->ST7789VBColor;
@@ -995,7 +1241,7 @@ void ST7789V_ShowWord(
       {
         if((temp&0x80)==0X80)
         {
-          LCD_PEN_COLOR=color;
+          LCD_PEN_COLOR=PenColor;
         }
         else
           LCD_PEN_COLOR=pST7789V->ST7789VBColor	;
@@ -1007,6 +1253,71 @@ void ST7789V_ShowWord(
 	}
 	ST7789V_Disable();	//LCD_CS_HIGH;
 }
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void ST7789V_ShowWordBK(
+										u16 x,			//x				:起点x坐标
+										u16 y,			//y				:起点y坐标
+										u8 font,		//font		:字体大小
+										u16 BKColor,	//背景颜色
+										u16 PenColor,	//字体颜色
+										u8 num,			//num			:字节数
+										u8 *Buffer	//Buffer	:显示的内容缓存
+										
+)		//高通字库测试程序
+{
+	u8 temp;
+	u8 i=0,j=0;
+	unsigned short x1=0,x2=0,y1=0,y2=0;
+	unsigned short LCD_PEN_COLOR	=	0;   	//画笔色
+	x1	=	x;
+	y1	=	y;
+  x2	=	x+font-1;
+  y2	=	y+font-1;
+  
+  ST7789V_Enable();	//LCD_CS_LOW;
+	ST7789V_SetWindowAddress(x1,y1,x2,y2);//设置显示区域
+
+	for(i=0;i<num;i++)
+	{ 
+		temp=Buffer[i];		 				
+		for(j=0;j<8;j++)
+		{
+			if((temp&0x80)==0X80)
+			{
+				LCD_PEN_COLOR=PenColor;
+			}
+			else
+				LCD_PEN_COLOR=BKColor;
+			ST7789V_WriteData(LCD_PEN_COLOR);
+			temp=temp<<1;
+			
+		}
+    //=======================未满8位的补充定入
+    if((12==font))
+    {
+      temp=Buffer[i+1];		 					
+      for(j=0;j<4;j++)
+      {
+        if((temp&0x80)==0X80)
+        {
+          LCD_PEN_COLOR=PenColor;
+        }
+        else
+          LCD_PEN_COLOR=BKColor	;
+        ST7789V_WriteData(LCD_PEN_COLOR);
+        temp=temp<<1;
+      }
+      i++;
+    }			
+	}
+	ST7789V_Disable();	//LCD_CS_HIGH;
+}
+
 /*******************************************************************************
 * 函数名			:	LCD_DelayuS
 * 功能描述		:	延时x微秒

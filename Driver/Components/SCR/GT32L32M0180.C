@@ -30,7 +30,7 @@
 
 SPIDef		*pSPI = NULL;       //内部驱动使用，不可删除
 
-u8 BAR_PIC_ADDR[64]={0XFF};
+u8 BAR_PIC_Addr[64]={0XFF};
 u8 GBCode[64]={0XFF};
 
 
@@ -39,7 +39,7 @@ u8 GBCode[64]={0XFF};
 
 u32 GT32L32_GetAddress(u8 font, u8 c1, u8 c2, u8 c3, u8 c4);//获取地址
 u32 GT32L32_GetBufferLen(u8 font, u8 c1, u8 c2, u8 c3, u8 c4);//获取长度
-u16 GT32L32_ReadBuffer(u32 Address,u32 lengh,u8 *ReadBuffer);		//从字库中读数据并返回数据长度
+u16 r_dat_bat(u32 Address,u32 lengh,u8 *ReadBuffer);		//从字库中读数据并返回数据长度
 
 u32 GT32L32_GetGB18030(u8 c1, u8 c2, u8 c3, u8 c4);		//12x12点阵GB18030汉字&字符地址计算
 
@@ -94,7 +94,13 @@ u32 GT32L32_GetGB18030(u8 c1, u8 c2, u8 c3, u8 c4)
 		Address= (c1 - 0xA1) * 94 + (c2 - 0xA1);
 	}
 	//====================Section 5	
-	else if((c1>=0xa8 && c1 <= 0xa9) && c2<0xa1) 	//Section 5
+//	else if((c1>=0xa8 && c1 <= 0xa9) && c2<0xa1) 	//Section 5
+//	{ 
+//		if(c2>0x7f)
+//			c2--; 
+//		Address=(c1-0xa8)*96 + (c2-0x40)+846; 
+//	}
+	else if((c1>=0xa8 && c1 <= 0xa9)) 	//Section 5
 	{ 
 		if(c2>0x7f)
 			c2--; 
@@ -144,16 +150,41 @@ u32 GT32L32_GetAddress(u8 font, u8 c1, u8 c2, u8 c3, u8 c4)
 	{
 		//字体大小判断
 		if(font==12)				//(u32)0x113D0E,			//12x12点阵GB18030汉字/
-		{
-			Address=GT32L32_GetGB18030(c1,	c2,	0,	0)*24+0x113D0E+192*24;
+		{			
+			if((c1>=0xA1 && c1 <= 0xAB) && c2>=0xA1) 			//Section 1
+			{
+				Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*24+0x113D0E;
+			}
+			else
+			{
+				Address=GT32L32_GetGB18030(c1,	c2,	0,	0)*24+0x113D0E+192*24;
+			}
 		}
 		else if(font==16)		//(u32)0x194FDE,			//16x16点阵GB18030汉字
 		{
-			Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*32+0x194FDE+192*32;
+			if((c1>=0xA1 && c1 <= 0xAB) && c2>=0xA1) 			//Section 1
+			{
+				Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*32+0x194FDE;
+			}
+			else if((c1>=0xA8 && c1 <= 0xA9)) 			
+			{
+				Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*32+0x194FDE;
+			}
+			else
+			{
+				Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*32+0x194FDE+192*32;
+			}
 		}
 		else if(font==24)		//(u32)0x2743DE,			//24x24点阵GB18030汉字
 		{
-			Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*72+0x2743DE+192*72;
+			if((c1>=0xA1 && c1 <= 0xAB) && c2>=0xA1) 			//Section 1
+			{
+				Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*72+0x2743DE;
+			}
+			else
+			{
+				Address=GT32L32_GetGB18030(c1,	c2,	c3,	c4)*72+0x2743DE+192*72;
+			}
 		}
 		else if(font==32)		//(u32)0x47AE10,			//32x32点阵GB18030汉字
 		{
@@ -281,89 +312,89 @@ EAN13条形码调用程序
 u32 GT32L32_GetBarCode_13(u8 * BAR_NUM)
 {
 	u32 i,BaseAddr=0x478FD2;
-	BAR_PIC_ADDR[0]=BAR_NUM[0]*54+540*0+ BaseAddr;
-	BAR_PIC_ADDR[1]=BAR_NUM[1]*54+540*1+ BaseAddr;
+	BAR_PIC_Addr[0]=BAR_NUM[0]*54+540*0+ BaseAddr;
+	BAR_PIC_Addr[1]=BAR_NUM[1]*54+540*1+ BaseAddr;
 	switch(BAR_NUM[0])
 	{
 		case 0:
 			for(i=2;i<=6;i++)
 			{
-				BAR_PIC_ADDR[i]=BAR_NUM[i]*54+540*1+ BaseAddr;
+				BAR_PIC_Addr[i]=BAR_NUM[i]*54+540*1+ BaseAddr;
 			}
 		break;
 		case 1:
-			BAR_PIC_ADDR[2]=BAR_NUM[2]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[4]=BAR_NUM[4]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[5]=BAR_NUM[5]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[6]=BAR_NUM[6]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[2]=BAR_NUM[2]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[4]=BAR_NUM[4]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[5]=BAR_NUM[5]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[6]=BAR_NUM[6]*54+540*2+ BaseAddr;
 		break;
 		case 2:
-			BAR_PIC_ADDR[2]=BAR_NUM[2]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[4]=BAR_NUM[4]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[5]=BAR_NUM[5]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[6]=BAR_NUM[6]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[2]=BAR_NUM[2]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[4]=BAR_NUM[4]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[5]=BAR_NUM[5]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[6]=BAR_NUM[6]*54+540*2+ BaseAddr;
 		break;
 		case 3:
-			BAR_PIC_ADDR[2]=BAR_NUM[2]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[4]=BAR_NUM[4]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[5]=BAR_NUM[5]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[6]=BAR_NUM[6]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[2]=BAR_NUM[2]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[4]=BAR_NUM[4]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[5]=BAR_NUM[5]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[6]=BAR_NUM[6]*54+540*1+ BaseAddr;
 		break;
 		case 4:
-			BAR_PIC_ADDR[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[3]=BAR_NUM[3]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[4]=BAR_NUM[4]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[5]=BAR_NUM[5]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[6]=BAR_NUM[6]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[3]=BAR_NUM[3]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[4]=BAR_NUM[4]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[5]=BAR_NUM[5]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[6]=BAR_NUM[6]*54+540*2+ BaseAddr;
 		break;
 		case 5:
-			BAR_PIC_ADDR[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[4]=BAR_NUM[4]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[5]=BAR_NUM[5]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[6]=BAR_NUM[6]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[4]=BAR_NUM[4]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[5]=BAR_NUM[5]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[6]=BAR_NUM[6]*54+540*2+ BaseAddr;
 		break;
 		case 6:
-			BAR_PIC_ADDR[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[4]=BAR_NUM[4]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[5]=BAR_NUM[5]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[6]=BAR_NUM[6]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[4]=BAR_NUM[4]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[5]=BAR_NUM[5]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[6]=BAR_NUM[6]*54+540*1+ BaseAddr;
 		break;
 		case 7:
-			BAR_PIC_ADDR[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[3]=BAR_NUM[3]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[4]=BAR_NUM[4]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[5]=BAR_NUM[5]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[6]=BAR_NUM[6]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[3]=BAR_NUM[3]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[4]=BAR_NUM[4]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[5]=BAR_NUM[5]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[6]=BAR_NUM[6]*54+540*2+ BaseAddr;
 		break;
 		case 8:
-			BAR_PIC_ADDR[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[3]=BAR_NUM[3]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[4]=BAR_NUM[4]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[5]=BAR_NUM[5]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[6]=BAR_NUM[6]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[3]=BAR_NUM[3]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[4]=BAR_NUM[4]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[5]=BAR_NUM[5]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[6]=BAR_NUM[6]*54+540*1+ BaseAddr;
 		break;
 		case 9:
-			BAR_PIC_ADDR[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[4]=BAR_NUM[4]*54+540*1+ BaseAddr;
-			BAR_PIC_ADDR[5]=BAR_NUM[5]*54+540*2+ BaseAddr;
-			BAR_PIC_ADDR[6]=BAR_NUM[6]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[2]=BAR_NUM[2]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[3]=BAR_NUM[3]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[4]=BAR_NUM[4]*54+540*1+ BaseAddr;
+			BAR_PIC_Addr[5]=BAR_NUM[5]*54+540*2+ BaseAddr;
+			BAR_PIC_Addr[6]=BAR_NUM[6]*54+540*1+ BaseAddr;
 		break;
 	}
-	BAR_PIC_ADDR[7]=BAR_NUM[7]*54+540*3+ BaseAddr;
+	BAR_PIC_Addr[7]=BAR_NUM[7]*54+540*3+ BaseAddr;
 	for(i=8;i<=11;i++)
 	{
-		BAR_PIC_ADDR[i]=BAR_NUM[i]*54+540*4+ BaseAddr;
+		BAR_PIC_Addr[i]=BAR_NUM[i]*54+540*4+ BaseAddr;
 	}
-	BAR_PIC_ADDR[12]=BAR_NUM[12]*54+540*5+ BaseAddr;
+	BAR_PIC_Addr[12]=BAR_NUM[12]*54+540*5+ BaseAddr;
 	
-	memcpy(BAR_NUM,BAR_PIC_ADDR,140);	
-	return BAR_PIC_ADDR[0];
+	memcpy(BAR_NUM,BAR_PIC_Addr,140);	
+	return BAR_PIC_Addr[0];
 }
 
 /***********************************************************************************************
@@ -389,57 +420,57 @@ u32 GT32L32_GetBarCode_128(u8	*BAR_NUM,u8	flag)
 		case 1 :
 			 if(i==0)
 			 {
-				 BAR_PIC_ADDR[i]=103*40+BaseAddr;
+				 BAR_PIC_Addr[i]=103*40+BaseAddr;
 			 }
 			 else if(i==1||i==2||i==3||i==4)           
 			 {
-				 BAR_PIC_ADDR[i]=BAR_NUM[i-1]*40+BaseAddr;
+				 BAR_PIC_Addr[i]=BAR_NUM[i-1]*40+BaseAddr;
 			 }
 			 else if(i==5)
 			 {
-				 BAR_PIC_ADDR[i]=95*40+BaseAddr;
+				 BAR_PIC_Addr[i]=95*40+BaseAddr;
 			 }
 			 else if(i==6)
 			 {
-				 BAR_PIC_ADDR[i]=106*40+BaseAddr;
+				 BAR_PIC_Addr[i]=106*40+BaseAddr;
 			 }
 			 break;
      
 		case 2 :
 			if(i==0)
 			{
-				BAR_PIC_ADDR[i]=104*40+BaseAddr;
+				BAR_PIC_Addr[i]=104*40+BaseAddr;
 			}
 			else if(i==1||i==2||i==3||i==4)           
 			{
-				BAR_PIC_ADDR[i]=BAR_NUM[i-1]*40+BaseAddr;
+				BAR_PIC_Addr[i]=BAR_NUM[i-1]*40+BaseAddr;
 			}
 			else if(i==5)
 			{
-				BAR_PIC_ADDR[i]=95*40+BaseAddr;
+				BAR_PIC_Addr[i]=95*40+BaseAddr;
 			}
 			else if(i==6)
 			{
-				BAR_PIC_ADDR[i]=106*40+BaseAddr;
+				BAR_PIC_Addr[i]=106*40+BaseAddr;
 			}
 			break;
    	       
 		case 3 :
 			if(i==0)
 			{
-				BAR_PIC_ADDR[i]=105*40+BaseAddr;
+				BAR_PIC_Addr[i]=105*40+BaseAddr;
 			}
 			else if(i==1||i==2||i==3||i==4)           
 			{
-				BAR_PIC_ADDR[i]=BAR_NUM[i-1]*40+BaseAddr;
+				BAR_PIC_Addr[i]=BAR_NUM[i-1]*40+BaseAddr;
 			}
 			else if(i==5)
 			{
-				BAR_PIC_ADDR[i]=95*40+BaseAddr;
+				BAR_PIC_Addr[i]=95*40+BaseAddr;
 			}
 			else if(i==6)
 			{
-				BAR_PIC_ADDR[i]=106*40+BaseAddr;
+				BAR_PIC_Addr[i]=106*40+BaseAddr;
 			}
 			break;
    
@@ -447,7 +478,7 @@ u32 GT32L32_GetBarCode_128(u8	*BAR_NUM,u8	flag)
      break;
 		}
 	}
-	return BAR_PIC_ADDR[0];
+	return BAR_PIC_Addr[0];
 }
 
 
@@ -767,7 +798,7 @@ void GT32L32_ChipErase(GT32L32Def *pInfo)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-u16 GT32L32_ReadBuffer(
+u16 r_dat_bat(
 												u32 Address,					  //起始地址
 												u32 lengh,						  //需要读取的长度
                         u8 *ReadBuffer				  //接收数据的缓存
@@ -816,7 +847,7 @@ u32 GT32L32_GetAntennaCode(u8	NUM,u8 *GetBuffer)
 	u32 Address,BaseAdd=0x47AD32;  
 	Address=NUM*24+BaseAdd;
 
-  GT32L32_ReadBuffer(Address,lengh,GetBuffer);		//从字库中读数据并返回数据长度
+  r_dat_bat(Address,lengh,GetBuffer);		//从字库中读数据并返回数据长度
   
 	return lengh;
 }
@@ -836,7 +867,7 @@ u32 GT32L32_GetBatteryCode(u8	NUM,u8 *GetBuffer)
 	u32 Address, BaseAdd=0x47ADAA;
 	Address=BaseAdd+NUM*24;
   
-  GT32L32_ReadBuffer(Address,lengh,GetBuffer);		//从字库中读数据并返回数据长度
+  r_dat_bat(Address,lengh,GetBuffer);		//从字库中读数据并返回数据长度
   
 	return lengh;
 }
@@ -870,10 +901,158 @@ u16 GT32L32_GetCode(
 		Address	=	GT32L32_GetAddress(font, (u8)word, 0, 0, 0);			//获取地址
 		lengh= GT32L32_GetBufferLen(font, (u8)word, 0, 0, 0);			//获取长度
 	}	
-  GT32L32_ReadBuffer(Address,lengh,ReadBuffer);		//读取数据
+  r_dat_bat(Address,lengh,ReadBuffer);		//读取数据
 	return lengh;
 }
 
+/*******************************************************************************
+*函数名			:	UnicodeCheck
+*功能描述		:	function
+*输入				: 
+*返回值			:	0-非Unicode数据，1-Unicode数据
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned char UnicodeCheck(unsigned char* data,unsigned short len)
+{
+	unsigned char IsUnicodeData=0;	//0-非Unicode数据，1-Unicode数据
+	unsigned char UnicodeH	=	0;		//Unicode高8位，数组中低8位在前，高8位在后
+	unsigned char	UnicodeL	=	0;		//Unicode低8位，数组中低8位在前，高8位在后
+	unsigned short Unicode	=	0;
+	unsigned long	GB_Address	=	0;
+	
+	unsigned short	GBK	=	0;		//GB编码的高字节（1个字节）
+	unsigned char	GBKC1	=	0;		//GB编码的高字节（1个字节）
+	unsigned char	GBKC2	=	0;		//GB编码的低字节（1个字节）
+	
+	if(len<2)
+	{
+		return IsUnicodeData;
+	}
+	//--------------------------------读取低8位
+	UnicodeL	=	data[0];
+	UnicodeH	=	data[1];
+	
+	//--------------------------------判断是否为字符
+	if(0x00==UnicodeH)
+	{
+		IsUnicodeData	=	1;
+	}
+	//--------------------------------汉字
+	else if((0x80>UnicodeH)&&(0x00<UnicodeL))
+	{
+		unsigned char temp[10]=0;
+		IsUnicodeData	=	1;
+		
+		Unicode	=	UnicodeH<<8|UnicodeL;
+		GBK=U2G(Unicode);
+		//--------------------------------转码
+		
+		data[0]	=	GBK&0xFF;	//GB编码的低字节（1个字节）
+		data[1]	=	GBK>>8;	//GB编码的高字节（1个字节）
+	}
+	else
+	{
+	}
+	
+	return IsUnicodeData;	//0-非Unicode数据，1-Unicode数据
+}
+//UNICODE转GBK码表映射算法（不含符号区,转换全部双字节区）
+//GB_Address转换之后的GB码的存放地址，
+//函数：WORD U2G(WORD Unicode)
+//功能：将UNICODE码转换为GB码,
+//参数：WORD Unicode,表示输入的UNICODE码。
+//返回：对应的GB码在字库中存放的地址。
+//（注:读取对应地址2字节数据即为unicode对应的GB码）。
+//转码表起始地址： BaseAdd＝0x7F1E10
+
+//GB_Address= Unicode2GBK(Unicode)+ BaseAdd;
+//C1=ZK_Read_1_byte(GB_Address); //从字库中读取GB编码的高字节（1个字节）
+//C2=ZK_Read_1_byte(GB_Address+1); //从字库中读取GB编码的低字节（1个字节）
+//ZK_Read_1_byte(unsigned long addr)函数功能为从字库的地址addr 读取一个字节的数据。需客户自己根据实际情况编写读写函数，或者参考集通科技显示例程编写。本规格书未提供。
+//验证数据：啊字的UNICODE编码：0x554A, GB编码为0xB0A1,
+//读取后转入GBK，或者GBK编码计算公式计算UNICODE编码对应的汉字的实际地址。
+
+unsigned long Unicode2GBK(unsigned short Unicode)	//UNICODE转GBK码表映射算法（不含符号区,转换全部双字节区）
+{
+	unsigned short U_Start_Addr;
+	unsigned long Address;
+	unsigned long BaseAdd	=	0x7F1E10;
+	
+	if(Unicode<=0x0451&&Unicode>=0x00a0)
+	{
+		U_Start_Addr=0;
+		Address= U_Start_Addr +(Unicode-0x00a0)*2;
+	}
+	else if(Unicode<=0x2642&&Unicode>=0x2010)
+	{
+		U_Start_Addr =1892;
+		Address= U_Start_Addr +(Unicode-0x2010)*2;
+	}
+	else if(Unicode<=0x33d5&&Unicode>=0x3000)
+	{
+		U_Start_Addr =5066;
+
+		Address= U_Start_Addr +(Unicode-0x3000)*2;
+	}
+	else if(Unicode<=0x9fa5&&Unicode>=0x4e00)
+	{
+		U_Start_Addr =7030;
+		Address= U_Start_Addr +(Unicode-0x4e00)*2;
+	}
+	else if(Unicode<=0xfe6b&&Unicode>=0xfe30)
+	{
+		U_Start_Addr =48834;
+		Address= U_Start_Addr +(Unicode-0xfe30)*2;
+	}
+	else if(Unicode<=0xff5e&&Unicode>=0xff01)
+	{
+		U_Start_Addr =48954;
+		Address= U_Start_Addr +(Unicode-0xff01)*2;
+	}
+	else if(Unicode<=0xffe5&&Unicode>=0xffe0)
+	{
+		U_Start_Addr =49142;
+		Address= U_Start_Addr +(Unicode-0xffe0)*2;
+	}
+	else if(Unicode<=0xFA29&&Unicode>=0xF92C)
+	{
+		U_Start_Addr =49312;
+		Address= U_Start_Addr +(Unicode-0xF92C)*2;
+	}
+	else if(Unicode<=0xE864&&Unicode>=0xE816)
+	{
+		U_Start_Addr =49820;
+		Address= U_Start_Addr +(Unicode-0xE816)*2;
+	}
+	else if(Unicode<=0x2ECA&&Unicode>=0x2E81)
+	{
+		U_Start_Addr =49978;
+		Address= U_Start_Addr +(Unicode-0x2E81)*2;
+	}
+	else if(Unicode<=0x49B7&&Unicode>=0x4947)
+	{
+		U_Start_Addr =50126;
+		Address= U_Start_Addr +(Unicode-0x4947)*2;
+	}
+	else if(Unicode<=0x4DAE&&Unicode>=0x4C77)
+	{
+		U_Start_Addr =50352;
+		Address= U_Start_Addr +(Unicode-0x4C77)*2;
+	}
+	else if(Unicode<=0x3CE0&&Unicode>=0x3447)
+	{
+		U_Start_Addr =50976;
+		Address= U_Start_Addr +(Unicode-0x3447)*2;
+	}
+	else if(Unicode<=0x478D&&Unicode>=0x4056)
+	{
+		U_Start_Addr =55380;
+		Address= U_Start_Addr +(Unicode-0x4056)*2;
+	}
+	return Address+743980+BaseAdd;
+}
 /*******************	wegam@sina.com	*******************/
 /*********************	2017/01/21	*********************/
 /**********************	END OF FILE	*********************/

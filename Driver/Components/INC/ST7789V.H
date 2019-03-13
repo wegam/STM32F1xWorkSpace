@@ -169,7 +169,9 @@ typedef struct	_ST7789V
 
 void ST7789V_Initialize(void*	pInfo);
 unsigned int ST7789V_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...);				//后边的省略号就是可变参数
+unsigned int ST7789V_PrintfBK(u16 x,u16 y,u8 font,u16 BKColor,u16 PenColor,const char *format,...);				//后边的省略号就是可变参数
 void ST7789V_ShowString(u16 x,u16 y,u8 font,u16 PenColor,u8 num,u8 *Buffer);
+void ST7789V_ShowStringBK(u16 x,u16 y,u8 font,u16 BKColor,u16 PenColor,u8 num,u8 *Buffer);		//带背景色输出
 	
 void ST7789V_Test(unsigned short Colr);
 
@@ -216,8 +218,10 @@ void ST7789V_SetBackground(u16 BackColor );
 
 //--------------------------------------------字符显示
 void ST7789V_ShowChar(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
-void ST7789V_ShowChar4836(u16 x,u16 y,u16 color,u8 *Buffer);	  //高通字库测试程序
+void ST7789V_ShowCharBK(u16 x,u16 y,u8 font,u16 BKColor,u16 PenColor,u8 num,u8 *Buffer);	  //高通字库测试程序
+void ST7789V_ShowChar4836(u16 x,u16 y,u16 BKColor,u16 PenColor,u8 *Buffer);	  //高通字库测试程序
 void ST7789V_ShowWord(u16 x,u16 y,u8 font,u16 color,u8 num,u8 *Buffer);	  //高通字库测试程序
+void ST7789V_ShowWordBK(u16 x,u16 y,u8 font,u16 BKColor,u16 PenColor,u8 num,u8 *Buffer);	  //高通字库测试程序
 
 
 void ST7789V_DelayuS(u32 xuS);

@@ -48,11 +48,13 @@
 LCDDef	sLCD;
 
 
-#define ussize  128     //串口缓存大小
+#define ussize  256     //串口缓存大小
 unsigned char u1txbuffer[ussize];
 unsigned char u1rxbuffer[ussize];
 unsigned char u3txbuffer[ussize];
 unsigned char u3rxbuffer[ussize];
+unsigned char u2txbuffer[ussize];
+unsigned char u2rxbuffer[ussize];
 unsigned short u1dsp=32;
 unsigned short u3dsp=32;
 unsigned short u1dspcolr=LCD565_RED;
@@ -108,10 +110,14 @@ u16 millisecond=0;
 
 unsigned short crc16mbs = 0;
 
+RS485Def RS485A;
+RS485Def RS485B;
+
 void GetTime(void);
 void ClockServer(void);
 void SYSLED(void);
 void USART_TEST(void);
+void RS485Configuration(void);
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
 //->功能描述	:	 
@@ -129,7 +135,7 @@ void AMPTest_Configuration(void)
 //  SD_Configuration();
   GetTime();
   
-  LCD_SetBackground(LCD565_LBBLUE);
+  LCD_SetBackground(LCD565_WHITE);
   LCD_ShowBattery(780,2,2,LCD565_GRED);   //显示12x12电池
   LCD_ShowAntenna(760,2,3,LCD565_GRED);   //显示12x12天线
 
@@ -140,8 +146,8 @@ void AMPTest_Configuration(void)
   
   USART_DMA_ConfigurationNR	(USART1,19200,ussize);	//USART_DMA配置--查询方式，不开中断
   USART_DMA_ConfigurationNR	(USART3,19200,ussize);	//USART_DMA配置--查询方式，不开中断
-  
-	PWM_OUT(TIM2,PWM_OUTChannel1,500,300);						//PWM设定-20161127版本
+  RS485Configuration();
+	PWM_OUT(TIM2,PWM_OUTChannel1,100,900);						//PWM设定-20161127版本
 
 	
 //  IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
@@ -161,6 +167,23 @@ void AMPTest_Server(void)
   RTC_Server();
   USART_Server();
   //USART_TEST();
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void RS485Configuration(void)
+{
+	RS485B.USARTx	=	USART2;
+	RS485B.RS485_CTL_PORT	=	GPIOA;
+	RS485B.RS485_CTL_Pin	=	GPIO_Pin_1;
+	
+	RS485_DMA_ConfigurationNR	(&RS485B,19200,ussize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
 }
 //=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
 //->函数名		:	
@@ -260,19 +283,20 @@ void USART_Server(void)
     memcpy(&u3txbuffer[u3txbuffer[1]+2],&crc16mbs,2);
     
     USART_DMASend(USART3,u3txbuffer,RxNum);
+		RS485_DMASend(&RS485B,u3txbuffer,RxNum);	//RS485-DMA发送程序
     LCD_ShowHex(0,u1dsp,16,u1dspcolr,RxNum,8,u3txbuffer);
-    u1dsp+=16;
+    u1dsp+=(RxNum/33+1)*16;
+    if(LCD565_RED==u1dspcolr)
+		{
+			u1dspcolr = LCD565_BLUE;
+		}
+		else
+		{
+			u1dspcolr = LCD565_RED;
+		}
     if(u1dsp>=479)
     {
-      if(LCD565_RED !=  u1dspcolr)
-      {
-        u1dspcolr = LCD565_RED;
-      }
-      else
-      {
-        u1dspcolr = LCD565_BLUE;
-      }
-      LCD_Fill(0,32,399,480,sLCD.Data.BColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+      LCD_Fill(0,32,800,480,sLCD.Data.BColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
       u1dsp=32;
       u3dsp=32;
     }
@@ -282,7 +306,7 @@ void USART_Server(void)
   {
     memcpy(u1txbuffer,u3rxbuffer,RxNum);
     USART_DMASend(USART1,u1txbuffer,RxNum);
-    LCD_ShowHex(400,u3dsp,16,u3dspcolr,RxNum,8,u1txbuffer);
+    LCD_ShowHex(0,u3dsp,16,u3dspcolr,RxNum,8,u1txbuffer);
     u3dsp+=16;
     if(u3dsp>=479)
     {
@@ -294,10 +318,32 @@ void USART_Server(void)
       {
         u3dspcolr = LCD565_BLUE;
       }
-      LCD_Fill(400,32,800,480,sLCD.Data.BColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+      LCD_Fill(0,32,800,480,sLCD.Data.BColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
       u3dsp=32;
     }
   }
+	RxNum = RS485_ReadBufferIDLE(&RS485B,u2rxbuffer);
+	if(RxNum)
+	{
+		memcpy(u1txbuffer,u2rxbuffer,RxNum);
+    USART_DMASend(USART1,u1txbuffer,RxNum);
+    LCD_ShowHex(0,u1dsp,16,u1dspcolr,RxNum,8,u1txbuffer);
+		u1dsp+=(RxNum/33+1)*16;
+		if(LCD565_RED==u1dspcolr)
+		{
+			u1dspcolr = LCD565_BLUE;
+		}
+		else
+		{
+			u1dspcolr = LCD565_RED;
+		}
+    if(u1dsp>=479)
+    {
+      LCD_Fill(0,32,800,480,sLCD.Data.BColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
+      u1dsp=32;
+      u3dsp=32;
+    }
+	}
 }
 /*******************************************************************************
 * 函数名			:	function

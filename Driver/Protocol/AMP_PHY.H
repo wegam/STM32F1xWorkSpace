@@ -7,12 +7,12 @@
 
 #define AmpMinFrameSize 7   //最小帧长度---7应答帧
 
-#define maxmsgsize 133  		//5+128	//通讯最大帧字节数
+#define maxmsgsize 256  		//5+128	//通讯最大帧字节数
 #define headcode  (unsigned char)0x7E
 #define endcode   (unsigned char)0x7F
-#define DspMaxNameLen	50		//名字长度--字节
+#define DspMaxNameLen	128		//名字长度--字节
   
-#define gDatasize       128      	//串口最大数据包容量
+#define gDatasize       256      	//串口最大数据包容量
 #define arrysize        20       	//每个发送端口待发送缓存排序个数
 #define MaxSlave        30        //最大从机数量(柜、层、位)
 #define ReSendWaitTime  50 	      //重发间隔时间单位ms
@@ -77,7 +77,7 @@ typedef struct _stmsg
   unsigned char length;   //不包含此位
   stcmddef 			cmd;
 	stampaddrdef	addr;
-	unsigned char data[128];
+	unsigned char data[256];
 }stmsgdef;
 typedef struct _stampphy
 {
@@ -101,15 +101,17 @@ typedef struct _DspData			//显示数据结构体
 	unsigned char 	SpecFontSize;		//物品规格显示字体大小
 	unsigned short 	SpecColor;			//物品规格显示颜色--RGB565
 	
-	unsigned char		String[DspMaxNameLen*2];		//名字和规格字符串缓存，名字在前
+	unsigned char		String[DspMaxNameLen*5];		//名字和规格字符串缓存，名字在前
 }DspDataDef;
 typedef struct _Mana						//耗材数据结构体，名称，规格，数量使用相同的结构体
 {
 	unsigned char 	type;					//类型：01-耗材名称，02-耗材规格，03-耗材数量
-	unsigned char 	len;					//参数长度，不包含type位
+	unsigned char 	len;					//参数长度，不包含type位和len
 	unsigned char 	FontSize;			//字体大小，如果改背景色命令时无效
-	unsigned short 	Color;				//参数显示颜色
-	unsigned char		String[DspMaxNameLen];		//字体缓存，如果改背景色命令时无效
+	unsigned char 	Red;					//红色
+	unsigned char 	Green;				//绿色
+	unsigned char 	Blue;					//蓝色
+	unsigned char		String[DspMaxNameLen];		//字体缓存，如果是数量类型则存数值，如果是改背景色时，此为空，如果是名称或者规格时，存放字符数据GBK
 }ManaDef;
 
 typedef enum  _CCPort
