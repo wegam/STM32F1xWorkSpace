@@ -58,7 +58,7 @@
 	
 	
 	#define DisplayStartX	2
-	#define DisplayEndX		ST7789V_V	
+	#define DisplayEndX		2	
 #elif 2==SelectModel		//DisplayManaStaticTest2();	//单显示效果演示
 	#define DisplayClrColor			0xFFFF		//显示区域清屏颜色
 	#define DisplayBackColor		0xFFFF		//默认字体底色
@@ -104,7 +104,7 @@
 	
 	
 	#define DisplayStartX	2
-	#define DisplayEndX		ST7789V_V
+	#define DisplayEndX		2
 #elif 3==SelectModel							//DisplayManaModel1();	//双显示--数量大号字体
 	#define DisplayClrColor					0xFFFF		//显示区域清屏颜色
 	#define DisplayBackColor				0xFFFF		//默认字体底色
@@ -148,7 +148,7 @@
 	#define DisplayBotEndY					ST7789V_H	
 	
 	#define DisplayStartX	2
-	#define DisplayEndX		ST7789V_V	
+	#define DisplayEndX		2	
 	
 #elif 4==SelectModel		//DisplayManaModel2();	//双显示--数量32号字体
 	#define DisplayClrColor					0xFFFF		//显示区域清屏颜色
@@ -156,8 +156,8 @@
 	#define DisplayFontColor				0x0000		//默认字体颜色
 	
 	
-	#define DisplayNameBkColor			0x1C9F		//名称底色
-	#define DisplayNameFtColor			0x0000		//名称颜色
+	#define DisplayNameBkColor			0xFFFF		//名称底色
+	#define DisplayNameFtColor			0x054A		//名称颜色
 	#define	DisplayNameFtSize				24				//名称字体大小
 	
 	#define DisplaySpecBkColor			0xFFFF		//规格底色
@@ -193,7 +193,7 @@
 	#define DisplayBotEndY		ST7789V_H	
 	
 	#define DisplayStartX	2
-	#define DisplayEndX		ST7789V_V	
+	#define DisplayEndX		2	
 #elif 5==SelectModel		//DisplayManaModel3();	//单显示--数量32号字体
 	#define DisplayClrColor			0xFFFF		//显示区域清屏颜色
 	#define DisplayBackColor		0xFFFF		//默认字体底色
@@ -239,7 +239,7 @@
 	
 	
 	#define DisplayStartX	2
-	#define DisplayEndX		ST7789V_V
+	#define DisplayEndX		2
 #else			//DisplayManaModel1();
 	#define DisplayClrColor			0xFFFF		//显示区域清屏颜色
 	#define DisplayBackColor		0xFFFF		//默认字体底色
@@ -285,7 +285,7 @@
 	
 	
 	#define DisplayStartX	2
-	#define DisplayEndX		ST7789V_V
+	#define DisplayEndX		2
 	
 #endif
 
@@ -294,80 +294,26 @@
 #define	AMPLcdMaxStringLen			256-9
 
 //-----------------------------------LCD显示相关结构体
+typedef struct _DisplayData			//显示数据结构体
+{
+	unsigned char 	Serial;					//显示序号
+	
+	unsigned char 	Num;						//显示数量
+	unsigned char 	NameLen;				//物品名称字符串长度
+	unsigned char 	byNameLen;			//别名字符串长度
+	unsigned char 	SpecLen;				//物品规格字符串长度
+	unsigned char 	VenderLen;			//厂家名称字符串长度
+	unsigned char 	CodeLen;				//编码字符串长度
+	unsigned char 	UnitLen;				//数量单位符串长度
+	//----------------字符串数据
+	unsigned char		String[AMPLcdMaxStringLen];		//名字和规格字符串缓存，名字在前
+}DisplayDataDef;
 typedef struct _Mana						//耗材数据结构体，名称，规格，数量使用相同的结构体
 {
 	unsigned char 	type;					//类型：01-耗材名称，02-耗材规格，03-耗材数量,04-别名，05-厂家名称，06-耗材编码，07-数量单位
 	unsigned char 	len;					//参数长度，String数据长度--字节单位
 	unsigned char		String[AMPLcdMaxStringLen];		//字体缓存，如果是数量类型则存数值，如果是改背景色时，此为空，如果是名称或者规格时，存放字符数据GBK
 }ManaDef;
-typedef struct _DisplayData			//显示数据结构体
-{
-	unsigned char 	Serial;					//显示序号
-	
-	unsigned char 	Num;						//物品名称字符串长度
-	
-	unsigned char 	LenName;				//物品名称字符串长度
-	unsigned char 	LenSpec;				//物品规格字符串长度
-	unsigned char 	LenNum;					//数量长度/位数	
-	unsigned char 	LenByName;			//别名字符串长度	
-	unsigned char 	LenVender;			//厂家名称字符串长度
-	unsigned char 	LenCode;				//编码字符串长度
-	unsigned char 	LenUnit;				//数量单位字符串长度
-	
-	unsigned char 	OffsetName;			//物品名称字符串长度
-	unsigned char 	OffsetSpec;			//物品规格字符串长度
-	unsigned char 	OffsetNum;			//数量长度/位数	
-	unsigned char 	OffsetByName;		//别名字符串长度	
-	unsigned char 	OffsetVender;		//厂家名称字符串长度
-	unsigned char 	OffsetCode;			//编码字符串长度
-	unsigned char 	OffsetUnit;			//数量单位字符串长度
-	//----------------字符串数据
-	unsigned char		String[AMPLcdMaxStringLen];		//名字和规格字符串缓存，名字在前
-}DisplayDataDef;
-typedef struct _DisplayInfo					//显示基本参数
-{
-	unsigned short	WinBackColor;			//默认字体底色
-	unsigned short	WinFontColor;			//默认字体颜色
-	
-	unsigned short	WinNameBkColor;		//名称底色
-	unsigned short	WinNameFtColor;		//名称颜色
-	unsigned short	WinNameFtSize;		//名称字体大小
-	
-	unsigned short 	WinSpecBkColor;		//规格底色
-	unsigned short 	WinSpecFtColor;		//规格颜色
-	unsigned short	WinSpecFtSize;		//规格字体大小
-	
-	unsigned short 	WinNumBkColor;		//数量底色
-	unsigned short 	WinNumFtColor;		//数量颜色
-	unsigned short	WinNumFtSize;			//数量字体大小
-	
-	unsigned short 	WinSerialBkColor;	//序号底色
-	unsigned short 	WinSerialFtColor;	//序号颜色
-	unsigned short	WinSerialFtSize;	//序号字体大小
-	
-	unsigned short 	WinCodeBkColor;		//物料编码底色
-	unsigned short 	WinCodeFtColor;		//物料编码颜色
-	unsigned short	WinCodeFtSize;		//物料编码字体大小
-	
-	unsigned short 	WinVenderBkColor;		//厂家名称底色
-	unsigned short 	WinVenderFtColor;		//厂家名称颜色
-	unsigned short	WinVenderFtSize;		//厂家名称字体大小
-	
-	unsigned short 	WinTitleBkColor;		//标题底色
-	unsigned short 	WinTitleFtColor;		//标题颜色
-	unsigned short 	WinTitleSize;				//标题字体大小
-	
-	unsigned short 	WinSeparBkColor;		//分隔线颜色
-	unsigned short 	WinSeparWidth;			//分隔线宽度
-	
-	unsigned short 	WinTopStartY;
-	unsigned short 	WinTopEndY;
-	unsigned short 	WinBotStartY;
-	unsigned short 	WinBotEndY;
-	
-	unsigned short 	WinStartX;
-	unsigned short 	WinEndX;
-}DisplayInfoDef;
 
 
 typedef struct _Display		//显示
@@ -376,12 +322,8 @@ typedef struct _Display		//显示
 	SPIDef 					SpiPort;			//字库
 	DisplayDataDef 	DisplayArry[DspMaxNameTypeCount];	//显示内容
 	
-	DisplayInfoDef	WinInfo;			//显示参数
-	
 	unsigned char 	ReceivedManaCount;	//接收到的物品信息数量
 	unsigned char 	DisplaySerial;			//当前显示序号
-	unsigned short 	DisplayNextStartX;	//当前显示序号
-	unsigned short 	DisplayNextStartY;	//当前显示序号
 }DisplayDef;
 typedef struct _Comm			//通讯
 {
@@ -432,9 +374,6 @@ void DisplayManaModel1(void);					//双显示--数量48号字体
 void DisplayManaModel2(void);					//双显示--数量32号字体
 void DisplayManaModel3(void);					//单显示--数量32号字体
 
-
-void DisplayName(const DisplayDataDef DisplayData);
-
 void SetBackColor(unsigned short BKColor);
 unsigned short GetBackColor(void);
 
@@ -444,7 +383,6 @@ unsigned short HW_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned shor
 
 
 void HW_Configuration(void);
-void DataInitialize(void);		//数据初始化
 
 void AMPLCDV11GUI(void);
 #endif

@@ -59,9 +59,7 @@ void AMPLCDV11_Configuration(void)
 	
 	SysTick_DeleymS(500);				//SysTick延时nmS
 	
-  HW_Configuration(); 
-
-	DataInitialize();	
+  HW_Configuration();  
   
   IWDG_Configuration(2000);													//独立看门狗配置---参数单位ms
 	
@@ -291,84 +289,117 @@ void GetManaData(unsigned char* Databuffer,unsigned short datalen)
 	strLen		=	ManaData->len;
 	if(0x01	==	strtype)	//名称参数
 	{
-		pDisplayData->OffsetName	=	strCount;		
-		memcpy(&strTarget[strCount],strSource,strLen);		
-		strCount+=strLen;				//已处理字符串		
-		pDisplayData->LenName	=	strLen;		
+		strCount+=strLen;		//已处理字符串
+		
+		pDisplayData->NameLen	=	strLen;
+		memcpy(strTarget,strSource,strLen);		
+		
 		ManaData	=	(ManaDef*)&strSource[strLen];
 		strSource	=	ManaData->String;
+		strTarget	=	&strTarget[strLen];
+		
 		strtype		=	ManaData->type;
 		strLen		=	ManaData->len;		
 	}
 	//---------------------------------02规格参数
 	if(0x02	==	strtype)
 	{
-		pDisplayData->OffsetSpec	=	strCount;
-		memcpy(&strTarget[strCount],strSource,strLen);		
-		strCount+=strLen;				//已处理字符串		
-		pDisplayData->LenSpec	=	strLen;		
+		strCount+=strLen;		//已处理字符串
+		
+		pDisplayData->SpecLen	=	strLen;
+		memcpy(strTarget,strSource,strLen);
+		
 		ManaData	=	(ManaDef*)&strSource[strLen];
 		strSource	=	ManaData->String;
+		strTarget	=	&strTarget[strLen];
+		
 		strtype		=	ManaData->type;
 		strLen		=	ManaData->len;
 	}
 	//---------------------------------03耗材数量		
 	if(0x03	==	ManaData->type)	//数量参数
 	{
-		pDisplayData->OffsetNum	=	strCount;
-		memcpy(&strTarget[strCount],strSource,strLen);		
-		strCount+=strLen;				//已处理字符串		
-		pDisplayData->LenNum	=	strLen;		
+		unsigned char Num	=	0;
+		strCount+=strLen;		//已处理字符串
+	
+		if((0<strLen)&&(strLen<2))
+		{
+			Num	=	strSource[0]-0x30;		//数量
+		}
+		else if(2==strLen)
+		{
+			Num	=	(strSource[0]-0x30)*10;		//数量--Ascii码，十位在前
+			Num	+= (strSource[1]-0x30);			//数量--Ascii码，十位在后
+		}
+		else
+		{
+			Num=99;
+		}
+		pDisplayData->Num	=	Num;
+		
 		ManaData	=	(ManaDef*)&strSource[strLen];
 		strSource	=	ManaData->String;
+
 		strtype		=	ManaData->type;
 		strLen		=	ManaData->len;
 	}
 	//---------------------------------04别名
 	if(0x04	==	strtype)
 	{
-		pDisplayData->OffsetByName	=	strCount;
-		memcpy(&strTarget[strCount],strSource,strLen);		
-		strCount+=strLen;				//已处理字符串		
-		pDisplayData->LenByName	=	strLen;		
+		strCount+=strLen;		//已处理字符串
+		
+		pDisplayData->byNameLen	=	strLen;
+		memcpy(strTarget,strSource,strLen);
+		
 		ManaData	=	(ManaDef*)&strSource[strLen];
 		strSource	=	ManaData->String;
+		strTarget	=	&strTarget[strLen];
+		
 		strtype		=	ManaData->type;
 		strLen		=	ManaData->len;
 	}
 	//---------------------------------05厂家名称
 	if(0x05	==	strtype)
 	{
-		pDisplayData->OffsetVender	=	strCount;
-		memcpy(&strTarget[strCount],strSource,strLen);		
-		strCount+=strLen;				//已处理字符串		
-		pDisplayData->LenVender	=	strLen;		
+		strCount+=strLen;		//已处理字符串
+		
+		pDisplayData->VenderLen	=	strLen;
+		memcpy(strTarget,strSource,strLen);
+		
 		ManaData	=	(ManaDef*)&strSource[strLen];
 		strSource	=	ManaData->String;
+		strTarget	=	&strTarget[strLen];
+		
 		strtype		=	ManaData->type;
 		strLen		=	ManaData->len;
 	}
 	//---------------------------------06耗材编码
 	if(0x06	==	strtype)
 	{
-		pDisplayData->OffsetCode	=	strCount;
-		memcpy(&strTarget[strCount],strSource,strLen);		
-		strCount+=strLen;				//已处理字符串		
-		pDisplayData->LenCode	=	strLen;		
+		strCount+=strLen;		//已处理字符串
+		
+		pDisplayData->CodeLen	=	strLen;
+		memcpy(strTarget,strSource,strLen);
+		
 		ManaData	=	(ManaDef*)&strSource[strLen];
 		strSource	=	ManaData->String;
+		strTarget	=	&strTarget[strLen];
+		
 		strtype		=	ManaData->type;
 		strLen		=	ManaData->len;
 	}
 	//---------------------------------07数量单位
 	if(0x07	==	strtype)
 	{
-		pDisplayData->OffsetUnit	=	strCount;
-		memcpy(&strTarget[strCount],strSource,strLen);		
-		strCount+=strLen;				//已处理字符串		
-		pDisplayData->LenUnit	=	strLen;		
+		strCount+=strLen;		//已处理字符串
+		
+		pDisplayData->UnitLen	=	strLen;
+		memcpy(strTarget,strSource,strLen);
+		
 		ManaData	=	(ManaDef*)&strSource[strLen];
 		strSource	=	ManaData->String;
+		strTarget	=	&strTarget[strLen];
+		
 		strtype		=	ManaData->type;
 		strLen		=	ManaData->len;
 	}
@@ -580,7 +611,6 @@ void DisplayManaModel1(void)
 	unsigned char i	=	0;
 	unsigned char len=0;
 	unsigned char num=0;
-	unsigned char	offset	=	0;
 	unsigned char* str;
 	//unsigned char  FontSize	=	0;
 	
@@ -637,29 +667,20 @@ void DisplayManaModel1(void)
 	{
 		if(sAmpLcd.Display.DisplaySerial==sAmpLcd.Display.DisplayArry[i].Serial)
 		{
-			unsigned char temp[100];
 			DisplayData	=	sAmpLcd.Display.DisplayArry[i];
 			yebac	=	ys;			
 			
 			//=====================================数量
-			//-------------------------------------取数量数据
-			offset	=	DisplayData.LenName+DisplayData.LenSpec;
-			str	=	&str[offset];
-			memcpy(temp,str,DisplayData.LenNum);
-			//-------------------------------------取单位数据
-			offset	=	DisplayData.LenName+DisplayData.LenSpec+DisplayData.LenNum+DisplayData.LenByName+DisplayData.LenVender+DisplayData.LenCode;
-			str	=	&str[offset];
-			memcpy(&temp[DisplayData.LenNum],str,DisplayData.LenUnit);
-			//num	=	DisplayData.Num;
-			//ST7789V_ShowChar4836(248,ys,DisplayNumBkColor,DisplayNumFtColor,code_ascii_4836[num/10]);	 	//高通字库测试程序
-			//ST7789V_ShowChar4836(284,ys,DisplayNumBkColor,DisplayNumFtColor,code_ascii_4836[num%10]);	  //高通字库测试程序
+			num	=	DisplayData.Num;
+			ST7789V_ShowChar4836(248,ys,DisplayNumBkColor,DisplayNumFtColor,code_ascii_4836[num/10]);	 	//高通字库测试程序
+			ST7789V_ShowChar4836(284,ys,DisplayNumBkColor,DisplayNumFtColor,code_ascii_4836[num%10]);	  //高通字库测试程序
 			
 			//=====================================显示名称：10个字(20字节)一行						
 			
 			//-----------------------------------------第一行
 			xs	=	0;
 			str	=	DisplayData.String;
-			len	=	DisplayData.LenName;		//字节数
+			len	=	DisplayData.NameLen;		//字节数
 			num	=	(ST7789V_V-36*2)/(DisplayNameFtSize/2);			//一行能够显示的数量
 			if(len>num)
 			{
@@ -696,9 +717,9 @@ void DisplayManaModel1(void)
 			xe	=	ST7789V_V-DisplaySerialFtSize*3;
 			ys=yebac+DisplayNameFtSize*2+1;
 			
-			len	=	DisplayData.LenName;			//字节数
+			len	=	DisplayData.NameLen;			//字节数
 			str	=	&DisplayData.String[len];
-			len	=	DisplayData.LenSpec;
+			len	=	DisplayData.SpecLen;
 			
 			num	=	(ST7789V_V-DisplaySerialFtSize*3)/(DisplaySpecFtSize/2);			//一行能够显示的数量
 			if(len>num)
@@ -746,13 +767,11 @@ void DisplayManaModel2(void)
 	unsigned char i	=	0;
 	unsigned char len=0;
 	unsigned char num=0;
-	unsigned char size=0;
-	unsigned char offset=0;
-	unsigned char	buffer[256];
 	unsigned char* str;
 	
 	unsigned char TempLay	=	sAmpLcd.Sys.AddrLay%100;
 	unsigned char TempSeg	=	sAmpLcd.Sys.AddrSeg%100;
+
 	
 	unsigned short xs=0;
 	unsigned short ys=0;
@@ -783,7 +802,7 @@ void DisplayManaModel2(void)
 	ys	=	DisplayTopStartY;
 	ye	=	DisplayBotStartY;
 	
-	ST7789V_Fill(xs,ys,xe,ye,DisplayClrColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)	
+	ST7789V_Fill(xs,ys,xe,ye,DisplayNameBkColor);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)	
 	
 	//===============================顶部填充
 	ye=DisplayTopStartY;	
@@ -832,33 +851,19 @@ void DisplayManaModel2(void)
 			{
 				ST7789V_PrintfBK(ST7789V_V-DisplayTitleSize*8,DisplayTopStartY,DisplayTitleSize,DisplayTitleBkColor,DisplayTitleFtColor,"%0.2d/%0.2d页 %0.2d/%0.2d页",Serial-1,Sum,Serial,Sum);  //LCD显示测试Printf
 			}
-			//=====================================显示数量和单位
+			//=====================================显示数量
+			num	=	DisplayData.Num;
+			xs	=	ST7789V_V-DisplayNumFtSize*2;
+			ys	=	yebac+DisplayNameFtSize*2;
 			
-			str			=	DisplayData.String;
-			len			=	DisplayData.LenNum;
-			offset	=	DisplayData.OffsetNum;			
-			memcpy(buffer,&str[offset],len);
-			
-			len			=	DisplayData.LenUnit;
-			offset	=	DisplayData.OffsetUnit;			
-			memcpy(&buffer[DisplayData.LenNum],&str[offset],len);		
-			
-				
-			
-			num	=	DisplayData.LenNum+DisplayData.LenUnit;
-			
-			xs			=	ST7789V_V-(DisplayNumFtSize/2)*(DisplayData.LenNum+DisplayData.LenUnit);
-			ys			=	yebac+DisplayNameFtSize*2;
-			str			=	buffer;			
-			
-			ST7789V_ShowStringBK(xs,ys,DisplayNumFtSize,DisplayNumBkColor,DisplayNumFtColor,num,str);
-
+			ST7789V_PrintfBK(xs,ys,DisplayNumFtSize,DisplayNumBkColor,DisplayNumFtColor,"%0.2d",num);
+			xs+=DisplayNumFtSize;
+			ST7789V_PrintfBK(xs,ys,32,DisplayNumBkColor,DisplayNumFtColor,"瓶");
 			//=====================================显示名称：10个字(20字节)一行			
 			xs	=	0;
 			ys	=	yebac;
-			
 			str	=	DisplayData.String;
-			len	=	DisplayData.LenName;		//字节数
+			len	=	DisplayData.NameLen;		//字节数
 			num	=	(ST7789V_V)/(DisplayNameFtSize/2);			//一行能够显示的数量
 			if(len>2*num)
 			{
@@ -868,30 +873,39 @@ void DisplayManaModel2(void)
 			{
 				num=len;
 			}
-			ST7789V_Fill(0,ys,ST7789V_V,ys+DisplayNameFtSize*2,DisplayNameBkColor);
 			ST7789V_ShowStringBK(xs,ys,DisplayNameFtSize,DisplayNameBkColor,DisplayNameFtColor,num,str);
 			ys+=DisplayNameFtSize*2;
 			//=====================================显示规格			
 			//-----------------------------------------第一行
-			
 			xs	=	0;
-			xe	=	ST7789V_V-(DisplayNumFtSize/2)*(DisplayData.LenNum+DisplayData.LenUnit);
-			ys	=	yebac+DisplayNameFtSize*2+1;
-			ye	=	ys+DisplaySpecFtSize*2;
+			xe	=	ST7789V_V-DisplaySerialFtSize*3;
+			ys=yebac+DisplayNameFtSize*2+1;
 			
-			size=strlen("规格:");
-			memcpy(&buffer[0],"规格:",len);
+			len	=	DisplayData.NameLen;			//字节数
+			str	=	&DisplayData.String[len];
+			len	=	DisplayData.SpecLen;
 			
-			len	=	DisplayData.LenSpec;			//字节数
-			offset	=	DisplayData.OffsetSpec;
-			
-			str	=	&DisplayData.String[offset];
-			memcpy(&buffer[size],str,len);
- 
-			len=len+size;
-	
-			ST7789V_ShowStringBKAre(xs,ys,xe,ye,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,len,buffer);	//带背景色限定区域显示		
-
+			num	=	(ST7789V_V-DisplayNumFtSize/2*5)/(DisplaySpecFtSize/2);			//一行能够显示的数量
+			if(len>num)
+			{
+				ST7789V_ShowStringBK(0,ys,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,num,str);
+				ys+=DisplaySpecFtSize;
+				len-=num;
+				str=&str[num];
+			}
+			//-----------------------------------------第二行
+			if(len>0)
+			{
+				if(len>num)
+				{
+					num=num;
+				}
+				else
+				{
+					num=len;
+				}
+				ST7789V_ShowStringBK(0,ys,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,num,str);
+			}				
 			sAmpLcd.Display.DisplaySerial+=1;			
 			break;
 		}		
@@ -999,7 +1013,7 @@ void DisplayManaModel3(void)
 			xs	=	0;
 			ys	=	yebac;
 			str	=	sAmpLcd.Display.DisplayArry[i].String;
-			len	=	sAmpLcd.Display.DisplayArry[i].LenName;		//字节数
+			len	=	sAmpLcd.Display.DisplayArry[i].NameLen;		//字节数
 			num	=	(ST7789V_V)/(DisplayNameFtSize/2);			//一行能够显示的数量
 			ST7789V_ShowStringBKAre(xs,ys,ST7789V_V,ys+DisplayNameFtSize*2,DisplayNameFtSize,DisplayNameBkColor,DisplayNameFtColor,len,str);	//带背景色限定区域显示
 			ys+=DisplayNameFtSize*2;
@@ -1011,9 +1025,9 @@ void DisplayManaModel3(void)
 			ys=		yebac+DisplayNameFtSize*2+1;
 			ye	=	ys+DisplaySpecFtSize*2;
 			
-			len	=	sAmpLcd.Display.DisplayArry[i].LenName;			//字节数
+			len	=	sAmpLcd.Display.DisplayArry[i].NameLen;			//字节数
 			str	=	&sAmpLcd.Display.DisplayArry[i].String[len];
-			len	=	sAmpLcd.Display.DisplayArry[i].LenSpec;
+			len	=	sAmpLcd.Display.DisplayArry[i].SpecLen;
 			
 			ST7789V_ShowStringBKAre(xs,ys,xe,ye,DisplaySpecFtSize,DisplaySpecBkColor,DisplaySpecFtColor,len,str);	//带背景色限定区域显示
 			
@@ -1138,7 +1152,7 @@ void DisplayManaModel3bac(void)
 			xs	=	0;
 			ys	=	yebac;
 			str	=	sAmpLcd.Display.DisplayArry[i].String;
-			len	=	sAmpLcd.Display.DisplayArry[i].LenName;		//字节数
+			len	=	sAmpLcd.Display.DisplayArry[i].NameLen;		//字节数
 			num	=	(ST7789V_V)/(DisplayNameFtSize/2);			//一行能够显示的数量
 			if(len>num)
 			{
@@ -1168,9 +1182,9 @@ void DisplayManaModel3bac(void)
 			xe	=	ST7789V_V-DisplaySerialFtSize*3;
 			ys=yebac+DisplayNameFtSize*2+1;
 			
-			len	=	sAmpLcd.Display.DisplayArry[i].LenName;			//字节数
+			len	=	sAmpLcd.Display.DisplayArry[i].NameLen;			//字节数
 			str	=	&sAmpLcd.Display.DisplayArry[i].String[len];
-			len	=	sAmpLcd.Display.DisplayArry[i].LenSpec;
+			len	=	sAmpLcd.Display.DisplayArry[i].SpecLen;
 			
 			num	=	(ST7789V_V-DisplayNumFtSize/2*5)/(DisplaySpecFtSize/2);			//一行能够显示的数量
 			if(len>num)
@@ -1198,143 +1212,7 @@ void DisplayManaModel3bac(void)
 		}		
 	}
 }
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	function
-*输入				: 
-*返回值			:	无
-*修改时间		:	无
-*修改说明		:	无
-*注释				:	wegam@sina.com
-*******************************************************************************/
-void DisplayName(const DisplayDataDef DisplayData)
-{
-	unsigned char i	=	0;
-	unsigned char len=0;
-	unsigned char num=0;
-	unsigned char size=0;
-	unsigned char offset=0;
-	unsigned char	buffer[256];
-	unsigned char* str;
 
-	unsigned short xs=0;
-	unsigned short ys=0;
-	unsigned short xe=0;
-	unsigned short ye=0;
-	unsigned short ysum=0;
-	unsigned short yebac=0;
-	unsigned short ValidX;		//水平有效使用点
-	unsigned short ValidY;		//垂直有效使用点
-	
-	
-	unsigned short DisplayNewStartY;
-	
-	DisplayInfoDef WinInfo;
-	
-	DisplayNewStartY	=	sAmpLcd.Display.DisplayNextStartY;
-	
-	ValidX	=	WinInfo.WinEndX-WinInfo.WinStartX;
-	
-	
-	WinInfo	=	sAmpLcd.Display.WinInfo;
-	//==========================================计算显示区域
-	ys	=	WinInfo.WinTitleSize+WinInfo.WinSeparWidth;
-	ye	=	WinInfo.WinBotStartY;
-	ValidY	=	ye	-	ys;
-	//==========================================检查上次显示是否不在起始行，如果不是，则从起始行显示，如果是，再判断半页能否显示完全
-	if(DisplayNewStartY>ys+WinInfo.WinNameFtSize)
-	{
-		sAmpLcd.Display.DisplayNextStartY	=	ys;
-		goto StartDisplayName;
-	}
-	//==========================================计算商品名需要占用的行点数，包含别名
-	//------------------------------------------计算一行可以显示多少个字符
-	num	=	(ValidX)/(WinInfo.WinNameFtSize/2);		//(宽度为半个高度)
-	//------------------------------------------计算需要多少行
-	num	=	(DisplayData.LenName+DisplayData.LenByName)/num;
-	//------------------------------------------计算占用行数：不足一行算一行
-	if(0!=DisplayData.LenName%num)
-	{
-		num=num+1;
-	}
-	//------------------------------------------商品名最多显示四行
-	if(num>4)
-		num=4;
-	//------------------------------------------计算需要占用的行点数
-	ysum	=	num*WinInfo.WinNameFtSize;				
-	
-	
-	
-	//==========================================计算规格需要占用的行数
-	//------------------------------------------计算减去数量显示剩下的水平有效宽度
-	ValidX	=	ValidX-(DisplayData.LenNum+DisplayData.LenUnit)*(WinInfo.WinNumFtSize/2);
-	//------------------------------------------计算一行可以显示多少个字符
-	num	=	ValidX/(WinInfo.WinSpecFtSize/2);		//(宽度为半个高度)
-	//------------------------------------------计算需要多少行
-	num	=	(DisplayData.LenSpec)/num;
-	//------------------------------------------计算占用行数：不足一行算一行
-	if(0!=DisplayData.LenSpec%num)
-	{
-		num=num+1;
-	}
-	//------------------------------------------商品名最多显示四行
-	if(num>4)
-		num=4;
-	//------------------------------------------计算需要占用的行点数
-	ysum	+=	num*WinInfo.WinSpecFtSize;
-	
-	
-	
-	//==========================================计算厂家需要占用的行数
-	//------------------------------------------计算一行可以显示多少个字符
-	num	=	ValidX/(WinInfo.WinVenderFtSize/2);		//(宽度为半个高度)
-		//------------------------------------------计算需要多少行
-	num	=	(DisplayData.LenVender)/num;
-	//------------------------------------------计算占用行数：不足一行算一行
-	if(0!=DisplayData.LenVender%num)
-	{
-		num=num+1;
-	}
-	//------------------------------------------商品名最多显示四行
-	if(num>4)
-		num=4;
-	//------------------------------------------计算需要占用的行点数
-	ysum	+=	num*WinInfo.WinVenderFtSize;				//商品名需要用到的点数
-	
-	
-	//==========================================计算编号需要占用的行数
-	//------------------------------------------计算一行可以显示多少个字符
-	num	=	ValidX/(WinInfo.WinCodeFtSize/2);		//(宽度为半个高度)
-		//------------------------------------------计算需要多少行
-	num	=	(DisplayData.LenCode)/num;
-	//------------------------------------------计算占用行数：不足一行算一行
-	if(0!=DisplayData.LenCode%num)
-	{
-		num=num+1;
-	}
-	//------------------------------------------商品名最多显示四行
-	if(num>4)
-		num=4;
-	//------------------------------------------计算需要占用的行点数
-	ysum	+=	num*WinInfo.WinCodeFtSize;				//商品名需要用到的点数
-	
-	//==========================================判断是否需要重新开一页显示
-	if(ysum>(ValidY/2-WinInfo.WinSeparWidth))
-	{
-		DisplayNewStartY	=	ys;		
-	}
-	else	//下半页显示
-	{
-		DisplayNewStartY	=	ValidY/2+WinInfo.WinSeparWidth;
-	}
-	sAmpLcd.Display.DisplayNextStartY	=	DisplayNewStartY;
-	
-	//==========================================判断起始点在中线上还是下
-	//==========================================开始显示商品名称
-	StartDisplayName:
-	sAmpLcd.Display.DisplayNextStartY	=	ys;
-	
-}
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -1485,64 +1363,6 @@ void HW_Configuration(void)
 	temp	=	SWITCHID_ReadLeft(&sAmpLcd.sSwitch);
   sAmpLcd.Sys.AddrLay=(temp>>4)&0X0F;  	//层地址
   sAmpLcd.Sys.AddrSeg=temp&0x0F;      	//位地址
-}
-/*******************************************************************************
-*函数名			:	DataInitialize
-*功能描述		:	数据初始化
-*输入				: 
-*返回值			:	无
-*修改时间		:	无
-*修改说明		:	无
-*注释				:	wegam@sina.com
-*******************************************************************************/
-void DataInitialize(void)
-{
-	//==========================================显示参数初始化
-	DisplayInfoDef WinInfo;
-	
-	WinInfo.WinBackColor			=	DisplayBackColor;
-	WinInfo.WinFontColor			=	DisplayFontColor;
-	
-	WinInfo.WinNameBkColor		=	DisplayNameBkColor;
-	WinInfo.WinNameFtColor		=	DisplayNameFtColor;
-	WinInfo.WinNameFtSize			=	DisplayNameFtSize;
-	
-	WinInfo.WinSpecBkColor		=	DisplaySpecBkColor;
-	WinInfo.WinSpecFtColor		=	DisplaySpecFtColor;
-	WinInfo.WinSpecFtSize			=	DisplaySpecFtSize;
-	
-	WinInfo.WinNumBkColor			=	DisplayNumBkColor;
-	WinInfo.WinNumFtColor			=	DisplayNumFtColor;
-	WinInfo.WinNumFtSize			=	DisplayNumFtSize;
-	
-	WinInfo.WinSerialBkColor	=	DisplaySerialBkColor;
-	WinInfo.WinSerialFtColor	=	DisplaySerialFtColor;
-	WinInfo.WinSerialFtSize		=	DisplaySerialFtSize;
-	
-	WinInfo.WinCodeBkColor		=	DisplayCodeBkColor;
-	WinInfo.WinCodeFtColor		=	DisplayCodeFtColor;
-	WinInfo.WinCodeFtSize			=	DisplayCodeFtSize;
-	
-	WinInfo.WinVenderBkColor	=	DisplayVenderBkColor;
-	WinInfo.WinVenderFtColor	=	DisplayVenderFtColor;
-	WinInfo.WinVenderFtSize		=	DisplayVenderFtSize;
-	
-	WinInfo.WinTitleBkColor		=	DisplayTitleBkColor;
-	WinInfo.WinTitleFtColor		=	DisplayTitleFtColor;
-	WinInfo.WinTitleSize			=	DisplayTitleSize;
-	
-	WinInfo.WinSeparBkColor		=	DisplaySeparBkColor;
-	WinInfo.WinSeparWidth			=	DisplaySeparWidth;
-	
-	WinInfo.WinTopStartY			=	DisplayTopStartY;
-	WinInfo.WinTopEndY				=	DisplayTopEndY;
-	WinInfo.WinBotStartY			=	DisplayBotStartY;
-	WinInfo.WinBotEndY				=	DisplayBotEndY;
-	
-	WinInfo.WinStartX					=	DisplayStartX;
-	WinInfo.WinEndX						=	DisplayEndX;	
-	
-	sAmpLcd.Display.WinInfo		=	WinInfo;
 }
 /*******************************************************************************
 *函数名			:	function

@@ -53,7 +53,7 @@ sST7789VDef	*pST7789V	=	0;		//内部驱动使用，不可删除
 
 
 
-char	ST7789VStringBuffer[256]={0};			//记录format内码
+//char	ST7789VStringBuffer[256]={0};			//记录format内码
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	函数功能说明
@@ -108,7 +108,7 @@ unsigned int ST7789V_Printf(u16 x,u16 y,u8 font,u16 color,const char *format,...
 //		vsprintf( string , format, ap );    
 //		va_end( ap );
 	
-	//char	ST7789VStringBuffer[256]={0};			//记录format内码
+	char	ST7789VStringBuffer[256]={0};			//记录format内码
 	//1)**********获取数据宽度
   u16 InputDataSize=0;
 	//3)**********vArgList为定义的一个指向可变参数的变量，va_list以及下边要用到的va_start,va_end都是是在定义，可变参数函数中必须要用到宏， 在stdarg.h头文件中定义
@@ -146,7 +146,7 @@ unsigned int ST7789V_PrintfBK(u16 x,u16 y,u8 font,u16 BKColor,u16 PenColor,const
 //		vsprintf( string , format, ap );    
 //		va_end( ap );
 	
-	//char	ST7789VStringBuffer[256]={0};			//记录format内码
+	char	ST7789VStringBuffer[256]={0};			//记录format内码
 	//1)**********获取数据宽度
   u16 InputDataSize=0;
 	//3)**********vArgList为定义的一个指向可变参数的变量，va_list以及下边要用到的va_start,va_end都是是在定义，可变参数函数中必须要用到宏， 在stdarg.h头文件中定义
@@ -419,6 +419,113 @@ void ST7789V_ShowStringBK(
 		}
 		LCD_ShowJump:
 			__nop();
+	}
+}
+/*******************************************************************************
+* 函数名			:	ST7789V_ShowStringBKAre
+* 功能描述		:	带背景色限定区域显示 
+* 输入			: void
+* 返回值			: void
+*******************************************************************************/
+void ST7789V_ShowStringBKAre(
+							u16 xs,			//x				:起点x坐标
+							u16 ys,			//y				:起点y坐标
+							u16 xe,			//x				:终点x坐标
+							u16 ye,			//y				:终点y坐标
+							u8 font,		//font		:字体大小
+							u16 BKColor,
+							u16 PenColor,//字体颜色
+							u8 num,			//num			:字节数
+							u8 *Buffer	//Buffer	:显示的内容缓存
+)		//高通字库测试程序
+{
+	unsigned short	MaxX	=	xe-xs;	//水平宽度
+	unsigned short	MaxY	=	ye-ys;	//垂直高度
+	unsigned short	x	=	xs;	//水平起始点
+	unsigned short	y	=	ys;	//垂直起始点
+	unsigned char 	i=0;
+	unsigned char 	CodeBuffer[256]={0};
+
+	for(i=0;i<num;i++)
+	{
+		unsigned char GetBufferLength	=	0;
+		unsigned char dst=Buffer[i];		
+		//A=====================双字节--汉字
+		if(dst>0x80)
+		{
+			u16 word=dst<<8;
+      
+			dst=Buffer[i+1];
+			word=word|dst;			
+			//A1=====================显示超限换行
+      if(x>xe-font)
+      {
+        x=xs;
+        y+=font;
+      }
+      //A2=====================显示到屏尾，从原点开始
+      if(y>(ye-font+3))
+      {
+        return;
+      }
+      //A3=====================读取点阵数据
+			GetBufferLength	=	GT32L32_GetCode(font,word,CodeBuffer);		//从字库中读数据并返回数据长度
+			//GetBufferLength	=	GT32L32_GetAntennaCode(3,CodeBuffer);
+			//A4=====================写入屏幕
+			ST7789V_ShowWordBK(x,y,font,BKColor,PenColor,GetBufferLength,CodeBuffer);
+			//A5=====================水平显示地址增加
+      x+=font;
+			i++;		//双字节，减两次			
+		}
+		else if(('\r'==dst)||('\n'==dst))
+		{
+			if(('\n'==Buffer[i+1])||('\r'==Buffer[i+1]))
+			{
+				i++;	//去掉回车符长度
+			}
+//			if(x>MaxX-font)
+//      {
+//				x=xs;
+//        y+=font;
+//      }
+//			else
+//			{
+//				x=xs;
+//				y+=font;
+//			}
+		}
+		//B=====================单字节--ASCII字符集
+		else
+		{			
+			//B1=====================显示超限换行
+      if(x>xe-font/2)//半个宽度
+      {
+        x=xs;
+        y+=font;
+      }
+      //B2=====================显示到屏尾，从原点开始
+      if(y>ye-font)
+      {
+				return;
+      }
+			if(0x00	!=	(char)dst)
+			{
+				//B3=====================读取点阵数据
+				GetBufferLength	=	GT32L32_GetCode(font,(u16)dst,CodeBuffer);		//从字库中读数据并返回数据长度
+				//GetBufferLength	=	GT32L32_GetBatteryCode(3,CodeBuffer);
+				//=======================水平制表符按空格显示(部分字库会当0xFF输出)
+				if(	('	'	==	(char)dst)		//水平制表符
+					||(' '	==	(char)dst))		//空格
+				{
+					memset(CodeBuffer,0x00,GetBufferLength);
+				}
+				//B4=====================写入屏幕
+				ST7789V_ShowCharBK(x,y,font,BKColor,PenColor,GetBufferLength,CodeBuffer);
+				//B5=====================水平显示地址增加
+				x+=font/2;
+			}
+      						
+		}
 	}
 }
 /*******************************************************************************
@@ -1138,7 +1245,7 @@ void ST7789V_ShowChar4836(
 										u16 y,			//y				:起点y坐标
 										u16 BKColor,	//背景颜色
 										u16 PenColor,	//字体颜色
-										u8 *Buffer	//Buffer	:显示的内容缓存
+										const u8 *Buffer	//Buffer	:显示的内容缓存
 										
 )		//高通字库测试程序
 {

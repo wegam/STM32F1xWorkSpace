@@ -23,9 +23,6 @@
 #define checkswitchidtime 	2000    		//检查拨码开关时间间隔
 #define GetOnlinetime   		5000      	//获取在线设备时间间隔
 
-extern unsigned  char  ackupfarme[AmpMinFrameSize];
-extern unsigned  char  ackdownfarme[AmpMinFrameSize];
-	
 typedef enum _eucmd
 {
   AmpCmdNone      = 0x00,    	//不支持的命令/空命令
@@ -89,7 +86,33 @@ typedef struct _stampphy
   stampcrc16def crc16;
   unsigned char end;
 }stampphydef;
-
+//-----------------------------------LCD显示相关结构体
+typedef struct _DisplayData			//显示数据结构体
+{
+	unsigned char 	Serial;					//显示序号
+	unsigned char 	Num;						//显示数量
+	unsigned short 	NumColor;				//显示数量字符显示颜色--RGB565
+	//----------------物品名称参数
+	unsigned char 	NameLen;				//物品名称数据长度--字节单位
+	unsigned char 	NameFontSize;		//物品名称显示字体大小
+	unsigned short 	NameColor;			//物品名称显示颜色--RGB565
+	//----------------物品规格参数specifications
+	unsigned char 	SpecLen;				//物品规格数据长度--字节单位
+	unsigned char 	SpecFontSize;		//物品规格显示字体大小
+	unsigned short 	SpecColor;			//物品规格显示颜色--RGB565
+	
+	unsigned char		String[DspMaxNameLen*5];		//名字和规格字符串缓存，名字在前
+}DisplayDataDef;
+typedef struct _Mana						//耗材数据结构体，名称，规格，数量使用相同的结构体
+{
+	unsigned char 	type;					//类型：01-耗材名称，02-耗材规格，03-耗材数量,04-别名，05-厂家名称，06-耗材编码，07-数量单位
+	unsigned char 	len;					//参数长度，String数据长度--字节单位
+	unsigned char 	FontSize;			//字体大小，如果改背景色命令时无效
+	unsigned char 	Red;					//红色
+	unsigned char 	Green;				//绿色
+	unsigned char 	Blue;					//蓝色
+	unsigned char		String[DspMaxNameLen];		//字体缓存，如果是数量类型则存数值，如果是改背景色时，此为空，如果是名称或者规格时，存放字符数据GBK
+}ManaDef;
 
 typedef enum  _CCPort
 {
