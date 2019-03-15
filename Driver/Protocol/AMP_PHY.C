@@ -51,43 +51,9 @@ __weak unsigned short HW_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsign
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void Tim_Server(void)
+__weak void Tim_Server(void)
 {
-  //----------------PC发送
-  if(AMPPro.Time.PcSendTime>0)
-  {
-    AMPPro.Time.PcSendTime--;
-  }
-  //----------------柜发送
-  if(AMPPro.Time.CabSendTime>0)
-  {
-    AMPPro.Time.CabSendTime--;
-  }
-  //----------------层发送
-  if(AMPPro.Time.LaySendTime>0)
-  {
-    AMPPro.Time.LaySendTime--;
-  }
-  //----------------读卡器发送
-  if(AMPPro.Time.CardSendTime>0)
-  {
-    AMPPro.Time.CardSendTime--;
-  }
-  //----------------锁
-  if(AMPPro.Time.LockTime>0)
-  {
-    AMPPro.Time.LockTime--;
-  }
-  //----------------拨码
-  if(AMPPro.Time.swicthidtime>0)
-  {
-    AMPPro.Time.swicthidtime--;
-  }
-  //----------------运行指示灯
-  if(AMPPro.Time.SYSLEDTime>0)
-  {
-    AMPPro.Time.SYSLEDTime--;
-  }
+
 }
 /*******************************************************************************
 *函数名			:	API_AmpCheckFrame
@@ -703,8 +669,7 @@ unsigned short Check_SendBuff(enCCPortDef Port)
       *SendTime = ReSendWaitTime;
       
       if(*ReSendCount>=maxresendcount) //超出重发次数：放弃发送
-      {
-        
+      {        
         SendTimeOut(Port);      //发送超时
         //Releas_OneBuffer(Port);
         *ReSendCount  = 0;      //重发清零

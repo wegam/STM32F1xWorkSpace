@@ -905,59 +905,59 @@ u16 GT32L32_GetCode(
 	return lengh;
 }
 
-/*******************************************************************************
-*函数名			:	UnicodeCheck
-*功能描述		:	function
-*输入				: 
-*返回值			:	0-非Unicode数据，1-Unicode数据
-*修改时间		:	无
-*修改说明		:	无
-*注释				:	wegam@sina.com
-*******************************************************************************/
-unsigned char UnicodeCheck(unsigned char* data,unsigned short len)
-{
-	unsigned char IsUnicodeData=0;	//0-非Unicode数据，1-Unicode数据
-	unsigned char UnicodeH	=	0;		//Unicode高8位，数组中低8位在前，高8位在后
-	unsigned char	UnicodeL	=	0;		//Unicode低8位，数组中低8位在前，高8位在后
-	unsigned short Unicode	=	0;
-	unsigned long	GB_Address	=	0;
-	
-	unsigned short	GBK	=	0;		//GB编码的高字节（1个字节）
-	unsigned char	GBKC1	=	0;		//GB编码的高字节（1个字节）
-	unsigned char	GBKC2	=	0;		//GB编码的低字节（1个字节）
-	
-	if(len<2)
-	{
-		return IsUnicodeData;
-	}
-	//--------------------------------读取低8位
-	UnicodeL	=	data[0];
-	UnicodeH	=	data[1];
-	
-	//--------------------------------判断是否为字符
-	if(0x00==UnicodeH)
-	{
-		IsUnicodeData	=	1;
-	}
-	//--------------------------------汉字
-	else if((0x80>UnicodeH)&&(0x00<UnicodeL))
-	{
-		unsigned char temp[10]=0;
-		IsUnicodeData	=	1;
-		
-		Unicode	=	UnicodeH<<8|UnicodeL;
-		GBK=U2G(Unicode);
-		//--------------------------------转码
-		
-		data[0]	=	GBK&0xFF;	//GB编码的低字节（1个字节）
-		data[1]	=	GBK>>8;	//GB编码的高字节（1个字节）
-	}
-	else
-	{
-	}
-	
-	return IsUnicodeData;	//0-非Unicode数据，1-Unicode数据
-}
+///*******************************************************************************
+//*函数名			:	UnicodeCheck
+//*功能描述		:	function
+//*输入				: 
+//*返回值			:	0-非Unicode数据，1-Unicode数据
+//*修改时间		:	无
+//*修改说明		:	无
+//*注释				:	wegam@sina.com
+//*******************************************************************************/
+//unsigned char UnicodeCheck(unsigned char* data,unsigned short len)
+//{
+//	unsigned char IsUnicodeData=0;	//0-非Unicode数据，1-Unicode数据
+//	unsigned char UnicodeH	=	0;		//Unicode高8位，数组中低8位在前，高8位在后
+//	unsigned char	UnicodeL	=	0;		//Unicode低8位，数组中低8位在前，高8位在后
+//	unsigned short Unicode	=	0;
+//	unsigned long	GB_Address	=	0;
+//	
+//	unsigned short	GBK	=	0;		//GB编码的高字节（1个字节）
+//	unsigned char	GBKC1	=	0;		//GB编码的高字节（1个字节）
+//	unsigned char	GBKC2	=	0;		//GB编码的低字节（1个字节）
+//	
+//	if(len<2)
+//	{
+//		return IsUnicodeData;
+//	}
+//	//--------------------------------读取低8位
+//	UnicodeL	=	data[0];
+//	UnicodeH	=	data[1];
+//	
+//	//--------------------------------判断是否为字符
+//	if(0x00==UnicodeH)
+//	{
+//		IsUnicodeData	=	1;
+//	}
+//	//--------------------------------汉字
+//	else if((0x80>UnicodeH)&&(0x00<UnicodeL))
+//	{
+//		unsigned char temp[10]=0;
+//		IsUnicodeData	=	1;
+//		
+//		Unicode	=	UnicodeH<<8|UnicodeL;
+//		GBK=U2G(Unicode);
+//		//--------------------------------转码
+//		
+//		data[0]	=	GBK&0xFF;	//GB编码的低字节（1个字节）
+//		data[1]	=	GBK>>8;	//GB编码的高字节（1个字节）
+//	}
+//	else
+//	{
+//	}
+//	
+//	return IsUnicodeData;	//0-非Unicode数据，1-Unicode数据
+//}
 //UNICODE转GBK码表映射算法（不含符号区,转换全部双字节区）
 //GB_Address转换之后的GB码的存放地址，
 //函数：WORD U2G(WORD Unicode)

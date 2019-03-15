@@ -35,6 +35,9 @@ unsigned long InitCardUSART_BaudRate=0; //配置读卡器时使用的波特率
 unsigned char CabAddr   =0;
 unsigned char MainFlag  =0; //0--副柜，1--主柜
 
+unsigned short RxNum  = 0;
+unsigned char rxd[300]={0};
+
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -70,11 +73,15 @@ void AMP_CABV11_Server(void)
 {
   //========================读卡器已配置
   LockServer();       //锁
+
   RequestServer();    //请求命令处理
   AMPCAB_SwitchIDServer();
   AMPCAB_SYSLED();
   AMPCAB_BackLight();     //背光灯
   API_IOT5302WServer();   //读卡器服务程序
+	
+	AMPCAB_Receive();
+  Send_Server();
 }
 /*******************************************************************************
 *函数名			:	MainBoard_Server
@@ -87,13 +94,13 @@ void AMP_CABV11_Server(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMP_CABV11_Loop(void)
-{ 
-  //========================读卡器已配置
-  AMPCAB_Receive();
-  Send_Server();
-  
-}
+//void AMP_CABV11_Loop(void)
+//{ 
+//  //========================读卡器已配置
+//  AMPCAB_Receive();
+//  Send_Server();
+//  
+//}
 /*******************************************************************************
 *函数名			:	CardReaderInitLoop
 *功能描述		:	function
@@ -149,31 +156,39 @@ void CardReaderInitLoop(void)
 *******************************************************************************/
 void AMPCAB_Receive(void)
 {
-  unsigned short RxNum  = 0;
-  unsigned char rxd[256]={0};
+//  unsigned short RxNum  = 0;
+//  unsigned char rxd[300]={0};
   //==========================================================接收查询
   //---------------------PC接口 USART1
   RxNum = USART_ReadBufferIDLE(CommPcPort,rxd);
   if(RxNum)
   {
+		if(RxNum>maxmsgsize)
+			RxNum=maxmsgsize;
     Msg_ProcessCB(PcPort,rxd,RxNum);                //柜消息处理
   }
   //---------------------副柜接口 UART4
   RxNum = RS485_ReadBufferIDLE(&stCbRS485Cb,rxd);
   if(RxNum)
   {
+		if(RxNum>maxmsgsize)
+			RxNum=maxmsgsize;
     Msg_ProcessCB(CabPort,rxd,RxNum);
   }  
   //---------------------层板接口 USART2
   RxNum = RS485_ReadBufferIDLE(&stCbRS485Ly,rxd);
   if(RxNum)
   {
+		if(RxNum>maxmsgsize)
+			RxNum=maxmsgsize;
     Msg_ProcessCB(LayPort,rxd,RxNum);              //柜消息处理
   }
   //---------------------读卡器接口 USART3
   RxNum = API_IOT5302WGetUID(rxd);
   if(RxNum)
   {
+		if(RxNum>maxmsgsize)
+			RxNum=maxmsgsize;
     Msg_ProcessCB(CardPort,rxd,RxNum);
   }
 }
@@ -752,7 +767,7 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   framlength	=	getframe(pBuffer,&length);    //判断帧消息内容是否符合协议
   if(0== framlength)
   {
-    memset(paddrbac,0x00,gDatasize);             //清除数据
+    //memset(paddrbac,0x00,gDatasize);             //清除数据
     return;
   }
   result  = ackcheck(pBuffer);                //检查是否为应答消息,应答消息返回1  
@@ -796,7 +811,7 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   if(CabAddr==address)
     ackFrame(Port,1);             //向上应答
   //===================================接收到的数据为本柜可接收数据(本柜地址或者广播地址(0xFF))
-  if(AmpCmdLed ==  Cmd)       //LED/LCD控制
+  if((AmpCmdLed == Cmd)||(AmpCmdLcdData == Cmd)||(AmpCmdLcdBKCL == Cmd))       //LED/LCD控制
   {
     if((0x00==ampframe->msg.addr.address2)||(0x00==ampframe->msg.addr.address3))//广播地址
     {

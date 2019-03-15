@@ -10,10 +10,7 @@
 #include "STM32_WDG.H"
 
 
-unsigned  long*  MCUMEMaddr = (unsigned  long*)(0x1FFFF7E0);
-unsigned  short  MCUMEMsize  = 0;
 
-unsigned  char gCbFlag=0;   //0--柜板，1--层板
 
 /*******************************************************************************
 *函数名			:	function
@@ -26,29 +23,21 @@ unsigned  char gCbFlag=0;   //0--柜板，1--层板
 *******************************************************************************/
 void AMP01V11_Configuration(void)
 {	
-  MCUMEMsize  = *MCUMEMaddr;
-  if(MCUMEMsize>=0x0100) //256K Flash 柜控制板STM32F103RC
-  {
-    gCbFlag=0;  //0--柜板，1--层板
 
-    AMP_CABV11_Configuration();
-  }
-  else if(0x0080 ==  MCUMEMsize) //128K Flash 层控制板STM32F103CB
-  {
-    gCbFlag=1;  //0--柜板，1--层板
+	AMP_CABV11_Configuration();
 
-    AMPLAY_Configuration();
-  }
 
   GPIO_Configuration_OPP50(SYSLEDPort,SYSLEDPin);
 
-  IWDG_Configuration(1000);													//独立看门狗配置---参数单位ms
+	//SysTick_DeleymS(500);				//SysTick延时nmS
+	
+  IWDG_Configuration(2000);			//独立看门狗配置---参数单位ms
   
-  SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS
+  SysTick_Configuration(1000);	//系统嘀嗒时钟配置72MHz,单位为uS
   
   while(1)
   {
-    AMP01V11_Loop();
+		//AMP01V11_Loop();
   }
 }
 /*******************************************************************************
@@ -64,14 +53,12 @@ void AMP01V11_Server(void)
 {  
 	IWDG_Feed();								//独立看门狗喂狗
 	Tim_Server();
-  if(gCbFlag) //0--柜板，1--层板
-  {
-    AMPLAY_Server();
-  }
-  else
-  {
-    AMP_CABV11_Server();
-  }
+
+	AMP_CABV11_Server();
+
+//	AMP01V11_Loop();
+	
+	
 }
 /*******************************************************************************
 *函数名			:	MainBoard_Server
@@ -86,14 +73,14 @@ void AMP01V11_Server(void)
 *******************************************************************************/
 void AMP01V11_Loop(void)
 {  
-  if(gCbFlag) //0--柜板，1--层板
-  {
-    AMPLAY_Loop();
-  }
-  else
-  {
-    AMP_CABV11_Loop();
-  }
+//  if(gCbFlag) //0--柜板，1--层板
+//  {
+//    AMPLAY_Loop();
+//  }
+//  else
+//  {
+//    AMP_CABV11_Loop();
+//  }
 }
 
 
@@ -120,14 +107,9 @@ void AMP01V11_Loop(void)
 unsigned short HW_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned short length)
 { 
   unsigned  short   sendedlen = 0;
-  if(gCbFlag) //0--柜板，1--层板
-  {
-    sendedlen = AMPLAY_SendBuff(Port,pBuffer,length);
-  }
-  else
-  {
+
     sendedlen = AMPCAB_SendBuff(Port,pBuffer,length);
-  }
+
   return  sendedlen;
 }
 

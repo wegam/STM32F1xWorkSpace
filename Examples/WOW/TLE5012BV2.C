@@ -26,9 +26,9 @@
 #define WeiNum  4     //两/四片拨片
 
 #if WeiNum==2   //两拨片，拨一次405度
-  #define	OrigErrAngle	20			  //原点调整允许偏差角度范围(正负偏差)
-  #define	StopAngle	30							//运行时，提前停止角度，例如，一个周期需要旋转300度的计数，在300-StopAngle后，停止电机控制，剩余的角度偏差由原点校正函数处理
-  #define	AngleCountPerCycle 	405	//一个运行周期需要的角度计数(四拨片分拣机拨一次需要360，二拨片的为405度)  
+  #define	OrigErrAngle	20			  		//原点调整允许偏差角度范围(正负偏差)
+  #define	StopAngle	3*OrigErrAngle		//运行时，提前停止角度，例如，一个周期需要旋转300度的计数，在300-StopAngle后，停止电机控制，剩余的角度偏差由原点校正函数处理
+  #define	AngleCountPerCycle 	405			//一个运行周期需要的角度计数(四拨片分拣机拨一次需要360，二拨片的为405度)  
 #else   //4拨片，每拨一次刚好360度
   #define	OrigErrAngle	10			  //原点调整允许偏差角度范围(正负偏差)
   #define	StopAngle	30							//运行时，提前停止角度，例如，一个周期需要旋转300度的计数，在300-StopAngle后，停止电机控制，剩余的角度偏差由原点校正函数处理
@@ -490,7 +490,7 @@ void SetOrig(void)
 	
 	DeviationAngle=360-Organgle;																//原点值离0角度点的偏差
   DeviationAngle=DeviationAngle+anglelive;    								//当前位置与原点之和  
-  DeviationAngle=(DeviationAngle-(DeviationAngle/360)*360); 	//求出低于360度的数据
+  DeviationAngle=(DeviationAngle-(DeviationAngle/360)*360); 	//求出低于360度的数据,不能只求余数
   
   if(DeviationAngle>180)  //超过原点位置
   {

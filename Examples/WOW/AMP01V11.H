@@ -17,7 +17,7 @@ extern stAMPProdef   AMPPro;
 void AMP01V11_Configuration(void);
 void AMP01V11_Server(void);
 
-void AMP01V11_Loop(void);
+//void AMP01V11_Loop(void);
 
 
 unsigned short HW_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned short length);

@@ -150,8 +150,8 @@ u16	GT32L32_GetCode(u8 font,u16 word,u8 *ReadBuffer);		//´Ó×Ö¿âÖĞ¶ÁÊı¾İ²¢·µ»ØÊı¾
 void API_GT32L32M0180_SectorErase(unsigned short UserSectorNum);
 void API_GT32L32M0180_PageWrite(unsigned short UserPageNum,unsigned char* UserData);
 
-unsigned char UnicodeCheck(unsigned char* data,unsigned short len);
-unsigned long Unicode2GBK(unsigned short Unicode);	//UNICODE×ªGBKÂë±íÓ³ÉäËã·¨£¨²»º¬·ûºÅÇø,×ª»»È«²¿Ë«×Ö½ÚÇø£©
+//unsigned char UnicodeCheck(unsigned char* data,unsigned short len);
+//unsigned long Unicode2GBK(unsigned short Unicode);	//UNICODE×ªGBKÂë±íÓ³ÉäËã·¨£¨²»º¬·ûºÅÇø,×ª»»È«²¿Ë«×Ö½ÚÇø£©
 
 #endif
 

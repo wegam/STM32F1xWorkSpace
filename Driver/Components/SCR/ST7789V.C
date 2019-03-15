@@ -85,7 +85,7 @@ void ST7789V_Initialize(void*	pInfo)
 	
 	//------------------------------------------Ðý×ª½Ç¶È
 	//pST7789V->ST7789VRotate	=	ST7789V_Rotate_90D;
-	ST7789V_Clean(pST7789V->ST7789VBColor);	//Çå³ýÆÁÄ»º¯Êý;
+	//ST7789V_Clean(pST7789V->ST7789VBColor);	//Çå³ýÆÁÄ»º¯Êý;
 	ST7789V_PowerOn();
 }
 /*******************************************************************************
@@ -722,7 +722,7 @@ void ST7789V_PowerOn(void)
   //ST7789V_DelaymS(520); 	   //Delay 120ms 
 	//----------------------------------ExitSleep-----------------------------------------------//
   ST7789V_WriteCommand(0x11);           
-  ST7789V_DelaymS(120); 	   //Delay 120ms 
+  ST7789V_DelaymS(100); 	   //Delay 120ms 
   //----------------------------------Display Setting-----------------------------------------------// 
   ST7789V_WriteCommand(0x36); 
   ST7789V_WriteData(0x00);    //ST7789V_WriteData(0x00);   

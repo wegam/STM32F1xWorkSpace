@@ -13,10 +13,10 @@
 #define DspMaxNameLen		64		//名字长度--字节
   
 #define gDatasize       		maxmsgsize	//串口最大数据包容量
-#define arrysize        		20       		//每个发送端口待发送缓存排序个数
+#define arrysize        		10       		//每个发送端口待发送缓存排序个数
 #define MaxSlave        		30        	//最大从机数量(柜、层、位)
 #define ReSendWaitTime  		50 	      	//重发间隔时间单位ms
-#define SendNopTime     		3  	      	//发送等待时间单位ms---应答等待时间
+#define SendNopTime     		10  	      	//发送等待时间单位ms---应答等待时间
 #define maxresendcount  		5         	//最大发送次数
 #define unlockOuttime   		2000      	//开锁倒计时超时时间
 #define reslockdelaytime   	200   			//检测到锁已打开后延时关闭驱动时间ms
