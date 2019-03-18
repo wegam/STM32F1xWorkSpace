@@ -38,7 +38,8 @@ typedef enum _eucmd
   AmpCmdGetOnline = 0x07,    	//检查在线设备，接收到后应答表示在线
   AmpCmdBKligth   = 0x08,    	//背光灯控制
 	AmpCmdLcdData  	= 0x09,    	//LCD内容显示数据传输命令--物品名称及规格及显示参数
-	AmpCmdLcdBKCL  	= 0x0A,			//LCD修改背景色命令，低8位在前
+	AmpCmdLcdConf  	= 0x0A,			//LCD配置命令，修改背景色命令,字体色,字体大小
+	AmpCmdLcdPwr  	= 0x0B,			//LCD电源供电控制指令
 }eucmddef;
 typedef enum _eSts
 {

@@ -330,12 +330,14 @@ typedef struct _Para						//耗材数据结构体，名称，规格，数量使用相同的结构体
 	unsigned char		len;					//参数长度--字符个数
 	unsigned char		Offset;				//存储偏移地址--在String字符串中的起始地址
 	
-	unsigned short	XH;						//X--水平占用点数
-	unsigned short	YV;						//Y--垂直占用点数
+	unsigned short	XH;						//X--水平点数
+	unsigned short	YV;						//Y--垂直点数
 }ParaDef;
-typedef struct _ListData			//显示数据结构体
+typedef struct _DisplayData			//显示数据结构体
 {
-	unsigned char	ListNum;				//条目编号/序号
+	unsigned char	Serial;					//显示序号	
+	unsigned char	Num;						//物品名称字符串长度
+	
 	ParaDef	ParaName;		//物品名称字符串参数
 	ParaDef	ParaByName;	//别名字符串参数
 	ParaDef	ParaSpec;		//规格字符串参数
@@ -345,19 +347,12 @@ typedef struct _ListData			//显示数据结构体
 	ParaDef	ParaUnit;		//单位字符串参数
 	//----------------字符串数据
 	unsigned char		String[AMPLcdMaxStringLen];		//名字和规格字符串缓存，名字在前
-}ListDef;
-typedef struct _ManaData			//显示数据结构体
-{	
-	ListDef 						List[DspMaxNameTypeCount];	//显示内容
-	unsigned char 			DisplaySerial;			//当前显示序号
-	unsigned char				ReceivedManaCount;
-	const unsigned char MaxNameList;	//最大可接收商品个数
-}DataDef;
+}DisplayDataDef;
 typedef struct _Font						//字体：背景色，字体色，字体大小
 {	
 	unsigned short	BackColor;		//字体底色
 	unsigned short	PenColor;			//字体颜色
-	unsigned char		Size;					//字体大小16,24,32
+	unsigned short	Size;					//字体大小16,24,32
 }FontDef;
 typedef struct _WinFont			//参数参数字体信息
 {	
@@ -379,31 +374,49 @@ typedef struct _XYPointCount					//XY需要点数
 }PxyDef;
 typedef struct _WinInfo			//显示基本参数
 {
-	PxyDef	PxyPixel;					//总像素
-	PxyDef	PxyTopFill;				//顶部填充高度
-	PxyDef	PxyBotFill;				//底部填充高度
-	PxyDef	PxyLeftFill;			//左边填充宽度
-	PxyDef	PxyValid;					//有效显示区域	
+	PxyDef	PxyName;		//名称占用XY点数
+	PxyDef	PxyByName;	//别名占用XY点数
+	PxyDef	PxySpec;		//别名占用XY点数
+	PxyDef	PxyNum;			//数量和单位占用XY点数
+	PxyDef	PxyCode;		//编码占用XY点数
+	PxyDef	PxyVender;	//厂家占用XY点数
+	PxyDef	PxyValid;		//有效显示区域
+	PxyDef	PxyTopFill;	//顶部填充高度
+	PxyDef	PxyBotFill;	//底部填充高度
+	PxyDef	PxyLeftFill;	//左边填充宽度
+	PxyDef	PxyRigthFill;	//右边填充宽度
 }WinInfoDef;
 typedef struct _GUI					//XY需要点数
-{		
-	PxyDef	StartXY;
-	PxyDef	EndXY;
+{	
 	unsigned char 	Total;				//接收到的物品信息数量
 	unsigned char 	Serial;				//当前显示序号
-	unsigned short 	DisplayNextStartX;	//当前显示序号
-	unsigned short 	DisplayNextStartY;	//当前显示序号
+	PxyDef	StartXY;
+	PxyDef	EndXY;
 }WinGuiDef;
-typedef struct _Windows		//显示
-{
-	sST7789VDef	LcdPort;			//LCD
-	SPIDef 			SpiPort;			//字库
-	DataDef			ManaData;
-	WinGuiDef		WinGui;
-	
+
+typedef struct _Windows					//XY需要点数
+{	
 	const WinFontDef	WinFont;			//显示字体信息
 	const WinInfoDef	WinInfo;			//显示参数
 }WinDef;
+typedef struct _Display		//显示
+{
+	sST7789VDef			LcdPort;			//LCD
+	SPIDef 					SpiPort;			//字库
+	DisplayDataDef 	DisplayArry[DspMaxNameTypeCount];	//显示内容
+	
+	const WinFontDef	WinFont;			//显示字体信息
+	WinInfoDef				WinInfo;			//显示参数
+	WinGuiDef					WinGui;
+	
+	unsigned char 	ReceivedManaCount;	//接收到的物品信息数量
+	unsigned char 	DisplaySerial;			//当前显示序号
+	unsigned short 	DisplayNextStartX;	//当前显示序号
+	unsigned short 	DisplayNextStartY;	//当前显示序号
+}DisplayDef;
+
+
+
 typedef struct _Comm			//通讯
 {
 	RS485Def 				RS485Port;   	//RS485通讯
@@ -417,18 +430,23 @@ typedef struct _Variable	//运行相关变量
 	unsigned char 	AddrLay;		//层地址
 	unsigned char 	AddrSeg;		//位地址
 	unsigned char 	DisplaySerial;			//当前显示序号
-	unsigned short 	PowerOnTime;				//上电时间	
+	unsigned short 	PowerOnTime;				//上电时间
+	
 }VarDataDef;
+
+	
+//#define testmodel
+
 typedef struct _sAmpLcd
 {
-	WinDef			Windows;
+	DisplayDef	Display;
 	CommDef			Comm;					//通讯
 	SwitchDef 	sSwitch;			//拔码开关
 	VarDataDef	Sys;					//其它变量数据
 }sAmpLcdDef;
 
 
-//extern stAMPProdef   AMPPro;
+extern stAMPProdef   AMPPro;
 
 void AMPLCDV11_Configuration(void);
 void AMPLCDV11_Server(void);
@@ -440,8 +458,7 @@ void AMPLCDV11_Receive(void);
 void AMPLCDV11_Send(void);
 void AMPLCDV11_Ack(void);
 void AMPLCDV11_Process(unsigned char* ReceDatabuffer,unsigned short datalen);
-void GetManaData(const unsigned char* Databuffer,unsigned short datalen);
-void SetManaData(ListDef* pNode);		//设置显示参数---数据获取成功后设置相关的显示参数
+void GetManaData(unsigned char* Databuffer,unsigned short datalen);
 
 void DisplayManaStaticTest1(void);		//双显示效果演示
 void DisplayManaStaticTest2(void);		//单显示效果演示
@@ -451,13 +468,13 @@ void DisplayManaModel3(void);					//单显示--数量32号字体
 void DisplayManaModel6(void);
 
 
-
-void DisplayName(const ListDef Node);				//显示别名和名称
-void DisplayByName(const ListDef Node);			//显示别名
-void DisplayVender(const ListDef Node);			//显示厂家名称
-void DisplaySpec(const ListDef Node);				//显示规格
-void DisplayCode(const ListDef Node);				//显示编码
-void DisplayNumber(const ListDef Node);			//显示数量和单位
+void DisplaySetInfo(const DisplayDataDef DisplayData);		//设置显示参数及清屏
+void DisplayName(const DisplayDataDef DisplayData);				//显示别名和名称
+void DisplayByName(const DisplayDataDef DisplayData);			//显示别名
+void DisplayVender(const DisplayDataDef DisplayData);			//显示厂家名称
+void DisplaySpec(const DisplayDataDef DisplayData);				//显示规格
+void DisplayCode(const DisplayDataDef DisplayData);				//显示编码
+void DisplayNumber(const DisplayDataDef DisplayData);			//显示数量和单位
 
 void SetBackColor(unsigned short BKColor);
 unsigned short GetBackColor(void);

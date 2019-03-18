@@ -680,7 +680,7 @@ void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   //1)-----------------检查层地址，判断是否需要将数据发往层，发往层时，需要开锁，开背光灯
   
   //2)-----------------层地址为0，不需要往下发，只在柜控制板处理：灯控制/锁控制/供电
-  if((AmpCmdLed == Cmd)||(AmpCmdLcdData == Cmd)||(AmpCmdLcdBKCL == Cmd))       //LED/LCD控制
+  if((AmpCmdLed == Cmd)||(AmpCmdLcdData == Cmd)||(AmpCmdLcdConf == Cmd))       //LED/LCD控制
   {
     if((0x00==ampframe->msg.addr.address2)||(0x00==ampframe->msg.addr.address3))//广播地址
     {
@@ -698,6 +698,13 @@ void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     AMPPro.Req.PLoff =0;    
     Laynet_Send((unsigned char*)ampframe,framlength);     //往层板发送消息
   }
+	else if(AmpCmdLcdPwr ==  Cmd)   //LCD电源供电控制指令
+  {
+		AMPPro.Req.PLon  =0;
+    AMPPro.Req.PLoff =0;
+		if(0==ampframe->msg.data[0])
+      AMPPro.Req.PLoff=1;
+	}
   else if(AmpCmdPwr ==  Cmd)   //层板供电控制命令
   {
     AMPPro.Req.PLon  =0;
@@ -811,7 +818,7 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   if(CabAddr==address)
     ackFrame(Port,1);             //向上应答
   //===================================接收到的数据为本柜可接收数据(本柜地址或者广播地址(0xFF))
-  if((AmpCmdLed == Cmd)||(AmpCmdLcdData == Cmd)||(AmpCmdLcdBKCL == Cmd))       //LED/LCD控制
+  if((AmpCmdLed == Cmd)||(AmpCmdLcdData == Cmd)||(AmpCmdLcdConf == Cmd))       //LED/LCD控制
   {
     if((0x00==ampframe->msg.addr.address2)||(0x00==ampframe->msg.addr.address3))//广播地址
     {
@@ -829,6 +836,13 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     AMPPro.Req.PLoff =0;
     Laynet_Send((unsigned char*)ampframe,framlength);     //往层板发送消息
   }
+	else if(AmpCmdLcdPwr ==  Cmd)   //LCD电源供电控制指令
+  {
+		AMPPro.Req.PLon  =0;
+    AMPPro.Req.PLoff =0;
+		if(0==ampframe->msg.data[0])
+      AMPPro.Req.PLoff=1;
+	}
   else if(AmpCmdPwr ==  Cmd)   //层板供电控制命令
   {
     AMPPro.Req.PLon  =0;
