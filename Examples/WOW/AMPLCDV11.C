@@ -87,10 +87,11 @@ void AMPLCDV11_Configuration(void)
 void AMPLCDV11_Server(void)
 {  
 	static unsigned short color=0;
-  FlashTime+=1;
+  
+
 	IWDG_Feed();								//独立看门狗喂狗
 //	Tim_Server();
-  if(FlashTime==2000)
+  if(FlashTime==0)
   {
 		FlashTime=0;
 		#if 1==SelectModel
@@ -104,11 +105,13 @@ void AMPLCDV11_Server(void)
 		#elif 5==SelectModel
 			DisplayManaModel3();
 		#elif 6==SelectModel
-			DisplayManaModel6();
+			DisplayManaModel7();
 		#endif
 //		ST7789V_Clean(0xFFDE);
 		//DisplayManaStaticTest1();
   }
+	if(FlashTime++>2000)
+		FlashTime=0;
   
 }
 
@@ -230,7 +233,7 @@ void DisplayManaModel6(void)
 //	ListDef	DisplayData;		//
 //	
 
-//	if(0>=sAmpLcd.Display.ReceivedManaCount)	//没收到数据显示位置号
+//	if(0>=sAmpLcd.Windows.ReceivedManaCount)	//没收到数据显示位置号
 //	{		
 //		ST7789V_PrintfBK(68,ST7789V_H/2-DisplayNumFtSize/2,DisplayNumFtSize,DisplayNumBkColor,DisplayNumFtColor,"层%0.2d    位%0.2d",TempLay,TempSeg);  //LCD显示测试Printf
 //		return;
@@ -288,7 +291,6 @@ void DisplayManaModel6(void)
 //			
 //			DisplayData=sAmpLcd.Display.DisplayArry[i];
 //			
-//			DisplaySetInfo(DisplayData);		//设置显示信息
 //			DisplayName(DisplayData);				//显示名称
 //			
 //			DisplayNumber(DisplayData);			//显示数量和单位
@@ -308,7 +310,379 @@ void DisplayManaModel6(void)
 //		goto DisplayStart;
 //	}
 }
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void DisplayManaModel7(void)
+{
+	unsigned char i	=	0;
+	unsigned char DaulFlag	=	0;
+	unsigned char len=0;
+	unsigned char num=0;
+	unsigned char size=0;
+	unsigned char offset=0;
+	unsigned char MaxNameList=0;
+	unsigned char	buffer[256];
+	unsigned char* str;
+	
+	unsigned char TempLay	=	sAmpLcd.Sys.AddrLay%100;
+	unsigned char TempSeg	=	sAmpLcd.Sys.AddrSeg%100;
+	
+	unsigned short xs=0;
+	unsigned short ys=0;
+	unsigned short xe=0;
+	unsigned short ye=0;
+	unsigned short yebac=0;
+	unsigned short StartPixelY	=	0;
+	
+	ListDef*		List;
+	
+	MaxNameList	=	sAmpLcd.Windows.ManaData.MaxNameList;
+	List	=	sAmpLcd.Windows.ManaData.List;
+	i=sAmpLcd.Windows.ManaData.Serial;
+	
+	DisplayGui();				//显示界面
+	
+	for(;i<=MaxNameList;i++)
+	{	
+		if(0!=List[i].ListNum)
+		{			
+			DisplayString(List[i]);
+			StartPixelY	=	sAmpLcd.Windows.ManaData.StartPixelY;
+			if(StartPixelY>sAmpLcd.Windows.WinInfo.PxyValid.YV/2+sAmpLcd.Windows.WinInfo.PxyTopFill.YV+sAmpLcd.Windows.WinInfo.FtTitle.Size)
+			{
+				return;
+			}
+			DaulFlag	=	1;
+		}
+	}
+	
+	
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void DisplayGui(void)
+{
+	unsigned char i	=	0;
+	unsigned char len=0;
+	unsigned char num=0;
+	unsigned char size=0;
+	unsigned char offset=0;
+	unsigned char	buffer[256];
+	unsigned char* str;
 
+	unsigned short xs=0;
+	unsigned short ys=0;
+	unsigned short xe=0;
+	unsigned short ye=0;
+	unsigned short ysum=0;
+	unsigned short yebac=0;
+	unsigned short ValidX;		//水平有效使用点
+	unsigned short ValidY;		//垂直有效使用点
+	
+	unsigned short BackColor;	//背景色
+	unsigned short PenColor;	//画笔色
+	unsigned short FontSize;	//字体大小
+	
+	WinInfoDef	WinInfo;			//显示字体信息
+	//=================================初始化数据
+	WinInfo	=	sAmpLcd.Windows.WinInfo;							//显示参数信息
+	//-----------------------------------------------------顶端边框
+	xs	=	0;
+	xe	=	sAmpLcd.Windows.WinInfo.PxyPixel.XH-1;
+	ys	=	0;
+	ye	=	sAmpLcd.Windows.WinInfo.PxyTopFill.YV-1;
+	BackColor	=	sAmpLcd.Windows.WinInfo.FtTitle.BackColor;
+	ST7789V_Fill(xs,ys,xe,ye,0x0000);	//纯黑填充
+	//-----------------------------------------------------底部边框
+	xs	=	0;
+	xe	=	sAmpLcd.Windows.WinInfo.PxyPixel.XH-1;
+	ys	=	sAmpLcd.Windows.WinInfo.PxyPixel.YV-sAmpLcd.Windows.WinInfo.PxyBotFill.YV-1;
+	ye	=	sAmpLcd.Windows.WinInfo.PxyPixel.YV-1;
+	BackColor	=	sAmpLcd.Windows.WinInfo.FtTitle.BackColor;
+	ST7789V_Fill(xs,ys,xe,ye,0x0000);	//纯黑填充
+	//-----------------------------------------------------左边边框
+	xs	=	0;
+	xe	=	sAmpLcd.Windows.WinInfo.PxyLeftFill.XH-1;
+	ys	=	0;
+	ye	=	sAmpLcd.Windows.WinInfo.PxyPixel.YV-1;
+	BackColor	=	sAmpLcd.Windows.WinInfo.FtTitle.BackColor;
+	ST7789V_Fill(xs,ys,xe,ye,0x0000);	//纯黑填充
+	//-----------------------------------------------------清空显示区
+	xs	=	sAmpLcd.Windows.WinInfo.PxyLeftFill.XH;
+	xe	=	sAmpLcd.Windows.WinInfo.PxyPixel.XH;
+	ys	=	sAmpLcd.Windows.WinInfo.PxyTopFill.YV;
+	ye	=	sAmpLcd.Windows.WinInfo.PxyPixel.YV-sAmpLcd.Windows.WinInfo.PxyBotFill.YV-2;
+	BackColor	=	sAmpLcd.Windows.WinInfo.FtDefault.BackColor;
+	ST7789V_Fill(xs,ys,xe,ye,BackColor);	//默认背景色填充
+	//------------------------------------------Y起始点
+	sAmpLcd.Windows.ManaData.StartPixelY	=WinInfo.PxyTopFill.YV+WinInfo.FtTitle.Size+WinInfo.FtSepar.Size;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+void DisplayString(ListDef Node)
+{
+//	unsigned char i	=	0;
+//	unsigned char len=0;
+	unsigned char num=0;
+//	unsigned char size=0;
+	unsigned char offset=0;
+	unsigned char	str[256];
+	unsigned char	i=0;
+	unsigned char	strtype		=	0;		//字符串类型
+	unsigned char	strLen		=	0;		//字符串长度
+
+	unsigned char	Line			=	0;		//可显示行数
+	
+	unsigned char		StartPixelY	=	0;
+	
+	unsigned char* Name;
+
+	unsigned short xs=0;	//字体显示坐标信息
+	unsigned short ys=0;
+	unsigned short xe=0;
+	unsigned short ye=0;
+	
+	unsigned short Fxs=0;	//填充背景色坐标信息
+	unsigned short Fys=0;
+	unsigned short Fxe=0;
+	unsigned short Fye=0;
+	
+	unsigned short ysum=0;
+	unsigned short yebac=0;
+	unsigned short ValidX;		//水平有效使用点
+	unsigned short ValidY;		//垂直有效使用点
+	
+	unsigned short BackColor;	//背景色
+	unsigned short PenColor;	//画笔色
+	unsigned short FontSize;	//字体大小
+	
+	unsigned short	ValidXH;			//X--水平有效点数
+	unsigned short	ValidYV;			//Y--垂直有效点数
+	
+	unsigned short	StartYV;
+	
+	
+	ParaDef*		Para;
+	ListDef*		List;
+	WinInfoDef	WinInfo;			//显示字体信息
+	//=================================初始化数据
+	List		=	sAmpLcd.Windows.ManaData.List;
+	WinInfo	=	sAmpLcd.Windows.WinInfo;							//显示参数信息
+	ValidXH	=	sAmpLcd.Windows.WinInfo.PxyValid.XH;
+	ValidYV	=	sAmpLcd.Windows.WinInfo.PxyValid.YV;
+	
+	StartPixelY	=	sAmpLcd.Windows.ManaData.StartPixelY;
+	
+	xs	=	sAmpLcd.Windows.WinInfo.PxyLeftFill.XH;
+	ys	=	StartPixelY;
+
+	
+	strtype	=	0x01;		//从名称开始
+	
+	//=================================显示数据准备
+	DisplayStart:
+	Fxs	=	sAmpLcd.Windows.WinInfo.PxyLeftFill.XH;
+	//Fxe	=	Fxs+Node.ParaName.XH;
+	Fys	=	StartPixelY;
+	//Fye	=	Fys+Node.ParaName.YV;
+	
+	xs	=	sAmpLcd.Windows.WinInfo.PxyLeftFill.XH;
+	ys	=	StartPixelY;
+	
+	switch(strtype)
+	{
+		case	0x01:	//商品名类型
+			BackColor	=	WinInfo.FtName.BackColor;
+			PenColor	=	WinInfo.FtName.PenColor;
+			FontSize	=	WinInfo.FtName.Size;
+		
+			strLen		=	Node.ParaName.len;
+			offset		=	Node.ParaName.Offset;
+			memcpy(str,&Node.String[offset],strLen);			
+		
+			Fxe	=	Fxs+Node.ParaName.XH;
+			Fye	=	Fys+Node.ParaName.YV;
+		
+			if(Node.ParaName.YV	==	FontSize)	//单行剧中显示
+			{
+				unsigned short tempx=0;
+				tempx	=	strLen*(FontSize/2);				//实际显示占用的点数
+				tempx	=	Node.ParaName.XH	-	tempx;	//剩余空闲点数
+				tempx	=	tempx/2;										//平均剩余空间
+				
+				xs	=	tempx+sAmpLcd.Windows.WinInfo.PxyLeftFill.XH;
+				xe	=	xs+strLen*(FontSize/2);		//
+			}
+			else
+			{
+				xs	=	sAmpLcd.Windows.WinInfo.PxyLeftFill.XH;
+				xe	=	ys+Node.ParaName.XH;
+			}
+			
+			ye	=	ys+Node.ParaName.YV;
+			
+			//-------------------------------------准备下一项内容显示参数
+			StartPixelY+=Node.ParaName.YV;
+			strtype	=	0x02;
+		break;
+		case	0x02:	//显示别名
+			Name	=	"别名:";
+			num		=	strlen("别名:");
+		
+			BackColor	=	WinInfo.FtByName.BackColor;
+			PenColor	=	WinInfo.FtByName.PenColor;
+			FontSize	=	WinInfo.FtByName.Size;
+		
+			strLen		=	Node.ParaByName.len;
+			offset		=	Node.ParaByName.Offset;
+
+			memcpy(str,Name,num);
+			memcpy(&str[num],&Node.String[offset],strLen);
+			strLen	=	strLen+num;
+		
+			
+		
+			Fxe	=	Fxs+Node.ParaByName.XH;
+			Fye	=	Fys+Node.ParaByName.YV;
+
+			xe	=	xs+Node.ParaByName.XH;		//
+			ye	=	ys+Node.ParaByName.YV;
+			//-------------------------------------准备下一项内容显示参数
+			StartPixelY+=Node.ParaByName.YV;
+			strtype	=	0x03;
+		break;
+		case	0x03:	//显示厂家
+			Name	=	"厂家:";
+			num		=	strlen("厂家:");
+			
+			BackColor	=	WinInfo.FtVender.BackColor;
+			PenColor	=	WinInfo.FtVender.PenColor;
+			FontSize	=	WinInfo.FtVender.Size;
+		
+			strLen		=	Node.ParaVender.len;
+			offset		=	Node.ParaVender.Offset;
+
+			memcpy(str,Name,num);
+			memcpy(&str[num],&Node.String[offset],strLen);
+			strLen	=	strLen+num;
+		
+			
+		
+			Fxe	=	Fxs+Node.ParaVender.XH;
+			Fye	=	Fys+Node.ParaVender.YV;
+
+			xe	=	xs+Node.ParaVender.XH;		//
+			ye	=	ys+Node.ParaVender.YV;
+			//-------------------------------------准备下一项内容显示参数
+			StartPixelY+=Node.ParaSpec.YV;
+			strtype	=	0x04;
+		break;
+		case	0x04:	//显示编码
+			Name	=	"编码:";
+			num		=	strlen("编码:");
+		
+			strLen		=	Node.ParaCode.len;
+			offset		=	Node.ParaCode.Offset;
+
+			memcpy(str,Name,num);
+			memcpy(&str[num],&Node.String[offset],strLen);
+			strLen	=	strLen+num;
+		
+			BackColor	=	WinInfo.FtCode.BackColor;
+			PenColor	=	WinInfo.FtCode.PenColor;
+			FontSize	=	WinInfo.FtCode.Size;
+		
+			Fxe	=	Fxs+Node.ParaCode.XH;
+			Fye	=	Fys+Node.ParaCode.YV;
+
+			xe	=	xs+Node.ParaCode.XH;		//
+			ye	=	ys+Node.ParaCode.YV;
+			//-------------------------------------准备下一项内容显示参数
+			StartPixelY+=Node.ParaCode.YV;
+			strtype	=	0x05;
+		break;
+		case	0x05:	//显示规格
+			Name	=	"规格:";
+			num		=	strlen("规格:");
+		
+			strLen		=	Node.ParaSpec.len;
+			offset		=	Node.ParaSpec.Offset;
+
+			memcpy(str,Name,num);
+			memcpy(&str[num],&Node.String[offset],strLen);
+			strLen	=	strLen+num;
+		
+			BackColor	=	WinInfo.FtSpec.BackColor;
+			PenColor	=	WinInfo.FtSpec.PenColor;
+			FontSize	=	WinInfo.FtSpec.Size;
+		
+			Fxe	=	Fxs+Node.ParaSpec.XH;
+			Fye	=	Fys+Node.ParaSpec.YV;
+
+			xe	=	xs+Node.ParaSpec.XH;		//
+			ye	=	ys+Node.ParaSpec.YV;
+			//-------------------------------------准备下一项内容显示参数
+			StartPixelY+=Node.ParaSpec.YV;
+			strtype	=	0x07;
+		break;
+		case	0x06:	//显示数量和单位
+//			Name	=	"数量:";
+//			num		=	strlen("数量:");
+//		
+//			strLen		=	Node.ParaSpec.len;
+//			offset		=	Node.ParaSpec.Offset;
+
+//			memcpy(str,Name,num);
+//			memcpy(&str[num],&Node.String[offset],strLen);
+//			strLen	=	strLen+num;
+//		
+//			BackColor	=	WinInfo.FtSpec.BackColor;
+//			PenColor	=	WinInfo.FtSpec.PenColor;
+//			FontSize	=	WinInfo.FtSpec.Size;
+//		
+//			Fxe	=	Fxs+Node.ParaSpec.XH;
+//			Fye	=	Fys+Node.ParaSpec.YV;
+
+//			xe	=	xs+Node.ParaSpec.XH;		//
+//			ye	=	ys+Node.ParaSpec.YV;
+//			//-------------------------------------准备下一项内容显示参数
+//			StartPixelY+=Node.ParaSpec.YV;
+//			strtype	=	0x07;
+		break;
+		default:return;	//未找到类型数据
+	}
+	//=================================补充数据
+	
+	//=================================显示数据
+	DisplayData:
+	ST7789V_Fill(Fxs,Fys,Fxe,Fye,BackColor);	//背景色填充/擦除/清除	
+	ST7789V_ShowStringBKAre(xs,ys,xe,ye,FontSize,BackColor,PenColor,strLen,str);	//带背景色限定区域显示
+	StartPixelY+=1;
+	sAmpLcd.Windows.ManaData.StartPixelY	=	StartPixelY;
+	
+	goto DisplayStart;
+}
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -326,20 +700,20 @@ void DisplayName(const ListDef Node)
 //	unsigned char size=0;
 //	unsigned char offset=0;
 //	unsigned char	buffer[256];
-//	unsigned char* str;
+	unsigned char* str;
 
-//	unsigned short xs=0;
-//	unsigned short ys=0;
-//	unsigned short xe=0;
-//	unsigned short ye=0;
+	unsigned short xs=0;
+	unsigned short ys=0;
+	unsigned short xe=0;
+	unsigned short ye=0;
 //	unsigned short ysum=0;
 //	unsigned short yebac=0;
 //	unsigned short ValidX;		//水平有效使用点
 //	unsigned short ValidY;		//垂直有效使用点
 //	
-//	unsigned short BackColor;	//背景色
-//	unsigned short PenColor;	//画笔色
-//	unsigned short FontSize;	//字体大小
+	unsigned short BackColor;	//背景色
+	unsigned short PenColor;	//画笔色
+	unsigned short FontSize;	//字体大小
 //	
 //	
 //	//unsigned short DisplayNewStartY;
@@ -843,6 +1217,90 @@ void DisplayNumber(const ListDef Node)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
+void DisplayTitle(const ListDef Node)
+{
+	unsigned char i	=	0;
+	unsigned char len=0;
+	unsigned char num=0;
+	unsigned char size=0;
+	unsigned char offset=0;
+	unsigned char	buffer[256];
+	unsigned char* str;
+
+	unsigned short xs=0;
+	unsigned short ys=0;
+	unsigned short xe=0;
+	unsigned short ye=0;
+	unsigned short ysum=0;
+	unsigned short yebac=0;
+	unsigned short ValidX;		//水平有效使用点
+	unsigned short ValidY;		//垂直有效使用点
+	
+	unsigned short BackColor;	//背景色
+	unsigned short PenColor;	//画笔色
+	unsigned short FontSize;	//字体大小
+	
+//	//unsigned short DisplayNewStartY;
+//	
+//	
+//	WinFontDef	WinFont	=	sAmpLcd.Display.WinFont;			//显示配置
+//	WinInfoDef	WinInfo	=	sAmpLcd.Display.WinInfo;
+//	WinGuiDef		WinGui	=	sAmpLcd.Display.WinGui;
+//	
+//	BackColor	=	WinFont.FtName.BackColor;
+//	PenColor	=	WinFont.FtName.PenColor;
+//	FontSize	=	WinFont.FtName.Size;
+//	
+//	//-----------------------------------------------------检查有无数据
+//	len=DisplayData.ParaName.len;	
+//	if(0==len)
+//	{
+//		return;
+//	}
+//	//-----------------------------------------------------获取显示数据
+//	len			=	DisplayData.ParaName.len;
+//	offset	=	DisplayData.ParaName.Offset;	
+//	memcpy(buffer,&DisplayData.String[offset],len);	
+//	//-----------------------------------------------------清空显示区域
+//	xs	=	WinInfo.PxyLeftFill.XH;	
+//	xe	=	WinInfo.PxyRigthFill.XH;
+//	
+//	ys	=	WinGui.StartXY.YV;	
+//	ye	=	ys+FontSize*WinInfo.PxyName.YV;
+//	
+//	ST7789V_Fill(xs,ys,xe,ye,BackColor);
+//	
+//	StartDisplay:
+//	//-----------------------------------------------------获取显示区域(如果是单行则居中显示)
+//	if((len*FontSize/2)<WinInfo.PxyValid.XH)
+//	{
+//		xs	=	WinInfo.PxyLeftFill.XH+((WinInfo.PxyValid.XH-(len*FontSize/2))/2);
+//	}
+//	else
+//	{
+//		xs	=	WinInfo.PxyLeftFill.XH;
+//	}		
+//	xe	=	WinInfo.PxyRigthFill.XH;
+//	
+//	ys	=	WinGui.StartXY.YV;	
+//	ye	=	ys+FontSize*WinInfo.PxyName.YV;
+//	//-----------------------------------------------------显示数据
+//	ST7789V_ShowStringBKAre(xs,ys,xe,ye,FontSize,BackColor,PenColor,len,buffer);	//带背景色限定区域显示
+//	
+//	WinGui.StartXY.YV=ye;
+//	
+//	sAmpLcd.Display.WinInfo	=	WinInfo;
+//	sAmpLcd.Display.WinGui.StartXY.YV	=	WinGui.StartXY.YV;
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 void SetBackColor(unsigned short BKColor)
 {
 //	if(sAmpLcd.Display.LcdPort.ST7789VBColor	!=	BKColor)
@@ -986,40 +1444,7 @@ void HW_Configuration(void)
   sAmpLcd.Sys.AddrSeg=temp&0x0F;      	//位地址
 }
 
-/*******************************************************************************
-*函数名			:	function
-*功能描述		:	function
-*输入				: 
-*返回值			:	无
-*修改时间		:	无
-*修改说明		:	无
-*注释				:	wegam@sina.com
-*******************************************************************************/
-void AMPLCDV11GUI(void)
-{
-	unsigned short xs=0;
-	unsigned short ys=0;
-	unsigned short xe=ST7789V_V-1;
-	unsigned short ye=DisplayTopStartY-1;
-	
-	ST7789V_Clean(DisplayClrColor);
-	ST7789V_Fill(xs,ys,xe,ye,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
-	
-	xs	=	0;
-	ys	=	ST7789V_H-DisplayTopStartY+2;
-	xe	=	ST7789V_V-1;
-	ye	=	ST7789V_H-1;
-	
-	ST7789V_Fill(xs,ys,xe,ye,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
-	
-	xs	=	0;
-	ys	=	ST7789V_H/2-2;
-	xe	=	ST7789V_V-1;
-	ye	=	ST7789V_H/2+2;
-	
-	ST7789V_Fill(xs,ys,xe,ye,LCD565_RED);				//在指定区域内填充指定颜色;区域大小:(xend-xsta)*(yend-ysta)
-	
-}
+
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -1041,6 +1466,15 @@ void AMPLCDV11_Send(void)
 		}
 	}
 }
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 void AMPLCDV11_Ack(void)
 {
 	memcpy(sAmpLcd.Comm.Txd,ackupfarme,AmpMinFrameSize);
@@ -1317,12 +1751,12 @@ void SetManaData(ListDef* pNode)
 	unsigned char		Line			=	0;		//可显示行数
 //	unsigned char 	strCount	=0;		//已处理的字符串个数计数
 	unsigned char 	FinishedDataLen	=	0;	//已处理数据个数
-	unsigned char		Offset			=	0;	//下一个类型字符串的偏移地址
-	unsigned char*	ParaOffsetAddr;		//字符串地址偏移指针
-	unsigned char*	ParalenAddr;			//字符串长度指针
+//	unsigned char		Offset			=	0;	//下一个类型字符串的偏移地址
+//	unsigned char*	ParaOffsetAddr;		//字符串地址偏移指针
+//	unsigned char*	ParalenAddr;			//字符串长度指针
 	
 	unsigned char		MaxList		=	0;
-	unsigned char		ListCount	=	0;
+//	unsigned char		ListCount	=	0;
 	
 	unsigned char* 	pSource;		//源字符串地址---源自串口接收到的数据
 	unsigned char* 	pTarget;		//目标符串地址---存储
@@ -1340,7 +1774,7 @@ void SetManaData(ListDef* pNode)
 	ParaDef*		Para;
 	ListDef*		List;
 	ListDef			Node;
-	WinFontDef	WinFont;			//显示字体信息
+	WinInfoDef	WinInfo;			//显示字体信息
 	//---------------------------------输入数据地址有效性
 	if(NULL==pNode)
 	{
@@ -1354,14 +1788,14 @@ void SetManaData(ListDef* pNode)
 	//=================================初始化数据
 	List		=	sAmpLcd.Windows.ManaData.List;
 	MaxList	=	sAmpLcd.Windows.ManaData.MaxNameList;	//可接收的最大条目限制
-	WinFont	=	sAmpLcd.Windows.WinFont;							//字体信息
+	WinInfo	=	sAmpLcd.Windows.WinInfo;							//字体信息
 	ValidXH	=	sAmpLcd.Windows.WinInfo.PxyValid.XH;
 	ValidYV	=	sAmpLcd.Windows.WinInfo.PxyValid.YV;
 	
 	Node	=	*pNode;
 	//=================================先计算数量和单位占用X点数(除名称外，右缩进需要根据数量和单位占用的X点数来调整)
 	//---------------------------------获取数量和单位数据
-	FontSize	=	WinFont.FtNum.Size;
+	FontSize	=	WinInfo.FtNum.Size;
 	strLen		=	Node.ParaNum.len+Node.ParaUnit.len;		//数量和单位的字节点
 	//---------------------------------计算数量占用水平点数
 	Node.ParaNum.XH	=	Node.ParaNum.len*(FontSize/2);	//字符宽度为高度的一半
@@ -1386,7 +1820,7 @@ void SetManaData(ListDef* pNode)
 		case	0x01:	//商品名类型
 			Line	=	4;		//名称最大可显示4行
 			strLen		=	Node.ParaName.len;			
-			FontSize	=	WinFont.FtName.Size;		
+			FontSize	=	WinInfo.FtName.Size;		
 			Node.ParaName.XH	=	sAmpLcd.Windows.WinInfo.PxyValid.XH;
 			
 			pTargetXH	=	&Node.ParaName.XH;
@@ -1395,8 +1829,8 @@ void SetManaData(ListDef* pNode)
 		case	0x02:	//规格参数
 			Line	=	2;		//名称最大可显示2行
 			strLen		=	Node.ParaSpec.len;			
-			FontSize	=	WinFont.FtSpec.Size;		
-			Node.ParaName.XH	=	sAmpLcd.Windows.WinInfo.PxyValid.XH-OffsetXH;
+			FontSize	=	WinInfo.FtSpec.Size;		
+			Node.ParaSpec.XH	=	sAmpLcd.Windows.WinInfo.PxyValid.XH-OffsetXH;
 		
 			pTargetXH	=	&Node.ParaSpec.XH;
 			pTargetYV	=	&Node.ParaSpec.YV;
@@ -1409,7 +1843,7 @@ void SetManaData(ListDef* pNode)
 		case	0x04:	//别名
 			Line	=	2;		//名称最大可显示2行
 			strLen		=	Node.ParaByName.len;			
-			FontSize	=	WinFont.FtByName.Size;		
+			FontSize	=	WinInfo.FtByName.Size;		
 			Node.ParaByName.XH	=	sAmpLcd.Windows.WinInfo.PxyValid.XH-OffsetXH;
 		
 			pTargetXH	=	&Node.ParaByName.XH;
@@ -1418,7 +1852,7 @@ void SetManaData(ListDef* pNode)
 		case	0x05:	//厂商名称
 			Line	=	2;		//名称最大可显示2行
 			strLen		=	Node.ParaVender.len;			
-			FontSize	=	WinFont.FtVender.Size;		
+			FontSize	=	WinInfo.FtVender.Size;		
 			Node.ParaVender.XH	=	sAmpLcd.Windows.WinInfo.PxyValid.XH-OffsetXH;
 		
 			pTargetXH	=	&Node.ParaVender.XH;
@@ -1427,7 +1861,7 @@ void SetManaData(ListDef* pNode)
 		case	0x06:	//商品编码
 			Line	=	2;		//名称最大可显示2行
 			strLen		=	Node.ParaCode.len;			
-			FontSize	=	WinFont.FtCode.Size;		
+			FontSize	=	WinInfo.FtCode.Size;		
 			Node.ParaCode.XH	=	sAmpLcd.Windows.WinInfo.PxyValid.XH-OffsetXH;
 		
 			pTargetXH	=	&Node.ParaCode.XH;
@@ -1437,8 +1871,58 @@ void SetManaData(ListDef* pNode)
 			strtype+=1;
 			goto SetDataStart;
 		break;
-		default:return;	//未找到类型数据
+		default:goto AddNode;	//未找到类型数据
 	}
+	if(0==FontSize)
+		return;
+	//---------------------------------计算一行可以显示多少个对应的数据
+	i=*pTargetXH/(FontSize/2);	//字符宽度为高度的一半
+	//---------------------------------计算需要多少行才能显示完
+	if(0==i)
+		return;
+	if(0==strLen%i)	//整数行
+	{
+		i	=	strLen/i;
+	}
+	else
+	{
+		i	=	strLen/i+1;
+	}
+	//---------------------------------检查行数有无超限,超出部分不计入显示(不显示)
+	if(i>Line)
+	{
+		i=Line;
+	}
+	//---------------------------------计算Y轴需要多少点数
+	*pTargetYV	=	i*FontSize;
+	//---------------------------------继续检查其它项
+	strtype+=1;
+	if(strtype<8)
+	{
+		goto SetDataStart;
+	}
+	//---------------------------------添加数据：添加数据前比较缓存有无相同的数据，有则不添加
+	AddNode:
+	for(i=0;i<MaxList;i++)
+	{
+		if(0==memcmp((unsigned char*)&List[i].ParaName,&Node.ParaName,sizeof(ListDef)-2))	//检查数据内容(减2是因为List[i].ListNum，16字节对齐)
+		{
+			if(0!=List[i].ListNum)	//序号存在
+				return;
+		}
+	}
+//---------------------------------无相同数据，往空缓存内添加数据	
+	for(i=0;i<MaxList;i++)
+	{
+		if(0==List[i].ListNum)		//缓存为空，可以拷贝数据
+		{
+			//List	=	List[i];
+			memcpy((unsigned char*)&List[i],&Node,sizeof(ListDef));
+			sAmpLcd.Windows.ManaData.ReceivedManaCount+=1;
+			List[i].ListNum	=	i+1;
+			break;
+		}
+	}	
 }
 /*******************************************************************************
 *函数名			:	DataInitialize
@@ -1453,47 +1937,46 @@ void DataInitialize(void)
 {
 	unsigned	char*	addr;
 	//==========================================显示参数初始化
-	WinFontDef* WinFont	=	(WinFontDef*)&sAmpLcd.Windows.WinFont;
 	WinInfoDef* WinInfo	=	(WinInfoDef*)&sAmpLcd.Windows.WinInfo;
 	//==========================================WinFont
-	WinFont->FtDefault.BackColor	=	DisplayBackColor;
-	WinFont->FtDefault.PenColor		=	DisplayFontColor;
-	WinFont->FtDefault.Size				=	DisplayFontSize;
+	WinInfo->FtDefault.BackColor	=	DisplayBackColor;
+	WinInfo->FtDefault.PenColor		=	DisplayFontColor;
+	WinInfo->FtDefault.Size				=	DisplayFontSize;
 	
-	WinFont->FtName.BackColor			=	DisplayNameBkColor;
-	WinFont->FtName.PenColor			=	DisplayNameFtColor;
-	WinFont->FtName.Size					=	DisplayNameFtSize;
+	WinInfo->FtName.BackColor			=	DisplayNameBkColor;
+	WinInfo->FtName.PenColor			=	DisplayNameFtColor;
+	WinInfo->FtName.Size					=	DisplayNameFtSize;
 	
-	WinFont->FtByName.BackColor		=	DisplayByNameBkColor;
-	WinFont->FtByName.PenColor		=	DisplayByNameFtColor;
-	WinFont->FtByName.Size				=	DisplayByNameFtSize;
+	WinInfo->FtByName.BackColor		=	DisplayByNameBkColor;
+	WinInfo->FtByName.PenColor		=	DisplayByNameFtColor;
+	WinInfo->FtByName.Size				=	DisplayByNameFtSize;
 	
-	WinFont->FtSpec.BackColor			=	DisplaySpecBkColor;
-	WinFont->FtSpec.PenColor			=	DisplaySpecFtColor;
-	WinFont->FtSpec.Size					=	DisplaySpecFtSize;
+	WinInfo->FtSpec.BackColor			=	DisplaySpecBkColor;
+	WinInfo->FtSpec.PenColor			=	DisplaySpecFtColor;
+	WinInfo->FtSpec.Size					=	DisplaySpecFtSize;
 	
-	WinFont->FtNum.BackColor			=	DisplayNumBkColor;
-	WinFont->FtNum.PenColor				=	DisplayNumFtColor;
-	WinFont->FtNum.Size						=	DisplayNumFtSize;
+	WinInfo->FtNum.BackColor			=	DisplayNumBkColor;
+	WinInfo->FtNum.PenColor				=	DisplayNumFtColor;
+	WinInfo->FtNum.Size						=	DisplayNumFtSize;
 	
-	WinFont->FtSeril.BackColor		=	DisplaySerialBkColor;
-	WinFont->FtSeril.PenColor			=	DisplaySerialFtColor;
-	WinFont->FtSeril.Size					=	DisplaySerialFtSize;
+	WinInfo->FtSeril.BackColor		=	DisplaySerialBkColor;
+	WinInfo->FtSeril.PenColor			=	DisplaySerialFtColor;
+	WinInfo->FtSeril.Size					=	DisplaySerialFtSize;
 	
-	WinFont->FtCode.BackColor			=	DisplayCodeBkColor;
-	WinFont->FtCode.PenColor			=	DisplayCodeFtColor;
-	WinFont->FtCode.Size					=	DisplayCodeFtSize;
+	WinInfo->FtCode.BackColor			=	DisplayCodeBkColor;
+	WinInfo->FtCode.PenColor			=	DisplayCodeFtColor;
+	WinInfo->FtCode.Size					=	DisplayCodeFtSize;
 	
-	WinFont->FtVender.BackColor		=	DisplayVenderBkColor;
-	WinFont->FtVender.PenColor		=	DisplayVenderFtColor;
-	WinFont->FtVender.Size				=	DisplayVenderFtSize;
+	WinInfo->FtVender.BackColor		=	DisplayVenderBkColor;
+	WinInfo->FtVender.PenColor		=	DisplayVenderFtColor;
+	WinInfo->FtVender.Size				=	DisplayVenderFtSize;
 	
-	WinFont->FtTitle.BackColor		=	DisplayTitleBkColor;
-	WinFont->FtTitle.PenColor			=	DisplayTitleFtColor;
-	WinFont->FtTitle.Size					=	DisplayTitleSize;
+	WinInfo->FtTitle.BackColor		=	DisplayTitleBkColor;
+	WinInfo->FtTitle.PenColor			=	DisplayTitleFtColor;
+	WinInfo->FtTitle.Size					=	DisplayTitleSize;
 	
-	WinFont->FtSepar.BackColor		=	DisplaySeparBkColor;
-	WinFont->FtSepar.Size					=	DisplaySeparWidth;
+	WinInfo->FtSepar.BackColor		=	DisplaySeparBkColor;
+	WinInfo->FtSepar.Size					=	DisplaySeparWidth;
 	
 	//==========================================WinInfo
 	//------------------------------------------整屏像素点
@@ -1502,19 +1985,21 @@ void DataInitialize(void)
 	
 	//------------------------------------------顶端垂直起始/填充点
 	WinInfo->PxyTopFill.XH				=	0;
-	WinInfo->PxyTopFill.YV				=	DisplayTopStartY;	
+	WinInfo->PxyTopFill.YV				=	DisplayTopFillWidth;	
 	//------------------------------------------底部垂直起始/填充点
 	WinInfo->PxyBotFill.XH				=	0;
-	WinInfo->PxyBotFill.YV				=	DisplayBotStartY;
+	WinInfo->PxyBotFill.YV				=	DisplayBotFillWidth;
 	//------------------------------------------左边起始/填充点
-	WinInfo->PxyLeftFill.XH				=	DisplayStartX;
+	WinInfo->PxyLeftFill.XH				=	DisplayLeftFillWidth;
 	WinInfo->PxyLeftFill.YV				=	0;
 	//------------------------------------------剩余有效使用点数
-	WinInfo->PxyValid.XH					=	WinInfo->PxyPixel.XH-WinInfo->PxyLeftFill.XH;
-	WinInfo->PxyValid.YV					=	WinInfo->PxyBotFill.YV-WinInfo->PxyTopFill.YV;
+	WinInfo->PxyValid.XH					=	WinInfo->PxyPixel.XH-WinInfo->PxyLeftFill.XH-1;
+	WinInfo->PxyValid.YV					=	WinInfo->PxyPixel.YV-(WinInfo->PxyBotFill.YV+WinInfo->PxyTopFill.YV)-1;
 	
 	//------------------------------------------最大可以接收商品个数
-	addr=(unsigned char*)&sAmpLcd.Windows.ManaData.MaxNameList;
+	addr=(unsigned char*)&sAmpLcd.Windows.ManaData.MaxNameList;		//const类型
 	*addr	=	DspMaxNameTypeCount;
+	//------------------------------------------Y起始点
+	sAmpLcd.Windows.ManaData.StartPixelY	=	WinInfo->PxyTopFill.YV+WinInfo->FtTitle.Size+WinInfo->FtSepar.Size;
 }
 #endif

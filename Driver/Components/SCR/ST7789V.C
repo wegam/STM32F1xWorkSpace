@@ -458,13 +458,13 @@ void ST7789V_ShowStringBKAre(
 			dst=Buffer[i+1];
 			word=word|dst;			
 			//A1=====================显示超限换行
-      if(x>xe-font)
+      if(x+font>xe)
       {
         x=xs;
         y+=font;
       }
       //A2=====================显示到屏尾，从原点开始
-      if(y>(ye-font+3))
+      if(y>(ye-font))
       {
         return;
       }

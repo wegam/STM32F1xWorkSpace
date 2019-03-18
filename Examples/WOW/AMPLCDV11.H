@@ -302,14 +302,14 @@
 	#define DisplaySeparBkColor		0x8450		//分隔线颜色
 	#define DisplaySeparWidth	2							//分隔线宽度
 	
-	#define DisplayTopStartY	16
-	#define DisplayTopEndY		8	
-	#define DisplayBotStartY	ST7789V_H-8
-	#define DisplayBotEndY		ST7789V_H
+	#define DisplayTopFillWidth	16					//顶端填充高度
+	#define DisplayTopEndY			8	
+	#define DisplayBotFillWidth	16					//底部填充高度
+	#define DisplayBotEndY			ST7789V_H
 	
+	#define DisplayLeftFillWidth	2					//左边填充宽度/起始点	
 	
-	
-	#define DisplayStartX	2
+	#define DisplayStartX	DisplayLeftFillWidth
 	#define DisplayEndX		ST7789V_V
 	
 #endif
@@ -348,10 +348,11 @@ typedef struct _ListData			//显示数据结构体
 }ListDef;
 typedef struct _ManaData			//显示数据结构体
 {	
-	ListDef 						List[DspMaxNameTypeCount];	//显示内容
-	unsigned char 			DisplaySerial;			//当前显示序号
-	unsigned char				ReceivedManaCount;
-	const unsigned char MaxNameList;	//最大可接收商品个数
+	ListDef 			List[DspMaxNameTypeCount];	//显示内容
+	unsigned char	Serial;				//当前显示序号
+	unsigned char	ReceivedManaCount;
+	unsigned char	MaxNameList;	//最大可接收商品个数
+	unsigned char	StartPixelY;	//字符显示时的Y起始点
 }DataDef;
 typedef struct _Font						//字体：背景色，字体色，字体大小
 {	
@@ -359,8 +360,14 @@ typedef struct _Font						//字体：背景色，字体色，字体大小
 	unsigned short	PenColor;			//字体颜色
 	unsigned char		Size;					//字体大小16,24,32
 }FontDef;
-typedef struct _WinFont			//参数参数字体信息
+typedef struct _XYPointCount					//XY需要点数
 {	
+	unsigned short	XH;			//X--水平
+	unsigned short	YV;			//Y--垂直
+}PxyDef;
+typedef struct _WinInfo			//显示基本参数
+{
+	//----------------------------------字体参数
 	FontDef	FtName;			//商品名称字体参数
 	FontDef	FtByName;		//商品别名字体参数
 	FontDef	FtSpec;			//商品规格字体参数
@@ -371,37 +378,20 @@ typedef struct _WinFont			//参数参数字体信息
 	FontDef	FtTitle;		//标题字体参数
 	FontDef	FtSepar;		//分隔线参数
 	FontDef	FtDefault;	//默认字体字体参数
-}WinFontDef;
-typedef struct _XYPointCount					//XY需要点数
-{	
-	unsigned short	XH;			//X--水平
-	unsigned short	YV;			//Y--垂直
-}PxyDef;
-typedef struct _WinInfo			//显示基本参数
-{
+	//----------------------------------显示类
 	PxyDef	PxyPixel;					//总像素
 	PxyDef	PxyTopFill;				//顶部填充高度
 	PxyDef	PxyBotFill;				//底部填充高度
 	PxyDef	PxyLeftFill;			//左边填充宽度
 	PxyDef	PxyValid;					//有效显示区域	
 }WinInfoDef;
-typedef struct _GUI					//XY需要点数
-{		
-	PxyDef	StartXY;
-	PxyDef	EndXY;
-	unsigned char 	Total;				//接收到的物品信息数量
-	unsigned char 	Serial;				//当前显示序号
-	unsigned short 	DisplayNextStartX;	//当前显示序号
-	unsigned short 	DisplayNextStartY;	//当前显示序号
-}WinGuiDef;
+
 typedef struct _Windows		//显示
 {
 	sST7789VDef	LcdPort;			//LCD
 	SPIDef 			SpiPort;			//字库
 	DataDef			ManaData;
-	WinGuiDef		WinGui;
-	
-	const WinFontDef	WinFont;			//显示字体信息
+
 	const WinInfoDef	WinInfo;			//显示参数
 }WinDef;
 typedef struct _Comm			//通讯
@@ -449,8 +439,10 @@ void DisplayManaModel1(void);					//双显示--数量48号字体
 void DisplayManaModel2(void);					//双显示--数量32号字体
 void DisplayManaModel3(void);					//单显示--数量32号字体
 void DisplayManaModel6(void);
+void DisplayManaModel7(void);
 
-
+void DisplayGui(void);				//显示界面
+void DisplayString(ListDef Node);
 
 void DisplayName(const ListDef Node);				//显示别名和名称
 void DisplayByName(const ListDef Node);			//显示别名
@@ -470,5 +462,5 @@ unsigned short HW_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned shor
 void HW_Configuration(void);
 void DataInitialize(void);		//数据初始化
 
-void AMPLCDV11GUI(void);
+
 #endif
