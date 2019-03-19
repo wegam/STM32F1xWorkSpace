@@ -352,7 +352,7 @@ typedef struct _ManaData			//显示数据结构体
 	unsigned char	Serial;				//当前显示序号
 	unsigned char	ReceivedManaCount;
 	unsigned char	MaxNameList;	//最大可接收商品个数
-	unsigned char	StartPixelY;	//字符显示时的Y起始点
+	
 }DataDef;
 typedef struct _Font						//字体：背景色，字体色，字体大小
 {	
@@ -383,7 +383,17 @@ typedef struct _WinInfo			//显示基本参数
 	PxyDef	PxyTopFill;				//顶部填充高度
 	PxyDef	PxyBotFill;				//底部填充高度
 	PxyDef	PxyLeftFill;			//左边填充宽度
-	PxyDef	PxyValid;					//有效显示区域	
+	PxyDef	PxyValid;					//有效显示区域
+	
+	PxyDef	PxyFillStart;			//显示前清除显示起始坐标
+	PxyDef	PxyFillEnd;				//显示前清除显示结束坐标
+	
+	PxyDef	PxyDisplayStart;	//字符显示起始坐标
+	PxyDef	PxyDisplayEnd;		//字符显示结束坐标
+	
+	unsigned short	TopDisplayStartY;	//上半面字符显示起始地址
+	unsigned short	BotDisplayStartY;	//下半页字符显示起始地址
+	unsigned short	StartPixelY;			//当前显示时的Y起始点
 }WinInfoDef;
 
 typedef struct _Windows		//显示
@@ -442,7 +452,7 @@ void DisplayManaModel6(void);
 void DisplayManaModel7(void);
 
 void DisplayGui(void);				//显示界面
-void DisplayString(ListDef Node);
+
 
 void DisplayName(const ListDef Node);				//显示别名和名称
 void DisplayByName(const ListDef Node);			//显示别名
@@ -450,6 +460,8 @@ void DisplayVender(const ListDef Node);			//显示厂家名称
 void DisplaySpec(const ListDef Node);				//显示规格
 void DisplayCode(const ListDef Node);				//显示编码
 void DisplayNumber(const ListDef Node);			//显示数量和单位
+void DisplayTitle(unsigned char DualFlag);			//显示标题
+unsigned short GetYVLen(const ListDef Node);//获取节点数据占用Y轴的点数
 
 void SetBackColor(unsigned short BKColor);
 unsigned short GetBackColor(void);
