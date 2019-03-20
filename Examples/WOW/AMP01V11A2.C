@@ -1,17 +1,36 @@
-#ifdef AMP01V11		//DB9嘉立创版本
+#ifdef AMP01V11A2			//50PCS样品版本
+
+#include "AMP01V11A2.H"
 
 
-#include "AMP01V11.H"
 #include "AMP_LAY.H"
-#include "AMP_CABV11.H"
+//#include "AMP_CABV11.H"
 
+#include	"AMP_PHY.H"
+
+#include "STM32F10x_BitBand.H"
 #include "STM32_GPIO.H"
+#include "STM32_SYS.H"
 #include "STM32_SYSTICK.H"
 #include "STM32_WDG.H"
+#include "STM32_PWM.H"
+#include "STM32_USART.H"
 
+#include "SWITCHID.H"
+#include "IOT5302W.H"     //读卡器
 
+#include 	"CRC.H"
 
-
+#include "string.h"				//串和内存操作函数头文件
+/* Private variables ---------------------------------------------------------*/
+static RS485Def stCbRS485Ly;   //uart4,PA15   //层板接口
+static RS485Def stCbRS485Cb;   //usart1,PA8    //副柜接口
+static RS485Def stCardRS485Ly; //usart3,PB2    //读卡器接口
+static SwitchDef stCbSwitch;
+//tAMPProdef   AMPPro;
+/* Private function prototypes -----------------------------------------------*/
+static void Hardware_Configuration(void);
+static void HW_SwitchID_Configuration(void);
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -21,11 +40,10 @@
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMP01V11_Configuration(void)
+void AMP01V11A2_Configuration(void)
 {	
 
 	AMP_CABV11_Configuration();
-
 
   GPIO_Configuration_OPP50(SYSLEDPort,SYSLEDPin);
 
@@ -37,7 +55,7 @@ void AMP01V11_Configuration(void)
   
   while(1)
   {
-		//AMP01V11_Loop();
+
   }
 }
 /*******************************************************************************
@@ -49,40 +67,83 @@ void AMP01V11_Configuration(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMP01V11_Server(void)
+void AMP01V11A2_Server(void)
 {  
 	IWDG_Feed();								//独立看门狗喂狗
 	Tim_Server();
 
 	AMP_CABV11_Server();
-
-//	AMP01V11_Loop();
-	
-	
 }
 /*******************************************************************************
-*函数名			:	MainBoard_Server
-*功能描述		:	主柜空闲服务程序
-              1-查询在线设备
-              2-查询副柜有无数据上传
+*函数名			:	function
+*功能描述		:	function
 *输入				: 
 *返回值			:	无
 *修改时间		:	无
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMP01V11_Loop(void)
-{  
-//  if(gCbFlag) //0--柜板，1--层板
+static void Hardware_Configuration(void)
+{
+  HW_SwitchID_Configuration();
+	//=======================================================拨码开关配置
+	  
+  AMPCAB_GenyConfiguration();   //常规接口配置，背光，锁，电源控制
+    
+  AMPCABCOMM_Configuration();   //通讯配置
+  
+  SysTick_DeleymS(1000);				//SysTick延时nmS--等上电稳定
+}
+/*******************************************************************************
+* 函数名			:	function
+* 功能描述		:	函数功能说明 
+* 输入			: void
+* 返回值			: void
+* 修改时间		: 无
+* 修改内容		: 无
+* 其它			: wegam@sina.com
+*******************************************************************************/
+static void HW_SwitchID_Configuration(void)
+{
+  stCbSwitch.NumOfSW	=	8;
+  
+  stCbSwitch.SW1_PORT	=	GPIOB;
+  stCbSwitch.SW1_Pin	=	GPIO_Pin_9;
+  
+  stCbSwitch.SW2_PORT	=	GPIOB;
+  stCbSwitch.SW2_Pin	=	GPIO_Pin_8;
+  
+  stCbSwitch.SW3_PORT	=	GPIOB;
+  stCbSwitch.SW3_Pin	=	GPIO_Pin_7;
+  
+  stCbSwitch.SW4_PORT	=	GPIOB;
+  stCbSwitch.SW4_Pin	=	GPIO_Pin_6;
+  
+  stCbSwitch.SW5_PORT	=	GPIOB;
+  stCbSwitch.SW5_Pin	=	GPIO_Pin_5;
+  
+  stCbSwitch.SW6_PORT	=	GPIOB;
+  stCbSwitch.SW6_Pin	=	GPIO_Pin_4;
+  
+  stCbSwitch.SW7_PORT	=	GPIOB;
+  stCbSwitch.SW7_Pin	=	GPIO_Pin_3;
+  
+  stCbSwitch.SW8_PORT	=	GPIOD;
+  stCbSwitch.SW8_Pin	=	GPIO_Pin_2;
+
+	SwitchIdInitialize(&stCbSwitch);						//
+
+//  CabAddr  = SWITCHID_ReadLeft(&stCbSwitch)&0x3F;  
+//  
+//  if(SWITCHID_ReadLeft(&stCbSwitch)&0x80)
 //  {
-//    AMPLAY_Loop();
+//    MainFlag=1; //0--副柜，1--主柜
 //  }
 //  else
 //  {
-//    AMP_CABV11_Loop();
+//    MainFlag=0; //0--副柜，1--主柜
 //  }
 }
-
 
 
 

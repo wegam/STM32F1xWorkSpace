@@ -85,6 +85,20 @@
 #ifdef AMPLCDV11
 	#include "AMPLCDV11.H"
 #endif
+
+//*********************************AMPLCDV11*********************************//
+#ifdef AMP01V11A2		//10PCS
+	#include "AMP01V11A2.H"
+#endif
+//*********************************AMP01V11A3*********************************//
+#ifdef AMP01V11A3		//50PCS
+	#include "AMP01V11A3.H"
+#endif
+
+//*********************************AMPLCDV12*********************************//
+#ifdef AMPLCDV12
+	#include "AMPLCDV12.H"
+#endif
 //*********************************AMPLED02V13*********************************//
 #ifdef AMPLED02V13
 	#include "AMPLED02V13.H"

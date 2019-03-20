@@ -1,7 +1,7 @@
-#include "AMP_CABV11.H"
+#include "AMP_CABV11A2.H"
 
 
-#include "AMP01V11.H"
+#include "AMP01V11A2.H"
 
 #include	"AMP_PHY.H"
 
@@ -27,16 +27,16 @@ static RS485Def stCbRS485Cb;   //usart1,PA8    //副柜接口
 static RS485Def stCardRS485Ly; //usart3,PB2    //读卡器接口
 static SwitchDef stCbSwitch;
 
-unsigned char CardData[64]={0}; //读卡器接收缓存
-unsigned char CardNum=0;  //读卡器读数计数
-unsigned short InitCardReaderTimeOut=0; //读卡器配置超时时间 10秒
-unsigned char InitCardReaderFlag=0; //读卡器配置标识：0-未配置，1-已配置
-unsigned long InitCardUSART_BaudRate=0; //配置读卡器时使用的波特率
-unsigned char CabAddr   =0;
-unsigned char MainFlag  =0; //0--副柜，1--主柜
+static unsigned char CardData[64]={0}; //读卡器接收缓存
+static unsigned char CardNum=0;  //读卡器读数计数
+static unsigned short InitCardReaderTimeOut=0; //读卡器配置超时时间 10秒
+static unsigned char InitCardReaderFlag=0; //读卡器配置标识：0-未配置，1-已配置
+static unsigned long InitCardUSART_BaudRate=0; //配置读卡器时使用的波特率
+static unsigned char CabAddr   =0;
+static unsigned char MainFlag  =0; //0--副柜，1--主柜
 
-unsigned short RxNum  = 0;
-unsigned char rxd[300]={0};
+static unsigned short RxNum  = 0;
+static unsigned char rxd[300]={0};
 
 /*******************************************************************************
 *函数名			:	function
@@ -483,17 +483,23 @@ void AMPCABCOMM_Configuration(void)
   IOT5302W.Conf.IOT5302WPort.RS485_CTL_PORT  = CommCardCTLPort;
   IOT5302W.Conf.IOT5302WPort.RS485_CTL_Pin   = CommCardCTLPin;
   IOT5302W.Conf.USART_BaudRate  = CommCardBaudRate;
+	GPIO_Configuration_OOD50(GPIOC,GPIO_Pin_7);			//将GPIO相应管脚配置为OD(开漏)输出模式，最大速度50MHz----V20170605
+	GPIO_ResetBits(GPIOC,GPIO_Pin_7);
   API_IOT5302WConfiguration(&IOT5302W);
   //-----------------------------层板接口USART2
   stCbRS485Ly.USARTx  = CommLayPort;
   stCbRS485Ly.RS485_CTL_PORT  = CommLayCTLPort;
   stCbRS485Ly.RS485_CTL_Pin   = CommLayCTLPin;
   RS485_DMA_ConfigurationNR			(&stCbRS485Ly,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	GPIO_Configuration_OOD50(GPIOA,GPIO_Pin_11);			//将GPIO相应管脚配置为OD(开漏)输出模式，最大速度50MHz----V20170605
+	GPIO_ResetBits(GPIOA,GPIO_Pin_11);
   //-----------------------------副柜接口UART4
   stCbRS485Cb.USARTx  = CommCbPort;
   stCbRS485Cb.RS485_CTL_PORT  = CommCbCTLPort;
   stCbRS485Cb.RS485_CTL_Pin   = CommCbCTLPin;
   RS485_DMA_ConfigurationNR			(&stCbRS485Cb,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	GPIO_Configuration_OOD50(GPIOC,GPIO_Pin_9);			//将GPIO相应管脚配置为OD(开漏)输出模式，最大速度50MHz----V20170605
+	GPIO_ResetBits(GPIOC,GPIO_Pin_9);
 }
 /*******************************************************************************
 *函数名			:	function

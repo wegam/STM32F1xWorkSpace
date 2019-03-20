@@ -1,5 +1,5 @@
-#ifndef __AMPLCDV11_H
-#define __AMPLCDV11_H
+#ifndef __AMPLCDV12_H
+#define __AMPLCDV12_H
 
 
 #include	"AMP_PHY.H"
@@ -430,16 +430,9 @@ typedef struct _sAmpLcd
 
 //extern stAMPProdef   AMPPro;
 
-void AMPLCDV11_Configuration(void);
-void AMPLCDV11_Server(void);
+void AMPLCDV12_Configuration(void);
+void AMPLCDV12_Server(void);
 
-void AMPLCDV11_Loop(void);
-
-
-void AMPLCDV11_Receive(void);
-void AMPLCDV11_Send(void);
-void AMPLCDV11_Ack(void);
-void AMPLCDV11_Process(unsigned char* ReceDatabuffer,unsigned short datalen);
 
 
 

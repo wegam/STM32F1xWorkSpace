@@ -440,10 +440,23 @@ void AMPLCDV11_Receive(void);
 void AMPLCDV11_Send(void);
 void AMPLCDV11_Ack(void);
 void AMPLCDV11_Process(unsigned char* ReceDatabuffer,unsigned short datalen);
+void GetManaData(const unsigned char* Databuffer,unsigned short datalen);
+void SetManaData(ListDef* pNode);		//设置显示参数---数据获取成功后设置相关的显示参数
 
 
+void DisplayString(void);
+
+void DisplayGui(void);				//显示界面
 
 
+void DisplayName(const ListDef Node);				//显示别名和名称
+void DisplayByName(const ListDef Node);			//显示别名
+void DisplayVender(const ListDef Node);			//显示厂家名称
+void DisplaySpec(const ListDef Node);				//显示规格
+void DisplayCode(const ListDef Node);				//显示编码
+void DisplayNumber(const ListDef Node);			//显示数量和单位
+void DisplayTitle(unsigned char DualFlag);			//显示标题
+unsigned short GetYVLen(const ListDef Node);//获取节点数据占用Y轴的点数
 
 void SetBackColor(unsigned short BKColor);
 unsigned short GetBackColor(void);
@@ -453,7 +466,8 @@ unsigned short HW_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned shor
 
 
 
-
+void HW_Configuration(void);
+void DataInitialize(void);		//数据初始化
 
 
 #endif

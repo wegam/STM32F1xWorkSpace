@@ -22,31 +22,24 @@
 
 
 
-/* Private variables ---------------------------------------------------------*/
+
 sAmpLcdDef	sAmpLcd;
+
+//unsigned short ysum=0;		//当前显示已占用的总共行点数
+
 
 unsigned  long*  MCUMEMaddr = (unsigned  long*)(0x1FFFF7E0);
 unsigned  short  MCUMEMsize  = 0;
 
+unsigned  char 	gCbFlag		=0;   //0--柜板，1--层板
 unsigned	short FlashTime	=0;
+unsigned	short Num=0;
 unsigned	char	DaulFlag	=	0;
-/* Private function prototypes -----------------------------------------------*/
-void HW_Configuration(void);
-void DataInitialize(void);		//数据初始化
+//unsigned short	YVLen	=	0;
+//unsigned char testbuffer[]="GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_0);";
 
-void DisplayString(void);
-void DisplayGui(void);				//显示界面
-void DisplayName(const ListDef Node);				//显示别名和名称
-void DisplayByName(const ListDef Node);			//显示别名
-void DisplayVender(const ListDef Node);			//显示厂家名称
-void DisplaySpec(const ListDef Node);				//显示规格
-void DisplayCode(const ListDef Node);				//显示编码
-void DisplayNumber(const ListDef Node);			//显示数量和单位
-void DisplayTitle(unsigned char DualFlag);			//显示标题
-unsigned short GetYVLen(const ListDef Node);//获取节点数据占用Y轴的点数
 
-void GetManaData(const unsigned char* Databuffer,unsigned short datalen);
-void SetManaData(ListDef* pNode);		//设置显示参数---数据获取成功后设置相关的显示参数
+
 
 /*******************************************************************************
 *函数名			:	function
@@ -95,7 +88,11 @@ void AMPLCDV11_Configuration(void)
 *******************************************************************************/
 void AMPLCDV11_Server(void)
 {  
+	static unsigned short color=0;
+  
+
 	IWDG_Feed();								//独立看门狗喂狗
+//	Tim_Server();
   if(FlashTime==5)
   {
 		if(sAmpLcd.Windows.ManaData.ReceivedManaCount==0)
@@ -110,10 +107,15 @@ void AMPLCDV11_Server(void)
 			goto FlashTimeCon;
 		}
 			DisplayString();
+
+//		ST7789V_Clean(0xFFDE);
+		//DisplayManaStaticTest1();
   }
 	FlashTimeCon:
 	if(FlashTime++>3000)
-		FlashTime=0;  
+		FlashTime=0;
+
+  
 }
 
 /*******************************************************************************

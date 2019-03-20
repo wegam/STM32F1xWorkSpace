@@ -4,7 +4,12 @@
 #include "STM32_WDG.H"
 
 
-
+__weak void Hardware_Configuration(void){}
+__weak void Software_Configuration(void){}
+__weak void Data_Initialize(void){}
+	
+__weak void Data_Server(void){}
+__weak void SYS_Server(void){}
 
 /*******************************************************************************
 * º¯ÊýÃû	:	WOW_Configuration
@@ -15,6 +20,9 @@
 *******************************************************************************/
 void WOW_Configuration(void)
 {
+	Hardware_Configuration();
+	Software_Configuration();
+	Data_Initialize();
 //	GPIO_DeInit(GPIOA);
 //	GPIO_DeInit(GPIOB);
 //	GPIO_DeInit(GPIOC);
@@ -283,11 +291,25 @@ void WOW_Configuration(void)
 #ifdef AMP01V11
 	AMP01V11_Configuration();
 #endif
+
+//*********************************AMP01V11A2*********************************//
+#ifdef AMP01V11A2
+	AMP01V11A2_Configuration();
+#endif
+
+//*********************************AMP01V11A3*********************************//
+#ifdef AMP01V11A3
+	AMP01V11A3_Configuration();
+#endif
 //*********************************AMPLCDV11*********************************//
 #ifdef AMPLCDV11
 	AMPLCDV11_Configuration();
 #endif
 
+//*********************************AMPLCDV12*********************************//
+#ifdef AMPLCDV12
+	AMPLCDV12_Configuration();
+#endif
 //*********************************AMPLED02V13*********************************//
 #ifdef AMPLED02V13
 	AMPLED02_Configuration();
@@ -593,11 +615,25 @@ void WOW_Server(void)
 #ifdef AMP01V11
 	AMP01V11_Server();
 #endif
+
+//*********************************AMP01V11A2*********************************//
+#ifdef AMP01V11A2
+	AMP01V11A2_Server();
+#endif
+
+//*********************************AMP01V11A3*********************************//
+#ifdef AMP01V11A3
+	AMP01V11A3_Server();
+#endif
 //*********************************AMPLCDV11*********************************//
 #ifdef AMPLCDV11
 	AMPLCDV11_Server();
 #endif
 
+//*********************************AMPLCDV11*********************************//
+#ifdef AMPLCDV12
+	AMPLCDV12_Server();
+#endif
 //*********************************AMPLED02V13*********************************//
 #ifdef AMPLED02V13
 	AMPLED02_Server();

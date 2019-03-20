@@ -1,6 +1,6 @@
-#ifdef AMPLCDV11
+#ifdef AMPLCDV12
 
-#include "AMPLCDV11.H"
+#include "AMPLCDV12.H"
 
 
 
@@ -31,22 +31,27 @@ unsigned  short  MCUMEMsize  = 0;
 unsigned	short FlashTime	=0;
 unsigned	char	DaulFlag	=	0;
 /* Private function prototypes -----------------------------------------------*/
-void HW_Configuration(void);
-void DataInitialize(void);		//数据初始化
+static void HW_Configuration(void);
+static void DataInitialize(void);		//数据初始化
 
-void DisplayString(void);
-void DisplayGui(void);				//显示界面
-void DisplayName(const ListDef Node);				//显示别名和名称
-void DisplayByName(const ListDef Node);			//显示别名
-void DisplayVender(const ListDef Node);			//显示厂家名称
-void DisplaySpec(const ListDef Node);				//显示规格
-void DisplayCode(const ListDef Node);				//显示编码
-void DisplayNumber(const ListDef Node);			//显示数量和单位
-void DisplayTitle(unsigned char DualFlag);			//显示标题
-unsigned short GetYVLen(const ListDef Node);//获取节点数据占用Y轴的点数
+static void DisplayString(void);
+static void DisplayGui(void);				//显示界面
+static void DisplayName(const ListDef Node);				//显示别名和名称
+static void DisplayByName(const ListDef Node);			//显示别名
+static void DisplayVender(const ListDef Node);			//显示厂家名称
+static void DisplaySpec(const ListDef Node);				//显示规格
+static void DisplayCode(const ListDef Node);				//显示编码
+static void DisplayNumber(const ListDef Node);			//显示数量和单位
+static void DisplayTitle(unsigned char DualFlag);			//显示标题
+static unsigned short GetYVLen(const ListDef Node);//获取节点数据占用Y轴的点数
 
-void GetManaData(const unsigned char* Databuffer,unsigned short datalen);
-void SetManaData(ListDef* pNode);		//设置显示参数---数据获取成功后设置相关的显示参数
+static void GetManaData(const unsigned char* Databuffer,unsigned short datalen);
+static void SetManaData(ListDef* pNode);		//设置显示参数---数据获取成功后设置相关的显示参数
+
+static void ReceiveData(void);
+static void SendData(void);
+static void AckData(void);
+static void ProcessData(unsigned char* ReceDatabuffer,unsigned short datalen);
 
 /*******************************************************************************
 *函数名			:	function
@@ -57,7 +62,7 @@ void SetManaData(ListDef* pNode);		//设置显示参数---数据获取成功后设置相关的显示
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMPLCDV11_Configuration(void)
+void AMPLCDV12_Configuration(void)
 {	
 	
 	SYS_Configuration();				//系统配置
@@ -80,8 +85,8 @@ void AMPLCDV11_Configuration(void)
   SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS  
   while(1)
   {
-		AMPLCDV11_Receive();
-		AMPLCDV11_Send();
+		ReceiveData();
+		SendData();
   }
 }
 /*******************************************************************************
@@ -93,7 +98,7 @@ void AMPLCDV11_Configuration(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMPLCDV11_Server(void)
+void AMPLCDV12_Server(void)
 {  
 	IWDG_Feed();								//独立看门狗喂狗
   if(FlashTime==5)
@@ -936,7 +941,6 @@ unsigned short GetBackColor(void)
 	STM32_FLASH_Read(BackColorStartAddr,(unsigned short*)&BKColor,1);							//从指定地址开始读出指定长度的数据
 	return	BKColor;
 }
-
 /*******************************************************************************
 * 函数名			:	function
 * 功能描述		:	函数功能说明 
@@ -981,8 +985,9 @@ void HW_Configuration(void)
 	sST7789V.ST7789VRotate	=	ST7789V_Rotate_90D;		//使用旋转角度
 	
 	
-	temp	=	 GetBackColor();			//背景色
-	sST7789V.ST7789VBColor=	temp;
+	//temp	=	 GetBackColor();			//背景色
+	
+	//sST7789V.ST7789VBColor=	temp;
 	
 	sAmpLcd.Windows.LcdPort	=	sST7789V;
 	
@@ -1010,13 +1015,15 @@ void HW_Configuration(void)
 	//-------------------------------------------层板接口USART1 PA11-RE,PA12-TE
   sRS485Port.USARTx  				= USART1;
   sRS485Port.RS485_CTL_PORT  = GPIOA;
-  sRS485Port.RS485_CTL_Pin   = GPIO_Pin_8;
+  sRS485Port.RS485_CTL_Pin   = GPIO_Pin_12;
 	
 	sAmpLcd.Comm.RS485Port	=	sRS485Port;
 	
-  RS485_DMA_ConfigurationNR			(&sAmpLcd.Comm.RS485Port,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
-  GPIO_Configuration_OPP50	(sRS485Port.RS485_CTL_PORT,sRS485Port.RS485_CTL_Pin);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
-  GPIO_ResetBits(sRS485Port.RS485_CTL_PORT,sRS485Port.RS485_CTL_Pin);
+  RS485_DMA_ConfigurationNR(&sAmpLcd.Comm.RS485Port,19200,gDatasize);	//USART_DMA配置--查询方式，不开中断,配置完默认为接收状态
+	GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_11);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+	GPIO_ResetBits(GPIOA,GPIO_Pin_11);
+//  GPIO_Configuration_OPP50	(sRS485Port.RS485_CTL_PORT,sRS485Port.RS485_CTL_Pin);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
+//  GPIO_ResetBits(sRS485Port.RS485_CTL_PORT,sRS485Port.RS485_CTL_Pin);
 	
 	//-------------------------------------------拨码开关
 	sSwitch.NumOfSW	=	8;
@@ -1064,7 +1071,7 @@ void HW_Configuration(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMPLCDV11_Send(void)
+void SendData(void)
 { 
   unsigned  short   sendedlen = sAmpLcd.Comm.TxLen;
 	if(sendedlen)
@@ -1085,7 +1092,7 @@ void AMPLCDV11_Send(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMPLCDV11_Ack(void)
+void AckData(void)
 {
 	memcpy(sAmpLcd.Comm.Txd,ackupfarme,AmpMinFrameSize);
 	sAmpLcd.Comm.TxLen	=	AmpMinFrameSize;
@@ -1099,7 +1106,7 @@ void AMPLCDV11_Ack(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMPLCDV11_Receive(void)
+void ReceiveData(void)
 {
   unsigned short RxNum  = 0;
   //==========================================================接收查询
@@ -1107,7 +1114,7 @@ void AMPLCDV11_Receive(void)
   RxNum = RS485_ReadBufferIDLE(&sAmpLcd.Comm.RS485Port,sAmpLcd.Comm.Rxd);
   if(RxNum)
   {	
-    AMPLCDV11_Process(sAmpLcd.Comm.Rxd,RxNum);              //柜消息处理
+    ProcessData(sAmpLcd.Comm.Rxd,RxNum);              //柜消息处理
   }
 }
 /*******************************************************************************
@@ -1119,7 +1126,7 @@ void AMPLCDV11_Receive(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
-void AMPLCDV11_Process(unsigned char* ReceDatabuffer,unsigned short datalen)
+void ProcessData(unsigned char* ReceDatabuffer,unsigned short datalen)
 {
   unsigned  short framlength  = datalen; 
   unsigned  char* StartAddr    = ReceDatabuffer;         //备份数据缓存起始地址
@@ -1169,7 +1176,7 @@ void AMPLCDV11_Process(unsigned char* ReceDatabuffer,unsigned short datalen)
 			
 			PackManaData:
 			GetManaData(buffer,DataLen);
-			AMPLCDV11_Ack();						
+			AckData();						
     }
 		//---------------------------修改背景色命令--只带2字节数据,低8位颜色在前
 		else if(AmpCmdLcdConf ==  ampframe->msg.cmd.cmd)
@@ -1177,7 +1184,7 @@ void AMPLCDV11_Process(unsigned char* ReceDatabuffer,unsigned short datalen)
 			unsigned short BackColor	=	0;			
 			memcpy(&BackColor,ampframe->msg.data,2);	//2字节背景色数据，低位在前
 			SetBackColor(BackColor);
-			AMPLCDV11_Ack();			
+			AckData();			
 		}
 		goto ReCheckData;		//重新检测剩余的数据
   }

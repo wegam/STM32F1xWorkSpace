@@ -33,8 +33,8 @@ sST7789VDef	*pST7789V	=	0;		//内部驱动使用，不可删除
 #define	ST7789V_RD_HIGH		(pST7789V->HWPort.sRD_PORT->BSRR	= pST7789V->HWPort.sRD_Pin)
 #define	ST7789V_RD_LOW		(pST7789V->HWPort.sRD_PORT->BRR		= pST7789V->HWPort.sRD_Pin)   //ReadEnable
 
-//#define	ST7789V_RST_HIGH	(pST7789V->Port.sREST_PORT->BSRR	= pST7789V->Port.sREST_Pin)
-//#define	ST7789V_RST_LOW		(pST7789V->Port.sREST_PORT->BRR	= pST7789V->Port.sREST_Pin)
+#define	ST7789V_RST_HIGH	(pST7789V->HWPort.sREST_PORT->BSRR	= pST7789V->HWPort.sREST_Pin)
+#define	ST7789V_RST_LOW		(pST7789V->HWPort.sREST_PORT->BRR		= pST7789V->HWPort.sREST_Pin)
 
 //#define	ST7789V_TE_HIGH		(pST7789V->Port.sTE_PORT->BSRR	= pST7789V->Port.sTE_Pin)
 //#define	ST7789V_TE_LOW		(pST7789V->Port.sTE_PORT->BRR	= pST7789V->Port.sTE_Pin)
@@ -72,7 +72,7 @@ void ST7789V_Initialize(void*	pInfo)
 	//==========================GPIO配置
 //	GPIO_Configuration_OPP50	(Port->sBL_PORT,				Port->sBL_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sRD_PORT,				Port->sRD_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
-//	GPIO_Configuration_OPP50	(Port->sREST_PORT,			Port->sREST_Pin);				//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
+	GPIO_Configuration_OPP50	(Port->sREST_PORT,			Port->sREST_Pin);				//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sDC_PORT,				Port->sDC_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sWR_PORT,				Port->sWR_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
 	GPIO_Configuration_OPP50	(Port->sCS_PORT,				Port->sCS_Pin);					//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度2MHz----V20170605
@@ -717,6 +717,12 @@ void ST7789V_PowerOn(void)
   u16	temp=time;
 
   ST7789V_Enable();	  //
+	//----------------------------------Hardware Reset-----------------------------------------------//
+	ST7789V_RST_LOW;  	
+	ST7789V_DelaymS(1); 	   //最少10us
+	ST7789V_RST_HIGH;
+	//----------------------------------ExitSleep-----------------------------------------------//
+	
 	//----------------------------------Software Reset-----------------------------------------------//
   //ST7789V_WriteCommand(0x01);  	
   //ST7789V_DelaymS(520); 	   //Delay 120ms 
