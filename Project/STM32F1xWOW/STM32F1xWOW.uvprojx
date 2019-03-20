@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>STM32F103RC</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00040000) IRAM(0x20000000,0x0000C000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -686,6 +686,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -1595,7 +1630,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -2265,6 +2300,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -3174,7 +3244,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -3844,6 +3914,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -4753,7 +4858,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -5423,6 +5528,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -6332,7 +6472,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -7002,6 +7142,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -7911,7 +8086,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -8581,6 +8756,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -9490,7 +9700,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -10160,6 +10370,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -11069,7 +11314,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -11739,6 +11984,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -12648,7 +12928,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -13318,6 +13598,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -14227,7 +14542,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -14897,6 +15212,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -15806,7 +16156,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -16476,6 +16826,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -17385,7 +17770,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -18055,6 +18440,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -18964,7 +19384,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -19634,6 +20054,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -20543,7 +20998,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -21213,6 +21668,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -22122,7 +22612,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -22792,6 +23282,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -23701,7 +24226,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -24371,6 +24896,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -25280,7 +25840,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -25950,6 +26510,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -26859,7 +27454,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -27529,6 +28124,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -28438,7 +29068,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -29108,6 +29738,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -30017,7 +30682,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -30687,6 +31352,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -31596,7 +32296,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -32266,6 +32966,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -33175,7 +33910,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -33845,6 +34580,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -34754,7 +35524,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -35424,6 +36194,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -36333,7 +37138,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -37003,6 +37808,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -37912,7 +38752,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -38582,6 +39422,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -39491,7 +40366,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -40161,6 +41036,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -41070,7 +41980,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -41740,6 +42650,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -42649,7 +43594,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -43319,6 +44264,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -44228,7 +45208,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -44898,6 +45878,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -45807,7 +46822,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -46477,6 +47492,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -47386,7 +48436,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -48056,6 +49106,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -48965,7 +50050,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -49635,6 +50720,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -50544,7 +51664,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -51214,6 +52334,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -52123,7 +53278,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -52793,6 +53948,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -53702,7 +54892,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -54372,6 +55562,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -55409,7 +56634,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -56079,6 +57304,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -57116,7 +58376,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -57786,6 +59046,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -58789,7 +60084,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -59459,6 +60754,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -60671,7 +62001,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -61341,6 +62671,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -62741,7 +64106,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -63411,6 +64776,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -64448,7 +65848,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -65118,6 +66518,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -66330,7 +67765,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -67000,6 +68435,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -68464,7 +69934,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -69134,6 +70604,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -70137,7 +71642,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -70807,6 +72312,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -72130,7 +73670,7 @@
         <TargetCommonOption>
           <Device>STM32F103CB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -72800,6 +74340,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -74014,7 +75589,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -74684,6 +76259,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -76039,7 +77649,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -76174,7 +77784,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>3</TargetSelection>
+          <TargetSelection>6</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -76709,6 +78319,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -78064,7 +79709,7 @@
         <TargetCommonOption>
           <Device>STM32F103RB</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00020000) IRAM(0x20000000,0x00005000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -78199,7 +79844,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>3</TargetSelection>
+          <TargetSelection>6</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -78734,6 +80379,105 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>0</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>2</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>0</vShortEn>
+                <vShortWch>0</vShortWch>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -80089,7 +81833,7 @@
         <TargetCommonOption>
           <Device>STM32F103RC</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00040000) IRAM(0x20000000,0x0000C000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -80759,6 +82503,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
@@ -82020,7 +83799,7 @@
         <TargetCommonOption>
           <Device>STM32F103RC</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00040000) IRAM(0x20000000,0x0000C000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -82690,6 +84469,41 @@
               <FileName>AMPLCDV12.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Examples\WOW\AMPLCDV12.C</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AMP01V11A3</GroupName>
+          <Files>
+            <File>
+              <FileName>AMP01V11_PC.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_PC.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Cab.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Cab.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Layer.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Layer.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_RFID.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_RFID.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_BackLight.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_BackLight.C</FilePath>
+            </File>
+            <File>
+              <FileName>AMP01V11_Lock.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Examples\WOW\AMP01V11_Lock.C</FilePath>
             </File>
           </Files>
         </Group>
