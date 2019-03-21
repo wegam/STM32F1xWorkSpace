@@ -68,6 +68,8 @@ static RS485Def stCardRS485Ly; //usart3,PB2    //读卡器接口
 static SwitchDef stCbSwitch;
 static SPIDef stLed;
 
+
+
 static unsigned char CabAddr   =0;
 static unsigned char MainFlag  =0; //0--副柜，1--主柜
 unsigned char rxx[512]={0};
@@ -515,7 +517,7 @@ static void Led_Server(void)
 {
   static unsigned short freshen_led_time=0;
   static unsigned char led_stata=0;
-  if(freshen_led_time++>500)
+  if(freshen_led_time++>100)
   {
 		freshen_led_time	=	0;
     led_stata++;
