@@ -307,7 +307,7 @@
 	#define DisplayBotFillWidth	16					//底部填充高度
 	#define DisplayBotEndY			ST7789V_H
 	
-	#define DisplayLeftFillWidth	2					//左边填充宽度/起始点	
+	#define DisplayLeftFillWidth	9					//左边填充宽度/起始点	
 	
 	#define DisplayStartX	DisplayLeftFillWidth
 	#define DisplayEndX		ST7789V_V

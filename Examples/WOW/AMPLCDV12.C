@@ -28,7 +28,7 @@ sAmpLcdDef	sAmpLcd;
 unsigned  long*  MCUMEMaddr = (unsigned  long*)(0x1FFFF7E0);
 unsigned  short  MCUMEMsize  = 0;
 
-unsigned	short FlashTime	=0;
+//unsigned	short FlashTime	=0;
 unsigned	char	DaulFlag	=	0;
 /* Private function prototypes -----------------------------------------------*/
 static void HW_Configuration(void);
@@ -53,6 +53,10 @@ static void SendData(void);
 static void AckData(void);
 static void ProcessData(unsigned char* ReceDatabuffer,unsigned short datalen);
 
+static void Lcd_Process(void);
+static void AddressNoneProcess(void);
+static void NoDataProcess(void);
+static void Read_switchid(void);
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -69,7 +73,7 @@ void AMPLCDV12_Configuration(void)
 	
   GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_0);
   
-  PWM_OUT(TIM2,PWM_OUTChannel2,500,1);	//PWM设定-20161127版本	占空比1/1000
+  PWM_OUT(TIM2,PWM_OUTChannel1,2,500);	//PWM设定-20161127版本	占空比1/1000
 	
 	//SysTick_DeleymS(500);				//SysTick延时nmS
 	
@@ -81,6 +85,7 @@ void AMPLCDV12_Configuration(void)
 	
 	//SetBackColor(LCD565_DARKBLUE);
   ST7789V_Clean(0xFFFF);
+	ST7789V_Clean(LCD565_DARKBLUE);
 	//AMPLCDV11GUI();
   SysTick_Configuration(1000);    //系统嘀嗒时钟配置72MHz,单位为uS  
   while(1)
@@ -101,14 +106,60 @@ void AMPLCDV12_Configuration(void)
 void AMPLCDV12_Server(void)
 {  
 	IWDG_Feed();								//独立看门狗喂狗
-  if(FlashTime==5)
-  {
-		if(sAmpLcd.Windows.ManaData.ReceivedManaCount==0)
+  
+	AddressNoneProcess();
+	Lcd_Process();
+	Read_switchid();
+	NoDataProcess();	 
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+static void Lcd_Process(void)
+{
+	static unsigned short time=0;
+	static unsigned char	Type_Count_bac=0;
+//	static unsigned char color=0;
+	unsigned char i=0;
+	unsigned char dataflag=0;
+	ListDef*		List;
+	
+	List	=	sAmpLcd.Windows.ManaData.List;
+	if(0==sAmpLcd.Sys.AddrLay||0==sAmpLcd.Sys.AddrSeg)
+	{
+		return;
+	}
+	for(i=0;i<DspMaxNameTypeCount;i++)
+	{
+		if(0!=List[i].ListNum)
 		{
-			DisplayGui();				//显示界面
-			DisplayTitle(0);			//显示标题
-			goto FlashTimeCon;
+			dataflag	=	1;
+			break;
 		}
+	}
+	if(Type_Count_bac!=sAmpLcd.Windows.ManaData.ReceivedManaCount)
+	{
+		time	=	0;
+		sAmpLcd.Windows.ManaData.Serial	=	0;
+		Type_Count_bac=sAmpLcd.Windows.ManaData.ReceivedManaCount;
+	}
+	
+	if(0==dataflag)
+		return;
+	if(time==0)
+  {
+//		if(sAmpLcd.Windows.ManaData.ReceivedManaCount==0)
+//		{
+//			DisplayGui();				//显示界面
+//			DisplayTitle(0);			//显示标题
+//			goto FlashTimeCon;
+//		}
 		if(sAmpLcd.Windows.ManaData.ReceivedManaCount<=2)
 		{
 			if((sAmpLcd.Windows.ManaData.Serial==DaulFlag)&&(sAmpLcd.Windows.ManaData.Serial==sAmpLcd.Windows.ManaData.ReceivedManaCount))
@@ -117,10 +168,132 @@ void AMPLCDV12_Server(void)
 			DisplayString();
   }
 	FlashTimeCon:
-	if(FlashTime++>3000)
-		FlashTime=0;  
+	if(time++>3000)
+		time=0; 
 }
-
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+static void Read_switchid(void)
+{
+	static unsigned short time=0;
+	if(time++>1000)
+	{
+		unsigned char temp	=	0;
+		time	=	0;
+		temp	=	SWITCHID_ReadLeft(&sAmpLcd.sSwitch);
+		sAmpLcd.Sys.AddrLay=(temp>>4)&0X0F;  	//层地址
+		sAmpLcd.Sys.AddrSeg=temp&0x0F;      	//位地址
+	}
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+static void AddressNoneProcess(void)
+{
+	static unsigned short time=0;
+	static unsigned char flag=0;
+	unsigned short color	=	0;
+	if(0==sAmpLcd.Sys.AddrLay||0==sAmpLcd.Sys.AddrSeg)
+	{
+		if(time++>1000)
+		{
+			time	=	0;
+			flag+=1;
+			if(flag++>5)
+			{
+				flag=0;
+			}
+			if(0==flag)
+			{
+				color	=	LCD565_GBLUE;
+			}
+			else if(1==flag)
+			{
+				color	=	LCD565_GRAY;
+			}
+			else if(2==flag)
+			{
+				color	=	LCD565_RED;
+			}
+			else if(3==flag)
+			{
+				color	=	LCD565_LIGHTGREEN;
+			}
+			else if(4==flag)
+			{
+				color	=	LCD565_GBLUE;
+			}
+			else
+			{
+				color	=	LCD565_WHITE;
+			}
+			ST7789V_Clean(color);	//清除屏幕函数;
+			ST7789V_Printf(5,100,32,color^0xFF,"未拨码");				//后边的省略号就是可变参数
+			ST7789V_BL_ON;
+		}
+	}
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+static void NoDataProcess(void)
+{
+	static unsigned short time=0;
+	static unsigned char flag=0;
+	unsigned short color	=	0;
+	
+	unsigned char i=0;
+	unsigned char dataflag=0;
+	ListDef*		List;
+	
+	List	=	sAmpLcd.Windows.ManaData.List;
+	
+	if(time++<10)
+	{
+		return;
+	}
+	time	=	0;
+	if((0!=sAmpLcd.Sys.AddrLay)&&(0!=sAmpLcd.Sys.AddrSeg))
+	{
+		for(i=0;i<DspMaxNameTypeCount;i++)
+		{
+			if(0!=List[i].ListNum)
+			{
+				dataflag	=	1;
+				break;
+			}
+		}
+		if(0!=dataflag)
+		{
+			dataflag	=	0;
+			ST7789V_BL_ON;
+			return;
+		}
+		else
+		{
+			ST7789V_BL_OFF;
+		}		
+	}
+}
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -306,6 +479,13 @@ void DisplayGui(void)
 	//-----------------------------------------------------左边边框
 	xs	=	0;
 	xe	=	WinInfo->PxyLeftFill.XH-1;
+	ys	=	0;
+	ye	=	WinInfo->PxyPixel.YV-1;
+	BackColor	=	WinInfo->FtTitle.BackColor;
+	ST7789V_Fill(xs,ys,xe,ye,0x0000);	//纯黑填充
+	//-----------------------------------------------------右边边框
+	xs	=	319-ST7789V_V;
+	xe	=	319;
 	ys	=	0;
 	ye	=	WinInfo->PxyPixel.YV-1;
 	BackColor	=	WinInfo->FtTitle.BackColor;
@@ -1011,7 +1191,7 @@ void HW_Configuration(void)
 	sAmpLcd.Windows.SpiPort	=	sGT32L32;	
   
   GT32L32_Initialize(&sAmpLcd.Windows.SpiPort);				//普通SPI通讯方式配置
-	
+//	GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_4);			//将GPIO相应管脚配置为PP(推挽)输出模式，最大速度50MHz----V20170605
 	//-------------------------------------------层板接口USART1 PA11-RE,PA12-TE
   sRS485Port.USARTx  				= USART1;
   sRS485Port.RS485_CTL_PORT  = GPIOA;
@@ -1155,12 +1335,12 @@ void ProcessData(unsigned char* ReceDatabuffer,unsigned short datalen)
 		goto ReCheckData;		//重新检测剩余的数据
 	}
   //-------------------------层地址检查
-	if(sAmpLcd.Sys.AddrLay	!=	ampframe->msg.addr.address2)
+	if((sAmpLcd.Sys.AddrLay!=ampframe->msg.addr.address2)&&(0xFF!=ampframe->msg.addr.address2))
 	{
 		goto ReCheckData;		//重新检测剩余的数据
 	}
 	//-------------------------位地址检查
-	if(sAmpLcd.Sys.AddrSeg	!=	ampframe->msg.addr.address3)
+	if((sAmpLcd.Sys.AddrSeg	!=	ampframe->msg.addr.address3)&&(0xFF	!=	ampframe->msg.addr.address3))
 	{
 		goto ReCheckData;		//重新检测剩余的数据
 	} 
@@ -1535,7 +1715,6 @@ void SetManaData(ListDef* pNode)
 			memcpy((unsigned char*)&List[i],&Node,sizeof(ListDef));
 			sAmpLcd.Windows.ManaData.ReceivedManaCount+=1;
 			List[i].ListNum	=	i+1;
-			FlashTime	=	0;	//重新计时，快速显示
 			break;
 		}
 	}	

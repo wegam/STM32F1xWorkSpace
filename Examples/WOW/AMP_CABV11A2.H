@@ -33,10 +33,10 @@
 #define CommCardBaudRate  19200         //读卡器通讯波特率
 
 //------------------锁接口J10
-#define LockDrPort    GPIOC         //锁控制接口，高电平开锁
-#define LockDrPin     GPIO_Pin_12
-#define LockSiPort    GPIOB         //锁信号，检测到低电平表示锁已开
-#define LockSiPin     GPIO_Pin_1
+#define LockDrPort    GPIOB         //锁控制接口，高电平开锁
+#define LockDrPin     GPIO_Pin_1
+#define LockSiPort    GPIOC         //锁信号，检测到低电平表示锁已开
+#define LockSiPin     GPIO_Pin_12
 #define UnLock        LockDrPort->BSRR  = LockDrPin    //开锁
 #define ResLock       LockDrPort->BRR   = LockDrPin    //释放锁驱动
 #define GetLockSts    LockSiPort->IDR & LockSiPin      //获取锁的状态，如果为0，表示锁已开

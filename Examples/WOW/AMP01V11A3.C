@@ -489,17 +489,18 @@ static void SwitchID_Server(void)
 *******************************************************************************/
 static void Led_Configuration(void)
 {
-  stLed.Port.SPIx = SPI1;
-  stLed.Port.CS_PORT  = GPIOA;
-  stLed.Port.CS_Pin   = GPIO_Pin_4;
-  stLed.Port.CLK_PORT = GPIOA;
-  stLed.Port.CLK_Pin  = GPIO_Pin_5;
+  stLed.Port.SPIx 			= SPI1;
+  stLed.Port.CS_PORT  	= GPIOA;
+  stLed.Port.CS_Pin   	= GPIO_Pin_4;
+  stLed.Port.CLK_PORT 	= GPIOA;
+  stLed.Port.CLK_Pin  	= GPIO_Pin_5;
   stLed.Port.MISO_PORT  = GPIOA;
   stLed.Port.MISO_Pin   = GPIO_Pin_6;
   stLed.Port.MOSI_PORT  = GPIOA;
   stLed.Port.MOSI_Pin   = GPIO_Pin_7;
   stLed.Port.SPI_BaudRatePrescaler_x  = SPI_BaudRatePrescaler_64;
-  SPI_InitializeSPI(&stLed);			//SPI-DMA通讯方式配置
+	SPI_Initialize(&stLed);		//SPI接口配置
+  //SPI_InitializeSPI(&stLed);			//SPI-DMA通讯方式配置
 }
 /*******************************************************************************
 *函数名			:	function
@@ -516,8 +517,13 @@ static void Led_Server(void)
   static unsigned char led_stata=0;
   if(freshen_led_time++>500)
   {
+		freshen_led_time	=	0;
     led_stata++;
+		//____________使能片选
+		SPI_CS_LOW(&stLed);
     SPI_ReadWriteByteSPI(&stLed,led_stata);
+		//____________取消片选	
+		SPI_CS_HIGH(&stLed);
   }  
 }
 

@@ -48,8 +48,7 @@ sST7789VDef	*pST7789V	=	0;		//内部驱动使用，不可删除
 #define	ST7789VSet(n)	ST7789V_##n##_HIGH
 #define	ST7789VCrl(n)	ST7789V_##n##_LOW
 
-#define ST7789V_BL_ON		PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel2,1000,10)	//(R61509V_BL_PORT->BSRR = R61509V_BL_PIN)
-#define ST7789V_BL_OFF	PWM_OUT((TIM_TypeDef*) TIM2_BASE,PWM_OUTChannel2,1,1000)		//(R61509V_BL_PORT->BRR = R61509V_BL_PIN)
+
 
 
 
@@ -87,6 +86,7 @@ void ST7789V_Initialize(void*	pInfo)
 	//pST7789V->ST7789VRotate	=	ST7789V_Rotate_90D;
 	//ST7789V_Clean(pST7789V->ST7789VBColor);	//清除屏幕函数;
 	ST7789V_PowerOn();
+	ST7789V_BL_OFF;
 }
 /*******************************************************************************
 *函数名		:	LCD_ShowString
@@ -721,6 +721,7 @@ void ST7789V_PowerOn(void)
 	ST7789V_RST_LOW;  	
 	ST7789V_DelaymS(1); 	   //最少10us
 	ST7789V_RST_HIGH;
+	ST7789V_DelaymS(1); 	   //最少10us
 	//----------------------------------ExitSleep-----------------------------------------------//
 	
 	//----------------------------------Software Reset-----------------------------------------------//
@@ -728,7 +729,7 @@ void ST7789V_PowerOn(void)
   //ST7789V_DelaymS(520); 	   //Delay 120ms 
 	//----------------------------------ExitSleep-----------------------------------------------//
   ST7789V_WriteCommand(0x11);           
-  ST7789V_DelaymS(100); 	   //Delay 120ms 
+  ST7789V_DelaymS(1); 	   //Delay 120ms 
   //----------------------------------Display Setting-----------------------------------------------// 
   ST7789V_WriteCommand(0x36); 
   ST7789V_WriteData(0x00);    //ST7789V_WriteData(0x00);   
@@ -800,7 +801,7 @@ void ST7789V_PowerOn(void)
 //	ST7789V_EnterSleep();
   ST7789V_Disable();	//LCD_CS_HIGH;
 	
-	ST7789V_BL_ON;
+	//ST7789V_BL_ON;
  
 }
 /*******************************************************************************

@@ -32,8 +32,8 @@ static unsigned char CardNum=0;  //读卡器读数计数
 static unsigned short InitCardReaderTimeOut=0; //读卡器配置超时时间 10秒
 static unsigned char InitCardReaderFlag=0; //读卡器配置标识：0-未配置，1-已配置
 static unsigned long InitCardUSART_BaudRate=0; //配置读卡器时使用的波特率
-static unsigned char CabAddr   =0;
-static unsigned char MainFlag  =0; //0--副柜，1--主柜
+unsigned char CabAddr   =0;
+unsigned char MainFlag  =0; //0--副柜，1--主柜
 
 static unsigned short RxNum  = 0;
 static unsigned char rxd[300]={0};

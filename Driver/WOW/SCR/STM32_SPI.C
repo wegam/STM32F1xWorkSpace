@@ -443,24 +443,23 @@ u8	SPI_ReadWriteByteSPI(SPIDef *pInfo,unsigned char Data)
 //____________定义变量
 	u16 retry=0;													//用来进行超时计数
 	//____________等待发送缓冲区为空
-  SPI_I2S_SendData(pInfo->Port.SPIx, Data);				//发送数据
-//	while(SPI_I2S_GetFlagStatus(pInfo->Port.SPIx, SPI_I2S_FLAG_TXE) == RESET) 		//检查指令SPI发送标志是否为空
-//	{
-//		retry++;
-//		if(retry>5000)
-//			return 0;
-//	}	
-//	//____________发送数据
-//	SPI_I2S_SendData(pInfo->Port.SPIx, Data);				//发送数据
-//	//____________等待接收数据
-//	retry=0;	
-//	while(SPI_I2S_GetFlagStatus(pInfo->Port.SPIx, SPI_I2S_FLAG_RXNE) == RESET)		//检查指令SPI接收完成标志设置与否
-//	{
-//		retry++;
-//		if(retry>5000)
-//			return 0;
-//	}
-//	while (SPI_I2S_GetFlagStatus(pInfo->Port.SPIx, SPI_I2S_FLAG_BSY) == SET);
+	while(SPI_I2S_GetFlagStatus(pInfo->Port.SPIx, SPI_I2S_FLAG_TXE) == RESET) 		//检查指令SPI发送标志是否为空
+	{
+		retry++;
+		if(retry>5000)
+			return 0;
+	}	
+	//____________发送数据
+	SPI_I2S_SendData(pInfo->Port.SPIx, Data);				//发送数据
+	//____________等待接收数据
+	retry=0;	
+	while(SPI_I2S_GetFlagStatus(pInfo->Port.SPIx, SPI_I2S_FLAG_RXNE) == RESET)		//检查指令SPI接收完成标志设置与否
+	{
+		retry++;
+		if(retry>5000)
+			return 0;
+	}
+	while (SPI_I2S_GetFlagStatus(pInfo->Port.SPIx, SPI_I2S_FLAG_BSY) == SET);
 	//____________返回接收到的数据
 	return SPI_I2S_ReceiveData(pInfo->Port.SPIx); 			//返回接收到的数据	
 }
