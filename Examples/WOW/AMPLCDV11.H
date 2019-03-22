@@ -11,7 +11,7 @@
 
 #define	BackColorStartAddr	0x0801F800		//原点值在MCU内部FLASH的存储地址126K地址，按128Kflash应用
 
-#define	SelectModel	6
+#define	SelectModel	7
 
 #if 1==SelectModel		//DisplayManaStaticTest1();		//双显示效果演示
 	#define DisplayClrColor			0xFFFF		//显示区域清屏颜色

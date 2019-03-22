@@ -48,6 +48,7 @@ unsigned short GetYVLen(const ListDef Node);//获取节点数据占用Y轴的点数
 void GetManaData(const unsigned char* Databuffer,unsigned short datalen);
 void SetManaData(ListDef* pNode);		//设置显示参数---数据获取成功后设置相关的显示参数
 
+static void test(void);
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -114,8 +115,42 @@ void AMPLCDV11_Server(void)
 	FlashTimeCon:
 	if(FlashTime++>3000)
 		FlashTime=0;  
+	test();
 }
-
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+static void test(void)
+{
+	static unsigned short time=0;
+	static unsigned char	i	=	0;
+	if(time++>1000)
+	{
+		time=0;
+		if(i++>5)
+			i=0;
+		if(0==i)
+			ST7789V_Clean(LCD565_WHITE);	//清除屏幕函数;
+		else if(1==i)
+			ST7789V_Clean(LCD565_RED);	//清除屏幕函数;
+		else if(2==i)
+			ST7789V_Clean(LCD565_GREEN);	//清除屏幕函数;
+		else if(3==i)
+			ST7789V_Clean(LCD565_DARKBLUE);	//清除屏幕函数;
+		else if(4==i)
+			ST7789V_Clean(LCD565_LIGHTBLUE);	//清除屏幕函数;
+		else if(5==i)
+			ST7789V_Clean(LCD565_BLACK);	//清除屏幕函数;
+		ST7789V_Printf(20,100,32,LCD565_BLACK,"测试");				//后边的省略号就是可变参数
+		ST7789V_BL_ON;
+	}
+}
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function

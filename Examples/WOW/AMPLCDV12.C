@@ -259,6 +259,7 @@ static void NoDataProcess(void)
 {
 	static unsigned short time=0;
 	static unsigned char flag=0;
+	static unsigned char power_up_flag=0;
 	unsigned short color	=	0;
 	
 	unsigned char i=0;
@@ -267,7 +268,7 @@ static void NoDataProcess(void)
 	
 	List	=	sAmpLcd.Windows.ManaData.List;
 	
-	if(time++<10)
+	if(time++<100)
 	{
 		return;
 	}
@@ -290,6 +291,21 @@ static void NoDataProcess(void)
 		}
 		else
 		{
+//			if(0==power_up_flag)
+//			{
+//				power_up_flag	=	1;
+//				ST7789V_Clean(LCD565_BLACK);	//清除屏幕函数;
+//				ST7789V_Printf(5,100,32,LCD565_LIGHTGREEN,"层号:%0.2d  位号:%0.2d",sAmpLcd.Sys.AddrLay,sAmpLcd.Sys.AddrSeg);				//后边的省略号就是可变参数
+//				ST7789V_BL_ON;
+//			}
+//			else if(power_up_flag<50)
+//			{
+//				power_up_flag+=1;
+//			}
+//			else
+//			{
+//				ST7789V_BL_OFF;
+//			}
 			ST7789V_BL_OFF;
 		}		
 	}
