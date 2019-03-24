@@ -978,7 +978,7 @@ void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     //-------------------------读卡器端口接收到数据
     memcpy(databuffer,pBuffer,length);
     framlength  = length;
-    framlength  = PaketUpMsg(databuffer,ICR,&framlength);
+    framlength  = PackUpMsg(databuffer,ICR,&framlength);
     //-------------------------设置地址:柜控制板地址段为address1
     ampframe  = (stampphydef*)databuffer;
     ampframe->msg.addr.address1 = CabAddr;
@@ -1026,7 +1026,7 @@ void CardDataSendUp(enCCPortDef Port,unsigned char* pBuffer,unsigned short lengt
   //-------------------------读卡器端口接收到数据
   memcpy(databuffer,pBuffer,length);
   framlength  = length;
-  framlength  = PaketUpMsg(databuffer,ICR,&framlength);
+  framlength  = PackUpMsg(databuffer,ICR,&framlength);
   
   //-------------------------设置地址:柜控制板地址段为address1
   ampframe  = (stampphydef*)databuffer;
@@ -1104,7 +1104,7 @@ void StatusServer(void)
 
     memcpy(databuffer,ptemp,2);
     
-    framlength  = PaketUpMsg(databuffer,STA,&framlength);    
+    framlength  = PackUpMsg(databuffer,STA,&framlength);    
     ampframe  = (stampphydef*)databuffer;
     
     ampframe->msg.addr.address1 = CabAddr;

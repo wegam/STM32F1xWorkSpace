@@ -57,6 +57,7 @@ static void Lcd_Process(void);
 static void AddressNoneProcess(void);
 static void NoDataProcess(void);
 static void Read_switchid(void);
+static void SYSLED(void);
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -71,9 +72,9 @@ void AMPLCDV12_Configuration(void)
 	
 	SYS_Configuration();				//系统配置
 	
-  GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_0);
   
-  PWM_OUT(TIM2,PWM_OUTChannel1,2,500);	//PWM设定-20161127版本	占空比1/1000
+  
+//  PWM_OUT(TIM2,PWM_OUTChannel1,2,500);	//PWM设定-20161127版本	占空比1/1000
 	
 	//SysTick_DeleymS(500);				//SysTick延时nmS
 	
@@ -81,6 +82,8 @@ void AMPLCDV12_Configuration(void)
 
 	DataInitialize();	
   
+	GPIO_Configuration_OPP50(GPIOA,GPIO_Pin_0);
+	
   IWDG_Configuration(2000);													//独立看门狗配置---参数单位ms
 	
 	//SetBackColor(LCD565_DARKBLUE);
@@ -106,11 +109,30 @@ void AMPLCDV12_Configuration(void)
 void AMPLCDV12_Server(void)
 {  
 	IWDG_Feed();								//独立看门狗喂狗
-  
+  SYSLED();
 	AddressNoneProcess();
 	Lcd_Process();
 	Read_switchid();
 	NoDataProcess();	 
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+static void SYSLED(void)
+{
+	static unsigned short time=0;
+	if(time++>100)
+	{
+		time=	0;
+		GPIO_Toggle	(GPIOA,GPIO_Pin_0);		//将GPIO相应管脚输出翻转----V20170605
+	}
+	
 }
 /*******************************************************************************
 *函数名			:	function

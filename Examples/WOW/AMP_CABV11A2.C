@@ -21,7 +21,7 @@
 
 #include "string.h"				//串和内存操作函数头文件
 
-
+/* Private variables ---------------------------------------------------------*/
 static RS485Def stCbRS485Ly;   //uart4,PA15   //层板接口
 static RS485Def stCbRS485Cb;   //usart1,PA8    //副柜接口
 static RS485Def stCardRS485Ly; //usart3,PB2    //读卡器接口
@@ -37,7 +37,8 @@ unsigned char MainFlag  =0; //0--副柜，1--主柜
 
 static unsigned short RxNum  = 0;
 static unsigned char rxd[300]={0};
-
+/* Private function prototypes -----------------------------------------------*/
+static void AMPCAB_AddressNoneProcess(void);		//未拨码柜接口发LCD测试程序
 /*******************************************************************************
 *函数名			:	function
 *功能描述		:	function
@@ -72,8 +73,8 @@ void AMP_CABV11_Configuration(void)
 void AMP_CABV11_Server(void)
 {
   //========================读卡器已配置
+	AMPCAB_AddressNoneProcess();		//未拨码柜接口发LCD测试程序
   LockServer();       //锁
-
   RequestServer();    //请求命令处理
   AMPCAB_SwitchIDServer();
   AMPCAB_SYSLED();
@@ -82,6 +83,37 @@ void AMP_CABV11_Server(void)
 	
 	AMPCAB_Receive();
   Send_Server();
+}
+/*******************************************************************************
+*函数名			:	function
+*功能描述		:	function
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+static void AMPCAB_AddressNoneProcess(void)		//未拨码柜接口发LCD测试程序
+{
+  static unsigned short time=0;
+  if(0==CabAddr)   //未拨码
+  {    
+		unsigned char test[]=
+		{	0x7E,0x3D,0x09,0xFF,0xFF,0xFF,		//地址
+			0x01,0x0B,0x4C,0x43,0x44,0xCF,0xD4,0xCA,0xBE,0xB2,0xE2,0xCA,0xD4,	//名称
+			0x02,0x03,0x41,0xD0,0xCD,	//规格
+			0x03,0x02,0x39,0x39,			//数量
+			0x04,0x08,0xB2,0xE2,0xCA,0xD4,0xB1,0xF0,0xC3,0xFB,	//别名
+			0x05,0x0A,0xB9,0xE3,0xD6,0xDD,0xB0,0xD7,0xD4,0xC6,0xC9,0xBD,	//厂商
+			0x06,0x07,0x54,0x45,0x53,0x54,0x2D,0x30,0x31,	//编码
+			0x07,0x02,0xB8,0xF6,0x2F,0x7E,0x7F};	//单位
+			if(time++>500)
+			{
+				time=0;
+				Cabinet_Send(test,strlen(test));    //往副柜发送消息
+			}
+  }
+
 }
 /*******************************************************************************
 *函数名			:	MainBoard_Server
@@ -962,7 +994,7 @@ void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     //-------------------------读卡器端口接收到数据
     memcpy(databuffer,pBuffer,length);
     framlength  = length;
-    framlength  = PaketUpMsg(databuffer,AmpCmdCard,&framlength);
+    framlength  = PackUpMsg(databuffer,AmpCmdCard,&framlength);
     //-------------------------设置地址:柜控制板地址段为address1
     ampframe  = (stampphydef*)databuffer;
     ampframe->msg.addr.address1 = CabAddr;
@@ -1010,7 +1042,7 @@ void CardDataSendUp(enCCPortDef Port,unsigned char* pBuffer,unsigned short lengt
   //-------------------------读卡器端口接收到数据
   memcpy(databuffer,pBuffer,length);
   framlength  = length;
-  framlength  = PaketUpMsg(databuffer,AmpCmdCard,&framlength);
+  framlength  = PackUpMsg(databuffer,AmpCmdCard,&framlength);
   
   //-------------------------设置地址:柜控制板地址段为address1
   ampframe  = (stampphydef*)databuffer;
@@ -1089,7 +1121,7 @@ void LockStatusUpdata(eucmddef Cmd,eLockStsdef std)
   databuffer[0] = AmpStsLock;
   databuffer[1] = std;
   //-------------------------按状态上报类型打包消息
-  framlength  = PaketUpMsg(databuffer,Cmd,&datalength); 
+  framlength  = PackUpMsg(databuffer,Cmd,&datalength); 
   //-------------------------打包完成的数据转换为消息帧
   ampframe  = (stampphydef*)databuffer;
   //-------------------------添加地址
@@ -1129,7 +1161,7 @@ void CommTimeOutUpdata(enCCPortDef Port,stampaddrdef address)
   databuffer[0] = AmpStsComm;       //连接状态标识
   databuffer[1] = AmpCommTimeOut;   //连接超时
   //-------------------------按状态上报类型打包消息
-  framlength  = PaketUpMsg(databuffer,AmpCmdSta,&datalength); 
+  framlength  = PackUpMsg(databuffer,AmpCmdSta,&datalength); 
   //-------------------------打包完成的数据转换为消息帧
   ampframe  = (stampphydef*)databuffer;
   //-------------------------添加地址

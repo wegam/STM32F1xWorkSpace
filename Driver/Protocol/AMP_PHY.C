@@ -13,7 +13,7 @@
 
 #include	"stdbool.h"
 //unsigned  short crc16;
-stampphydef* phy  = NULL;
+//stampphydef* phy  = NULL;
 unsigned	char AmpBaket[maxmsgsize]={0};
 stAMPProdef   AMPPro;
 
@@ -65,6 +65,105 @@ __weak void Tim_Server(void)
 *修改说明		:	无
 *注释				:	wegam@sina.com
 *******************************************************************************/
+unsigned char* API_Get_AmpFrame(unsigned char* pbuffer,unsigned short length)
+{
+  unsigned  char  Cmd         = 0;
+  unsigned  char* headaddr    = pbuffer;
+	unsigned short	msg_len			=	0;
+	unsigned short	frame_len	 	=	length;    //当前缓存数据长度
+  unsigned short	DataValidLength	    =	length;    //当前缓存数据长度
+  
+  stampphydef* ampframe;
+  
+  //=====================基本检查(空地址或者长度不足最小帧)
+  if(NULL  ==  headaddr||DataValidLength<7)
+  {
+    return  NULL;   //退出此函数--空地址或者长度不够
+  }
+  FrameGetHeadCodeAddr:
+  //=====================查找头标识地址
+  headaddr	=	(unsigned char*)memchr(headaddr,headcode,DataValidLength);   //找头标识
+  if(NULL==headaddr)
+  {
+    return NULL;   	//退出此函数--未找到头/尾标识符
+  }  
+  //---------------------剩余有效数据长度
+  DataValidLength  = DataValidLength-((unsigned long)headaddr-(unsigned long)pbuffer); //剩余数据长度
+  if(DataValidLength<7)
+  {
+    return  NULL;   //退出此函数--帧长度不够
+  }
+	if(Check_AmpCrc16(headaddr,DataValidLength))  //检查CRC--通过检查
+	{
+		return headaddr;						//头标识地址
+	}
+	else
+	{
+		headaddr	=	&headaddr[1];
+		DataValidLength	-=1;				//去掉headaddr[0]长度
+		goto FrameGetHeadCodeAddr;	//重新检测，直到成功或者所有的数据检测完
+	} 
+  return  NULL;
+}
+/*******************************************************************************
+*函数名			:	API_AmpCheckFrame
+*功能描述		:	检查协议
+*输入				: pbuffer-数据地址
+              length-数据长度地址
+*返回值			:	消息帧头标识符地址
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short API_Set_AmpFrame(unsigned char* UnPackFrameAddr,unsigned short maxlen)
+{
+  unsigned  char  Cmd         = 0;
+  unsigned  char* headaddr    = UnPackFrameAddr;
+  unsigned short	FrameLen		=	0;    //当前缓存数据长度
+	unsigned short	msglen			=	0;
+	unsigned short	crc16	=	0;
+  
+  stampphydef* ampframe;
+  
+  //=====================基本检查(空地址或者长度不足最小帧)
+  if(NULL==headaddr||FrameLen<7)
+  {
+		FrameLen	=	0;
+		return	FrameLen;
+  }
+	ampframe	=	(stampphydef*)UnPackFrameAddr;
+	//---------------------
+	if(headcode!=ampframe->head)
+	{
+		FrameLen	=	0;
+		return	FrameLen;
+	}
+	//---------------------msg最小长度
+	if(ampframe->msg.length<2)	//
+	{
+		FrameLen	=	0;
+		return	FrameLen;
+	}
+	msglen	=	ampframe->msg.length;
+  FrameLen	=	msglen+5;	//5：head,end,len,crcl,crch
+	//---------------------内存溢出
+	if(FrameLen>maxlen)			
+	{
+		FrameLen	=	0;
+		return	FrameLen;
+	}
+  return  FrameLen;
+}
+/*******************************************************************************
+*函数名			:	API_AmpCheckFrame
+*功能描述		:	检查协议
+*输入				: pbuffer-数据地址
+              length-数据长度地址
+*返回值			:	消息帧头标识符地址
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
 unsigned char* API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length)
 {
   unsigned  char  Cmd         = 0;
@@ -83,7 +182,7 @@ unsigned char* API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length)
   headaddr	=	(unsigned char*)memchr(headaddr,headcode,DataValidLength);   //找头标识
   if(NULL==headaddr)
   {
-    return NULL;   //退出此函数--未找到头/尾标识符
+    return NULL;   	//退出此函数--未找到头/尾标识符
   }  
   //---------------------剩余有效数据长度
   DataValidLength  = DataValidLength-((unsigned long)headaddr-(unsigned long)pbuffer); //剩余数据长度
@@ -193,7 +292,7 @@ unsigned char AmpCrc16Check(unsigned char* pframe,unsigned short* length)
   unsigned  short msglen  = 0;  
   unsigned  short	ValidLength	=	*length; 
   unsigned  short crc16; 
-  
+  stampphydef* phy  = NULL;
   if(NULL  ==  pframe)
   {
     return 0;
@@ -225,6 +324,79 @@ unsigned char AmpCrc16Check(unsigned char* pframe,unsigned short* length)
   return 0;
 }
 /*******************************************************************************
+*函数名			:	crccheck
+*功能描述		:	crc校验
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+static unsigned short Get_AmpCrc16(unsigned char* pframe,unsigned short Framelen)
+{  
+	unsigned short msglen	= 0;
+	unsigned short crclen	=	0;
+	unsigned short crc16	=	0;
+	
+	unsigned char* Get_Crc_StartAddr	=	NULL;
+	
+	stampphydef	frame;
+	
+	memcpy((unsigned char*)&frame,pframe,Framelen);
+	
+	msglen	=	frame.msg.length;
+	crclen	=	msglen+1;		//CRC计算包含frame.msg.length
+	Get_Crc_StartAddr	=	&frame.msg.length;	//从frame.msg.length开始计算
+	
+	crc16 = CRC16_MODBUS(Get_Crc_StartAddr,crclen);
+	
+	return	crc16;
+}
+/*******************************************************************************
+*函数名			:	Check_AmpCrc16
+*功能描述		:	crc校验检查
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+static unsigned char Check_AmpCrc16(unsigned char* pframe,unsigned short Framelen)
+{  
+	unsigned short msglen	= 0;
+	unsigned short crclen	=	0;
+	unsigned short crc16cmp	=	0;
+	unsigned short frame_Len	=	0;    //当前缓存数据长度
+	
+	unsigned char* Get_Crc_StartAddr	=	NULL;
+	
+	stampcrc16def	crc16;
+	stampphydef	frame;
+	
+	memcpy((unsigned char*)&frame,pframe,Framelen);
+	
+	msglen	=	frame.msg.length;
+	frame_Len  = msglen+5;   //完整帧长度，head,length,crc16,end为5个字节
+	
+	if(frame_Len>Framelen)
+	{
+		return 0;
+	}
+	crclen	=	msglen+1;		//CRC计算包含frame.msg.length
+	Get_Crc_StartAddr	=	&frame.msg.length;	//从frame.msg.length开始计算
+	
+	crc16.crcl	=	Get_Crc_StartAddr[crclen+1];
+	crc16.crch	=	Get_Crc_StartAddr[crclen+2];
+	
+	Get_AmpCrc16(pframe,Framelen);
+	
+	if(((crc16cmp&0xFF)==crc16.crcl)&&(((crc16cmp>>8)&0xFF)==crc16.crch))
+  {
+    return 1;
+  }	
+	return	0;
+}
+/*******************************************************************************
 *函数名			:	SetFrame
 *功能描述		:	补充消息的CRC和结束符，返回帧长度
 *输入				: 
@@ -253,7 +425,7 @@ unsigned short SetFrame(unsigned char* pframe,unsigned short* length)
 }
 
 /*******************************************************************************
-* 函数名			:	PaketUpMsg
+* 函数名			:	PackUpMsg
 * 功能描述		:	打包上传消息
 * 输入			: void
 * 返回值			: void
@@ -261,7 +433,7 @@ unsigned short SetFrame(unsigned char* pframe,unsigned short* length)
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-unsigned	short PaketUpMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length)
+unsigned	short PackUpMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length)
 {
   unsigned  short framlength  = 0;  //msg段数据长度：1字节命令+3字节地址
   unsigned  char* temp  = NULL;
@@ -284,7 +456,7 @@ unsigned	short PaketUpMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* le
   return framlength;
 }
 /*******************************************************************************
-* 函数名			:	PaketUpMsg
+* 函数名			:	PackDownMsg
 * 功能描述		:	打包上传消息
 * 输入			: void
 * 返回值			: void
@@ -292,7 +464,7 @@ unsigned	short PaketUpMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* le
 * 修改内容		: 无
 * 其它			: wegam@sina.com
 *******************************************************************************/
-unsigned	short PaketDownMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length)
+unsigned	short PackDownMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length)
 {
   unsigned  short framlength  = 0;  //msg段数据长度：1字节命令+3字节地址
   unsigned  char* temp  = NULL;
@@ -351,6 +523,7 @@ unsigned char ackcheck(unsigned char* pframe)
 unsigned char addr1check(unsigned char* pframe,unsigned char addr1)
 { 
   unsigned addrck=0;
+	stampphydef* phy  = NULL;
   if(NULL ==  pframe)
     return  0;
   phy = (stampphydef*)pframe;
@@ -371,6 +544,7 @@ unsigned char addr1check(unsigned char* pframe,unsigned char addr1)
 unsigned char addr2check(unsigned char* pframe,unsigned char addr2)
 { 
   unsigned addrck=0;
+	stampphydef* phy  = NULL;
   if(NULL ==  pframe)
     return  0;
   phy = (stampphydef*)pframe;
@@ -391,6 +565,7 @@ unsigned char addr2check(unsigned char* pframe,unsigned char addr2)
 unsigned char addr3check(unsigned char* pframe,unsigned char addr3)
 { 
   unsigned addrck=0;
+	stampphydef* phy  = NULL;
   if(NULL ==  pframe)
     return  0;
   phy = (stampphydef*)pframe;

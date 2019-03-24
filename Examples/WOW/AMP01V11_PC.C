@@ -962,7 +962,7 @@ void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     //-------------------------读卡器端口接收到数据
     memcpy(databuffer,pBuffer,length);
     framlength  = length;
-    framlength  = PaketUpMsg(databuffer,AmpCmdCard,&framlength);
+    framlength  = PackUpMsg(databuffer,AmpCmdCard,&framlength);
     //-------------------------设置地址:柜控制板地址段为address1
     ampframe  = (stampphydef*)databuffer;
     ampframe->msg.addr.address1 = CabAddr;
@@ -1010,7 +1010,7 @@ void CardDataSendUp(enCCPortDef Port,unsigned char* pBuffer,unsigned short lengt
   //-------------------------读卡器端口接收到数据
   memcpy(databuffer,pBuffer,length);
   framlength  = length;
-  framlength  = PaketUpMsg(databuffer,AmpCmdCard,&framlength);
+  framlength  = PackUpMsg(databuffer,AmpCmdCard,&framlength);
   
   //-------------------------设置地址:柜控制板地址段为address1
   ampframe  = (stampphydef*)databuffer;
@@ -1089,7 +1089,7 @@ void LockStatusUpdata(eucmddef Cmd,eLockStsdef std)
   databuffer[0] = AmpStsLock;
   databuffer[1] = std;
   //-------------------------按状态上报类型打包消息
-  framlength  = PaketUpMsg(databuffer,Cmd,&datalength); 
+  framlength  = PackUpMsg(databuffer,Cmd,&datalength); 
   //-------------------------打包完成的数据转换为消息帧
   ampframe  = (stampphydef*)databuffer;
   //-------------------------添加地址
@@ -1129,7 +1129,7 @@ void CommTimeOutUpdata(enCCPortDef Port,stampaddrdef address)
   databuffer[0] = AmpStsComm;       //连接状态标识
   databuffer[1] = AmpCommTimeOut;   //连接超时
   //-------------------------按状态上报类型打包消息
-  framlength  = PaketUpMsg(databuffer,AmpCmdSta,&datalength); 
+  framlength  = PackUpMsg(databuffer,AmpCmdSta,&datalength); 
   //-------------------------打包完成的数据转换为消息帧
   ampframe  = (stampphydef*)databuffer;
   //-------------------------添加地址

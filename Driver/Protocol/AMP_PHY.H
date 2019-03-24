@@ -117,7 +117,7 @@ typedef struct _stStatus        //状态标志：
   unsigned short unlockerr  :1;  //开锁错误/失败:0-无，1-开锁失败
   unsigned short Online     :1;  //设备掉线:0-掉线，1-在线
 }stStadef;
-typedef struct _stAckQ        //需要应答标志
+typedef struct _stAckQ        	//需要应答标志
 {
   unsigned char PcAck     :1;   //PC接口需要应答：0-空闲，1-需要应答
   unsigned char PcDir     :1;   //PC接口应答方向：0-向下应答，1-向上应答
@@ -193,17 +193,23 @@ typedef struct _stAMPPrl
 void Tim_Server(void);
 
 
+unsigned char* API_Get_AmpFrame(unsigned char* pbuffer,unsigned short length);
+unsigned short API_Set_AmpFrame(unsigned char* pbuffer,unsigned short length);
 
 unsigned char*	API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length);
   
 unsigned short	getframe(unsigned char* pbuffer,unsigned short* length);
 unsigned char*	getheadaddr(unsigned char* pbuffer,unsigned short* length);
+
 unsigned char 	AmpCrc16Check(unsigned char* pframe,unsigned short* length);
+static unsigned short Get_AmpCrc16(unsigned char* pframe,unsigned short length);
+static unsigned char Check_AmpCrc16(unsigned char* pframe,unsigned short Framelen);
+	
 unsigned short	SetFrame(unsigned char* pframe,unsigned short* length);    //补充消息的CRC和结束符，返回帧长度
 
 
-unsigned short PaketUpMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length);     //打包上传消息
-unsigned short PaketDownMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length);   //打包上传消息
+unsigned short PackUpMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length);     //打包上传消息
+unsigned short PackDownMsg(unsigned	char* pbuffer,eucmddef cmd,unsigned	short* length);   //打包上传消息
 
 unsigned char ackcheck(unsigned char* pframe);    //检查是否为应答消息,应答消息返回1
 unsigned char addr1check(unsigned char* pframe,unsigned char addr1);
