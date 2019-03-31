@@ -43,5 +43,7 @@ NOTE:
    the Flash memory density ranges between 32 and 128 Kbytes.
  - High-density devices are STM32F101xx and STM32F103xx microcontrollers where
    the Flash memory density ranges between 256 and 512 Kbytes.
-    
+
+
+  
 ******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE******

@@ -931,7 +931,7 @@ u16 USART_DMAPrintf(USART_TypeDef* USARTx,const char *format,...)		//∫Û±ﬂµƒ °¬‘∫
 	//8)**********Ω´µ»∑¢ÀÕª∫≥Â«¯¥Û–°£® ˝æ›∏ˆ ˝£©º∞ª∫≥Â«¯µÿ÷∑∑¢∏¯DMAø™∆Ù∑¢ÀÕ
 	//8)**********DMA∑¢ÀÕÕÍ≥…∫Û◊¢“‚”¶∏√ Õ∑≈ª∫≥Â«¯£∫free(USART_BUFFER);
 
-  BufferSize=USART_DMASend(USARTx,(u8*)DMAPrintf_Buffer,BufferSize);	//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
+  BufferSize=api_usart_dma_send(USARTx,(u8*)DMAPrintf_Buffer,BufferSize);	//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
 
 	return BufferSize;			//∑µªÿ∑¢ÀÕ ˝æ›¥Û–°
 }
@@ -984,96 +984,64 @@ u16 USART_DMAPrintfList(USART_TypeDef* USARTx,const char *format,...)		//∫Û±ﬂµƒ 
 * ‰»Î				: 
 *∑µªÿ÷µ			:	»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°£¨∑Ò‘Ú∑µªÿ0£®∑¢ÀÕ∆˜√¶£©
 *******************************************************************************/
-u16 USART_DMASend(
-									USART_TypeDef* USARTx,									//¥Æø⁄∫≈--USART1,USART2,USART3,UART4;//UART5≤ª÷ß≥÷DMA
-									u8 *tx_buffer,													//¥˝∑¢ÀÕ ˝æ›ª∫≥Â«¯µÿ÷∑
-									u16 BufferSize													//…Ë∂®∑¢ÀÕ ˝æ›¥Û–°
-)		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
+static unsigned short set_usart_dma_buffer(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize)		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
 {
 	switch(*(u32*)&USARTx)
 	{
 		case USART1_BASE:
-					if(
-							(DMA1_Channel4->CNDTR==0)								  //Õ®µ¿ø’œ–--“—∑¢ÕÍ ˝æ›
-						||((DMA1_Channel4->CCR&0x00000001)==0)				//Õ®µ¿Œ¥ø™∆Ù
-						)
-					{
-            if(SET  ==  USART_GetFlagStatus(USART1,USART_FLAG_TC))    //∑¢ÀÕÕÍ≥…
-            {
-							memcpy(uTx1Addr,tx_buffer,BufferSize);
-              USART_ClearFlag(USART1, USART_FLAG_TC);
-              DMA1_Channel4->CCR    &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel4,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
-              DMA1->IFCR            =   DMA1_FLAG_GL4;				//DMA_ClearFlag(DMA1_FLAG_TC4);	//«Â≥˝±Í÷æ						
-              DMA1_Channel4->CNDTR 	=   BufferSize;					  //…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-              DMA1_Channel4->CMAR 	=   (u32)uTx1Addr;			  //∑¢ÀÕª∫≥Â«¯
-              DMA1_Channel4->CCR    |=  (u32)0x00000001;			//DMA_Cmd(DMA1_Channel4,ENABLE);//DMA∑¢ÀÕø™∆Ù3
-              return BufferSize;
-            }
-					}
+						memcpy(uTx1Addr,tx_buffer,BufferSize);
+						USART_ClearFlag(USART1, USART_FLAG_TC);
+						DMA1_Channel4->CCR    &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel4,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
+						DMA1->IFCR            =   DMA1_FLAG_GL4;				//DMA_ClearFlag(DMA1_FLAG_TC4);	//«Â≥˝±Í÷æ						
+						DMA1_Channel4->CNDTR 	=   BufferSize;					  //…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
+						DMA1_Channel4->CMAR 	=   (u32)uTx1Addr;			  //∑¢ÀÕª∫≥Â«¯
+						DMA1_Channel4->CCR    |=  (u32)0x00000001;			//DMA_Cmd(DMA1_Channel4,ENABLE);//DMA∑¢ÀÕø™∆Ù3
 			break;
 			case USART2_BASE:
-					if(
-							(DMA1_Channel7->CNDTR==0)										//Õ®µ¿ø’œ–--“—∑¢ÕÍ ˝æ›
-						||((DMA1_Channel7->CCR&0x00000001)==0)				//Õ®µ¿Œ¥ø™∆Ù
-						)
-					{
-            if(SET  ==  USART_GetFlagStatus(USART2,USART_FLAG_TC))    //∑¢ÀÕÕÍ≥…
-            {
-							memcpy(uTx2Addr,tx_buffer,BufferSize);
-              USART_ClearFlag(USART2, USART_FLAG_TC);
-              DMA1_Channel7->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel7,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
-              DMA1->IFCR = DMA1_FLAG_GL7;										//DMA_ClearFlag(DMA1_FLAG_TC7);	//«Â≥˝±Í÷æ						
-              DMA1_Channel7->CNDTR 	=BufferSize;						    //…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-              DMA1_Channel7->CMAR 	=(u32)uTx2Addr;				  //∑¢ÀÕª∫≥Â«¯
-              DMA1_Channel7->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel7,ENABLE);//DMA∑¢ÀÕø™∆Ù3
-              return BufferSize;
-            }
-          }
+						memcpy(uTx2Addr,tx_buffer,BufferSize);
+						USART_ClearFlag(USART2, USART_FLAG_TC);
+						DMA1_Channel7->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel7,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
+						DMA1->IFCR = DMA1_FLAG_GL7;										//DMA_ClearFlag(DMA1_FLAG_TC7);	//«Â≥˝±Í÷æ						
+						DMA1_Channel7->CNDTR 	=BufferSize;						    //…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
+						DMA1_Channel7->CMAR 	=(u32)uTx2Addr;				  //∑¢ÀÕª∫≥Â«¯
+						DMA1_Channel7->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel7,ENABLE);//DMA∑¢ÀÕø™∆Ù3
 			break;
 			case USART3_BASE:
-					if(
-							(DMA1_Channel2->CNDTR==0)										//Õ®µ¿ø’œ–--“—∑¢ÕÍ ˝æ›
-						||((DMA1_Channel2->CCR&0x00000001)==0)				//Õ®µ¿Œ¥ø™∆Ù
-						)
-					{
-            if(SET  ==  USART_GetFlagStatus(USART3,USART_FLAG_TC))    //∑¢ÀÕÕÍ≥…
-            {
-							memcpy(uTx3Addr,tx_buffer,BufferSize);
-              USART_ClearFlag(USART3, USART_FLAG_TC);
-              DMA1_Channel2->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel2,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
-              DMA1->IFCR = DMA1_FLAG_GL2;										//DMA_ClearFlag(DMA1_FLAG_TC2);	//«Â≥˝±Í÷æ						
-              DMA1_Channel2->CNDTR 	=BufferSize;						//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-              DMA1_Channel2->CMAR 	=(u32)uTx3Addr;				//∑¢ÀÕª∫≥Â«¯
-              DMA1_Channel2->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel2,ENABLE);//DMA∑¢ÀÕø™∆Ù3
-              return BufferSize;
-            }
-					}
+						memcpy(uTx3Addr,tx_buffer,BufferSize);
+						USART_ClearFlag(USART3, USART_FLAG_TC);
+						DMA1_Channel2->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel2,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
+						DMA1->IFCR = DMA1_FLAG_GL2;										//DMA_ClearFlag(DMA1_FLAG_TC2);	//«Â≥˝±Í÷æ						
+						DMA1_Channel2->CNDTR 	=BufferSize;						//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
+						DMA1_Channel2->CMAR 	=(u32)uTx3Addr;				//∑¢ÀÕª∫≥Â«¯
+						DMA1_Channel2->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA1_Channel2,ENABLE);//DMA∑¢ÀÕø™∆Ù3
 			break;
 			case UART4_BASE:
-					if(
-							(DMA2_Channel5->CNDTR==0)										//Õ®µ¿ø’œ–--“—∑¢ÕÍ ˝æ›
-						||((DMA2_Channel5->CCR&0x00000001)==0)				//Õ®µ¿Œ¥ø™∆Ù
-						)
-					{
-            if(SET  ==  USART_GetFlagStatus(UART4,USART_FLAG_TC))    //∑¢ÀÕÕÍ≥…
-            {
-							memcpy(uTx4Addr,tx_buffer,BufferSize);
-              USART_ClearFlag(UART4, USART_FLAG_TC);
-              DMA2_Channel5->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel2,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
-              DMA2->IFCR = DMA2_FLAG_GL5;										//DMA_ClearFlag(DMA2_FLAG_TC5);	//«Â≥˝±Í÷æ						
-              DMA2_Channel5->CNDTR 	=BufferSize;						//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
-              DMA2_Channel5->CMAR 	=(u32)uTx4Addr;				//∑¢ÀÕª∫≥Â«¯
-              DMA2_Channel5->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA2_Channel5,ENABLE);//DMA∑¢ÀÕø™∆Ù3
-              return BufferSize;
-            }
-					}
+						memcpy(uTx4Addr,tx_buffer,BufferSize);
+						USART_ClearFlag(UART4, USART_FLAG_TC);
+						DMA2_Channel5->CCR &= (u32)0xFFFFFFFE;				//DMA_Cmd(DMA1_Channel2,DISABLE);//DMA∑¢ÀÕπÿ±’£¨÷ªƒ‹‘⁄DMAπÿ±’«Èøˆœ¬≤≈ø…“‘–¥»ÎCNDTR					
+						DMA2->IFCR = DMA2_FLAG_GL5;										//DMA_ClearFlag(DMA2_FLAG_TC5);	//«Â≥˝±Í÷æ						
+						DMA2_Channel5->CNDTR 	=BufferSize;						//…Ë∂®¥˝∑¢ÀÕª∫≥Â«¯¥Û–°
+						DMA2_Channel5->CMAR 	=(u32)uTx4Addr;				//∑¢ÀÕª∫≥Â«¯
+						DMA2_Channel5->CCR |=(u32)0x00000001;					//DMA_Cmd(DMA2_Channel5,ENABLE);//DMA∑¢ÀÕø™∆Ù3
 			break;
 			case UART5_BASE:
 					//UART5≤ª÷ß≥÷DMA
 					return 0;
 		default:break;
-	}	
-	return 0;
+	}
+	return BufferSize;
+}
+/*******************************************************************************
+*∫Ø ˝√˚			:	USART_DMASend
+*π¶ƒ‹√Ë ˆ		:	¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú£¨»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°£¨∑Ò‘Ú∑µªÿ0
+* ‰»Î				: 
+*∑µªÿ÷µ			:	»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°£¨∑Ò‘Ú∑µªÿ0£®∑¢ÀÕ∆˜√¶£©
+*******************************************************************************/
+unsigned short api_usart_dma_send(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize)		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
+{
+	if(0==get_usart_tx_idle(USARTx))		//¥Æø⁄◊¥Ã¨ºÏ≤È
+		return 0;
+	return set_usart_dma_buffer(USARTx,tx_buffer,BufferSize);		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú	
 }
 /*******************************************************************************
 *∫Ø ˝√˚			:	USART_DMASend
@@ -1081,11 +1049,7 @@ u16 USART_DMASend(
 * ‰»Î				: 
 *∑µªÿ÷µ			:	»Áπ˚ ˝æ›“—æ≠¥´»ÎµΩDMA£¨∑µªÿBuffer¥Û–°£¨∑Ò‘Ú∑µªÿ0£®∑¢ÀÕ∆˜√¶£©
 *******************************************************************************/
-u16 USART_DMASendList(
-									USART_TypeDef* USARTx,									//¥Æø⁄∫≈--USART1,USART2,USART3,UART4;//UART5≤ª÷ß≥÷DMA
-									u8 *tx_buffer,													//¥˝∑¢ÀÕ ˝æ›ª∫≥Â«¯µÿ÷∑
-									u16 BufferSize													//…Ë∂®∑¢ÀÕ ˝æ›¥Û–°
-)		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
+u16 USART_DMASendList(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize)		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
 {
 //	if(BufferSize>uTxSize)	//∑¿÷πƒ⁄¥Ê“Á≥ˆ
 //		BufferSize	=	uTxSize;
@@ -1311,194 +1275,419 @@ u16 USART_DMASendList(
 	return 0;
 }
 /*******************************************************************************
-*∫Ø ˝√˚			:	USART_DMASend
-*π¶ƒ‹√Ë ˆ		:	¥Æø⁄◊¥Ã¨ºÏ≤È--ºÏ≤ÈDMAª∫¥Ê¥Û–°≈–∂œ π”√◊¥Ã¨
+*∫Ø ˝√˚			:	function
+*π¶ƒ‹√Ë ˆ		:	function
 * ‰»Î				: 
-*∑µªÿ÷µ			:	
+*∑µªÿ÷µ			:	0--∑«ø’œ–£¨1--ø’œ–
+*–ﬁ∏ƒ ±º‰		:	Œﬁ
+*–ﬁ∏ƒÀµ√˜		:	Œﬁ
+*◊¢ Õ				:	wegam@sina.com
 *******************************************************************************/
-USARTStatusDef	USART_Status(USART_TypeDef* USARTx)		//¥Æø⁄◊¥Ã¨ºÏ≤È
+static unsigned char get_usart1_rx_idle(void)
 {
-  unsigned short	BufferSize	=	0;			// £”‡ª∫¥Ê¥Û–°
-  
-	USARTStatusDef	Status;
-	FlagStatus bitstatus = RESET;
-  
-  Status.USART_IDLESTD  = 0;
-	
-	switch(*(u32*)&USARTx)
+	unsigned short	BufferSize	=	0;			// £”‡ª∫¥Ê¥Û–°
+	static unsigned char rxdelay=0;
+	//Ω” ’◊¥Ã¨ºÏ≤È
+	BufferSize	=	DMA1_Channel5->CNDTR;		      //ªÒ»°DMAΩ” ’ª∫¥Ê £”‡ø’º‰
+	if(USART_GetFlagStatus(USART1,USART_FLAG_TC))		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
 	{
-		case USART1_BASE:
-				//Ω” ’◊¥Ã¨ºÏ≤È
-				BufferSize	=	DMA1_Channel5->CNDTR;		      //ªÒ»°DMAΩ” ’ª∫¥Ê £”‡ø’º‰
-				if(BufferSize<SetDmaSize.nUSART1)	          //ø…”√ª∫¥Ê–°”⁄‘§…Ë¥Û–°£¨±Ì æ“— π”√
-				{
-					if(RemaDmaSize.nUSART1	== BufferSize)    //≤È—Øø…”√ª∫¥Ê¥Û–° «∑ÒºÃ–¯‘⁄±‰ªØ¥”∂¯≈–∂œ «∑Òªπ‘⁄Ω” ’÷–
-					{
-						RetryCount.nUSART1++;
-						if(RetryCount.nUSART1>=5)               //¡¨–¯5¥Œ≤È—ØŒ¥±‰ªØ±Ì æΩ” ’ÕÍ≥…
-						{
-							RetryCount.nUSART1	  =	0;
-              Status.USART_IDLESTD  = 0;            //ø’œ–
-						}
-					}
-          //ªπ‘⁄Ω” ’÷–
-					else
-					{
-						RemaDmaSize.nUSART1		=	BufferSize;   	//∏¸–¬
-            Status.USART_IDLESTD  = 1;             	//∑«ø’œ–
-            Status.USART_ReceSTD  = 1;           		//’˝‘⁄Ω” ’÷–
-					}					
-				}
-				//∑¢ÀÕ◊¥Ã¨ºÏ≤È
-				if((DMA1_Channel4->CNDTR!=0)&&((DMA1_Channel4->CCR&0x00000001)!=0))   //ªπ‘⁄∑¢ÀÕ÷–
-				{
-          Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-          Status.USART_SendSTD  = 1;        //’˝‘⁄∑¢ÀÕ÷–
-				}
-				else
-				{
-					bitstatus	=	USART_GetFlagStatus(USART1,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-					if(bitstatus	!=	SET)
-          {
-						Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-            Status.USART_SendSTD  = 1;        //’˝‘⁄∑¢ÀÕ÷–            
-          }
-          else
-          {
-            Status.USART_IDLESTD  = 0;        //ø’œ–
-          }
-				}
-				break;
-		case USART2_BASE:
-				//Ω” ’◊¥Ã¨ºÏ≤È
-				BufferSize	=	DMA1_Channel6->CNDTR;		//ªÒ»°DMAΩ” ’ª∫¥Ê £”‡ø’º‰
-				if(BufferSize<SetDmaSize.nUSART2)	    //ª∫¥Ê‘⁄ºı–°£¨±Ì æ‘⁄ π”√
-				{
-					if(RemaDmaSize.nUSART2	== BufferSize)
-					{
-						RetryCount.nUSART2++;
-						if(RetryCount.nUSART2>=2)
-						{
-							RetryCount.nUSART2	=	0;
-							Status.USART_IDLESTD  = 0;        //ø’œ–
-						}
-					}
-					else
-					{
-						RemaDmaSize.nUSART2	=	BufferSize;
-						Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-            Status.USART_ReceSTD  = 1;        //’˝‘⁄Ω” ’÷–
-						return Status;
-					}
-				}
-				//∑¢ÀÕ◊¥Ã¨ºÏ≤È
-				if((DMA1_Channel7->CNDTR!=0)&&((DMA1_Channel7->CCR&0x00000001)!=0))
-				{
-					Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-          Status.USART_SendSTD  = 1;        //’˝‘⁄∑¢ÀÕ÷–
-				}
-				else
-				{
-					bitstatus	=	USART_GetFlagStatus(USART2,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-					if(bitstatus	!=	SET)
-					{
-						Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-            Status.USART_SendSTD  = 1;        //’˝‘⁄∑¢ÀÕ÷–            
-          }
-          else
-          {
-						Status.USART_SendSTD	=	0;
-            Status.USART_IDLESTD  =	0;        //ø’œ–
-          }
-				}
-				break;
-		case USART3_BASE:
-				//Ω” ’◊¥Ã¨ºÏ≤È
-				BufferSize	=	DMA1_Channel3->CNDTR;		//ªÒ»°DMAΩ” ’ª∫¥Ê £”‡ø’º‰
-				if(BufferSize<SetDmaSize.nUSART3)	    //ª∫¥Ê‘⁄ºı–°£¨±Ì æ‘⁄ π”√
-				{
-					if(RemaDmaSize.nUSART3	== BufferSize)
-					{
-						RetryCount.nUSART3++;
-						if(RetryCount.nUSART3>=5)
-						{
-							RetryCount.nUSART3	=	0;
-							Status.USART_IDLESTD  = 0;        //ø’œ–
-						}
-					}
-					else
-					{
-						RemaDmaSize.nUSART3	=	BufferSize;
-						Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-            Status.USART_ReceSTD  = 1;        //’˝‘⁄Ω” ’÷–
-						return Status;
-					}
-				}
-				//∑¢ÀÕ◊¥Ã¨ºÏ≤È
-				if((DMA1_Channel2->CNDTR!=0)&&((DMA1_Channel2->CCR&0x00000001)!=0))
-				{
-					Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-          Status.USART_SendSTD  = 1;        //’˝‘⁄∑¢ÀÕ÷–
-				}
-				else
-				{
-					bitstatus	=	USART_GetFlagStatus(USART3,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-					if(bitstatus	!=	SET)
-					{
-						Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-            Status.USART_SendSTD  = 1;        //’˝‘⁄∑¢ÀÕ÷–            
-          }
-          else
-          {
-            Status.USART_IDLESTD  = 0;        //ø’œ–
-          }
-				}
-				break;
-		case UART4_BASE:
-				//Ω” ’◊¥Ã¨ºÏ≤È
-				BufferSize	=	DMA2_Channel3->CNDTR;		//ªÒ»°DMAΩ” ’ª∫¥Ê £”‡ø’º‰
-				if(BufferSize<SetDmaSize.nUART4)	    //ª∫¥Ê‘⁄ºı–°£¨±Ì æ‘⁄ π”√
-				{
-					if(RemaDmaSize.nUART4	== BufferSize)
-					{
-						RetryCount.nUART4++;
-						if(RetryCount.nUART4>=5)
-						{
-							RetryCount.nUART4	=	0;
-							Status.USART_IDLESTD  = 0;        //ø’œ–
-						}
-					}
-					else
-					{
-						RemaDmaSize.nUART4	=	BufferSize;
-						Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-            Status.USART_ReceSTD  = 1;        //’˝‘⁄Ω” ’÷–
-					}
-				}
-				//∑¢ÀÕ◊¥Ã¨ºÏ≤È
-				if((DMA2_Channel5->CNDTR!=0)&&((DMA2_Channel5->CCR&0x00000001)!=0))
-				{
-					Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-          Status.USART_SendSTD  = 1;        //’˝‘⁄∑¢ÀÕ÷–
-				}
-				else
-				{
-					bitstatus	=	USART_GetFlagStatus(UART4,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
-					if(bitstatus	!=	SET)
-					{
-						Status.USART_IDLESTD  = 1;        //∑«ø’œ–
-            Status.USART_SendSTD  = 1;        //’˝‘⁄∑¢ÀÕ÷–            
-          }
-          else
-          {
-            Status.USART_IDLESTD  = 0;        //ø’œ–
-          }
-				}
-				break;
-		default:break;
+		rxdelay	=	0;
+		return 1;			//ø’œ–
 	}
-	return Status;
+	if(BufferSize<SetDmaSize.nUSART1)	          //ø…”√ª∫¥Ê–°”⁄‘§…Ë¥Û–°£¨±Ì æ“— π”√
+	{
+		if(RemaDmaSize.nUSART1	== BufferSize)    //≤È—Øø…”√ª∫¥Ê¥Û–° «∑ÒºÃ–¯‘⁄±‰ªØ¥”∂¯≈–∂œ «∑Òªπ‘⁄Ω” ’÷–
+		{
+			if(rxdelay++>=5)               //¡¨–¯5¥Œ≤È—ØŒ¥±‰ªØ±Ì æΩ” ’ÕÍ≥…
+			{
+				rxdelay	=	0;
+				return 1;			//ø’œ–
+			}
+		}		
+		else	//ªπ‘⁄Ω” ’÷–
+		{
+			rxdelay	=	0;
+			RemaDmaSize.nUSART1		=	BufferSize;   	//∏¸–¬
+		}					
+	}
+	else
+	{
+		if(rxdelay++>5)
+		{
+			rxdelay	=	0;
+			return 1;		//ø’œ–
+		}			
+	}
+	return 0;
 }
+/*******************************************************************************
+*∫Ø ˝√˚			:	function
+*π¶ƒ‹√Ë ˆ		:	function
+* ‰»Î				: 
+*∑µªÿ÷µ			:	0--∑«ø’œ–£¨1--ø’œ–
+*–ﬁ∏ƒ ±º‰		:	Œﬁ
+*–ﬁ∏ƒÀµ√˜		:	Œﬁ
+*◊¢ Õ				:	wegam@sina.com
+*******************************************************************************/
+static unsigned char get_usart1_tx_idle(void)
+{
+	unsigned short	BufferSize	=	0;			// £”‡ª∫¥Ê¥Û–°
+	static unsigned short txdelay=0;
+
+	FlagStatus bitstatus = RESET;
+	
+	if(USART_GetFlagStatus(USART1,USART_FLAG_TC))		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’
+	{
+		txdelay=0;
+		return 1;		//«ø÷∆◊™Œ™ø’œ–
+	}
+
+	BufferSize	=	DMA1_Channel4->CNDTR;		      //ªÒ»°DMA∑¢ÀÕª∫¥Ê £”‡ø’º‰
+	//∑¢ÀÕ◊¥Ã¨ºÏ≤È
+	if((BufferSize!=0)&&((DMA1_Channel4->CCR&0x00000001)!=0))   //ªπ‘⁄∑¢ÀÕ÷–
+	{
+	}
+	else
+	{
+		bitstatus	=	USART_GetFlagStatus(USART1,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+		if(bitstatus	!=	SET)
+		{
+			if(txdelay++>50)
+			{
+				txdelay=0;
+				return 1;		//«ø÷∆◊™Œ™ø’œ–
+			}
+		}
+		else
+		{
+			txdelay	=	0;
+			return 1;			//ø’œ–
+		}
+	}
+	return 0;
+}
+
+/*******************************************************************************
+*∫Ø ˝√˚			:	function
+*π¶ƒ‹√Ë ˆ		:	function
+* ‰»Î				: 
+*∑µªÿ÷µ			:	0--∑«ø’œ–£¨1--ø’œ–
+*–ﬁ∏ƒ ±º‰		:	Œﬁ
+*–ﬁ∏ƒÀµ√˜		:	Œﬁ
+*◊¢ Õ				:	wegam@sina.com
+*******************************************************************************/
+static unsigned char get_usart2_rx_idle(void)
+{
+	unsigned short	BufferSize	=	0;			// £”‡ª∫¥Ê¥Û–°
+	static unsigned char rxdelay=0;
+	if(USART_GetFlagStatus(USART2,USART_FLAG_TC))		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+	{
+		rxdelay	=	0;
+		return 1;			//ø’œ–
+	}
+	//Ω” ’◊¥Ã¨ºÏ≤È
+	BufferSize	=	DMA1_Channel6->CNDTR;		      //ªÒ»°DMAΩ” ’ª∫¥Ê £”‡ø’º‰
+	if(BufferSize<SetDmaSize.nUSART2)	          //ø…”√ª∫¥Ê–°”⁄‘§…Ë¥Û–°£¨±Ì æ“— π”√
+	{
+		if(RemaDmaSize.nUSART2	== BufferSize)    //≤È—Øø…”√ª∫¥Ê¥Û–° «∑ÒºÃ–¯‘⁄±‰ªØ¥”∂¯≈–∂œ «∑Òªπ‘⁄Ω” ’÷–
+		{
+			if(rxdelay++>=5)               //¡¨–¯5¥Œ≤È—ØŒ¥±‰ªØ±Ì æΩ” ’ÕÍ≥…
+			{
+				rxdelay	=	0;
+				return 1;			//ø’œ–
+			}
+		}		
+		else	//ªπ‘⁄Ω” ’÷–
+		{
+			rxdelay	=	0;
+			RemaDmaSize.nUSART2		=	BufferSize;   	//∏¸–¬
+		}					
+	}
+	else
+	{
+		if(rxdelay++>5)
+		{
+			rxdelay	=	0;
+			return 1;		//ø’œ–
+		}			
+	}
+	return 0;
+}
+/*******************************************************************************
+*∫Ø ˝√˚			:	function
+*π¶ƒ‹√Ë ˆ		:	function
+* ‰»Î				: 
+*∑µªÿ÷µ			:	0--∑«ø’œ–£¨1--ø’œ–
+*–ﬁ∏ƒ ±º‰		:	Œﬁ
+*–ﬁ∏ƒÀµ√˜		:	Œﬁ
+*◊¢ Õ				:	wegam@sina.com
+*******************************************************************************/
+static unsigned char get_usart2_tx_idle(void)
+{
+	unsigned short	BufferSize	=	0;			// £”‡ª∫¥Ê¥Û–°
+	static unsigned short txdelay=0;
+
+	FlagStatus bitstatus = RESET;
+
+	if(USART_GetFlagStatus(USART2,USART_FLAG_TC))		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’
+	{
+		txdelay=0;
+		return 1;		//«ø÷∆◊™Œ™ø’œ–
+	}	
+
+	BufferSize	=	DMA1_Channel7->CNDTR;		      //ªÒ»°DMA∑¢ÀÕª∫¥Ê £”‡ø’º‰
+	//∑¢ÀÕ◊¥Ã¨ºÏ≤È
+	if((BufferSize!=0)&&((DMA1_Channel7->CCR&0x00000001)!=0))   //ªπ‘⁄∑¢ÀÕ÷–
+	{
+	}
+	else
+	{
+		bitstatus	=	USART_GetFlagStatus(USART2,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+		if(bitstatus	!=	SET)
+		{
+			if(txdelay++>100)
+			{
+				txdelay=0;
+				return 1;		//«ø÷∆◊™Œ™ø’œ–
+			}
+		}
+		else
+		{
+			txdelay	=	0;
+			return 1;			//ø’œ–
+		}
+	}
+	return 0;
+}
+/*******************************************************************************
+*∫Ø ˝√˚			:	function
+*π¶ƒ‹√Ë ˆ		:	function
+* ‰»Î				: 
+*∑µªÿ÷µ			:	0--∑«ø’œ–£¨1--ø’œ–
+*–ﬁ∏ƒ ±º‰		:	Œﬁ
+*–ﬁ∏ƒÀµ√˜		:	Œﬁ
+*◊¢ Õ				:	wegam@sina.com
+*******************************************************************************/
+static unsigned char get_usart3_rx_idle(void)
+{
+	unsigned short	BufferSize	=	0;			// £”‡ª∫¥Ê¥Û–°
+	static unsigned char rxdelay=0;
+	if(USART_GetFlagStatus(USART3,USART_FLAG_TC))		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+	{
+		rxdelay	=	0;
+		return 1;			//ø’œ–
+	}
+	//Ω” ’◊¥Ã¨ºÏ≤È
+	BufferSize	=	DMA1_Channel3->CNDTR;		      //ªÒ»°DMAΩ” ’ª∫¥Ê £”‡ø’º‰
+	if(BufferSize<SetDmaSize.nUSART3)	          //ø…”√ª∫¥Ê–°”⁄‘§…Ë¥Û–°£¨±Ì æ“— π”√
+	{
+		if(RemaDmaSize.nUSART3	== BufferSize)    //≤È—Øø…”√ª∫¥Ê¥Û–° «∑ÒºÃ–¯‘⁄±‰ªØ¥”∂¯≈–∂œ «∑Òªπ‘⁄Ω” ’÷–
+		{
+			if(rxdelay++>=5)               //¡¨–¯5¥Œ≤È—ØŒ¥±‰ªØ±Ì æΩ” ’ÕÍ≥…
+			{
+				rxdelay	=	0;
+				return 1;			//ø’œ–
+			}
+		}		
+		else	//ªπ‘⁄Ω” ’÷–
+		{
+			rxdelay	=	0;
+			RemaDmaSize.nUSART3		=	BufferSize;   	//∏¸–¬
+		}					
+	}
+	else
+	{
+		if(rxdelay++>5)
+		{
+			rxdelay	=	0;
+			return 1;		//ø’œ–
+		}			
+	}
+	return 0;
+}
+/*******************************************************************************
+*∫Ø ˝√˚			:	function
+*π¶ƒ‹√Ë ˆ		:	function
+* ‰»Î				: 
+*∑µªÿ÷µ			:	0--∑«ø’œ–£¨1--ø’œ–
+*–ﬁ∏ƒ ±º‰		:	Œﬁ
+*–ﬁ∏ƒÀµ√˜		:	Œﬁ
+*◊¢ Õ				:	wegam@sina.com
+*******************************************************************************/
+static unsigned char get_usart3_tx_idle(void)
+{
+	unsigned short	BufferSize	=	0;			// £”‡ª∫¥Ê¥Û–°
+	static unsigned short txdelay=0;
+
+	FlagStatus bitstatus = RESET;	
+	
+	if(USART_GetFlagStatus(USART3,USART_FLAG_TC))		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’
+	{
+		txdelay=0;
+		return 1;		//«ø÷∆◊™Œ™ø’œ–
+	}
+
+	BufferSize	=	DMA1_Channel2->CNDTR;		      //ªÒ»°DMA∑¢ÀÕª∫¥Ê £”‡ø’º‰
+	//∑¢ÀÕ◊¥Ã¨ºÏ≤È
+	if((BufferSize!=0)&&((DMA1_Channel2->CCR&0x00000001)!=0))   //ªπ‘⁄∑¢ÀÕ÷–
+	{
+	}
+	else
+	{
+		bitstatus	=	USART_GetFlagStatus(USART3,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+		if(bitstatus	!=	SET)
+		{
+			if(txdelay++>100)
+			{
+				txdelay=0;
+				return 1;		//«ø÷∆◊™Œ™ø’œ–
+			}
+		}
+		else
+		{
+			txdelay	=	0;
+			return 1;			//ø’œ–
+		}
+	}
+	return 0;
+}
+/*******************************************************************************
+*∫Ø ˝√˚			:	function
+*π¶ƒ‹√Ë ˆ		:	function
+* ‰»Î				: 
+*∑µªÿ÷µ			:	0--∑«ø’œ–£¨1--ø’œ–
+*–ﬁ∏ƒ ±º‰		:	Œﬁ
+*–ﬁ∏ƒÀµ√˜		:	Œﬁ
+*◊¢ Õ				:	wegam@sina.com
+*******************************************************************************/
+static unsigned char get_uart4_rx_idle(void)
+{
+	unsigned short	BufferSize	=	0;			// £”‡ª∫¥Ê¥Û–°
+	static unsigned char rxdelay=0;
+	if(USART_GetFlagStatus(UART4,USART_FLAG_TC))		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+	{
+		rxdelay	=	0;
+		return 1;			//ø’œ–
+	}
+	//Ω” ’◊¥Ã¨ºÏ≤È
+	BufferSize	=	DMA2_Channel3->CNDTR;		      //ªÒ»°DMAΩ” ’ª∫¥Ê £”‡ø’º‰
+	if(BufferSize<SetDmaSize.nUART4)	          //ø…”√ª∫¥Ê–°”⁄‘§…Ë¥Û–°£¨±Ì æ“— π”√
+	{
+		if(RemaDmaSize.nUART4	== BufferSize)    //≤È—Øø…”√ª∫¥Ê¥Û–° «∑ÒºÃ–¯‘⁄±‰ªØ¥”∂¯≈–∂œ «∑Òªπ‘⁄Ω” ’÷–
+		{
+			if(rxdelay++>=5)               //¡¨–¯5¥Œ≤È—ØŒ¥±‰ªØ±Ì æΩ” ’ÕÍ≥…
+			{
+				rxdelay	=	0;
+				return 1;			//ø’œ–
+			}
+		}		
+		else	//ªπ‘⁄Ω” ’÷–
+		{
+			rxdelay	=	0;
+			RemaDmaSize.nUART4		=	BufferSize;   	//∏¸–¬
+		}					
+	}
+	else
+	{
+		if(rxdelay++>5)
+		{
+			rxdelay	=	0;
+			return 1;		//ø’œ–
+		}			
+	}
+	return 0;
+}
+/*******************************************************************************
+*∫Ø ˝√˚			:	function
+*π¶ƒ‹√Ë ˆ		:	function
+* ‰»Î				: 
+*∑µªÿ÷µ			:	0--∑«ø’œ–£¨1--ø’œ–
+*–ﬁ∏ƒ ±º‰		:	Œﬁ
+*–ﬁ∏ƒÀµ√˜		:	Œﬁ
+*◊¢ Õ				:	wegam@sina.com
+*******************************************************************************/
+static unsigned char get_uart4_tx_idle(void)
+{
+	unsigned short	BufferSize	=	0;			// £”‡ª∫¥Ê¥Û–°
+	static unsigned short txdelay=0;
+
+	FlagStatus bitstatus = RESET;	
+	
+	if(USART_GetFlagStatus(UART4,USART_FLAG_TC))		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’
+	{
+		txdelay=0;
+		return 1;		//«ø÷∆◊™Œ™ø’œ–
+	}
+
+	BufferSize	=	DMA2_Channel5->CNDTR;		      //ªÒ»°DMA∑¢ÀÕª∫¥Ê £”‡ø’º‰
+	//∑¢ÀÕ◊¥Ã¨ºÏ≤È
+	if((BufferSize!=0)&&((DMA2_Channel5->CCR&0x00000001)!=0))   //ªπ‘⁄∑¢ÀÕ÷–
+	{
+	}
+	else
+	{
+		bitstatus	=	USART_GetFlagStatus(UART4,USART_FLAG_TC);		//ºÏ≤‚∑¢ÀÕ ˝æ›ºƒ¥Ê∆˜ «∑ÒŒ™ø’	RESET-∑«ø’£¨SET-ø’£¨
+		if(bitstatus	!=	SET)
+		{
+			if(txdelay++>100)
+			{
+				txdelay=0;
+				return 1;		//«ø÷∆◊™Œ™ø’œ–
+			}
+		}
+		else
+		{
+			txdelay	=	0;
+			return 1;			//ø’œ–
+		}
+	}
+	return 0;
+}
+/*******************************************************************************
+*∫Ø ˝√˚			:	function
+*π¶ƒ‹√Ë ˆ		:	function
+* ‰»Î				: 
+*∑µªÿ÷µ			:	0--∑«ø’œ–£¨1--ø’œ–
+*–ﬁ∏ƒ ±º‰		:	Œﬁ
+*–ﬁ∏ƒÀµ√˜		:	Œﬁ
+*◊¢ Õ				:	wegam@sina.com
+*******************************************************************************/
+static unsigned char get_usart_rx_idle(USART_TypeDef* USARTx)		//¥Æø⁄◊¥Ã¨ºÏ≤È
+{
+	if(USART1 == USARTx)
+		return get_usart1_rx_idle();
+	else if(USART2 == USARTx)
+		return get_usart2_rx_idle();
+	else if(USART3 == USARTx)
+		return get_usart3_rx_idle();
+	else if(UART4 == USARTx)
+		return get_uart4_rx_idle();
+	else
+		return 0;
+}
+/*******************************************************************************
+*∫Ø ˝√˚			:	function
+*π¶ƒ‹√Ë ˆ		:	function
+* ‰»Î				: 
+*∑µªÿ÷µ			:	0--∑«ø’œ–£¨1--ø’œ–
+*–ﬁ∏ƒ ±º‰		:	Œﬁ
+*–ﬁ∏ƒÀµ√˜		:	Œﬁ
+*◊¢ Õ				:	wegam@sina.com
+*******************************************************************************/
+static unsigned char get_usart_tx_idle(USART_TypeDef* USARTx)		//¥Æø⁄◊¥Ã¨ºÏ≤È
+{
+  if(USART1 == USARTx)
+		return get_usart1_tx_idle();
+	else if(USART2 == USARTx)
+		return get_usart2_tx_idle();
+	else if(USART3 == USARTx)
+		return get_usart3_tx_idle();
+	else if(UART4 == USARTx)
+		return get_uart4_tx_idle();
+	else
+		return 0;
+}
+
 //----------------------RS485---------------------------------------------------------------------------
 /*******************************************************************************
 *∫Ø ˝√˚			:	RS485_TX_EN
@@ -1569,9 +1758,8 @@ u16	RS485_ReadBufferIDLE(
 )	//¥Æø⁄ø’œ–ƒ£ Ω∂¡¥Æø⁄Ω” ’ª∫≥Â«¯£¨»Áπ˚”– ˝æ›£¨Ω´ ˝æ›øΩ±¥µΩRevBuffer,≤¢∑µªÿΩ” ’µΩµƒ ˝æ›∏ˆ ˝£¨»ª∫Û÷ÿ–¬Ω´Ω” ’ª∫≥Â«¯µÿ÷∑÷∏œÚRxdBuffer£¨
 {
 	u16 length=0;
-	USARTStatusDef	Status;
-	Status	=	USART_Status(pRS485->USARTx);		//¥Æø⁄◊¥Ã¨ºÏ≤È	
-	if(0  ==  Status.USART_IDLESTD)		//bit[0] 0-¥Æø⁄ø’œ–£ª1-¥Æø⁄∑«ø’œ–£¨◊¥Ã¨∏˘æ›“‘œ¬Œª∂®“Â
+	USART_TypeDef* USARTx	=	pRS485->USARTx;
+	if(get_usart_rx_idle(USARTx))		//bit[0] 0-¥Æø⁄ø’œ–£ª1-¥Æø⁄∑«ø’œ–£¨◊¥Ã¨∏˘æ›“‘œ¬Œª∂®“Â
 	{
 		RS485_RX_EN(pRS485);
 		length=USART_ReadBufferIDLE(pRS485->USARTx,RevBuffer);	//¥Æø⁄ø’œ–ƒ£ Ω∂¡¥Æø⁄Ω” ’ª∫≥Â«¯£¨»Áπ˚”– ˝æ›£¨Ω´ ˝æ›øΩ±¥µΩRevBuffer,≤¢∑µªÿΩ” ’µΩµƒ ˝æ›∏ˆ ˝£¨»ª∫Û÷ÿ–¬Ω´Ω” ’ª∫≥Â«¯µÿ÷∑÷∏œÚRxdBuffer
@@ -1640,18 +1828,12 @@ u16 RS485_DMASend(
 	
 //	u32	DMA_status=0;			//DMA◊¥Ã¨
   unsigned short sendedlen  =0;
-	USARTStatusDef	Status;
-	USART_TypeDef* USARTx=pRS485->USARTx;
-	
-	Status	=	USART_Status(USARTx);		//¥Æø⁄◊¥Ã¨ºÏ≤È
-	if(1  ==  Status.USART_IDLESTD)   //bit[0] 0-¥Æø⁄ø’œ–£ª1-¥Æø⁄∑«ø’œ–£¨◊¥Ã¨∏˘æ›“‘œ¬Œª∂®“Â
+	USART_TypeDef* USARTx	=	pRS485->USARTx;
+	if(get_usart_rx_idle(USARTx)&&get_usart_tx_idle(USARTx))		//bit[0] 0-¥Æø⁄ø’œ–£ª1-¥Æø⁄∑«ø’œ–£¨◊¥Ã¨∏˘æ›“‘œ¬Œª∂®“Â
 	{
-		return sendedlen;
+		RS485_TX_EN(pRS485);
+		sendedlen = set_usart_dma_buffer(USARTx,(u8*)tx_buffer,BufferSize);		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
 	}
-//	SysTick_DeleymS(1);				//SysTick—” ±nmS
-	RS485_TX_EN(pRS485);
-//	USART_DMASend	(USARTx,(u8*)tx_buffer,BufferSize);		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
-	sendedlen = USART_DMASend(USARTx,(u8*)tx_buffer,BufferSize);		//¥Æø⁄DMA∑¢ÀÕ≥Ã–Ú
 	return sendedlen;
 }
 

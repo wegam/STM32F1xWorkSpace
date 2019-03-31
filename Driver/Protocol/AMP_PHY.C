@@ -17,8 +17,33 @@
 unsigned	char AmpBaket[maxmsgsize]={0};
 stAMPProdef   AMPPro;
 
-
-unsigned  char  ackupfarme[AmpMinFrameSize]=
+//unsigned  char  ackupfarme[10]=
+//{
+//  0x7E,   //头起始符
+//  0x05,   //长度
+//  0x81,   //CMD=1：应答，DIR=1：上传
+//	0x00,		//addr1	//向上应答，带地址
+//	0x00,		//addr2	//向上应答，带地址
+//	0x00,		//addr3	//向上应答，带地址
+//  0x00,   //状态
+//  0xB0,   //CRC16L
+//  0x50,   //CRC16H
+//  0x7F    //尾结束符
+//};
+unsigned  char  ackdownfarme[10]=
+{
+  0x7E,		//头起始符
+  0x05,		//长度
+  0x01,		//CMD=1：应答，DIR=1：上传
+	0x00,		//addr1		//向下应答，地址为0
+	0x00,		//addr2
+	0x00,		//addr3
+  0x00,		//状态
+  0xD1,		//CRC16L
+  0x90,		//CRC16H
+  0x7F		//尾结束符
+};
+unsigned  char  ackupfarmebac[AmpMinFrameSize]=
 {
   0x7E,   //头起始符
   0x02,   //长度
@@ -28,7 +53,7 @@ unsigned  char  ackupfarme[AmpMinFrameSize]=
   0x50,   //CRC16H
   0x7F    //尾结束符
 };
-unsigned  char  ackdownfarme[AmpMinFrameSize]=
+unsigned  char  ackdownfarmebac[AmpMinFrameSize]=
 {
   0x7E,
   0x02,
@@ -223,6 +248,72 @@ unsigned short getframe(unsigned char* pbuffer,unsigned short* length)
   }
   pbuffer = headaddr;
   farmelength = *length;
+  return  farmelength;
+}
+/*******************************************************************************
+*函数名			:	getframe
+*功能描述		:	获取帧地址，返回帧长度
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short get_ackup_frame(enCCPortDef Port,unsigned char* pbuffer)
+{  
+  unsigned  char* headaddr  = NULL;
+  unsigned  short farmelength = 0;
+	stampphydef*	frame;
+	if(NULL	==	pbuffer)
+		return 0;
+
+	frame=(stampphydef*)pbuffer;
+	
+	frame->head	=	headcode;
+	frame->msg.length	=	5;
+	frame->msg.cmd.cmd	=	AmpCmdAck;
+	frame->msg.cmd.rw		=	0;
+	frame->msg.cmd.dir	=	1;
+	frame->msg.addr.address1	=	AMPPro.addr.addr;		//向上应答为柜地址
+	frame->msg.addr.address2	=	0;
+	frame->msg.addr.address3	=	0;
+	frame->msg.data[0]=0;
+	
+	SetFrame(pbuffer,&farmelength);    //补充消息的CRC和结束符，返回帧长度
+
+  return  farmelength;
+}
+/*******************************************************************************
+*函数名			:	getframe
+*功能描述		:	获取帧地址，返回帧长度
+*输入				: 
+*返回值			:	无
+*修改时间		:	无
+*修改说明		:	无
+*注释				:	wegam@sina.com
+*******************************************************************************/
+unsigned short get_ackdown_frame(enCCPortDef Port,unsigned char* pbuffer)
+{  
+  unsigned  char* headaddr  = NULL;
+  unsigned  short farmelength = 0;
+	stampphydef*	frame;
+	if(NULL	==	pbuffer)
+		return 0;
+
+	frame=(stampphydef*)pbuffer;
+	
+	frame->head	=	headcode;
+	frame->msg.length	=	5;
+	frame->msg.cmd.cmd	=	AmpCmdAck;
+	frame->msg.cmd.rw		=	0;
+	frame->msg.cmd.dir	=	0;
+	frame->msg.addr.address1	=	0x00;		//向下应答无地址
+	frame->msg.addr.address2	=	0;
+	frame->msg.addr.address3	=	0;
+	frame->msg.data[0]=0;
+	
+	SetFrame(pbuffer,&farmelength);    //补充消息的CRC和结束符，返回帧长度
+
   return  farmelength;
 }
 /*******************************************************************************
@@ -421,6 +512,7 @@ unsigned short SetFrame(unsigned char* pframe,unsigned short* length)
   crc16 = CRC16_MODBUS(&ampframe->msg.length,crclen);
   memcpy(&ampframe->msg.data[datalen],&crc16,2);       //复制CRC数据
   ampframe->msg.data[datalen+2]  = endcode;      //增加结束符
+	*length	=	msglen+5;
   return *length;
 }
 
@@ -618,7 +710,7 @@ unsigned short SendTimeOut(enCCPortDef Port)
       break;
     default :return 0;      //不继续执行 
   }
-  for(i=0;i<arrysize;i++)
+  for(i=0;i<arrysize-2;i++)
   {
     if(1==Txd[i].arry>0)  //当前已发送超时的消息
     {
@@ -666,7 +758,7 @@ unsigned short Releas_OneBuffer(enCCPortDef Port)
       break;
     default :return 0;      //不继续执行 
   }
-  for(i=0;i<arrysize;i++)
+  for(i=0;i<arrysize-2;i++)
   {
     if(Txd[i].arry>0)
     {
@@ -754,13 +846,15 @@ void Send_Server(void)
 unsigned short Check_SendBuff(enCCPortDef Port)
 { 
   unsigned  char  i  = 0;
-  unsigned  short  SendLen  = 0;
+  unsigned  short	SendLen  = 0;
   unsigned  char  ackflag =0;
   unsigned  char  ackdir =0;
   unsigned  char* SendAddr = NULL;  
   unsigned  char*  ReSendCount;      //PC上传重发计数
   
   unsigned  short*  SendTime=NULL;
+	
+	unsigned char	buffer[256]={0};
   
   stTxdef* Txd  = NULL;
   
@@ -797,9 +891,15 @@ unsigned short Check_SendBuff(enCCPortDef Port)
   if(ackflag) //有应答请求，先应答
   {
     if(ackdir)  //向上应答
-      SendLen = HW_SendBuff(Port,ackupfarme,sizeof(ackupfarme));   //返回已发送字节
+		{
+			SendLen = get_ackup_frame(Port,buffer);
+      SendLen = HW_SendBuff(Port,buffer,SendLen);   //返回已发送字节
+		}
     else
-      SendLen = HW_SendBuff(Port,ackdownfarme,sizeof(ackdownfarme));   //返回已发送字节
+		{
+			SendLen = get_ackdown_frame(Port,buffer);
+      SendLen = HW_SendBuff(Port,buffer,SendLen);   //返回已发送字节
+		}
     if(SendLen)   //应答发送成功---清除标志请求
     {
       switch(Port)
@@ -825,7 +925,7 @@ unsigned short Check_SendBuff(enCCPortDef Port)
   }
   
   //------------------------------检查发送缓存:先发送排序为1的缓存
-  for(i=0;i<arrysize;i++)
+  for(i=0;i<arrysize-2;i++)
   {
     if(1  ==  Txd[i].arry)
     {
@@ -840,9 +940,26 @@ unsigned short Check_SendBuff(enCCPortDef Port)
     SendLen = HW_SendBuff(Port,SendAddr,SendLen);   //返回已发送字节
     if(SendLen)   //成功发送到缓存
     {
+			stampphydef*	frame=(stampphydef*)SendAddr;
       *ReSendCount +=1;
       *SendTime = ReSendWaitTime;
-      
+      //--------------------------如果是广播数据只发两次，然后清除20190331
+			if((0xFF==frame->msg.addr.address1)&&(CabPort==Port))	//广播地址
+			{
+				if(*ReSendCount>=2)
+				{
+					Releas_OneBuffer(Port);
+					*ReSendCount  = 0;      //重发清零
+				}
+			}
+			if((0xFF==frame->msg.addr.address2)&&(LayPort==Port))
+			{
+				if(*ReSendCount>=2)
+				{
+					Releas_OneBuffer(Port);
+					*ReSendCount  = 0;      //重发清零
+				}
+			}
       if(*ReSendCount>=maxresendcount) //超出重发次数：放弃发送
       {        
         SendTimeOut(Port);      //发送超时
@@ -893,6 +1010,9 @@ unsigned short AddSendBuffer(enCCPortDef Port,unsigned char* pBuffer,unsigned sh
   
   stTxdef* Txd  = NULL;
   
+	//--------------------------------------长度判断
+	if(length>maxmsgsize)
+		return 0;
   switch(Port)
   {
     case  NonPort   : return 0;   //不继续执行
@@ -907,7 +1027,7 @@ unsigned short AddSendBuffer(enCCPortDef Port,unsigned char* pBuffer,unsigned sh
     default :return 0;      //不继续执行 
   }
   //-------------------------给当前待发送队列编号(最尾号)
-  for(i=0;i<arrysize;i++)
+  for(i=0;i<arrysize-2;i++)
   {
     if(Txd[i].arry>lastarry)
     {
@@ -920,11 +1040,11 @@ unsigned short AddSendBuffer(enCCPortDef Port,unsigned char* pBuffer,unsigned sh
       }
     }
   }
-  if(lastarry>=arrysize)  //缓存满
+  if(lastarry>=arrysize-2)  //缓存满
     return 0;     //不继续执行
   lastarry=lastarry+1;      //最后的队列编号
   //-------------------------将数据存储到空队列
-  for(i=0;i<arrysize;i++)
+  for(i=0;i<arrysize-2;i++)
   {
     if(0  ==  Txd[i].arry)  //0编号表示此为空缓存
     {

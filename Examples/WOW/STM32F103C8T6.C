@@ -59,7 +59,7 @@ void STM32F103C8T6_Configuration(void)
 //	PD003VG_USART_Conf();
 	
 //	RS485_Bus_TXEN;		//rs485总线接收使能
-//	USART_DMASend(USART3,(u32*)txBuffer_PD,BufferSize);			//自定义printf串口DMA发送程序
+//	api_usart_dma_send(USART3,(u32*)txBuffer_PD,BufferSize);			//自定义printf串口DMA发送程序
 
 }
 /*******************************************************************************

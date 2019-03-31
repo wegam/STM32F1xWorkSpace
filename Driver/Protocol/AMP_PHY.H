@@ -13,7 +13,7 @@
 #define DspMaxNameLen		64		//名字长度--字节
   
 #define gDatasize       		maxmsgsize	//串口最大数据包容量
-#define arrysize        		10       		//每个发送端口待发送缓存排序个数
+#define arrysize        		35       		//每个发送端口待发送缓存排序个数
 #define MaxSlave        		30        	//最大从机数量(柜、层、位)
 #define ReSendWaitTime  		50 	      	//重发间隔时间单位ms
 #define SendNopTime     		10  	      	//发送等待时间单位ms---应答等待时间
@@ -23,8 +23,8 @@
 #define checkswitchidtime 	2000    		//检查拨码开关时间间隔
 #define GetOnlinetime   		5000      	//获取在线设备时间间隔
 
-extern unsigned  char  ackupfarme[AmpMinFrameSize];
-extern unsigned  char  ackdownfarme[AmpMinFrameSize];
+extern unsigned  char  ackupfarme[10];
+extern unsigned  char  ackdownfarme[10];
 	
 typedef enum _eucmd
 {
@@ -178,6 +178,12 @@ typedef struct _stRequest            //锁
   unsigned short  PLon        :1;//层板供电开请求：0-无请求，1-有请求
   unsigned short  PLoff       :1;//层板供电关请求：0-无请求，1-有请求
 }stReqdef;
+typedef struct _CbAddr
+{
+	unsigned char addr:6;
+	unsigned char rev:1;
+	unsigned char mainflag:1;
+}cbaddrdef;
 typedef struct _stAMPPrl
 {
   stTimesdef        Time;         //相关时间变量
@@ -188,6 +194,7 @@ typedef struct _stAMPPrl
   stAckQdef         AckQ;         //标志应答标志，0-不需要，1-需要应答相应接口
   stBufferdef       buffer;       //串口数据缓存
   stSendCountdef    ReSend;
+	cbaddrdef					addr;
 }stAMPProdef;
 
 void Tim_Server(void);
@@ -197,7 +204,10 @@ unsigned char* API_Get_AmpFrame(unsigned char* pbuffer,unsigned short length);
 unsigned short API_Set_AmpFrame(unsigned char* pbuffer,unsigned short length);
 
 unsigned char*	API_AmpCheckFrame(unsigned char* pbuffer,unsigned short* length);
-  
+
+unsigned short get_ackup_frame(enCCPortDef Port,unsigned char* pbuffer);
+unsigned short get_ackdown_frame(enCCPortDef Port,unsigned char* pbuffer);
+	
 unsigned short	getframe(unsigned char* pbuffer,unsigned short* length);
 unsigned char*	getheadaddr(unsigned char* pbuffer,unsigned short* length);
 

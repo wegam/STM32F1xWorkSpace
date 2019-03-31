@@ -381,7 +381,7 @@ bool USART_Config(void)
 void USB_To_USART_Send_Data(u8* data_buffer, u8 Nb_bytes)
 {
 	Usart_tx_flg=1;
-	USART_DMASend(USART1,data_buffer,(u16)Nb_bytes);		//自定义printf串口DMA发送程序
+	api_usart_dma_send(USART1,data_buffer,(u16)Nb_bytes);		//自定义printf串口DMA发送程序
 }
 /*******************************************************************************
 * Function Name  : USB_To_UART_Send_Data.

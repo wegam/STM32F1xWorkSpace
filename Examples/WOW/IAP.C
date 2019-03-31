@@ -118,7 +118,7 @@ void IAP_Server(void)		//CRC--TEST
 //		else
 //		{
 //			memcpy(TxdBuffer,RevBuffer,Num);
-//			USART_DMASend(USART1,(u32*)TxdBuffer,Num);	//串口DMA发送程序
+//			api_usart_dma_send(USART1,(u32*)TxdBuffer,Num);	//串口DMA发送程序
 //		}
 //	}
 //	
@@ -178,7 +178,7 @@ void IAP_CRCTEST(void)		//CRC--TEST
 			TxdBuffer[Num/2]		=	(TxdBuffer[Num/2]&0x00FF)|((crc_data<<8)&0xFF00);			//低8位放入最后半字的高8位
 			TxdBuffer[Num/2+1]	=	(TxdBuffer[Num/2+1]&0xFF00)|((crc_data>>8)&0x00FF);		//高8位放入新增半字的低8位
 		}
-		USART_DMASend(USART1,(u32*)TxdBuffer,Num+2);	//串口DMA发送程序
+		api_usart_dma_send(USART1,(u32*)TxdBuffer,Num+2);	//串口DMA发送程序
 	}
 }
 /*******************************************************************************

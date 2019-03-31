@@ -73,14 +73,27 @@ u16	USART_ReadBufferIDLE	(USART_TypeDef* USARTx,u8 *RevBuffer);	//串口空闲模式读
 //*****************串口发送
 u16	USART_DMAPrintf		  (USART_TypeDef* USARTx,const char *format,...);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
 u16	USART_DMAPrintfList (USART_TypeDef* USARTx,const char *format,...);					//自定义printf串口DMA发送程序,后边的省略号就是可变参数
-u16	USART_DMASend			  (USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+
 u16	USART_DMASendList   (USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);		//串口DMA链表发送程序，如果数据已经传入到DMA，返回Buffer大小，否则数据存入链表
-USARTStatusDef	USART_Status(USART_TypeDef* USARTx);		//串口状态检查
 
 
+static unsigned char get_usart1_rx_idle(void);
+static unsigned char get_usart1_tx_idle(void);
+static unsigned char get_usart2_rx_idle(void);
+static unsigned char get_usart2_tx_idle(void);
+static unsigned char get_usart3_rx_idle(void);
+static unsigned char get_usart3_tx_idle(void);
+static unsigned char get_uart4_rx_idle(void);
+static unsigned char get_uart4_tx_idle(void);
+
+static unsigned char get_usart_rx_idle(USART_TypeDef* USARTx);		//串口状态检查
+static unsigned char get_usart_tx_idle(USART_TypeDef* USARTx);		//串口状态检查
+
+static unsigned short set_usart_dma_buffer(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);		//串口DMA发送程序
 
 
-
+static unsigned short set_usart_dma_buffer(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);		//串口DMA发送程序
+unsigned short	api_usart_dma_send(USART_TypeDef* USARTx,u8 *tx_buffer,u16 BufferSize);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
 
 
 //---------------------------RS485

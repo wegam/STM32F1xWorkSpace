@@ -227,7 +227,7 @@ void ICCARD_Server(void)
 		runFlag	=	0;
 		ICCARD_WriteData(12345678);
 		memcpy(TxdBuffer,CmdBuffer,ICCARD_SendLenth);
-		USART_DMASend	(USART2,(u32*)TxdBuffer,ICCARD_SendLenth);														//串口DMA发送程序
+		api_usart_dma_send	(USART2,(u32*)TxdBuffer,ICCARD_SendLenth);														//串口DMA发送程序
 		GPIO_Toggle	(GPIOB,	GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7|GPIO_Pin_8|GPIO_Pin_9);		//将GPIO相应管脚输出翻转----V20170605
 		GPIO_Toggle	(GPIOC,	GPIO_Pin_12);		//将GPIO相应管脚输出翻转----V20170605
 		GPIO_Toggle	(GPIOD,	GPIO_Pin_2);		//将GPIO相应管脚输出翻转----V20170605
@@ -240,10 +240,10 @@ void ICCARD_Server(void)
 	Num	=	USART_ReadBufferIDLE(USART2,(u32*)RevBuffer,(u32*)RxdBuffer);	//串口空闲模式读串口接收缓冲区，如果有数据，将数据拷贝到RevBuffer,并返回接收到的数据个数，然后重新将接收缓冲区地址指向RxdBuffer
 	if(Num)
 	{
-//	USART_DMASend	(USART2,(u32*)TxdBuffer,22);	//串口DMA发送程序
-//	USART_DMASend	(USART2,(u32*)ICCARD_CMD_SetDataBlock,Num);	//串口DMA发送程序
-//	USART_DMASend	(USART2,(u32*)ICCARD_CMD_SetReaderID,sizeof(ICCARD_CMD_SetReaderID));	//串口DMA发送程序
-//	USART_DMASend	(USART2,(u32*)ICCARD_CMD_GetReaderID,sizeof(ICCARD_CMD_GetReaderID));	//串口DMA发送程序
+//	api_usart_dma_send	(USART2,(u32*)TxdBuffer,22);	//串口DMA发送程序
+//	api_usart_dma_send	(USART2,(u32*)ICCARD_CMD_SetDataBlock,Num);	//串口DMA发送程序
+//	api_usart_dma_send	(USART2,(u32*)ICCARD_CMD_SetReaderID,sizeof(ICCARD_CMD_SetReaderID));	//串口DMA发送程序
+//	api_usart_dma_send	(USART2,(u32*)ICCARD_CMD_GetReaderID,sizeof(ICCARD_CMD_GetReaderID));	//串口DMA发送程序
 		
 //		GPIO_Toggle	(GPIOB,	GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7|GPIO_Pin_8|GPIO_Pin_9);		//将GPIO相应管脚输出翻转----V20170605
 //		GPIO_Toggle	(GPIOC,	GPIO_Pin_12);		//将GPIO相应管脚输出翻转----V20170605

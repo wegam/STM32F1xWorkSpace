@@ -558,13 +558,13 @@ unsigned short AMPCAB_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned 
   switch(Port)
   {
     case  NonPort   : return 0;   //不继续执行
-    case  PcPort    : sendedlen = USART_DMASend(USART1,pBuffer,length);
+    case  PcPort    : sendedlen = api_usart_dma_send(USART1,pBuffer,length);
       break;
     case  CabPort   : sendedlen = RS485_DMASend(&stCbRS485Cb,pBuffer,length);	//RS485-DMA发送程序
       break;
     case  LayPort   : sendedlen = RS485_DMASend(&stCbRS485Ly,pBuffer,length);	//RS485-DMA发送程序
       break;
-    case  CardPort  : sendedlen = USART_DMASend(USART3,pBuffer,length);
+    case  CardPort  : sendedlen = api_usart_dma_send(USART3,pBuffer,length);
       break;
     default :return 0;      //不继续执行
   }

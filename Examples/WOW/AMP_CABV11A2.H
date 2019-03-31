@@ -52,7 +52,7 @@
 #define LayPowerOff   LayPowerPort->BRR  = LayPowerPin   //关闭电源
 
 
-extern unsigned char MainFlag; //0--副柜，1--主柜
+//extern unsigned char MainFlag; //0--副柜，1--主柜
 
 void AMP_CABV11_Configuration(void);
 void AMP_CABV11_Server(void);

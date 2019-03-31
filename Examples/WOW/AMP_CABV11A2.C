@@ -32,8 +32,8 @@ static unsigned char CardNum=0;  //读卡器读数计数
 static unsigned short InitCardReaderTimeOut=0; //读卡器配置超时时间 10秒
 static unsigned char InitCardReaderFlag=0; //读卡器配置标识：0-未配置，1-已配置
 static unsigned long InitCardUSART_BaudRate=0; //配置读卡器时使用的波特率
-unsigned char CabAddr   =0;
-unsigned char MainFlag  =0; //0--副柜，1--主柜
+//unsigned char CabAddr   =0;
+//unsigned char MainFlag  =0; //0--副柜，1--主柜
 
 static unsigned short RxNum  = 0;
 static unsigned char rxd[300]={0};
@@ -96,7 +96,7 @@ void AMP_CABV11_Server(void)
 static void AMPCAB_AddressNoneProcess(void)		//未拨码柜接口发LCD测试程序
 {
   static unsigned short time=0;
-  if(0==CabAddr)   //未拨码
+  if(0==AMPPro.addr.addr)   //未拨码
   {    
 		unsigned char test[]=
 		{	0x7E,0x3D,0x09,0xFF,0xFF,0xFF,		//地址
@@ -235,20 +235,20 @@ void AMPCAB_Receive(void)
 *******************************************************************************/
 void AMPCAB_SwitchIDServer(void)
 {
-  unsigned char cabaddrbac=CabAddr;
+  unsigned char cabaddrbac=AMPPro.addr.addr;
   if(0==AMPPro.Time.swicthidtime)
   {
-    CabAddr  = SWITCHID_ReadLeft(&stCbSwitch)&0x3F;
+    AMPPro.addr.addr  = SWITCHID_ReadLeft(&stCbSwitch)&0x3F;
   
     if(SWITCHID_ReadLeft(&stCbSwitch)&0x80)
     {
-      MainFlag=1; //0--副柜，1--主柜
+      AMPPro.addr.mainflag=1; //0--副柜，1--主柜
     }
     else
     {
-      MainFlag=0; //0--副柜，1--主柜
+      AMPPro.addr.mainflag=0; //0--副柜，1--主柜
     }
-    if(cabaddrbac!=CabAddr)
+    if(cabaddrbac!=AMPPro.addr.addr)
     {
       AMPCABCOMM_Configuration();   //通讯配置
     }
@@ -268,7 +268,7 @@ void AMPCAB_SYSLED(void)
   if(0==AMPPro.Time.SYSLEDTime)
   {    
     GPIO_Toggle	(SYSLEDPort,SYSLEDPin);		//将GPIO相应管脚输出翻转----V20170605
-    if(CabAddr)   //已拨码，频率1Hz
+    if(AMPPro.addr.addr)   //已拨码，频率1Hz
     {
       AMPPro.Time.SYSLEDTime=500;
     }
@@ -291,7 +291,7 @@ void AMPCAB_SYSLED(void)
 void AMPCAB_BackLight(void)
 {
   static unsigned short BLtime=0;
-  if(0==CabAddr)   //未拨码
+  if(0==AMPPro.addr.addr)   //未拨码
   {    
     if(BLtime++>200)
     {
@@ -323,7 +323,7 @@ void AMPCAB_BackLight(void)
 void LockServer(void)
 {
     //-----------------------------------未拨码自动开锁
-    if(0  ==  CabAddr)    //未拨码--自动开锁
+    if(0  ==  AMPPro.addr.addr)    //未拨码--自动开锁
     {
       if(GetLockSts)  //如果锁为关闭状态，则开锁
       {
@@ -461,15 +461,15 @@ void AMPCABSwitchID_Configuration(void)
 
 	SwitchIdInitialize(&stCbSwitch);						//
 
-  CabAddr  = SWITCHID_ReadLeft(&stCbSwitch)&0x3F;  
+  AMPPro.addr.addr  = SWITCHID_ReadLeft(&stCbSwitch)&0x3F;  
   
   if(SWITCHID_ReadLeft(&stCbSwitch)&0x80)
   {
-    MainFlag=1; //0--副柜，1--主柜
+    AMPPro.addr.mainflag=1; //0--副柜，1--主柜
   }
   else
   {
-    MainFlag=0; //0--副柜，1--主柜
+    AMPPro.addr.mainflag=0; //0--副柜，1--主柜
   }
 }
 /*******************************************************************************
@@ -548,7 +548,7 @@ unsigned short AMPCAB_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned 
   switch(Port)
   {
     case  NonPort   : return 0;   //不继续执行
-    case  PcPort    : sendedlen = USART_DMASend(CommPcPort,pBuffer,length);
+    case  PcPort    : sendedlen = api_usart_dma_send(CommPcPort,pBuffer,length);
       break;
     case  CabPort   : sendedlen = RS485_DMASend(&stCbRS485Cb,pBuffer,length);	//RS485-DMA发送程序
       break;
@@ -688,7 +688,7 @@ void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   //1）-----------------上传数据:PC接口只接收下发数据
 
   //2）-----------------下发数据：地址为本地址或者广播地址(0xFF)需要进行处理，如果地址为本地址，向上应答(广播地址不应答)
-  if(MainFlag)  //0--副柜，1--主柜
+  if(AMPPro.addr.mainflag)  //0--副柜，1--主柜
   {
   }
   address=ampframe->msg.addr.address1;
@@ -699,7 +699,7 @@ void Msg_ProcessPcPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   //----------------------------PC接口都要应答
   ackFrame(Port,1);             //向上应答---取消PC应答
   
-  if((CabAddr!=address))  //不属于主柜消息
+  if((AMPPro.addr.addr!=address))  //不属于主柜消息
   {
     
     Cabinet_Send((unsigned char*)ampframe,framlength);//往副柜发送
@@ -835,7 +835,7 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   //1）-----------------上传数据:PC接口只接收下发数据
   if(ampframe->msg.cmd.dir)   //0-down,1-up---高8位
   {
-    if(MainFlag)    //0--副柜，1--主柜
+    if(AMPPro.addr.mainflag)    //0--副柜，1--主柜
     {
       ackFrame(Port,0); //向下应答---主柜应答副柜
       AMPPro.buffer.WaitAck.Pc=1;   //需要PC应答
@@ -849,11 +849,11 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   {
     return;
   }
-  if((CabAddr!=address)&&(0xFF!=address))  //不属于此柜消息
+  if((AMPPro.addr.addr!=address)&&(0xFF!=address))  //不属于此柜消息
   {
     return;
   }
-  if(CabAddr==address)
+  if(AMPPro.addr.addr==address)
     ackFrame(Port,1);             //向上应答
   //===================================接收到的数据为本柜可接收数据(本柜地址或者广播地址(0xFF))
   if((AmpCmdLed == Cmd)||(AmpCmdLcdData == Cmd)||(AmpCmdLcdConf == Cmd))       //LED/LCD控制
@@ -997,11 +997,11 @@ void Msg_ProcessLyPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
     framlength  = PackUpMsg(databuffer,AmpCmdCard,&framlength);
     //-------------------------设置地址:柜控制板地址段为address1
     ampframe  = (stampphydef*)databuffer;
-    ampframe->msg.addr.address1 = CabAddr;
+    ampframe->msg.addr.address1 = AMPPro.addr.addr;
     //-------------------------设置CRC和结束符
     SetFrame(databuffer,&framlength);   //补充消息的CRC和结束符，返回帧长度
     //-------------------------检查本柜是否为主柜
-    if(1==MainFlag)   //主柜--通过PC接口上传
+    if(1==AMPPro.addr.mainflag)   //主柜--通过PC接口上传
     {
       AMPPro.buffer.WaitAck.Pc=1;   //需要应答
       PCnet_Send(databuffer,framlength);
@@ -1046,13 +1046,13 @@ void CardDataSendUp(enCCPortDef Port,unsigned char* pBuffer,unsigned short lengt
   
   //-------------------------设置地址:柜控制板地址段为address1
   ampframe  = (stampphydef*)databuffer;
-  ampframe->msg.addr.address1 = CabAddr;    //柜地址
+  ampframe->msg.addr.address1 = AMPPro.addr.addr;    //柜地址
   ampframe->msg.addr.address2 = 0;
   ampframe->msg.addr.address3 = 0;
   //-------------------------设置CRC和结束符
   SetFrame(databuffer,&framlength);//补充消息的CRC和结束符，返回帧长度
   
-  if(MainFlag)  //0--副柜，1--主柜
+  if(AMPPro.addr.mainflag)  //0--副柜，1--主柜
   {
     AMPPro.buffer.WaitAck.Pc=1;   //需要应答
     PCnet_Send(databuffer,framlength);    //往副柜发送消息
@@ -1125,13 +1125,13 @@ void LockStatusUpdata(eucmddef Cmd,eLockStsdef std)
   //-------------------------打包完成的数据转换为消息帧
   ampframe  = (stampphydef*)databuffer;
   //-------------------------添加地址
-  ampframe->msg.addr.address1 = CabAddr;  //当前柜地址
+  ampframe->msg.addr.address1 = AMPPro.addr.addr;  //当前柜地址
   ampframe->msg.addr.address2 = 0;
   ampframe->msg.addr.address3 = 0;
   //-------------------------设置CRC和结束符
   framlength  = SetFrame(databuffer,&framlength);//补充消息的CRC和结束符，返回帧长度
   //-------------------------选择上报路径
-  if(MainFlag)  //0--副柜，1--主柜
+  if(AMPPro.addr.mainflag)  //0--副柜，1--主柜
   {
     AMPPro.buffer.WaitAck.Pc=1;   //需要应答
     PCnet_Send(databuffer,framlength);    //往副柜发送消息
@@ -1189,7 +1189,7 @@ void CommTimeOutUpdata(enCCPortDef Port,stampaddrdef address)
   //-------------------------设置CRC和结束符
   framlength  = SetFrame(databuffer,&framlength);//补充消息的CRC和结束符，返回帧长度
   //-------------------------选择上报路径
-  if(MainFlag)  //0--副柜，1--主柜
+  if(AMPPro.addr.mainflag)  //0--副柜，1--主柜
   {
     AMPPro.buffer.WaitAck.Pc=1;   //需要应答
     PCnet_Send(databuffer,framlength);    //往副柜发送消息

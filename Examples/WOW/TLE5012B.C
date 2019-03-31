@@ -317,7 +317,7 @@ void USART_Server(void)
     memcpy(u2txbuffer,u1rxbuffer,RxNum);
 
     
-    USART_DMASend(USART1,u1txbuffer,sizeof(str)-1);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
+    api_usart_dma_send(USART1,u1txbuffer,sizeof(str)-1);		//串口DMA发送程序，如果数据已经传入到DMA，返回Buffer大小，否则返回0
     
     RS485_DMASend(&stRS485BS,u2txbuffer,RxNum);
 
@@ -326,7 +326,7 @@ void USART_Server(void)
   if(RxNum)
   {
     memcpy(u1txbuffer,u2rxbuffer,RxNum);
-    USART_DMASend(USART1,u1txbuffer,RxNum);
+    api_usart_dma_send(USART1,u1txbuffer,RxNum);
   }
 }
 /*******************************************************************************

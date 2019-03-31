@@ -516,7 +516,7 @@ unsigned short AMPCAB_SendBuff(enCCPortDef Port,unsigned char* pBuffer,unsigned 
   switch(Port)
   {
     case  NonPort   : return 0;   //不继续执行
-    case  PcPort    : sendedlen = USART_DMASend(CommPcPort,pBuffer,length);
+    case  PcPort    : sendedlen = api_usart_dma_send(CommPcPort,pBuffer,length);
       break;
     case  CabPort   : sendedlen = RS485_DMASend(&stCbRS485Cb,pBuffer,length);	//RS485-DMA发送程序
       break;

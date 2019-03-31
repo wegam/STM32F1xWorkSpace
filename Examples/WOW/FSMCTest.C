@@ -148,7 +148,7 @@ void FSMCTest_Server(void)
 //  RxNum = USART_ReadBufferIDLE(USART1,buffer);
 //  if(RxNum)
 //  {
-//    USART_DMASend(USART1,buffer,RxNum);
+//    api_usart_dma_send(USART1,buffer,RxNum);
 //  }
 //  if(time++<1000)
 //    return;

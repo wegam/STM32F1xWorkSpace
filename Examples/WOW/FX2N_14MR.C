@@ -98,7 +98,7 @@ void FX2N_14MR_Server(void)
 	{
 		if(tema++>=1)
 		{
-//			USART_DMASend(UART4,(u32*)&send_num,1);
+//			api_usart_dma_send(UART4,(u32*)&send_num,1);
 			USART_SendData(UART4,send_num);
 		}
 		if(tema++>3)
@@ -133,7 +133,7 @@ void FX2N_14MR_Server(void)
 //	{
 //		PA15=1;
 //		USART_DMAPrintf(UART4,"接收到的数据个数:%d;接收到的数据:%s\n",num,FX2N_14MR_RXBuffer);
-//		USART_DMASend(UART4,(u32*)FX2N_14MR_TXBuffer,num);
+//		api_usart_dma_send(UART4,(u32*)FX2N_14MR_TXBuffer,num);
 //		DMASTAST=*(vu32*)DMA2_Channel5_BASE;
 //		tema=0;
 //	}
