@@ -17,27 +17,21 @@
 unsigned	char AmpBaket[maxmsgsize]={0};
 stAMPProdef   AMPPro;
 
-//unsigned  char  ackupfarme[10]=
-//{
-//  0x7E,   //头起始符
-//  0x05,   //长度
-//  0x81,   //CMD=1：应答，DIR=1：上传
-//	0x00,		//addr1	//向上应答，带地址
-//	0x00,		//addr2	//向上应答，带地址
-//	0x00,		//addr3	//向上应答，带地址
-//  0x00,   //状态
-//  0xB0,   //CRC16L
-//  0x50,   //CRC16H
-//  0x7F    //尾结束符
-//};
-unsigned  char  ackdownfarme[10]=
+unsigned  char  ackupfarme[AmpMinFrameSize]=
+{
+  0x7E,   //头起始符
+  0x05,   //长度
+  0x81,   //CMD=1：应答，DIR=1：上传
+  0x00,   //状态
+  0xB0,   //CRC16L
+  0x50,   //CRC16H
+  0x7F    //尾结束符
+};
+unsigned  char  ackdownfarme[AmpMinFrameSize]=
 {
   0x7E,		//头起始符
   0x05,		//长度
   0x01,		//CMD=1：应答，DIR=1：上传
-	0x00,		//addr1		//向下应答，地址为0
-	0x00,		//addr2
-	0x00,		//addr3
   0x00,		//状态
   0xD1,		//CRC16L
   0x90,		//CRC16H
@@ -952,7 +946,7 @@ unsigned short Check_SendBuff(enCCPortDef Port)
 					*ReSendCount  = 0;      //重发清零
 				}
 			}
-			if((0xFF==frame->msg.addr.address2)&&(LayPort==Port))
+			if(((0xFF==frame->msg.addr.address2)||(0xFF==frame->msg.addr.address3))&&(LayPort==Port))
 			{
 				if(*ReSendCount>=2)
 				{

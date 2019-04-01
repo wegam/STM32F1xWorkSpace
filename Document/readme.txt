@@ -45,5 +45,7 @@ NOTE:
    the Flash memory density ranges between 256 and 512 Kbytes.
 
 
-  
+20190331：
+修复串口空闲检查
+修复广播消息返回超时    
 ******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE******

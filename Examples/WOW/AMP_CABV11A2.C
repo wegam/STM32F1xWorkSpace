@@ -876,10 +876,20 @@ void Msg_ProcessCbPort(enCCPortDef Port,unsigned char* pBuffer,unsigned short le
   }
 	else if(AmpCmdLcdPwr ==  Cmd)   //LCD电源供电控制指令
   {
-		AMPPro.Req.PLon  =0;
-    AMPPro.Req.PLoff =0;
+		AMPPro.Req.PLon  	=0;
+    AMPPro.Req.PLoff 	=0;
+		
+		AMPPro.Req.BLon  	=0;
+    AMPPro.Req.BLoff 	=0;
 		if(0==ampframe->msg.data[0])
-      AMPPro.Req.PLoff=1;
+		{
+      AMPPro.Req.PLoff	=1;
+			AMPPro.Req.BLoff 	=1;
+		}
+		else
+		{
+			AMPPro.Req.BLon  	=1;
+		}
 	}
   else if(AmpCmdPwr ==  Cmd)   //层板供电控制命令
   {

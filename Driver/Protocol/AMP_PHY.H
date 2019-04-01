@@ -23,8 +23,8 @@
 #define checkswitchidtime 	2000    		//检查拨码开关时间间隔
 #define GetOnlinetime   		5000      	//获取在线设备时间间隔
 
-extern unsigned  char  ackupfarme[10];
-extern unsigned  char  ackdownfarme[10];
+extern unsigned  char  ackupfarme[AmpMinFrameSize];
+extern unsigned  char  ackdownfarme[AmpMinFrameSize];
 	
 typedef enum _eucmd
 {

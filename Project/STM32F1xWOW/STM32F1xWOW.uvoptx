@@ -19774,6 +19774,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
+          <Name></Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -19805,18 +19806,18 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>957</LineNumber>
+          <LineNumber>362</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220374</Address>
+          <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>E:\Project\MKD\STM32\STM32F1xWorkSpace20190331骞垮窞璋冭瘯鏍锋満 -缂撳瓨婧㈠嚭\STM32F1xWorkSpace\Driver\Protocol\AMP_PHY.C</Filename>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>..\..\Examples\WOW\AMP_CABV11A2.C</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\AMP01V11A2\../../Driver/Protocol/AMP_PHY.C\957</Expression>
+          <Expression></Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -20909,7 +20910,7 @@
 
   <Group>
     <GroupName>APP</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
